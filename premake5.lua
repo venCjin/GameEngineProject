@@ -22,6 +22,7 @@ IncludeDir["GLFW"] = "Engine/dependencies/GLFW/include"
 IncludeDir["glm"] = "Engine/dependencies/glm"
 IncludeDir["ImGui"] = "Engine/dependencies/imgui"
 IncludeDir["stb_image"] = "Engine/dependencies/stb_image"
+IncludeDir["assimp"] = "Engine/dependencies/assimp/include"
 
 group "Dependencies"
 	include "Engine/dependencies/GLFW"
@@ -66,7 +67,8 @@ project "Engine"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{prj.name}/dependencies/spdlog/include",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.assimp}"
 	}
 
 	links 
@@ -74,7 +76,8 @@ project "Engine"
 		"Glad",
 		"GLFW",
 		"ImGui",
-		"opengl32.lib"
+		"opengl32.lib",
+		"assimp-vc142-mt.lib" -- not sure if lib or dll
 	}
 
 	filter "system:windows"
