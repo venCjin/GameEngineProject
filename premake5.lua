@@ -124,7 +124,8 @@ project "Game"
 
 	links
 	{
-		"Engine"
+		"Engine",
+		"assimp-vc142-mt.lib" -- not sure if lib or dll
 	}
 
 	filter "system:windows"
