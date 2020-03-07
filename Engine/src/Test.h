@@ -1,7 +1,8 @@
 #pragma once
+
 class Test
 {
 public:
-	void print();
+	int work();
 };
 

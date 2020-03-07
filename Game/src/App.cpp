@@ -1,5 +1,4 @@
 #include <Engine.h>
-#include "Test.h"
 
 // To run with Nvidia dedicated graphic accelerator
 //extern "C"
@@ -10,6 +9,6 @@
 int main()
 {
 	Test t = Test();
-	t.print();
+	t.work();
 	return 0;
 }
