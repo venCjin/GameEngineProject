@@ -23,11 +23,13 @@ IncludeDir["glm"] = "Engine/dependencies/glm"
 IncludeDir["ImGui"] = "Engine/dependencies/imgui"
 IncludeDir["stb_image"] = "Engine/dependencies/stb_image"
 IncludeDir["assimp"] = "Engine/dependencies/assimp/include"
+IncludeDir["entityX"] = "Engine/dependencies/entityX"
 
 group "Dependencies"
 	include "Engine/dependencies/GLFW"
 	include "Engine/dependencies/Glad"
 	include "Engine/dependencies/imgui"
+	include "Engine/dependencies/entityX"
 
 group ""
 
@@ -68,7 +70,8 @@ project "Engine"
 		"%{IncludeDir.ImGui}",
 		"%{prj.name}/dependencies/spdlog/include",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.assimp}"
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.entityX}"
 	}
 
 	links 
@@ -76,6 +79,7 @@ project "Engine"
 		"Glad",
 		"GLFW",
 		"ImGui",
+		"entityX",
 		"opengl32.lib",
 		"assimp-vc142-mt.lib" -- not sure if lib or dll
 	}
@@ -119,6 +123,7 @@ project "Game"
 		"Engine/src",
 		"Engine/dependencies",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.entityX}",
 		"Engine/dependencies/spdlog/include"
 	}
 
