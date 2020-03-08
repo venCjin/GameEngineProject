@@ -22,14 +22,14 @@ IncludeDir["GLFW"] = "Engine/dependencies/GLFW/include"
 IncludeDir["glm"] = "Engine/dependencies/glm"
 IncludeDir["ImGui"] = "Engine/dependencies/imgui"
 IncludeDir["stb_image"] = "Engine/dependencies/stb_image"
-IncludeDir["assimp"] = "Engine/dependencies/assimp/include"
+IncludeDir["assimp"] = "Engine/dependencies/assimp_prebuild/include"
 IncludeDir["entityX"] = "Engine/dependencies/entityX"
 
 group "Dependencies"
-	include "Engine/dependencies/GLFW"
-	include "Engine/dependencies/Glad"
-	include "Engine/dependencies/imgui"
 	include "Engine/dependencies/entityX"
+	include "Engine/dependencies/Glad"
+	include "Engine/dependencies/GLFW"
+	include "Engine/dependencies/imgui"
 
 group ""
 
@@ -53,7 +53,7 @@ project "Engine"
 		"%{prj.name}/dependencies/glm/glm/**.hpp",
 		"%{prj.name}/dependencies/glm/glm/**.inl",
 		"%{prj.name}/dependencies/stb_image/**.h",
-		"%{prj.name}/dependencies/stb_image/**.cpp",
+		"%{prj.name}/dependencies/stb_image/**.cpp"
 	}
 
 	defines
@@ -75,13 +75,13 @@ project "Engine"
 	}
 
 	links 
-	{ 
+	{
 		"Glad",
 		"GLFW",
 		"ImGui",
 		"entityX",
 		"opengl32.lib",
-		"assimp-vc142-mt.lib" -- not sure if lib or dll
+		"assimp-vc142-mt.lib"
 	}
 
 	filter "system:windows"
@@ -130,7 +130,11 @@ project "Game"
 	links
 	{
 		"Engine",
-		"assimp-vc142-mt.lib" -- not sure if lib or dll
+		"assimp-vc142-mt.lib"
+	}
+
+	postbuildcommands {
+		"{COPY} assimp-vc142-mt.dll %{cfg.targetdir}"
 	}
 
 	filter "system:windows"
