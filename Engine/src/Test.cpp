@@ -17,6 +17,8 @@
 #include <camera.h>
 #include <model.h>
 
+#include "entityx\entityx.h"
+
 //extern "C" {
 //	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 //}
@@ -63,6 +65,10 @@ float lastFrame = 0.0f;
 
 int Test::work()
 {
+
+	entityx::Entity e;
+	std::cout << "entity valid: " << e.valid() << std::endl;
+
 	// glfw: initialize and configure
 	// ------------------------------
 	glfwInit();
