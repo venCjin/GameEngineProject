@@ -1,21 +1,15 @@
 @echo off
 
 :: Create a solution_path variable
-echo Generating Engine/src/path_config.h ...
-set a=const std::string solution_path = R"(
+echo Generating Engine/src/root_directory.h ...
+set a=const char * solution_path = R"(
 set c=)";
 set line=%a%%__CD__%%c%
-echo %line%>Engine/src/path_config.h
+echo %line%>Engine/src/root_directory.h
 echo Generated line: %line%
-
-set a=const std::string resources_path = R"(
-set c=)";
-set line=%a%%__CD__%Game\res\%c%
-echo %line% >> Engine/src/path_config.h
-echo Generated line: %line%
-
+echo.
 echo Generated file:
-type Engine\src\path_config.h
+type Engine\src\root_directory.h
 echo.
 
 

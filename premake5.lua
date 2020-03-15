@@ -71,7 +71,8 @@ project "Engine"
 		"%{prj.name}/dependencies/spdlog/include",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.assimp}",
-		"%{IncludeDir.entityX}"
+		"%{IncludeDir.entityX}",
+		"%{prj.name}/dependencies/irrKlang/include"
 	}
 
 	links 
@@ -81,7 +82,8 @@ project "Engine"
 		"ImGui",
 		"entityX",
 		"opengl32.lib",
-		"assimp-vc142-mt.lib"
+		"Engine/dependencies/assimp_prebuild/lib/assimp-vc142-mt.lib",
+		"Engine/dependencies/irrKlang/lib/irrKlang.lib"
 	}
 
 	filter "system:windows"
@@ -130,11 +132,13 @@ project "Game"
 	links
 	{
 		"Engine",
-		"assimp-vc142-mt.lib"
+		"Engine/dependencies/assimp_prebuild/lib/assimp-vc142-mt.lib",
+		"Engine/dependencies/irrKlang/lib/irrKlang.lib"
 	}
 
 	postbuildcommands {
-		"{COPY} assimp-vc142-mt.dll %{cfg.targetdir}"
+		"{COPY} ../Engine/dependencies/assimp_prebuild/lib/assimp-vc142-mt.dll %{cfg.targetdir}",
+		"{COPY} ../Engine/dependencies/irrKlang/lib/*.dll %{cfg.targetdir}"
 	}
 
 	filter "system:windows"

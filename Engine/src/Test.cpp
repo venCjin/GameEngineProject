@@ -19,6 +19,9 @@
 
 #include "entityx\entityx.h"
 
+#include "irrKlang.h"
+#include "filesystem.h"
+
 //extern "C" {
 //	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 //}
@@ -65,9 +68,24 @@ float lastFrame = 0.0f;
 
 int Test::work()
 {
+	// start the sound engine with default parameters
+	irrklang::ISoundEngine* engine = irrklang::createIrrKlangDevice();
+
+	if (!engine)
+		return 0; // error starting up the engine
+
+	// play some sound stream, looped
+	engine->play2D(FileSystem::getResPath("sounds/ophelia.mp3").c_str(), true);
+
+	// --------------------------------------------------
+	// --------------------------------------------------
 
 	entityx::Entity e;
 	std::cout << "entity valid: " << e.valid() << std::endl;
+
+	// --------------------------------------------------
+	// --------------------------------------------------
+
 
 	// glfw: initialize and configure
 	// ------------------------------
@@ -123,39 +141,34 @@ int Test::work()
 	ImGui::StyleColorsClassic();
 	//------
 
-
-	// __debugbreak;
-	// this path must be changed depending on your solution path
-	// TODO in future projectgenerator will create this variable when generate
-	const string resPath = R"(D:\3rok\SEM_6\GameEngineProject\Game\res\)";
-
 	// build and compile shaders
 	// -------------------------
-	Shader           shader((resPath + R"(shaders\vertex_shader.glsl)").c_str(), (resPath + R"(shaders\fragment_shader.glsl)").c_str());
-	Shader   lightingShader((resPath + R"(shaders\lighting_vs.glsl)").c_str(),   (resPath + R"(shaders\lighting_fs.glsl)").c_str());
-	Shader instancingShader((resPath + R"(shaders\instancing_vs.glsl)").c_str(), (resPath + R"(shaders\lighting_fs.glsl)").c_str());
-
+	Shader           shader(FileSystem::getResPath(R"(shaders\vertex_shader.glsl)").c_str(), FileSystem::getResPath(R"(shaders\fragment_shader.glsl)").c_str());
+	Shader   lightingShader(FileSystem::getResPath(R"(shaders\lighting_vs.glsl)").c_str(),   FileSystem::getResPath(R"(shaders\lighting_fs.glsl)").c_str());
+	Shader instancingShader(FileSystem::getResPath(R"(shaders\instancing_vs.glsl)").c_str(), FileSystem::getResPath(R"(shaders\lighting_fs.glsl)").c_str());
+	
 	// load models
 	// -----------
-	Model sphere(instancingShader, (resPath + "models/sphere/sphere.obj").c_str());
+	Model sphere(instancingShader, FileSystem::getResPath("models/sphere/sphere.obj").c_str());
 
-	Model pointL(shader, (resPath + "models/sphere/sphere.obj").c_str());
-	Model spot1L(shader, (resPath + "models/cone/cone.obj").c_str());
-	Model spot2L(shader, (resPath + "models/cone/cone.obj").c_str());
+	Model pointL(shader, FileSystem::getResPath("models/sphere/sphere.obj").c_str());
+	Model spot1L(shader, FileSystem::getResPath("models/cone/cone.obj").c_str());
+	Model spot2L(shader, FileSystem::getResPath("models/cone/cone.obj").c_str());
+	
 
 	// load PBR material textures
 	// --------------------------
-	unsigned int albedo = loadTexture((resPath + "textures/rusted_iron/albedo.png").c_str());
-	unsigned int normal = loadTexture((resPath + "textures/rusted_iron/normal.png").c_str());
-	unsigned int metallic = loadTexture((resPath + "textures/rusted_iron/metallic.png").c_str());
-	unsigned int roughness = loadTexture((resPath + "textures/rusted_iron/roughness.png").c_str());
-	unsigned int ao = loadTexture((resPath + "textures/rusted_iron/ao.png").c_str());
+	unsigned int albedo = loadTexture(FileSystem::getResPath("textures/rusted_iron/albedo.png").c_str());
+	unsigned int normal = loadTexture(FileSystem::getResPath("textures/rusted_iron/normal.png").c_str());
+	unsigned int metallic = loadTexture(FileSystem::getResPath("textures/rusted_iron/metallic.png").c_str());
+	unsigned int roughness = loadTexture(FileSystem::getResPath("textures/rusted_iron/roughness.png").c_str());
+	unsigned int ao = loadTexture(FileSystem::getResPath("textures/rusted_iron/ao.png").c_str());
 
-	unsigned int floor_a = loadTexture((resPath + "textures/floor/albedo.png").c_str());
-	unsigned int floor_n = loadTexture((resPath + "textures/floor/normal-ogl.png").c_str());
-	unsigned int floor_m = loadTexture((resPath + "textures/floor/metallic.png").c_str());
-	unsigned int floor_r = loadTexture((resPath + "textures/floor/roughness.png").c_str());
-	unsigned int floor_ao = loadTexture((resPath + "textures/floor/ao.png").c_str());
+	unsigned int floor_a = loadTexture(FileSystem::getResPath("textures/floor/albedo.png").c_str());
+	unsigned int floor_n = loadTexture(FileSystem::getResPath("textures/floor/normal-ogl.png").c_str());
+	unsigned int floor_m = loadTexture(FileSystem::getResPath("textures/floor/metallic.png").c_str());
+	unsigned int floor_r = loadTexture(FileSystem::getResPath("textures/floor/roughness.png").c_str());
+	unsigned int floor_ao = loadTexture(FileSystem::getResPath("textures/floor/ao.png").c_str());
 
 	// lights
 	// ------
@@ -492,6 +505,10 @@ int Test::work()
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
 	glfwTerminate();
+
+	// irrKlang: 
+	engine->drop(); // delete engine
+
 	return 0;
 }
 
