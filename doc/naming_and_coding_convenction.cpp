@@ -8,7 +8,7 @@ private:
 public:
 	Example(int field, float var) : m_field(field), s_var(var)
 	{
-		init();
+		Init();
 	}
 
 	float Fun()
@@ -16,8 +16,33 @@ public:
 		return s_var * m_field;
 	}
 
+	void Increment()
+	{
+		s_var++;
+	}
+
+	void SetField(int field)
+	{
+		m_field = field;
+	}
+
+	void SetVar(float var)
+	{
+		s_var = var;
+	}
+
+	int GetField()
+	{
+		return m_field;
+	}
+
+	float GetVar()
+	{
+		return s_var;
+	}
+
 private:
-	void init()
+	void Init()
 	{
 		// code ...
 	}
@@ -27,7 +52,7 @@ int main()
 {
 	Example ex(1, 1.667f);
 	float ex_i = ex.Fun();
-	if (ex_i > 1.0f)
+	if (ex_i > 2.0f)
 	{
 		// code ...
 	}
