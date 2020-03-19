@@ -21,9 +21,11 @@ IncludeDir["Glad"] = "Engine/dependencies/Glad/include"
 IncludeDir["GLFW"] = "Engine/dependencies/GLFW/include"
 IncludeDir["glm"] = "Engine/dependencies/glm"
 IncludeDir["ImGui"] = "Engine/dependencies/imgui"
+IncludeDir["spdlog"] = "Engine/dependencies/spdlog/include"
 IncludeDir["stb_image"] = "Engine/dependencies/stb_image"
 IncludeDir["assimp"] = "Engine/dependencies/assimp_prebuild/include"
 IncludeDir["entityX"] = "Engine/dependencies/entityX"
+IncludeDir["irrKlang"] = "Engine/dependencies/irrKlang/include"
 
 group "Dependencies"
 	include "Engine/dependencies/entityX"
@@ -48,31 +50,30 @@ project "Engine"
 
 	files
 	{
-		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.h", 
+		"%{prj.name}/src/**.c", 
+		"%{prj.name}/src/**.hpp", 
 		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/dependencies/glm/glm/**.hpp",
-		"%{prj.name}/dependencies/glm/glm/**.inl",
-		"%{prj.name}/dependencies/stb_image/**.h",
-		"%{prj.name}/dependencies/stb_image/**.cpp"
 	}
 
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
 	}
 
 	includedirs
 	{
 		"%{prj.name}/src",
+		-- "%{prj.name}/dependencies",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
-		"%{prj.name}/dependencies/spdlog/include",
+		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.entityX}",
-		"%{prj.name}/dependencies/irrKlang/include"
+		"%{IncludeDir.irrKlang}",
 	}
 
 	links 
@@ -83,7 +84,7 @@ project "Engine"
 		"entityX",
 		"opengl32.lib",
 		"Engine/dependencies/assimp_prebuild/lib/assimp-vc142-mt.lib",
-		"Engine/dependencies/irrKlang/lib/irrKlang.lib"
+		"Engine/dependencies/irrKlang/lib/irrKlang.lib",
 	}
 
 	filter "system:windows"
@@ -116,29 +117,33 @@ project "Game"
 
 	files
 	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.h", 
+		"%{prj.name}/src/**.c", 
+		"%{prj.name}/src/**.hpp", 
+		"%{prj.name}/src/**.cpp",
 	}
 
 	includedirs
 	{
 		"Engine/src",
-		"Engine/dependencies",
+		-- "Engine/dependencies",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entityX}",
-		"Engine/dependencies/spdlog/include"
+		"%{IncludeDir.irrKlang}",
 	}
 
 	links
 	{
 		"Engine",
 		"Engine/dependencies/assimp_prebuild/lib/assimp-vc142-mt.lib",
-		"Engine/dependencies/irrKlang/lib/irrKlang.lib"
+		"Engine/dependencies/irrKlang/lib/irrKlang.lib",
 	}
 
-	postbuildcommands {
+	postbuildcommands 
+	{
+		"{COPY} ../Game/res %{cfg.targetdir}/res",
 		"{COPY} ../Engine/dependencies/assimp_prebuild/lib/assimp-vc142-mt.dll %{cfg.targetdir}",
-		"{COPY} ../Engine/dependencies/irrKlang/lib/*.dll %{cfg.targetdir}"
+		"{COPY} ../Engine/dependencies/irrKlang/lib/*.dll %{cfg.targetdir}",
 	}
 
 	filter "system:windows"
