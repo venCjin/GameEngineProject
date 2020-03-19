@@ -26,6 +26,7 @@ IncludeDir["stb_image"] = "Engine/dependencies/stb_image"
 IncludeDir["assimp"] = "Engine/dependencies/assimp/include"
 IncludeDir["entityX"] = "Engine/dependencies/entityX"
 IncludeDir["irrKlang"] = "Engine/dependencies/irrKlang/include"
+IncludeDir["freetype2"] = "Engine/dependencies/freetype2/include"
 
 group "Dependencies"
 	include "Engine/dependencies/entityX"
@@ -74,6 +75,7 @@ project "Engine"
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.entityX}",
 		"%{IncludeDir.irrKlang}",
+		"%{IncludeDir.freetype2}",
 	}
 
 	links 
@@ -85,6 +87,7 @@ project "Engine"
 		"opengl32.lib",
 		"Engine/dependencies/assimp/lib/assimp-vc142-mt.lib",
 		"Engine/dependencies/irrKlang/lib/irrKlang.lib",
+		"Engine/dependencies/freetype2/lib/freetype.lib",
 	}
 
 	filter "system:windows"
@@ -130,6 +133,7 @@ project "Game"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entityX}",
 		"%{IncludeDir.irrKlang}",
+		"%{IncludeDir.freetype2}",
 	}
 
 	links
@@ -137,6 +141,7 @@ project "Game"
 		"Engine",
 		"Engine/dependencies/assimp/lib/assimp-vc142-mt.lib",
 		"Engine/dependencies/irrKlang/lib/irrKlang.lib",
+		"Engine/dependencies/freetype2/lib/freetype.lib",
 	}
 
 	postbuildcommands 
