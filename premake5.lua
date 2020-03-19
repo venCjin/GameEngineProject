@@ -23,7 +23,7 @@ IncludeDir["glm"] = "Engine/dependencies/glm"
 IncludeDir["ImGui"] = "Engine/dependencies/imgui"
 IncludeDir["spdlog"] = "Engine/dependencies/spdlog/include"
 IncludeDir["stb_image"] = "Engine/dependencies/stb_image"
-IncludeDir["assimp"] = "Engine/dependencies/assimp_prebuild/include"
+IncludeDir["assimp"] = "Engine/dependencies/assimp/include"
 IncludeDir["entityX"] = "Engine/dependencies/entityX"
 IncludeDir["irrKlang"] = "Engine/dependencies/irrKlang/include"
 
@@ -83,7 +83,7 @@ project "Engine"
 		"ImGui",
 		"entityX",
 		"opengl32.lib",
-		"Engine/dependencies/assimp_prebuild/lib/assimp-vc142-mt.lib",
+		"Engine/dependencies/assimp/lib/assimp-vc142-mt.lib",
 		"Engine/dependencies/irrKlang/lib/irrKlang.lib",
 	}
 
@@ -135,14 +135,14 @@ project "Game"
 	links
 	{
 		"Engine",
-		"Engine/dependencies/assimp_prebuild/lib/assimp-vc142-mt.lib",
+		"Engine/dependencies/assimp/lib/assimp-vc142-mt.lib",
 		"Engine/dependencies/irrKlang/lib/irrKlang.lib",
 	}
 
 	postbuildcommands 
 	{
 		"{COPY} ../Game/res %{cfg.targetdir}/res",
-		"{COPY} ../Engine/dependencies/assimp_prebuild/lib/assimp-vc142-mt.dll %{cfg.targetdir}",
+		"{COPY} ../Engine/dependencies/assimp/lib/assimp-vc142-mt.dll %{cfg.targetdir}",
 		"{COPY} ../Engine/dependencies/irrKlang/lib/*.dll %{cfg.targetdir}",
 	}
 
