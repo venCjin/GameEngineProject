@@ -1,52 +1,56 @@
 #include "pch.h"
 
-class Example {
-private:
-	int m_field;          // member field
-	static float s_var;   // static field
-
-public:
-	Example(int field, float var) : m_field(field), s_var(var)
+namespace sixengine
+{
+	class Example
 	{
-		Init();
-	}
+	private:
+		int m_field;		// member field
+		static float s_var; // static field
 
-	float Fun()
-	{
-		return s_var * m_field;
-	}
+	public:
+		Example(int field, float var) : m_field(field), s_var(var)
+		{
+			Init();
+		}
 
-	void Increment()
-	{
-		s_var++;
-	}
+		float Fun()
+		{
+			return s_var * m_field;
+		}
 
-	void SetField(int field)
-	{
-		m_field = field;
-	}
+		void Increment()
+		{
+			s_var++;
+		}
 
-	void SetVar(float var)
-	{
-		s_var = var;
-	}
+		void SetField(int field)
+		{
+			m_field = field;
+		}
 
-	int GetField()
-	{
-		return m_field;
-	}
+		void SetVar(float var)
+		{
+			s_var = var;
+		}
 
-	float GetVar()
-	{
-		return s_var;
-	}
+		int GetField()
+		{
+			return m_field;
+		}
 
-private:
-	void Init()
-	{
-		// code ...
-	}
-};
+		float GetVar()
+		{
+			return s_var;
+		}
+
+	private:
+		void Init()
+		{
+			// code ...
+		}
+	};
+} // namespace SixEngine
 
 int main()
 {
