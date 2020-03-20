@@ -1,10 +1,10 @@
 #include <Engine.h>
 #include <EntryPoint.h>
 
-class App : public sixengine::Application
+class Game : public sixengine::Application
 {
 public:
-	App(std::string title, unsigned int width, unsigned int height)
+	Game(std::string title, unsigned int width, unsigned int height)
 		: Application(title, width, height)
 	{
 	}
@@ -16,5 +16,5 @@ public:
 
 sixengine::Application* sixengine::CreateApplication()
 {
-	return new App("App", 1280, 720);
+	return new Game("App", 1280, 720);
 }
