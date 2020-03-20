@@ -5,12 +5,15 @@
 #include <utility>
 #include <algorithm>
 #include <functional>
-
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <array>
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
 
 #include <Windows.h>
+
+#include "Core/Log.h"
+#include "Core/Assert.h"

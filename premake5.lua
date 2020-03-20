@@ -131,6 +131,7 @@ project "Game"
 		"Engine/src",
 		-- "Engine/dependencies",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.entityX}",
 		"%{IncludeDir.irrKlang}",
 		"%{IncludeDir.freetype2}",
