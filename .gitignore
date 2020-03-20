@@ -8,6 +8,3 @@ bin-int/
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
-
-# Build specific files
-Engine/src/path_config.h
