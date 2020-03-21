@@ -1,16 +1,21 @@
 #pragma once
 
 #include <string>
-#include <utility>
+#include <functional>
+
 struct GLFWwindow;
+class Event;
 
 namespace sixengine {
+
+	using EventCallbackFn = std::function<void(Event&)>;
 
 	struct WindowData
 	{
 		std::string Title;
 		unsigned int Width, Height;
 		bool VSync;
+		EventCallbackFn EventCallback;
 	};
 
 	class Window
@@ -31,6 +36,7 @@ namespace sixengine {
 		std::pair<float, float> GetWindowPos() const;
 
 		// Window attributes
+		inline void SetEventCallback(const EventCallbackFn& callback) { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled);
 		bool IsVSync() const;
 

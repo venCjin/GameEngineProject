@@ -2,7 +2,8 @@
 
 #include <string>
 #include <memory>
-#include <Core/Window.h>
+#include <Core\Window.h>
+#include <Core\Events\ApplicationEvent.h>
 
 namespace sixengine {
 
@@ -23,9 +24,15 @@ namespace sixengine {
 		virtual void OnShutdown() {}
 		virtual void OnUpdate() {}
 
+		virtual void OnEvent(Event& event);
+
 		inline Window& GetWindow() { return *m_Window; }
 		
 		static inline Application& Get() { return *s_Instance; }
+
+	private:
+		bool OnWindowResize(WindowResizeEvent& e);
+		bool OnWindowClose(WindowCloseEvent& e);
 	};
 
 	// Implemented by CLIENT
