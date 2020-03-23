@@ -1,10 +1,12 @@
 #pragma once
 
-#include <glad\glad.h>
-
 namespace sixengine {
 
-	struct Vertex;
+	struct Vertex
+	{
+		float x, y, z;
+	};
+
 	enum class VertexDataType
 	{
 		NONE = 0,

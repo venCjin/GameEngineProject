@@ -15,6 +15,8 @@ namespace sixengine {
 	{
 		s_Instance = this;
 
+		renderer = new Renderer();
+
 		m_Window = std::make_unique<Window>(title, width, height);
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		m_Window->SetVSync(false);
@@ -28,12 +30,14 @@ namespace sixengine {
 	void Application::Run()
 	{
 		OnInit();
+		renderer->Init();
 		while (m_Running)
 		{
 			if (!m_Minimized)
 			{
 				// Render
 				// ...
+				renderer->Render();
 			}
 			m_Window->OnUpdate();
 		}

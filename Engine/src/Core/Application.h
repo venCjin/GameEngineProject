@@ -4,6 +4,7 @@
 #include <memory>
 #include <Core\Window.h>
 #include <Core\Events\ApplicationEvent.h>
+#include <Renderer\Renderer.h>
 
 namespace sixengine {
 
@@ -13,6 +14,7 @@ namespace sixengine {
 		static Application* s_Instance;
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true, m_Minimized = false;
+		Renderer* renderer = nullptr;
 
 	public:
 		Application(std::string = "Six Engine", unsigned int width = 1280, unsigned int height = 720);

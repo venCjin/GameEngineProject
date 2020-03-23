@@ -1,6 +1,8 @@
 #pragma once
 #include "Renderer\Buffers.h"
 
+typedef unsigned int GLenum;
+
 namespace sixengine {
 
 	class VertexArray {
