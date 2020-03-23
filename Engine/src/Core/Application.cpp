@@ -15,11 +15,11 @@ namespace sixengine {
 	{
 		s_Instance = this;
 
-		renderer = new Renderer();
-
 		m_Window = std::make_unique<Window>(title, width, height);
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		m_Window->SetVSync(false);
+
+		renderer = new Renderer();
 	}
 
 	Application::~Application()

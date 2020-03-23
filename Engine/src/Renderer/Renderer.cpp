@@ -9,7 +9,6 @@ namespace sixengine {
 	Renderer::Renderer()
 	{
 		m_VAO = new VertexArray();
-		m_VAO->Create();
 	}
 
 	Renderer::~Renderer()
