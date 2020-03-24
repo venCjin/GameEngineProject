@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "Shader.h"
 
+#include <glad/glad.h>
+
 namespace sixengine {	
 
-	Shader::Shader(const GLchar * vertexPath, const GLchar * fragmentPath)
+	Shader::Shader(const char * vertexPath, const char * fragmentPath)
 	{
 		std::string vertexCode;
 		std::string fragmentCode;
@@ -36,11 +38,8 @@ namespace sixengine {
 		const char* vShaderCode = vertexCode.c_str();
 		const char* fShaderCode = fragmentCode.c_str();
 
-
-
 		unsigned int vertex = Compile(GL_VERTEX_SHADER, vShaderCode);
 		unsigned int fragment = Compile(GL_FRAGMENT_SHADER, fShaderCode);
-		
 
 		LinkProgram(vertex, fragment);
 
@@ -49,7 +48,7 @@ namespace sixengine {
 
 	}
 
-	unsigned int Shader::Compile(GLenum shaderType, const char * shaderCode)
+	unsigned int Shader::Compile(unsigned int shaderType, const char * shaderCode)
 	{
 		unsigned int shader = glCreateShader(shaderType);;
 		glShaderSource(shader, 1, &shaderCode, NULL);
@@ -94,12 +93,12 @@ namespace sixengine {
 		}
 	}
 
-	void Shader::Bind()
+	void Shader::Bind() const
 	{
 		glUseProgram(m_ID);
 	}
 
-	void Shader::Unbind()
+	void Shader::Unbind() const
 	{
 		glUseProgram(0);
 	}

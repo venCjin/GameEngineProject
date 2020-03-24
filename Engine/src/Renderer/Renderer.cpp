@@ -8,56 +8,51 @@ namespace sixengine {
 
 	Renderer::Renderer()
 	{
-		m_VAO = new VertexArray();
 	}
 
 	Renderer::~Renderer()
 	{
 	}
 
-	void Renderer::Init()
+	void Renderer::Render(const VertexArray* vertexArray, const Shader* shader)
 	{
-		VertexBuffer* vbo;
-		IndexBuffer* ibo;
-		std::array<Vertex, 4> verticies;
-		std::array<unsigned int, 6> indicies;
+		float vertices[] = {
+				 0.5f,  0.5f, 0.0f,  // top right
+				 0.5f, -0.5f, 0.0f,  // bottom right
+				-0.5f, -0.5f, 0.0f,  // bottom left
+				-0.5f,  0.5f, 0.0f   // top left 
+		};
+		unsigned int indices[] = {  // note that we start from 0!
+			0, 1, 3,  
+			1, 2, 3   
+		};
+		unsigned int VAO, VBO, EBO;
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+		glGenBuffers(1, &EBO);
 
-		verticies[0] = { 0.5f,  0.5f, 0.0f };  // top right
-		verticies[1] = { 0.5f, -0.5f, 0.0f };  // bottom right
-		verticies[2] = { -0.5f, -0.5f, 0.0f };  // bottom left
-		verticies[3] = { -0.5f,  0.5f, 0.0f };  // top left 
+		glBindVertexArray(VAO);
 
-		indicies[0] = 0;
-		indicies[1] = 1;
-		indicies[2] = 3;
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-		indicies[3] = 1;
-		indicies[4] = 2;
-		indicies[5] = 3;
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-		
-		m_VAO->Bind();
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
 
-		vbo = new VertexBuffer(verticies.data(), verticies.size());
-		BufferData* vbd = new BufferData(sixengine::VertexDataType::VEC3F, "position");
-		BufferLayout* vbl = new BufferLayout({ *vbd });
-		vbo->SetLayout(*vbl);
+		shader->Bind();
+		vertexArray->Bind();
+		//glBindVertexArray(VAO);
 
-		ibo = new IndexBuffer(indicies.data(), indicies.size());
-
-		m_VAO->AddVertexBuffer(*vbo);
-		m_VAO->AddIndexBuffer(*ibo);
+		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 	}
 
-	void Renderer::Render()
+	void Renderer::Clear(float r, float g, float b)
 	{
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(r, g, b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		//m_Shader.Use();
-
-		m_VAO->Bind();
-		glDrawElements(GL_TRIANGLES, m_VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 	}
 
 }

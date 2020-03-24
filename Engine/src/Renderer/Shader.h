@@ -1,6 +1,5 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -10,16 +9,16 @@ namespace sixengine {
 	class Shader
 	{
 	private:
-		unsigned int Compile(GLenum shaderType, const char* shaderCode);
+		unsigned int Compile(unsigned int shaderType, const char* shaderCode);
 		void LinkProgram(unsigned int vertex, unsigned int fragment);
 
 	public:
 		unsigned int m_ID;
 
-		Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
+		Shader(const char* vertexPath, const char* fragmentPath);
 		
-		void Bind();
-		void Unbind();
+		void Bind() const;
+		void Unbind() const;
 
 		void SetInt(const std::string &name, int value) const;
 		void SetFloat(const std::string &name, float value) const;

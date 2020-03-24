@@ -19,7 +19,7 @@ namespace sixengine {
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		m_Window->SetVSync(false);
 
-		renderer = new Renderer();
+		//renderer = new Renderer();
 	}
 
 	Application::~Application()
@@ -30,14 +30,12 @@ namespace sixengine {
 	void Application::Run()
 	{
 		OnInit();
-		renderer->Init();
+		//renderer->Init();
 		while (m_Running)
 		{
 			if (!m_Minimized)
 			{
-				// Render
-				// ...
-				renderer->Render();
+				OnUpdate();
 			}
 			m_Window->OnUpdate();
 		}
