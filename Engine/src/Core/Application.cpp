@@ -18,8 +18,6 @@ namespace sixengine {
 		m_Window = std::make_unique<Window>(title, width, height);
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		m_Window->SetVSync(false);
-
-		//renderer = new Renderer();
 	}
 
 	Application::~Application()
@@ -30,7 +28,6 @@ namespace sixengine {
 	void Application::Run()
 	{
 		OnInit();
-		//renderer->Init();
 		while (m_Running)
 		{
 			if (!m_Minimized)
@@ -44,7 +41,7 @@ namespace sixengine {
 
 	void Application::OnEvent(Event& event)
 	{
-		LOG_CORE_INFO("{0}", event);
+		//LOG_CORE_INFO("{0}", event);
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
