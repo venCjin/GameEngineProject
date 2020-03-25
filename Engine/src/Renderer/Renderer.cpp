@@ -19,7 +19,8 @@ namespace sixengine {
 		shader->Bind();
 		vertexArray->Bind();
 		//glBindVertexArray(VAO);
-
+		glPolygonMode(GL_FRONT, GL_LINE);
+		glPolygonMode(GL_BACK, GL_LINE);
 		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 	}
 
