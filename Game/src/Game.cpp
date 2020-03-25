@@ -51,6 +51,22 @@ namespace sixengine {
 			Renderer::Clear(0.3f, 0.3f, 0.3f);
 			Renderer::Render(m_VAO, m_Shader);
 		}
+
+		virtual void OnEvent(Event& event) override
+		{
+			// Let Aplication handle it's own Events
+			Application::OnEvent(event);
+
+			// Game Events handle here
+			EventDispatcher dispatcher(event);
+			dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(Game::OnKeyPressed));
+		}
+
+		bool OnKeyPressed(KeyPressedEvent& e)
+		{
+			LOG_INFO("{0}", e);
+			return true;
+		}
 	};
 }
 
