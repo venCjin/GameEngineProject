@@ -8,10 +8,12 @@ namespace sixengine {
 		static std::vector<unsigned int> generateCubeIndieces();
 		static std::vector<Vertex> generateSphereVertices(int sectorCount, int stackCount, float radius);
 		static std::vector<unsigned int> generateSphereIndieces(int sectorCount, int stackCount);
+		static std::vector<Vertex> generateCapsuleVertices(int sectorCount, int stackCount, float radius, float heights);
+		static std::vector<unsigned int> generateCapsuleIndieces(int sectorCount, int stackCount);
 	public:
 		static void GenerateCube(std::vector<Vertex>& vertices, std::vector<unsigned int>& indieces);
 		static void GenerateSphere(std::vector<Vertex>& vertices, std::vector<unsigned int>& indieces, int sectorCount=10, int stackCount=10, float radius = .5f);
-		//static void generateCapsule(struct Vertex*, unsigned int*);
+		static void GenerateCapsule(std::vector<Vertex>& vertices, std::vector<unsigned int>& indieces, int sectorCount = 10, int stackCount = 10, float radius = .5f, float heights = .5f);
 	};
 
 
