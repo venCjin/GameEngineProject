@@ -5,14 +5,14 @@ namespace sixengine {
 	class Color
 	{
 	public:
-		glm::vec4 color;
+		glm::vec4 value;
 		//statics
-		static Color red;
-		static Color green;
-		static Color blue;
-		static Color white;
-		static Color black;
-		static Color grey;
+		static const Color RED;
+		static const Color GREEN;
+		static const Color BLUE;
+		static const Color WHITE;
+		static const Color BLACK;
+		static const Color GREY;
 
 		Color(float r, float g, float b, float a);
 		Color(glm::vec4 color);
@@ -21,7 +21,7 @@ namespace sixengine {
 		glm::vec4 operator* (glm::vec4 arg0);
 		glm::vec4 operator* (Color arg0);
 		friend std::ostream& operator<<(std::ostream& os, const Color c) {
-			os << " Red: "<<c.color.r << " Green: " << c.color.g << " Blue: " << c.color.b << " Alpha: " << c.color.a;
+			os << " Red: "<<c.value.r << " Green: " << c.value.g << " Blue: " << c.value.b << " Alpha: " << c.value.a;
 			return os;
 		}
 
