@@ -16,6 +16,8 @@ namespace sixengine {
 
 	void Renderer::Render(const VertexArray* vertexArray, const Shader* shader)
 	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 		shader->Bind();
 		vertexArray->Bind();
 

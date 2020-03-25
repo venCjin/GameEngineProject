@@ -22,8 +22,12 @@ namespace sixengine {
 		{
 			m_VAO = new VertexArray();
 			m_Shader = new Shader("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
+
+			float aspectRatio = (float)width / (float)height;
 			
-			cam.SetProjectionMatrix(glm::perspective(glm::radians(cam.Zoom), (float)width / (float)height, cam.m_NearPlane, cam.m_FarPlane));
+			//cam.SetProjectionMatrix(glm::perspective(glm::radians(cam.Zoom), (float)width / (float)height, cam.m_NearPlane, cam.m_FarPlane));
+			
+			cam.SetProjectionMatrix(glm::ortho(-1.0f * aspectRatio, 1.0f * aspectRatio, -1.0f, 1.0f, cam.m_NearPlane, cam.m_FarPlane));
 		}
 
 		virtual void OnInit() override
@@ -38,7 +42,7 @@ namespace sixengine {
 
 			m_VAO->Bind();
 
-			vbo = new VertexBuffer(vertices.data(), vertices.size()*sizeof(Vertex));
+			vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
 			vbo->SetLayout({
 				{ VertexDataType::VEC3F, "position" }
 				});
@@ -47,9 +51,6 @@ namespace sixengine {
 
 			m_VAO->AddVertexBuffer(*vbo);
 			m_VAO->AddIndexBuffer(*ibo);
-
-
-
 		}
 
 		virtual void OnUpdate() override
@@ -86,29 +87,14 @@ namespace sixengine {
 
 			// key codes stolen from glfw3.h
 			// this should be access through Input.h
-			switch (e.GetKeyCode())
-			{
-			case 'W':
-				cam.ProcessKeyboard(CameraMovement::FORWARD, dt);
-				break;
-			case 'S':
-				cam.ProcessKeyboard(CameraMovement::BACKWARD, dt);
-				break;
-			case 'A':
-				cam.ProcessKeyboard(CameraMovement::LEFT, dt);
-				break;
-			case 'D':
-				cam.ProcessKeyboard(CameraMovement::RIGHT, dt);
-				break;
-			case 340:   // GLFW_KEY_LEFT_SHIFT
-				cam.ProcessKeyboard(CameraMovement::UP, dt);
-				break;
-			case 32:   // GLFW_KEY_SPACE
-				cam.ProcessKeyboard(CameraMovement::DOWN, dt);
-				break;
-			default:
-				break;
-			}
+			int key = e.GetKeyCode();
+			if (key == 'W') cam.ProcessKeyboard(CameraMovement::FORWARD, dt);
+			if (key == 'S') cam.ProcessKeyboard(CameraMovement::BACKWARD, dt);
+			if (key == 'A') cam.ProcessKeyboard(CameraMovement::LEFT, dt);
+			if (key == 'D') cam.ProcessKeyboard(CameraMovement::RIGHT, dt);
+			if (key == 32) cam.ProcessKeyboard(CameraMovement::UP, dt);   // GLFW_KEY_LEFT_SHIFT
+			if (key == 340)  cam.ProcessKeyboard(CameraMovement::DOWN, dt); // GLFW_KEY_SPACE
+
 			LOG_INFO("{0}", e);
 			return true;
 		}
