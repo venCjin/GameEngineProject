@@ -13,6 +13,7 @@ namespace sixengine {
 		VertexArray* m_VAO;
 		Shader* m_Shader;
 		Camera cam;
+		bool firstMouse = true;
 		float lastX = 0.0f, lastY = 0.0f;
 
 	public:
@@ -21,6 +22,7 @@ namespace sixengine {
 		{
 			m_VAO = new VertexArray();
 			m_Shader = new Shader("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
+			
 			cam.SetProjectionMatrix(glm::perspective(glm::radians(cam.Zoom), (float)width / (float)height, cam.m_NearPlane, cam.m_FarPlane));
 		}
 
@@ -40,6 +42,7 @@ namespace sixengine {
 			vbo->SetLayout({
 				{ VertexDataType::VEC3F, "position" }
 				});
+
 			ibo = new IndexBuffer(indices.data(), indices.size());
 
 			m_VAO->AddVertexBuffer(*vbo);
@@ -51,21 +54,15 @@ namespace sixengine {
 
 		virtual void OnUpdate() override
 		{			
-			
-			glm::mat4 projection = glm::perspective(glm::radians(1.0f), (float)1280 / (float)720, 0.1f, 1000.0f);
-			glm::mat4 view = glm::lookAt(glm::vec3(0, 0, -90), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+			Renderer::Clear(0.3f, 0.3f, 0.3f);
+
 			glm::mat4 model = glm::mat4(1);
 			model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0, 1.0f, 0));
 
-			
-			m_Shader->SetMat4("projection", projection);
-			m_Shader->SetMat4("view", view);
-			m_Shader->SetMat4("model", model);
-
-			Renderer::Clear(0.3f, 0.3f, 0.3f);
-
 			m_Shader->Bind();
-			m_Shader->SetMat4("ProjViewMat", cam.GetProjectionMatrix() * cam.GetViewMatrix());
+			m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
+			m_Shader->SetMat4("view", cam.GetViewMatrix());
+			m_Shader->SetMat4("model", model);
 
 			Renderer::Render(m_VAO, m_Shader);
 		}
@@ -89,7 +86,7 @@ namespace sixengine {
 
 			// key codes stolen from glfw3.h
 			// this should be access through Input.h
-			switch (e.GetKeyCode()) 
+			switch (e.GetKeyCode())
 			{
 			case 'W':
 				cam.ProcessKeyboard(CameraMovement::FORWARD, dt);
@@ -119,6 +116,12 @@ namespace sixengine {
 		bool OnMouseMoved(MouseMovedEvent& e)
 		{
 			LOG_INFO("{0}", e);
+			if (firstMouse)
+			{
+				lastX = e.GetX();
+				lastY = e.GetY();
+				firstMouse = false;
+			}
 
 			float xoffset = e.GetX() - lastX;
 			float yoffset = lastY - e.GetY(); // reversed since y-coordinates go from bottom to top

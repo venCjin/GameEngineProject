@@ -11,17 +11,17 @@ namespace sixengine {
 	{
 		switch (vertexDataType)
 		{
-			case VertexDataType::BOOL:	return 1;			//sizeof(bool) = 1
-			case VertexDataType::INT:	return 4;			//sizeof(int) = 4
-			case VertexDataType::FLOAT:	return 4;			//sizeof(float) = 4
-			case VertexDataType::VEC2I:	return 4 * 2;		//size of 2 ints = 4*2 and so on
-			case VertexDataType::VEC3I:	return 4 * 3;
-			case VertexDataType::VEC4I:	return 4 * 4;
-			case VertexDataType::VEC2F:	return 4 * 2;		
-			case VertexDataType::VEC3F:	return 4 * 3;
-			case VertexDataType::VEC4F:	return 4 * 4;
-			case VertexDataType::MAT3:	return 4 * 3 * 3;	//sizeof(float) * 3x3 matrix, so 4*3*3
-			case VertexDataType::MAT4:	return 4 * 4 * 4;
+			case VertexDataType::BOOL:	return sizeof(bool);			//sizeof(bool) = 1
+			case VertexDataType::INT:	return sizeof(int);				//sizeof(int) = 4
+			case VertexDataType::FLOAT:	return sizeof(float);			//sizeof(float) = 4
+			case VertexDataType::VEC2I:	return sizeof(int)   * 2;		//size of 2 ints = 4*2 and so on
+			case VertexDataType::VEC3I:	return sizeof(int)   * 3;
+			case VertexDataType::VEC4I:	return sizeof(int)   * 4;
+			case VertexDataType::VEC2F:	return sizeof(float) * 2;
+			case VertexDataType::VEC3F:	return sizeof(float) * 3;
+			case VertexDataType::VEC4F:	return sizeof(float) * 4;
+			case VertexDataType::MAT3:	return sizeof(float) * 3 * 3;	//sizeof(float) * 3x3 matrix, so 4*3*3
+			case VertexDataType::MAT4:	return sizeof(float) * 4 * 4;
 		}
 
 		CORE_ASSERT(0, "Unknown Vertex Data Type!");

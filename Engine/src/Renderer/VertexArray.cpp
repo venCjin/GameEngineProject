@@ -69,7 +69,7 @@ namespace sixengine {
 					i, 
 					element.VertexDataTypeCount(element.VertexDataType), 
 					ConvertToOpenGLDataType(element.VertexDataType),
-					(element.Normalized ? true : false), 
+					element.Normalized,
 					vBuffer.GetLayout().GetLayoutStride(), 
 					(const void*)element.Offset
 				);
