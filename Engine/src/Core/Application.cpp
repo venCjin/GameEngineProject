@@ -14,6 +14,8 @@ namespace sixengine {
 	{
 		s_Instance = this;
 
+		m_Timer = Timer::Instance();
+
 		m_Window = std::make_unique<Window>(title, width, height);
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		m_Window->SetVSync(false);
@@ -34,6 +36,9 @@ namespace sixengine {
 				OnUpdate();
 			}
 			m_Window->OnUpdate();
+
+			m_Timer->Tick();
+			m_Timer->Reset();
 		}
 		OnShutdown();
 	}
@@ -47,7 +52,7 @@ namespace sixengine {
 
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
-		LOG_CORE_INFO("{0}", e);
+		//LOG_CORE_INFO("{0}", e);
 		int width = e.GetWidth(), height = e.GetHeight();
 		if (width == 0 || height == 0)
 		{
@@ -61,7 +66,7 @@ namespace sixengine {
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		LOG_CORE_INFO("{0}", e);
+		//LOG_CORE_INFO("{0}", e);
 		m_Running = false;
 		return true;
 	}

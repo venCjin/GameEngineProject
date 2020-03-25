@@ -23,7 +23,6 @@ namespace sixengine {
 	private:
 		GLFWwindow* m_Window;
 		WindowData m_Data;
-		float m_LastFrameTime = 0.0f;
 
 	public:
 		Window(std::string title, unsigned int width, unsigned int height);

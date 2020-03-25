@@ -34,10 +34,6 @@ namespace sixengine {
 	{
 		glfwPollEvents();
 		glfwSwapBuffers(m_Window);
-
-		float time = glfwGetTime();
-		float delta = time - m_LastFrameTime;
-		m_LastFrameTime = time;
 	}
 
 	std::pair<float, float> Window::GetWindowPos() const

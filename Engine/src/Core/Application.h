@@ -4,6 +4,7 @@
 #include <memory>
 #include <Core\Window.h>
 #include <Core\Events\ApplicationEvent.h>
+#include <Core\Timer.h>
 
 namespace sixengine {
 
@@ -13,6 +14,7 @@ namespace sixengine {
 		static Application* s_Instance;
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true, m_Minimized = false;
+		Timer* m_Timer;
 
 	public:
 		Application(std::string = "Six Engine", unsigned int width = 1280, unsigned int height = 720);
@@ -27,6 +29,7 @@ namespace sixengine {
 		virtual void OnEvent(Event& event);
 
 		inline Window& GetWindow() { return *m_Window; }
+		inline Timer& GetTimer() { return *m_Timer; }
 		
 		static inline Application& Get() { return *s_Instance; }
 
