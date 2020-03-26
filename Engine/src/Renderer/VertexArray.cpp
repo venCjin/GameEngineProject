@@ -81,6 +81,7 @@ namespace sixengine {
 
 			m_VBuffers_List.push_back(&vBuffer);
 		}
+		glBindVertexArray(0);
 	}
 
 	void VertexArray::AddIndexBuffer(IndexBuffer& iBuffer)
@@ -88,6 +89,7 @@ namespace sixengine {
 		glBindVertexArray(m_ID);
 		iBuffer.Bind();
 		m_IBuffer = &iBuffer;
+		glBindVertexArray(0);
 	}
 
 }
