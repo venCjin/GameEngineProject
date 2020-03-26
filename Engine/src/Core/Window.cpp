@@ -58,6 +58,20 @@ namespace sixengine {
 		return m_Data.VSync;
 	}
 
+	void Window::SwitchCursorVisibility()
+	{
+		if (m_Data.CursorVisibility) 
+		{
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
+			m_Data.CursorVisibility = false;
+		}
+		else
+		{
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			m_Data.CursorVisibility = true;
+		}
+	}
+
 	void Window::Init()
 	{
 		if (!s_GLFWInitialized)

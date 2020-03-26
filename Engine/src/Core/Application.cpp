@@ -33,7 +33,7 @@ namespace sixengine {
 		{
 			if (!m_Minimized)
 			{
-				OnUpdate();
+				OnUpdate(m_Timer->DeltaTime());
 			}
 			m_Window->OnUpdate();
 

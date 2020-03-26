@@ -60,6 +60,7 @@ namespace sixengine {
 		glBindVertexArray(m_ID);
 		vBuffer.Bind();
 
+		
 		if (vBuffer.GetLayout().GetLayoutElements().size() > 0) {
 
 			unsigned int i = 0;

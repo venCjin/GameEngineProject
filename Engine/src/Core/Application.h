@@ -2,13 +2,14 @@
 
 #include <string>
 #include <memory>
-#include <Core\Window.h>
-#include <Core\Events\ApplicationEvent.h>
-#include <Core\Timer.h>
+#include <entityx/quick.h>
+#include <Core/Window.h>
+#include <Core/Events/ApplicationEvent.h>
+#include <Core/Timer.h>
 
 namespace sixengine {
 
-	class Application
+	class Application : public entityx::EntityX
 	{
 	private:
 		static Application* s_Instance;
@@ -24,7 +25,7 @@ namespace sixengine {
 
 		virtual void OnInit() {}
 		virtual void OnShutdown() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(float dt) {}
 
 		virtual void OnEvent(Event& event);
 

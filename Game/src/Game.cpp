@@ -3,14 +3,13 @@
 #include "Renderer/PrimitiveUtils.h"
 #include "Core/Timer.h"
 
-
 namespace sixengine {
 
 	
 	class Game : public Application
 	{
 	private:
-		VertexArray* m_VAO;
+		GameObject* m_GameObjects[3];
 		Shader* m_Shader;
 		Camera cam;
 		bool firstMouse = true;
@@ -20,7 +19,9 @@ namespace sixengine {
 		Game(std::string title, unsigned int width, unsigned int height)
 			: Application(title, width, height)
 		{
-			m_VAO = new VertexArray();
+			systems.add<RotationSystem>();
+			systems.configure();
+
 			m_Shader = new Shader("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
 
 			float aspectRatio = (float)width / (float)height;
@@ -32,40 +33,96 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
+			VertexArray* vao;
 			VertexBuffer* vbo;
 			IndexBuffer* ibo;
+
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
 
-			PrimitiveUtils::GenerateSphere(vertices, indices, 30, 30);
-
-
-			m_VAO->Bind();
-
+			// Setup First Object
+			PrimitiveUtils::GenerateCube(vertices, indices);
 			vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
 			vbo->SetLayout({
 				{ VertexDataType::VEC3F, "position" }
-				});
+			});
 
 			ibo = new IndexBuffer(indices.data(), indices.size());
 
-			m_VAO->AddVertexBuffer(*vbo);
-			m_VAO->AddIndexBuffer(*ibo);
+			vao = new VertexArray();
+			vao->Bind();
+			vao->AddVertexBuffer(*vbo);
+			vao->AddIndexBuffer(*ibo);
+
+			m_GameObjects[0] = new GameObject(entities);
+			m_GameObjects[0]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(-1.25f, 0.0f, 0.0f)));
+			m_GameObjects[0]->AddComponent<TestMesh>(vao);
+			
+			// Setup Second Object
+			PrimitiveUtils::GenerateSphere(vertices, indices, 30, 30);
+			vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
+			vbo->SetLayout({
+				{ VertexDataType::VEC3F, "position" }
+			});
+
+			ibo = new IndexBuffer(indices.data(), indices.size());
+
+			vao = new VertexArray();
+			vao->Bind();
+			vao->AddVertexBuffer(*vbo);
+			vao->AddIndexBuffer(*ibo);
+
+			m_GameObjects[1] = new GameObject(entities);
+			m_GameObjects[1]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(1.25f, 0.0f, 0.0f)));
+			m_GameObjects[1]->AddComponent<TestMesh>(vao);
+
+			// Setup Third Object
+			PrimitiveUtils::GenerateCapsule(vertices, indices, 20, 20);
+			vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
+			vbo->SetLayout({
+				{ VertexDataType::VEC3F, "position" }
+			});
+
+			ibo = new IndexBuffer(indices.data(), indices.size());
+
+			vao = new VertexArray();
+			vao->Bind();
+			vao->AddVertexBuffer(*vbo);
+			vao->AddIndexBuffer(*ibo);
+
+			m_GameObjects[2] = new GameObject(entities);
+			m_GameObjects[2]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+			m_GameObjects[2]->AddComponent<TestMesh>(vao);
 		}
 
-		virtual void OnUpdate() override
-		{			
-			Renderer::Clear(0.3f, 0.3f, 0.3f);
+		virtual void OnUpdate(float dt) override
+		{		
+			{
+				//PROFILE_SCOPE("UPDATE")
+				systems.update_all(dt);
+			}
 
-			glm::mat4 model = glm::mat4(1);
-			model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0, 1.0f, 0));
+			{
+				//PROFILE_SCOPE("RENDER")
+				Renderer::Clear(0.3f, 0.3f, 0.3f);
 
-			m_Shader->Bind();
-			m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
-			m_Shader->SetMat4("view", cam.GetViewMatrix());
-			m_Shader->SetMat4("model", model);
+				m_Shader->Bind();
+				m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
+				m_Shader->SetMat4("view", cam.GetViewMatrix());
+				
+				entityx::ComponentHandle<TestTransform> transform;
+				entityx::ComponentHandle<TestMesh> mesh;
+				
+				for (entityx::Entity entity : entities.entities_with_components(transform, mesh)) {
+					transform = entity.component<TestTransform>();
+					mesh = entity.component<TestMesh>();
 
-			Renderer::Render(m_VAO, m_Shader);
+					glm::mat4 model = transform->transform;
+					m_Shader->SetMat4("model", model);
+
+					Renderer::Render(mesh->VAO, m_Shader);
+				};
+			}
 		}
 
 		virtual void OnEvent(Event& event) override
@@ -92,8 +149,9 @@ namespace sixengine {
 			if (key == 'S') cam.ProcessKeyboard(CameraMovement::BACKWARD, dt);
 			if (key == 'A') cam.ProcessKeyboard(CameraMovement::LEFT, dt);
 			if (key == 'D') cam.ProcessKeyboard(CameraMovement::RIGHT, dt);
-			if (key == 32) cam.ProcessKeyboard(CameraMovement::UP, dt);   // GLFW_KEY_LEFT_SHIFT
+			if (key == 32)	cam.ProcessKeyboard(CameraMovement::UP, dt);   // GLFW_KEY_LEFT_SHIFT
 			if (key == 340)  cam.ProcessKeyboard(CameraMovement::DOWN, dt); // GLFW_KEY_SPACE
+			if (key == 258)  GetWindow().SwitchCursorVisibility(); // GLFW_KEY_LEFT_CTRL
 
 			LOG_INFO("{0}", e);
 			return true;

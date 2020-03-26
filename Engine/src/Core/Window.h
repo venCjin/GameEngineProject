@@ -14,7 +14,7 @@ namespace sixengine {
 	{
 		std::string Title;
 		unsigned int Width, Height;
-		bool VSync;
+		bool VSync, CursorVisibility;
 		EventCallbackFn EventCallback;
 	};
 
@@ -38,6 +38,7 @@ namespace sixengine {
 		inline void SetEventCallback(const EventCallbackFn& callback) { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled);
 		bool IsVSync() const;
+		void SwitchCursorVisibility();
 
 		inline GLFWwindow* GetWindow() const { return m_Window; }
 

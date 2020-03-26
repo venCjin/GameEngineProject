@@ -7,8 +7,16 @@
 
 #include "Core\Camera.h"
 
+#include "Core\Profile.h"
+
 #include "Renderer\Renderer.h"
 #include "Renderer\Buffers.h"
 #include "Renderer\VertexArray.h"
 #include "Renderer\Shader.h"
 
+#include "Gameplay/GameObject.h"
+
+#include "Gameplay/Systems/RotationSystem.h"
+
+#include "Gameplay/Components/TestTransform.h"
+#include "Gameplay/Components/TestMesh.h"
