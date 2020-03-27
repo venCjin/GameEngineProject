@@ -2,6 +2,7 @@
 #include <EntryPoint.h>
 #include "Renderer/PrimitiveUtils.h"
 #include "Core/Timer.h"
+#include "Core\ResourceManager.h"
 
 namespace sixengine {
 
@@ -14,6 +15,7 @@ namespace sixengine {
 		Camera cam;
 		bool firstMouse = true;
 		float lastX = 0.0f, lastY = 0.0f;
+		ResourceManager rm;
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)

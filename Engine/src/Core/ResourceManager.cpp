@@ -3,9 +3,9 @@
 
 namespace sixengine {
 
-	inline ResourceManager::ResourceManager()
+	ResourceManager::ResourceManager()
 	{
-		this->m_Dictionary = std::map< std::string, float>();
+		this->m_Dictionary = std::map<std::string, float>();
 	}
 
 

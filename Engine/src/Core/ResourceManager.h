@@ -2,6 +2,7 @@
 
 #include <map>
 namespace sixengine {
+
 	class ResourceManager
 	{
 		// string is key for now, we will think about hashing it later
