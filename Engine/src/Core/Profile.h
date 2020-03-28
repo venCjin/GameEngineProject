@@ -1,8 +1,8 @@
 #pragma once
 #pragma once
 
-#include "iostream"
 #include "Timer.h"
+#include "Log.h"
 
 namespace sixengine {
 
@@ -22,7 +22,7 @@ namespace sixengine {
 		~Profile()
 		{
 			double duration = Timer::GetTime(MILISECOND) - m_Start;
-			std::cout << duration << " ms " << m_Name << "\n";
+			LOG_CORE_INFO("Profile: {0:.3f} ms {1}", duration, m_Name);
 		}
 	};
 

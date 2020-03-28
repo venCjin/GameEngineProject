@@ -4,12 +4,12 @@
 #include "Core/Timer.h"
 
 namespace sixengine {
-
 	
 	class Game : public Application
 	{
 	private:
-		GameObject* m_GameObjects[3];
+		GameObject* m_GameObjects[5];
+		VertexArray* m_VAO;
 		Shader* m_Shader;
 		Camera cam;
 		bool firstMouse = true;
@@ -26,73 +26,65 @@ namespace sixengine {
 
 			float aspectRatio = (float)width / (float)height;
 			
-			//cam.SetProjectionMatrix(glm::perspective(glm::radians(cam.Zoom), (float)width / (float)height, cam.m_NearPlane, cam.m_FarPlane));
+			cam.SetProjectionMatrix(glm::perspective(glm::radians(cam.Zoom), (float)width / (float)height, 0.01f, 1500.0f));
 			
-			cam.SetProjectionMatrix(glm::ortho(-1.0f * aspectRatio, 1.0f * aspectRatio, -1.0f, 1.0f, cam.m_NearPlane, cam.m_FarPlane));
+			//cam.SetProjectionMatrix(glm::ortho(-1.0f * aspectRatio, 1.0f * aspectRatio, -1.0f, 1.0f, cam.m_NearPlane, cam.m_FarPlane));
+			cam.Position = glm::vec3(0.0f, 0.0f, 5.0f);
 		}
 
 		virtual void OnInit() override
 		{
-			VertexArray* vao;
-			VertexBuffer* vbo;
-			IndexBuffer* ibo;
-
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
 
-			// Setup First Object
+			std::vector<Vertex> verticesAll;
+			std::vector<unsigned int> indicesAll;
+
 			PrimitiveUtils::GenerateCube(vertices, indices);
-			vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
-			vbo->SetLayout({
-				{ VertexDataType::VEC3F, "position" }
-			});
+			verticesAll.insert(verticesAll.end(), vertices.begin(), vertices.end());
+			indicesAll.insert(indicesAll.end(), indices.begin(), indices.end());
 
-			ibo = new IndexBuffer(indices.data(), indices.size());
-
-			vao = new VertexArray();
-			vao->Bind();
-			vao->AddVertexBuffer(*vbo);
-			vao->AddIndexBuffer(*ibo);
-
+			// Setup First Object
 			m_GameObjects[0] = new GameObject(entities);
-			m_GameObjects[0]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(-1.25f, 0.0f, 0.0f)));
-			m_GameObjects[0]->AddComponent<TestMesh>(vao);
+			m_GameObjects[0]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(-1.5f, 0.0f, 0.0f)));
+			m_GameObjects[0]->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), -15.0f);
 			
-			// Setup Second Object
-			PrimitiveUtils::GenerateSphere(vertices, indices, 30, 30);
-			vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
-			vbo->SetLayout({
-				{ VertexDataType::VEC3F, "position" }
-			});
-
-			ibo = new IndexBuffer(indices.data(), indices.size());
-
-			vao = new VertexArray();
-			vao->Bind();
-			vao->AddVertexBuffer(*vbo);
-			vao->AddIndexBuffer(*ibo);
-
 			m_GameObjects[1] = new GameObject(entities);
-			m_GameObjects[1]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(1.25f, 0.0f, 0.0f)));
-			m_GameObjects[1]->AddComponent<TestMesh>(vao);
+			m_GameObjects[1]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(-3.0f, 0.0f, 0.0f)));
+			m_GameObjects[1]->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 15.0f);
 
-			// Setup Third Object
-			PrimitiveUtils::GenerateCapsule(vertices, indices, 20, 20);
-			vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
-			vbo->SetLayout({
-				{ VertexDataType::VEC3F, "position" }
-			});
+			PrimitiveUtils::GenerateCapsule(vertices, indices, 10, 10);
+			verticesAll.insert(verticesAll.end(), vertices.begin(), vertices.end());
+			indicesAll.insert(indicesAll.end(), indices.begin(), indices.end());
 
-			ibo = new IndexBuffer(indices.data(), indices.size());
-
-			vao = new VertexArray();
-			vao->Bind();
-			vao->AddVertexBuffer(*vbo);
-			vao->AddIndexBuffer(*ibo);
-
+			// Setup Second Object
 			m_GameObjects[2] = new GameObject(entities);
 			m_GameObjects[2]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-			m_GameObjects[2]->AddComponent<TestMesh>(vao);
+
+			PrimitiveUtils::GenerateSphere(vertices, indices, 30, 30);
+			verticesAll.insert(verticesAll.end(), vertices.begin(), vertices.end());
+			indicesAll.insert(indicesAll.end(), indices.begin(), indices.end());
+
+			// Setup Third Object
+			m_GameObjects[3] = new GameObject(entities);
+			m_GameObjects[3]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(1.5f, 0.0f, 0.0f)));
+			m_GameObjects[3]->AddComponent<TestRotation>(glm::vec3(1.0f, 0.0f, 0.0f), 3.0f);
+			
+			m_GameObjects[4] = new GameObject(entities);
+			m_GameObjects[4]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f)));
+			
+
+
+			VertexBuffer* vbo = new VertexBuffer(verticesAll.data(), verticesAll.size() * sizeof(Vertex));
+			vbo->SetLayout({
+				{ VertexDataType::VEC3F, "position" }
+			});
+
+			IndexBuffer* ibo = new IndexBuffer(indicesAll.data(), indicesAll.size());
+
+			m_VAO = new VertexArray();
+			m_VAO->AddVertexBuffer(*vbo);
+			m_VAO->AddIndexBuffer(*ibo);
 		}
 
 		virtual void OnUpdate(float dt) override
@@ -103,7 +95,7 @@ namespace sixengine {
 			}
 
 			{
-				//PROFILE_SCOPE("RENDER")
+				PROFILE_SCOPE("RENDER")
 				Renderer::Clear(0.3f, 0.3f, 0.3f);
 
 				m_Shader->Bind();
@@ -112,16 +104,25 @@ namespace sixengine {
 				
 				entityx::ComponentHandle<TestTransform> transform;
 				entityx::ComponentHandle<TestMesh> mesh;
-				
-				for (entityx::Entity entity : entities.entities_with_components(transform, mesh)) {
+
+				/*for (entityx::Entity entity : entities.entities_with_components(transform, mesh)) 
+				{
 					transform = entity.component<TestTransform>();
 					mesh = entity.component<TestMesh>();
 
-					glm::mat4 model = transform->transform;
-					m_Shader->SetMat4("model", model);
+					Models.push_back(transform->transform);
+					//m_Shader->SetMat4("model", model);
 
-					Renderer::Render(mesh->VAO, m_Shader);
-				};
+				}*/
+
+				std::vector<glm::mat4> models;
+				models.push_back(m_GameObjects[0]->GetComponent<TestTransform>()->transform);
+				models.push_back(m_GameObjects[1]->GetComponent<TestTransform>()->transform);
+				models.push_back(m_GameObjects[2]->GetComponent<TestTransform>()->transform);
+				models.push_back(m_GameObjects[3]->GetComponent<TestTransform>()->transform);
+				models.push_back(m_GameObjects[4]->GetComponent<TestTransform>()->transform);
+
+				Renderer::Render(m_VAO, m_Shader, models);
 			}
 		}
 

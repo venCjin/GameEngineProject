@@ -62,9 +62,12 @@ namespace sixengine {
 			GLint length;
 			glGetProgramiv(m_ID, GL_INFO_LOG_LENGTH, &length);
 
-			std::vector<GLchar> message(length);
-			glGetProgramInfoLog(m_ID, length, &length, &message[0]);
-			std::cout << "ERROR::SHADER::" << shaderType << "::COMPILATION_FAILED\n" << message.data() << std::endl;
+			if (length > 0)
+			{
+				std::vector<GLchar> message(length);
+				glGetProgramInfoLog(m_ID, length, &length, &message[0]);
+				std::cout << "ERROR::SHADER::" << shaderType << "::COMPILATION_FAILED\n" << message.data() << std::endl;
+			}
 		};
 		return shader;
 	}
