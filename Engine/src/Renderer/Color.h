@@ -20,9 +20,10 @@ namespace sixengine {
 		glm::vec4 operator* (Color* arg0);
 		glm::vec4 operator* (glm::vec4 arg0);
 		glm::vec4 operator* (Color arg0);
-		friend std::ostream& operator<<(std::ostream& os, const Color c) {
-			os << " Red: "<<c.value.r << " Green: " << c.value.g << " Blue: " << c.value.b << " Alpha: " << c.value.a;
-			return os;
+		std::string  ToString() {
+			std::stringstream stringStream;
+			stringStream << " Red: "<< value.r << " Green: " << value.g << " Blue: " << value.b << " Alpha: " << value.a;
+			return stringStream.str();
 		}
 
 	};
