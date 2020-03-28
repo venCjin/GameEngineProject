@@ -2,7 +2,9 @@
 #include <EntryPoint.h>
 #include "Renderer/PrimitiveUtils.h"
 #include "Core/Timer.h"
-#include "Core\ResourceManager.h"
+#include "Core/ResourceManager.h"
+#include <Core\ShaderManager.h>
+
 
 namespace sixengine {
 
@@ -15,16 +17,17 @@ namespace sixengine {
 		Camera cam;
 		bool firstMouse = true;
 		float lastX = 0.0f, lastY = 0.0f;
-		ResourceManager rm;
+		ShaderManager* m_ShaderManager;
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
 			: Application(title, width, height)
 		{
+			m_ShaderManager = new ShaderManager();
 			systems.add<RotationSystem>();
 			systems.configure();
 
-			m_Shader = new Shader("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
+			m_Shader = m_ShaderManager->makeInstance("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
 
 			float aspectRatio = (float)width / (float)height;
 			
