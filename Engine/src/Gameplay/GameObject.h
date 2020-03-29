@@ -4,15 +4,26 @@
 
 namespace sixengine {
 
+	class Transform;
+
 	class GameObject
 	{
 	private:
 		entityx::Entity m_Entity;
+		bool m_Dirty;
+		std::vector<GameObject*> m_Childeren;
 		//TODO: Add tags and other staff
 
 	public:
-		GameObject(entityx::EntityManager& entityManager) { m_Entity = entityManager.create(); }
-		~GameObject() { m_Entity.destroy(); };
+		GameObject(entityx::EntityManager& entityManager) : m_Dirty(true)
+		{
+			m_Entity = entityManager.create();
+		}
+		
+		~GameObject()
+		{
+			m_Entity.destroy();
+		};
 
 		template<typename T, typename... Args>
 		void AddComponent(Args&& ... args)
@@ -37,5 +48,18 @@ namespace sixengine {
 		{
 			return m_Entity.component<T>();
 		}
+
+		// Scene graph
+
+		void Render(glm::mat4 projection, glm::mat4 view);
+
+		void Render(glm::mat4 projection, glm::mat4 view, Transform parentWorld, bool dirty);
+
+		void SetDirty(bool dirty);
+
+		void AddChild(GameObject* child);
+
+		std::vector<GameObject*> GetChildren();
+
 	};
 }

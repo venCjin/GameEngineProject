@@ -3,12 +3,10 @@
 #include "Renderer/PrimitiveUtils.h"
 #include "Core/Timer.h"
 #include "Core/ResourceManager.h"
-#include <Core\ShaderManager.h>
-#include "Gameplay\GraphNode.h"
-
+#include <Core/ShaderManager.h>
+#include "Gameplay/GameObject.h"
 
 namespace sixengine {
-
 	
 	class Game : public Application
 	{
@@ -20,7 +18,6 @@ namespace sixengine {
 		float lastX = 0.0f, lastY = 0.0f;
 		ShaderManager* m_ShaderManager;
 		Mesh* mesh;
-		GraphNode* scene;
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
@@ -45,8 +42,7 @@ namespace sixengine {
 			PrimitiveUtils::GenerateCube(vertices, indices);
 
 			m_GameObjects[0] = new GameObject(entities);
-			scene = new GraphNode(m_GameObjects[0]);
-			m_GameObjects[0]->AddComponent<Transform>(scene);
+			m_GameObjects[0]->AddComponent<Transform>(m_GameObjects[0]);
 			m_GameObjects[0]->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 25.0f);
 			m_GameObjects[0]->AddComponent<TestMesh>(vertices, indices);
 			m_GameObjects[0]->AddComponent<TestMaterial>(m_Shader);
@@ -55,25 +51,23 @@ namespace sixengine {
 			PrimitiveUtils::GenerateSphere(vertices, indices);
 
 			m_GameObjects[1] = new GameObject(entities);
-			GraphNode* gn1 = new GraphNode(m_GameObjects[1]);
-			m_GameObjects[1]->AddComponent<Transform>(gn1, glm::mat4(1.0f),
+			m_GameObjects[1]->AddComponent<Transform>(m_GameObjects[1], glm::mat4(1.0f),
 				glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f)));
 			m_GameObjects[1]->AddComponent<TestMesh>(vertices, indices);
 			m_GameObjects[1]->AddComponent<TestMaterial>(m_Shader);
 
-			scene->AddChild(gn1);
+			m_GameObjects[0]->AddChild(m_GameObjects[1]);
 
 			// Setup Second (RIGHT) Object
 			PrimitiveUtils::GenerateCapsule(vertices, indices);
 
-			m_GameObjects[1] = new GameObject(entities);
-			GraphNode* gn2 = new GraphNode(m_GameObjects[1]);
-			m_GameObjects[1]->AddComponent<Transform>(gn2, glm::mat4(1.0f),
+			m_GameObjects[2] = new GameObject(entities);
+			m_GameObjects[2]->AddComponent<Transform>(m_GameObjects[2], glm::mat4(1.0f),
 				glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f)));
-			m_GameObjects[1]->AddComponent<TestMesh>(vertices, indices);
-			m_GameObjects[1]->AddComponent<TestMaterial>(m_Shader);
+			m_GameObjects[2]->AddComponent<TestMesh>(vertices, indices);
+			m_GameObjects[2]->AddComponent<TestMaterial>(m_Shader);
 
-			scene->AddChild(gn2);
+			m_GameObjects[0]->AddChild(m_GameObjects[2]);
 		}
 
 		virtual void OnUpdate(float dt) override
@@ -87,7 +81,7 @@ namespace sixengine {
 				//PROFILE_SCOPE("RENDER")
 				Renderer::Clear(0.3f, 0.3f, 0.3f);
 
-				scene->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
+				m_GameObjects[0]->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 			}
 		}
 

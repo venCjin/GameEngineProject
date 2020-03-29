@@ -1,35 +1,30 @@
 #pragma once
 
-#include "pch.h"
-#include "GraphNode.h"
-#include <vector>
+#include <pch.h>
+#include "GameObject.h"
 #include "Gameplay\GameObject.h"
 #include "Gameplay\Components\Transform.h"
 #include "Gameplay\Components\TestMaterial.h"
 #include "Gameplay\Components\TestMesh.h"
 #include "Renderer\Renderer.h"
 
-
 namespace sixengine {
 
-	GraphNode::GraphNode(GameObject* go) : m_Dirty(true), m_GO(go)
-	{}
-
-	void GraphNode::Render(glm::mat4 projection, glm::mat4 view)
+	void GameObject::Render(glm::mat4 projection, glm::mat4 view)
 	{
 		Render(projection, view, Transform(this), false);
 	}
 
-	void GraphNode::Render(glm::mat4 projection, glm::mat4 view, Transform parentWorld, bool dirty)
+	void GameObject::Render(glm::mat4 projection, glm::mat4 view, Transform parentWorld, bool dirty)
 	{
-		auto& t = m_GO->GetComponent<Transform>();
+		auto& t = GetComponent<Transform>();
 
 		// TODO: Render Queue
-		//Renderer::AddToRenderQueue(m_GO);
+		//Renderer::AddToRenderQueue(this);
 
-		auto transform = m_GO->GetComponent<Transform>();
-		auto mesh = m_GO->GetComponent<TestMesh>();
-		auto shader = m_GO->GetComponent<TestMaterial>()->GetShader();
+		auto transform = GetComponent<Transform>();
+		auto mesh = GetComponent<TestMesh>();
+		auto shader = GetComponent<TestMaterial>()->GetShader();
 
 		shader->Bind();
 		shader->SetMat4("projection", projection);
@@ -54,18 +49,19 @@ namespace sixengine {
 		}
 	}
 
-	void GraphNode::SetDirty(bool dirty)
+	void GameObject::SetDirty(bool dirty)
 	{
 		m_Dirty = dirty;
 	}
 
-	void GraphNode::AddChild(GraphNode* child)
+	void GameObject::AddChild(GameObject* child)
 	{
 		m_Childeren.push_back(child);
 	}
 
-	std::vector<GraphNode*> GraphNode::GetChildren()
+	std::vector<GameObject*> GameObject::GetChildren()
 	{
 		return m_Childeren;
 	}
+
 }
