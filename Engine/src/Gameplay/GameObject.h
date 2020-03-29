@@ -23,6 +23,7 @@ namespace sixengine {
 		~GameObject()
 		{
 			m_Entity.destroy();
+			for (auto& go : m_Childeren) go->~GameObject();
 		};
 
 		template<typename T, typename... Args>
