@@ -4,6 +4,7 @@
 #include "Core/Timer.h"
 #include "Core/ResourceManager.h"
 #include <Core\ShaderManager.h>
+#include "Gameplay\GraphNode.h"
 
 
 namespace sixengine {
@@ -19,6 +20,7 @@ namespace sixengine {
 		float lastX = 0.0f, lastY = 0.0f;
 		ShaderManager* m_ShaderManager;
 		Mesh* mesh;
+		GraphNode* scene;
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
@@ -31,7 +33,6 @@ namespace sixengine {
 			m_Shader = m_ShaderManager->makeInstance("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
 
 			float aspectRatio = (float)width / (float)height;
-			
 			cam.MakePerspective(aspectRatio);
 		}
 
@@ -39,8 +40,8 @@ namespace sixengine {
 		{
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
-			PrimitiveUtils::GenerateCube(vertices, indices);
 
+			PrimitiveUtils::GenerateCube(vertices, indices);
 			mesh = new Mesh(vertices, indices, nullptr);
 
 			VertexArray* vao;
@@ -60,49 +61,16 @@ namespace sixengine {
 			ibo = new IndexBuffer(indices.data(), indices.size());
 
 			vao = new VertexArray();
-			vao->Bind();
 			vao->AddVertexBuffer(*vbo);
 			vao->AddIndexBuffer(*ibo);
 
 			m_GameObjects[0] = new GameObject(entities);
-			m_GameObjects[0]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(-1.25f, 0.0f, 0.0f)));
+			scene = new GraphNode(m_GameObjects[0]);
+			m_GameObjects[0]->AddComponent<Transform>(scene);
+			m_GameObjects[0]->AddComponent<TestRotation>(glm::vec3(1.0f, 0.0f, 0.0f), 25.0f);
 			m_GameObjects[0]->AddComponent<TestMesh>(vao);
+			m_GameObjects[0]->AddComponent<TestMaterial>(m_Shader);
 			
-			// Setup Second Object
-			/*PrimitiveUtils::GenerateSphere(vertices, indices, 30, 30);
-			vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
-			vbo->SetLayout({
-				{ VertexDataType::VEC3F, "position" }
-			});
-
-			ibo = new IndexBuffer(indices.data(), indices.size());
-
-			vao = new VertexArray();
-			vao->Bind();
-			vao->AddVertexBuffer(*vbo);
-			vao->AddIndexBuffer(*ibo);
-
-			m_GameObjects[1] = new GameObject(entities);
-			m_GameObjects[1]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(1.25f, 0.0f, 0.0f)));
-			m_GameObjects[1]->AddComponent<TestMesh>(vao);
-
-			// Setup Third Object
-			PrimitiveUtils::GenerateCapsule(vertices, indices, 20, 20);
-			vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
-			vbo->SetLayout({
-				{ VertexDataType::VEC3F, "position" }
-			});
-
-			ibo = new IndexBuffer(indices.data(), indices.size());
-
-			vao = new VertexArray();
-			vao->Bind();
-			vao->AddVertexBuffer(*vbo);
-			vao->AddIndexBuffer(*ibo);
-
-			m_GameObjects[2] = new GameObject(entities);
-			m_GameObjects[2]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-			m_GameObjects[2]->AddComponent<TestMesh>(vao);*/
 		}
 
 		virtual void OnUpdate(float dt) override
@@ -115,28 +83,8 @@ namespace sixengine {
 			{
 				//PROFILE_SCOPE("RENDER")
 				Renderer::Clear(0.3f, 0.3f, 0.3f);
-				glm::mat4 model = glm::mat4(1.0f);
 
-				m_Shader->Bind();
-				m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
-				m_Shader->SetMat4("view", cam.GetViewMatrix());
-				m_Shader->SetMat4("model", model);
-				//mesh->Draw();
-
-
-
-				entityx::ComponentHandle<TestTransform> transform;
-				entityx::ComponentHandle<TestMesh> mesh;
-				
-				for (entityx::Entity entity : entities.entities_with_components(transform, mesh)) {
-					transform = entity.component<TestTransform>();
-					mesh = entity.component<TestMesh>();
-
-					model = transform->transform;
-					m_Shader->SetMat4("model", model);
-
-					Renderer::Render(mesh->VAO, m_Shader);
-				};
+				scene->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 			}
 		}
 

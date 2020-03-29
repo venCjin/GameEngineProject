@@ -19,5 +19,6 @@
 
 #include "Gameplay/Systems/RotationSystem.h"
 
-#include "Gameplay/Components/TestTransform.h"
+#include "Gameplay/Components/Transform.h"
 #include "Gameplay/Components/TestMesh.h"
+#include "Gameplay/Components/TestMaterial.h"
