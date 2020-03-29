@@ -41,36 +41,39 @@ namespace sixengine {
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
 
+			// Setup First (CENTER) Object
 			PrimitiveUtils::GenerateCube(vertices, indices);
-			mesh = new Mesh(vertices, indices, nullptr);
-
-			VertexArray* vao;
-			VertexBuffer* vbo;
-			IndexBuffer* ibo;
-
-
-			// Setup First Object
-			PrimitiveUtils::GenerateCube(vertices, indices);
-			vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
-			vbo->SetLayout({
-				{ VertexDataType::VEC3F, "position" },
-				{ VertexDataType::VEC3F, "normal" },
-				{ VertexDataType::VEC2F, "texcoord" },
-			});
-
-			ibo = new IndexBuffer(indices.data(), indices.size());
-
-			vao = new VertexArray();
-			vao->AddVertexBuffer(*vbo);
-			vao->AddIndexBuffer(*ibo);
 
 			m_GameObjects[0] = new GameObject(entities);
 			scene = new GraphNode(m_GameObjects[0]);
 			m_GameObjects[0]->AddComponent<Transform>(scene);
-			m_GameObjects[0]->AddComponent<TestRotation>(glm::vec3(1.0f, 0.0f, 0.0f), 25.0f);
-			m_GameObjects[0]->AddComponent<TestMesh>(vao);
+			m_GameObjects[0]->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 25.0f);
+			m_GameObjects[0]->AddComponent<TestMesh>(vertices, indices);
 			m_GameObjects[0]->AddComponent<TestMaterial>(m_Shader);
 			
+			// Setup Second (LEFT) Object
+			PrimitiveUtils::GenerateSphere(vertices, indices);
+
+			m_GameObjects[1] = new GameObject(entities);
+			GraphNode* gn1 = new GraphNode(m_GameObjects[1]);
+			m_GameObjects[1]->AddComponent<Transform>(gn1, glm::mat4(1.0f),
+				glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f)));
+			m_GameObjects[1]->AddComponent<TestMesh>(vertices, indices);
+			m_GameObjects[1]->AddComponent<TestMaterial>(m_Shader);
+
+			scene->AddChild(gn1);
+
+			// Setup Second (RIGHT) Object
+			PrimitiveUtils::GenerateCapsule(vertices, indices);
+
+			m_GameObjects[1] = new GameObject(entities);
+			GraphNode* gn2 = new GraphNode(m_GameObjects[1]);
+			m_GameObjects[1]->AddComponent<Transform>(gn2, glm::mat4(1.0f),
+				glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f)));
+			m_GameObjects[1]->AddComponent<TestMesh>(vertices, indices);
+			m_GameObjects[1]->AddComponent<TestMaterial>(m_Shader);
+
+			scene->AddChild(gn2);
 		}
 
 		virtual void OnUpdate(float dt) override

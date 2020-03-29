@@ -20,7 +20,7 @@ namespace sixengine {
             for (entityx::Entity entity : es.entities_with_components(transform, rotation)) 
             {
                 transform = entity.component<Transform>();
-                transform->SetLocal(glm::rotate(transform->GetLocal(), glm::radians(rotation->speed * dt), rotation->axis));
+                transform->SetWorld(glm::rotate(transform->GetWorld(), glm::radians(rotation->speed * dt), rotation->axis));
             }
         }
     };

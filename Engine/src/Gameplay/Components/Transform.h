@@ -18,7 +18,7 @@ namespace sixengine {
 
         glm::mat4 Combine(Transform& other)
         {
-            return other.m_World * m_World;
+            return other.m_World * m_World * m_Local;
         }
 
         glm::mat4 Combine()
@@ -29,7 +29,6 @@ namespace sixengine {
         void SetLocal(glm::mat4 local)
         {
             m_Local = local;
-            m_Parent->SetDirty(true);
         }
 
         void SetWorld(glm::mat4 world)

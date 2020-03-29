@@ -24,29 +24,29 @@ namespace sixengine {
 	{
 		auto& t = m_GO->GetComponent<Transform>();
 
+		// TODO: Render Queue
+		//Renderer::AddToRenderQueue(m_GO);
+
+		auto transform = m_GO->GetComponent<Transform>();
+		auto mesh = m_GO->GetComponent<TestMesh>();
+		auto shader = m_GO->GetComponent<TestMaterial>()->GetShader();
+
+		shader->Bind();
+		shader->SetMat4("projection", projection);
+		shader->SetMat4("view", view);
+
 		dirty |= m_Dirty;
 		if (dirty)
 		{
-			t->SetWorld(t->Combine(parentWorld));
+			shader->SetMat4("model", transform->Combine(parentWorld));
 			m_Dirty = false;
 		}
-
-		if (m_GO)
+		else
 		{
-			// TODO: Render Queue
-			//Renderer::AddToRenderQueue(m_GO);
-
-			auto transform = m_GO->GetComponent<Transform>();
-			auto mesh = m_GO->GetComponent<TestMesh>();
-			auto shader = m_GO->GetComponent<TestMaterial>()->GetShader();
-
-			shader->Bind();
-			shader->SetMat4("projection", projection);
-			shader->SetMat4("view", view);
 			shader->SetMat4("model", transform->Combine());
-
-			Renderer::Render(mesh->VAO, shader);
 		}
+
+		Renderer::Render(mesh->VAO, shader);
 
 		for (auto child : m_Childeren)
 		{
