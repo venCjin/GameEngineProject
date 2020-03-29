@@ -13,6 +13,7 @@
 #include "Renderer\Buffers.h"
 #include "Renderer\VertexArray.h"
 #include "Renderer\Shader.h"
+#include "Renderer\Mesh.h"
 
 #include "Gameplay/GameObject.h"
 

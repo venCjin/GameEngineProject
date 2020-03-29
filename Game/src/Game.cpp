@@ -18,6 +18,7 @@ namespace sixengine {
 		bool firstMouse = true;
 		float lastX = 0.0f, lastY = 0.0f;
 		ShaderManager* m_ShaderManager;
+		Mesh* mesh;
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
@@ -38,19 +39,26 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
+			std::vector<Vertex> vertices;
+			std::vector<unsigned int> indices;
+			PrimitiveUtils::GenerateCube(vertices, indices);
+
+			mesh = new Mesh(vertices, indices, nullptr);
+
 			VertexArray* vao;
 			VertexBuffer* vbo;
 			IndexBuffer* ibo;
 
-			std::vector<Vertex> vertices;
-			std::vector<unsigned int> indices;
 
 			// Setup First Object
 			PrimitiveUtils::GenerateCube(vertices, indices);
 			vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
 			vbo->SetLayout({
-				{ VertexDataType::VEC3F, "position" }
-			});
+				{ VertexDataType::VEC3F, "position" },
+				{ VertexDataType::VEC3F, "normal" },
+				{ VertexDataType::VEC2F, "texcoord" },
+
+				});
 
 			ibo = new IndexBuffer(indices.data(), indices.size());
 
@@ -64,7 +72,7 @@ namespace sixengine {
 			m_GameObjects[0]->AddComponent<TestMesh>(vao);
 			
 			// Setup Second Object
-			PrimitiveUtils::GenerateSphere(vertices, indices, 30, 30);
+			/*PrimitiveUtils::GenerateSphere(vertices, indices, 30, 30);
 			vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
 			vbo->SetLayout({
 				{ VertexDataType::VEC3F, "position" }
@@ -97,7 +105,7 @@ namespace sixengine {
 
 			m_GameObjects[2] = new GameObject(entities);
 			m_GameObjects[2]->AddComponent<TestTransform>(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
-			m_GameObjects[2]->AddComponent<TestMesh>(vao);
+			m_GameObjects[2]->AddComponent<TestMesh>(vao);*/
 		}
 
 		virtual void OnUpdate(float dt) override
@@ -110,11 +118,16 @@ namespace sixengine {
 			{
 				//PROFILE_SCOPE("RENDER")
 				Renderer::Clear(0.3f, 0.3f, 0.3f);
+				glm::mat4 model = glm::mat4(1.0f);
 
 				m_Shader->Bind();
 				m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
 				m_Shader->SetMat4("view", cam.GetViewMatrix());
-				
+				m_Shader->SetMat4("model", model);
+				//mesh->Draw();
+
+
+
 				entityx::ComponentHandle<TestTransform> transform;
 				entityx::ComponentHandle<TestMesh> mesh;
 				
@@ -122,7 +135,7 @@ namespace sixengine {
 					transform = entity.component<TestTransform>();
 					mesh = entity.component<TestMesh>();
 
-					glm::mat4 model = transform->transform;
+					model = transform->transform;
 					m_Shader->SetMat4("model", model);
 
 					Renderer::Render(mesh->VAO, m_Shader);
