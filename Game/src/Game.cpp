@@ -32,9 +32,7 @@ namespace sixengine {
 
 			float aspectRatio = (float)width / (float)height;
 			
-			//cam.SetProjectionMatrix(glm::perspective(glm::radians(cam.Zoom), (float)width / (float)height, cam.m_NearPlane, cam.m_FarPlane));
-			
-			cam.SetProjectionMatrix(glm::ortho(-1.0f * aspectRatio, 1.0f * aspectRatio, -1.0f, 1.0f, cam.m_NearPlane, cam.m_FarPlane));
+			cam.MakePerspective(aspectRatio);
 		}
 
 		virtual void OnInit() override
@@ -57,8 +55,7 @@ namespace sixengine {
 				{ VertexDataType::VEC3F, "position" },
 				{ VertexDataType::VEC3F, "normal" },
 				{ VertexDataType::VEC2F, "texcoord" },
-
-				});
+			});
 
 			ibo = new IndexBuffer(indices.data(), indices.size());
 
