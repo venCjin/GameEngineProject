@@ -7,7 +7,20 @@ namespace sixengine {
 
 	void Mesh::SetupMesh()
 	{
-		glGenVertexArrays(1, &VAO);
+
+		VertexBuffer* vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
+		vbo->SetLayout({
+			{ VertexDataType::VEC3F, "position" },
+			{ VertexDataType::VEC3F, "normal" },
+			{ VertexDataType::VEC2F, "texcoord" },
+			});
+
+		IndexBuffer* ibo = new IndexBuffer(indices.data(), indices.size());
+
+		VAO = new VertexArray();
+		VAO->AddVertexBuffer(*vbo);
+		VAO->AddIndexBuffer(*ibo);
+		/*glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
 		glGenBuffers(1, &EBO);
 
@@ -28,7 +41,7 @@ namespace sixengine {
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 
-		glBindVertexArray(0);
+		glBindVertexArray(0);*/
 	}
 
 	void Mesh::SetupTexture(char * texturePath)
@@ -61,9 +74,10 @@ namespace sixengine {
 			glBindTexture(GL_TEXTURE_2D, texture);
 		}
 
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+		VAO->Bind();
+
+		glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
+		//glBindVertexArray(0);
 
 	}
 

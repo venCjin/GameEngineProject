@@ -37,6 +37,11 @@ namespace sixengine {
 		{
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
+
+			PrimitiveUtils::GenerateCube(vertices, indices);
+
+			mesh = new Mesh(vertices, indices, nullptr);
+
 			GameObject* go;
 
 			// Setup First (CENTER) Object
@@ -81,6 +86,13 @@ namespace sixengine {
 			{
 				//PROFILE_SCOPE("RENDER")
 				Renderer::Clear(0.3f, 0.3f, 0.3f);
+
+				/*glm::mat4 model = glm::mat4(1.0f);
+				m_Shader->Bind();
+				m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
+				m_Shader->SetMat4("view", cam.GetViewMatrix());
+				m_Shader->SetMat4("model", model);
+				mesh->Draw();*/
 
 				m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 			}

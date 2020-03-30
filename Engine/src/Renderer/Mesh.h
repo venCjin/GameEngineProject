@@ -2,16 +2,18 @@
 #include <glm/glm.hpp>
 
 #include "Buffers.h"
+#include <Renderer/VertexArray.h>
+
 namespace sixengine {
 
 	class Mesh
 	{
 	private:
-		unsigned int VBO, EBO;
+		//unsigned int VBO, EBO;
 		void SetupMesh();
 		void SetupTexture(char* texturePath);
 	public:
-		unsigned int VAO;
+		VertexArray* VAO;
 		unsigned int texture;
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
