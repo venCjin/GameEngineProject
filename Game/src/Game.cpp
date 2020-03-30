@@ -5,7 +5,10 @@
 #include "Core/ResourceManager.h"
 #include <Core/ShaderManager.h>
 #include "Gameplay/GameObject.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
 namespace sixengine {
 	
 	class Game : public Application
@@ -18,6 +21,7 @@ namespace sixengine {
 		float lastX = 0.0f, lastY = 0.0f;
 		ShaderManager* m_ShaderManager;
 		Mesh* mesh;
+		Model *nanosuitModel;
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
@@ -35,12 +39,14 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
+			nanosuitModel = new Model("res/models/nanosuit/nanosuit.obj");
+
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
 
 			PrimitiveUtils::GenerateCube(vertices, indices);
 
-			mesh = new Mesh(vertices, indices, nullptr);
+			mesh = new Mesh(vertices, indices);
 
 			GameObject* go;
 
@@ -74,6 +80,9 @@ namespace sixengine {
 			go->AddComponent<TestMaterial>(m_Shader);
 
 			m_SceneRoot->AddChild(go);
+
+			glEnable(GL_DEPTH_TEST);
+
 		}
 
 		virtual void OnUpdate(float dt) override
@@ -84,17 +93,19 @@ namespace sixengine {
 			}
 
 			{
+
 				//PROFILE_SCOPE("RENDER")
 				Renderer::Clear(0.3f, 0.3f, 0.3f);
 
-				/*glm::mat4 model = glm::mat4(1.0f);
+				glm::mat4 model = glm::mat4(1.0f);
 				m_Shader->Bind();
 				m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
 				m_Shader->SetMat4("view", cam.GetViewMatrix());
 				m_Shader->SetMat4("model", model);
-				mesh->Draw();*/
+				nanosuitModel->Draw(m_Shader);
+				//mesh->Draw();
 
-				m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
+				//m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 			}
 		}
 

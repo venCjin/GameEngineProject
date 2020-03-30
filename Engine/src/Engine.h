@@ -14,6 +14,7 @@
 #include "Renderer\VertexArray.h"
 #include "Renderer\Shader.h"
 #include "Renderer\Mesh.h"
+#include "Renderer\Model.h"
 
 #include "Gameplay/GameObject.h"
 

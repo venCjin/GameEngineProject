@@ -8,14 +8,15 @@ namespace sixengine {
 	void Mesh::SetupMesh()
 	{
 
-		VertexBuffer* vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
+		VertexBuffer* vbo = new VertexBuffer(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
 		vbo->SetLayout({
 			{ VertexDataType::VEC3F, "position" },
 			{ VertexDataType::VEC3F, "normal" },
 			{ VertexDataType::VEC2F, "texcoord" },
 			});
 
-		IndexBuffer* ibo = new IndexBuffer(indices.data(), indices.size());
+		
+		IndexBuffer* ibo = new IndexBuffer(m_Indices.data(), m_Indices.size());
 
 		VAO = new VertexArray();
 		VAO->AddVertexBuffer(*vbo);
@@ -42,38 +43,35 @@ namespace sixengine {
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 
 		glBindVertexArray(0);*/
-	}
+	}	
 
-	void Mesh::SetupTexture(char * texturePath)
-	{
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		int width, height, nrChannels;
-		unsigned char *data = stbi_load(texturePath, &width, &height, &nrChannels, 0);
-		if (data)
+	void Mesh::Draw(Shader* shader)
+	{		
+		unsigned int diffuseNr = 1;
+		unsigned int specularNr = 1;
+		unsigned int normalNr = 1;
+		unsigned int heightNr = 1;
+		for (unsigned int i = 0; i < m_Textures.size(); i++)
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		else
-		{
-			std::cout << "Failed to load texture" << std::endl;
-		}
-		stbi_image_free(data);
-	}
+			glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+			// retrieve texture number (the N in diffuse_textureN)
+			std::string number;
+			std::string name = m_Textures[i].type;
+			if (name == "texture_diffuse")
+				number = std::to_string(diffuseNr++);
+			else if (name == "texture_specular")
+				number = std::to_string(specularNr++); // transfer unsigned int to stream
+			else if (name == "texture_normal")
+				number = std::to_string(normalNr++); // transfer unsigned int to stream
+			else if (name == "texture_height")
+				number = std::to_string(heightNr++); // transfer unsigned int to stream
 
-	void Mesh::Draw()
-	{
-		if (texture)
-		{
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, texture);
+			// now set the sampler to the correct texture unit
+			glUniform1i(glGetUniformLocation(shader->m_ID, (name + number).c_str()), i);
+			// and finally bind the texture
+			glBindTexture(GL_TEXTURE_2D, m_Textures[i].id);
 		}
-
+		
 		VAO->Bind();
 
 		glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
@@ -81,16 +79,13 @@ namespace sixengine {
 
 	}
 
-	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, char * texturePath)
+	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
 	{
-		texture = 0;
-
-		this->vertices = vertices;
-		this->indices = indices;
+		this->m_Vertices = vertices;
+		this->m_Indices = indices;
+		this->m_Textures = textures;
 
 		SetupMesh();
-		if (texturePath)
-			SetupTexture(texturePath);
 	}
 
 	Mesh::~Mesh()
