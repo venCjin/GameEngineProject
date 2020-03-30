@@ -130,8 +130,13 @@ project "Game"
 	{
 		"Engine/src",
 		-- "Engine/dependencies",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.assimp}",
 		"%{IncludeDir.entityX}",
 		"%{IncludeDir.irrKlang}",
 		"%{IncludeDir.freetype2}",
