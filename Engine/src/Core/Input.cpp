@@ -232,9 +232,13 @@ namespace sixengine
 		glm::vec3 axis;
 		
 		axis.x =  GetAxisImpl(Axis::KEYBOARD_HORIZONTAL);
+		axis.y =  0.0f;
 		axis.z = -GetAxisImpl(Axis::KEYBOARD_VERTICAL);
-
-		glm::normalize(axis);
+		
+		if (glm::length(axis) > 0.0f)
+		{
+			axis = glm::normalize(axis);
+		}
 
 		return axis;
 	}
