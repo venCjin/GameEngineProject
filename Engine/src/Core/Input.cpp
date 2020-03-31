@@ -234,6 +234,8 @@ namespace sixengine
 		axis.x =  GetAxisImpl(Axis::KEYBOARD_HORIZONTAL);
 		axis.z = -GetAxisImpl(Axis::KEYBOARD_VERTICAL);
 
+		glm::normalize(axis);
+
 		return axis;
 	}
 
