@@ -6,6 +6,7 @@
 #include <Core/Window.h>
 #include <Core/Events/ApplicationEvent.h>
 #include <Core/Timer.h>
+#include <Core/Input.h>
 
 namespace sixengine {
 
@@ -16,6 +17,7 @@ namespace sixengine {
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true, m_Minimized = false;
 		Timer* m_Timer;
+		Input* m_Input;
 
 	public:
 		Application(std::string = "Six Engine", unsigned int width = 1280, unsigned int height = 720);
@@ -31,6 +33,7 @@ namespace sixengine {
 
 		inline Window& GetWindow() { return *m_Window; }
 		inline Timer& GetTimer() { return *m_Timer; }
+		inline Input& GetInput() { return *m_Input; }
 		
 		static inline Application& Get() { return *s_Instance; }
 

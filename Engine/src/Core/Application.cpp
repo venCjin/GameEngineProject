@@ -15,6 +15,7 @@ namespace sixengine {
 		s_Instance = this;
 
 		m_Timer = Timer::Instance();
+		m_Input = Input::Get();
 
 		m_Window = std::make_unique<Window>(title, width, height);
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
@@ -33,18 +34,23 @@ namespace sixengine {
 		{
 			if (!m_Minimized)
 			{
+				m_Input->OnPreUpdate();
 				OnUpdate(m_Timer->DeltaTime());
+				m_Input->OnPostUpdate();
 			}
 			m_Window->OnUpdate();
 
 			m_Timer->Tick();
 			m_Timer->Reset();
+
 		}
 		OnShutdown();
 	}
 
 	void Application::OnEvent(Event& event)
 	{
+		Input::Get()->OnEvent(event);
+
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
