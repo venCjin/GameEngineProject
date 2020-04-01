@@ -21,6 +21,8 @@ namespace sixengine
 	class Input
 	{
 	public:
+		/// Dodaæ komentarze
+
 		static Input* Get();
 		static void Release();
 
@@ -28,17 +30,16 @@ namespace sixengine
 		void OnPostUpdate();
 		void OnEvent(Event& event);
 
-		static bool IsAnyKeyDown();
-
-		static bool IsKeyDown(KeyCode keyCode);
+		static bool IsAnyKeyActive();
+		
+		static bool IsKeyActive(KeyCode keyCode);
 		static bool IsKeyPressed(KeyCode keyCode);
 		static bool IsKeyReleased(KeyCode keyCode);
-
+		
 		static float GetAxis(Axis axis);
 		static glm::vec3 GetMovementAxis();
 
-		
-		BINDABLE static void AddKeyDownBinding(KeyCode keyCode, void(_Func::* function)(), _Object object);
+		BINDABLE static void AddKeyActiveBinding(KeyCode keyCode, void(_Func::* function)(), _Object object);
 		BINDABLE static void AddKeyPressedBinding(KeyCode keyCode, void(_Func::* function)(), _Object object);
 		BINDABLE static void AddKeyReleasedBinding(KeyCode keyCode, void(_Func::* function)(), _Object object);
 
@@ -50,7 +51,7 @@ namespace sixengine
 
 
 
-		static bool IsMouseButtonDown(int button);
+		static bool IsMouseButtonActive(int button);
 		static bool IsMouseButtonPressed(int button);
 		static bool IsMouseButtonReleased(int button);
 
@@ -59,7 +60,7 @@ namespace sixengine
 		static glm::vec2 GetMouseDeltaPos();
 
 
-		BINDABLE static void AddMouseButtonDownBinding(int button, void(_Func::* function)(), _Object object);
+		BINDABLE static void AddMouseButtonActiveBinding(int button, void(_Func::* function)(), _Object object);
 		BINDABLE static void AddMouseButtonPressedBinding(int button, void(_Func::* function)(), _Object object);
 		BINDABLE static void AddMouseButtonReleasedBinding(int button, void(_Func::* function)(), _Object object);
 
@@ -78,7 +79,7 @@ namespace sixengine
 		std::unordered_set<KeyCode> m_pressedKeys;
 		std::unordered_set<KeyCode> m_releasedKeys;
 
-		std::list<std::pair<KeyCode, std::function<void()>>> m_keyDownBindings;
+		std::list<std::pair<KeyCode, std::function<void()>>> m_keyActiveBindings;
 		std::list<std::pair<KeyCode, std::function<void()>>> m_keyPressedBindings;
 		std::list<std::pair<KeyCode, std::function<void()>>> m_keyReleasedBindings;
 
@@ -93,7 +94,7 @@ namespace sixengine
 		std::unordered_set<int> m_pressedMouseButtons;
 		std::unordered_set<int> m_releasedMouseButtons;
 
-		std::list<std::pair<int, std::function<void()>>> m_MouseButtonDownBindings;
+		std::list<std::pair<int, std::function<void()>>> m_MouseButtonActiveBindings;
 		std::list<std::pair<int, std::function<void()>>> m_MouseButtonPressedBindings;
 		std::list<std::pair<int, std::function<void()>>> m_MouseButtonReleasedBindings;
 
@@ -120,9 +121,9 @@ namespace sixengine
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& event);
 		bool OnMouseButtonReleased(MouseButtonReleasedEvent& event);
 
-		bool IsAnyKeyDownImpl();
+		bool IsAnyKeyActiveImpl();
 
-		bool IsKeyDownImpl(KeyCode keyCode);
+		bool IsKeyActiveImpl(KeyCode keyCode);
 		bool IsKeyPressedImpl(KeyCode keyCode);
 		bool IsKeyReleasedImpl(KeyCode keyCode);
 
@@ -130,7 +131,7 @@ namespace sixengine
 		glm::vec3 GetMovementAxisImpl();
 
 
-		bool IsMouseButtonDownImpl(int button);
+		bool IsMouseButtonActiveImpl(int button);
 		bool IsMouseButtonPressedImpl(int button);
 		bool IsMouseButtonReleasedImpl(int button);
 
@@ -141,10 +142,10 @@ namespace sixengine
 
 
 	BINDABLE
-	inline void Input::AddKeyDownBinding(KeyCode keyCode, void(_Func::* function)(), _Object object)
+	inline void Input::AddKeyActiveBinding(KeyCode keyCode, void(_Func::* function)(), _Object object)
 	{
 		auto binding = std::bind(function, object);
-		Get()->m_keyDownBindings.push_back(std::make_pair(keyCode, binding));
+		Get()->m_keyActiveBindings.push_back(std::make_pair(keyCode, binding));
 	}
 
 	BINDABLE
@@ -190,10 +191,10 @@ namespace sixengine
 	}
 
 	BINDABLE
-	inline void Input::AddMouseButtonDownBinding(int button, void(_Func::* function)(), _Object object)
+	inline void Input::AddMouseButtonActiveBinding(int button, void(_Func::* function)(), _Object object)
 	{
 		auto binding = std::bind(function, object);
-		Get()->m_MouseButtonDownBindings.push_back(std::make_pair(button, binding));
+		Get()->m_MouseButtonActiveBindings.push_back(std::make_pair(button, binding));
 	}
 	
 	BINDABLE

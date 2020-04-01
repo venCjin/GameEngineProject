@@ -62,12 +62,12 @@ namespace sixengine
 
 		for (auto bindingPair : m_keyContinouesBindings)
 		{
-			bindingPair.second(IsKeyDownImpl(bindingPair.first));
+			bindingPair.second(IsKeyActiveImpl(bindingPair.first));
 		}
 
-		for (auto bindingPair : m_keyDownBindings)
+		for (auto bindingPair : m_keyActiveBindings)
 		{
-			if (IsKeyDownImpl(bindingPair.first))
+			if (IsKeyActiveImpl(bindingPair.first))
 			{
 				bindingPair.second();
 			}
@@ -110,12 +110,12 @@ namespace sixengine
 
 		for (auto bindingPair : m_MouseButtonContinouesBindings)
 		{
-			bindingPair.second(IsMouseButtonDownImpl(bindingPair.first));
+			bindingPair.second(IsMouseButtonActiveImpl(bindingPair.first));
 		}
 
-		for (auto bindingPair : m_MouseButtonDownBindings)
+		for (auto bindingPair : m_MouseButtonActiveBindings)
 		{
-			if (IsMouseButtonDownImpl(bindingPair.first))
+			if (IsMouseButtonActiveImpl(bindingPair.first))
 			{
 				bindingPair.second();
 			}
@@ -156,22 +156,22 @@ namespace sixengine
 		dispatcher.Dispatch<MouseButtonReleasedEvent>(BIND_EVENT_FN(Input::OnMouseButtonReleased));
 	}
 
-	bool Input::IsAnyKeyDown()
+	bool Input::IsAnyKeyActive()
 	{
-		return Input::Get()->IsAnyKeyDownImpl();
+		return Input::Get()->IsAnyKeyActiveImpl();
 	}
 
-	bool Input::IsAnyKeyDownImpl()
+	bool Input::IsAnyKeyActiveImpl()
 	{
 		return (m_currentKeys.size() > 0);
 	}
 
-	bool Input::IsKeyDown(KeyCode keyCode)
+	bool Input::IsKeyActive(KeyCode keyCode)
 	{
-		return Input::Get()->IsKeyDownImpl(keyCode);
+		return Input::Get()->IsKeyActiveImpl(keyCode);
 	}
 
-	bool Input::IsKeyDownImpl(KeyCode keyCode)
+	bool Input::IsKeyActiveImpl(KeyCode keyCode)
 	{
 		return (m_currentKeys.find(keyCode) != m_currentKeys.end());
 	}
@@ -206,16 +206,16 @@ namespace sixengine
 		if (axis == Axis::KEYBOARD_HORIZONTAL)
 		{
 			float result = 0.0f;
-			result += (IsKeyDownImpl(KeyCode::D)) ? (1.0f) : (0.0f);
-			result -= (IsKeyDownImpl(KeyCode::A)) ? (1.0f) : (0.0f);
+			result += (IsKeyActiveImpl(KeyCode::D)) ? (1.0f) : (0.0f);
+			result -= (IsKeyActiveImpl(KeyCode::A)) ? (1.0f) : (0.0f);
 			return result;
 		}
 
 		if (axis == Axis::KEYBOARD_VERTICAL)
 		{
 			float result = 0.0f;
-			result += (IsKeyDownImpl(KeyCode::W)) ? (1.0f) : (0.0f);
-			result -= (IsKeyDownImpl(KeyCode::S)) ? (1.0f) : (0.0f);
+			result += (IsKeyActiveImpl(KeyCode::W)) ? (1.0f) : (0.0f);
+			result -= (IsKeyActiveImpl(KeyCode::S)) ? (1.0f) : (0.0f);
 			return result;
 		}
 
@@ -243,12 +243,12 @@ namespace sixengine
 		return axis;
 	}
 
-	bool Input::IsMouseButtonDown(int button)
+	bool Input::IsMouseButtonActive(int button)
 	{
-		return Get()->IsMouseButtonDownImpl(button);
+		return Get()->IsMouseButtonActiveImpl(button);
 	}
 
-	bool Input::IsMouseButtonDownImpl(int button)
+	bool Input::IsMouseButtonActiveImpl(int button)
 	{
 		return (m_currentMouseButtons.find(button) != m_currentMouseButtons.end());
 	}
@@ -305,7 +305,7 @@ namespace sixengine
 	   
 	bool Input::OnKeyPressed(KeyPressedEvent& event)
 	{
-		if (IsKeyDownImpl((KeyCode)(event.GetKeyCode())) == false)
+		if (IsKeyActiveImpl((KeyCode)(event.GetKeyCode())) == false)
 		{
 			m_currentKeys.insert((KeyCode)(event.GetKeyCode()));
 			m_pressedKeys.insert((KeyCode)(event.GetKeyCode()));
@@ -346,7 +346,7 @@ namespace sixengine
 	
 	bool Input::OnMouseButtonPressed(MouseButtonPressedEvent& event)
 	{
-		if (IsMouseButtonDownImpl(event.GetMouseButton()) == false)
+		if (IsMouseButtonActiveImpl(event.GetMouseButton()) == false)
 		{
 			m_currentMouseButtons.insert(event.GetMouseButton());
 			m_pressedMouseButtons.insert(event.GetMouseButton());
