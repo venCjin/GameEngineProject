@@ -4,6 +4,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <vector>
+#include "Core/Application.h"
+#include "Core/Input.h"
+#include "Core/Timer.h"
 
 namespace sixengine
 {
@@ -55,6 +58,7 @@ namespace sixengine
 			m_Yaw = yaw;
 			m_Pitch = pitch;
 			updateCameraVectors();
+			flyCameraInit();
 		}
 		// Constructor with scalar values
 		Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) 
@@ -65,6 +69,7 @@ namespace sixengine
 			m_Yaw = yaw;
 			m_Pitch = pitch;
 			updateCameraVectors();
+			flyCameraInit();
 		}
 
 		void MakePerspective(float aspectRatio)
@@ -158,5 +163,31 @@ namespace sixengine
 			m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 			m_Up = glm::normalize(glm::cross(m_Right, m_Front));
 		}
+
+		// Camera movement
+		void flyCameraInit()
+		{
+			// Keyboard
+			Input::AddKeyActiveBinding(KeyCode::W, &Camera::goFORWARD, this);
+			Input::AddKeyActiveBinding(KeyCode::S, &Camera::goBACKWARD, this);
+			Input::AddKeyActiveBinding(KeyCode::A, &Camera::goLEFT, this);
+			Input::AddKeyActiveBinding(KeyCode::D, &Camera::goRIGHT, this);
+			Input::AddKeyActiveBinding(KeyCode::SPACE, &Camera::goUP, this);
+			Input::AddKeyActiveBinding(KeyCode::LEFT_SHIFT, &Camera::goDOWN, this);
+			Input::AddKeyActiveBinding(KeyCode::LEFT_CONTROL, &Camera::toogleCursor, this);
+
+			// Mouse
+			Input::AddMouseDeltaPosBinding(&Camera::mouseMove, this);
+		}
+
+		void goFORWARD() { ProcessKeyboard(CameraMovement::FORWARD, Timer::Instance()->DeltaTime()); }
+		void goBACKWARD() { ProcessKeyboard(CameraMovement::BACKWARD, Timer::Instance()->DeltaTime()); }
+		void goLEFT() { ProcessKeyboard(CameraMovement::LEFT, Timer::Instance()->DeltaTime()); }
+		void goRIGHT() { ProcessKeyboard(CameraMovement::RIGHT, Timer::Instance()->DeltaTime()); }
+		void goUP() { ProcessKeyboard(CameraMovement::UP, Timer::Instance()->DeltaTime()); }
+		void goDOWN() { ProcessKeyboard(CameraMovement::DOWN, Timer::Instance()->DeltaTime()); }
+		void toogleCursor() { Application::Get().GetWindow().SwitchCursorVisibility(); }
+
+		void mouseMove(float xoffset, float yoffset) { ProcessMouseMovement(xoffset, -yoffset); }
 	};
 }

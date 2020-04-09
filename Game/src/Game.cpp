@@ -17,8 +17,6 @@ namespace sixengine {
 		GameObject* m_SceneRoot;
 		Shader* m_Shader;
 		Camera cam;
-		bool firstMouse = true;
-		float lastX = 0.0f, lastY = 0.0f;
 		ShaderManager* m_ShaderManager;
 		Mesh* mesh;
 		Model *nanosuitModel;
@@ -93,7 +91,6 @@ namespace sixengine {
 			}
 
 			{
-
 				//PROFILE_SCOPE("RENDER")
 				Renderer::Clear(0.3f, 0.3f, 0.3f);
 
@@ -115,50 +112,9 @@ namespace sixengine {
 			Application::OnEvent(event);
 
 			// Game Events handle here
-			EventDispatcher dispatcher(event);
-			dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(Game::OnKeyPressed));
-			dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(Game::OnMouseMoved));
-		}
-
-		bool OnKeyPressed(KeyPressedEvent& e)
-		{
-			LOG_INFO("{0}", e);
-
-			float dt = Application::GetTimer().DeltaTime();
-
-			// key codes stolen from glfw3.h
-			// this should be access through Input.h
-			int key = e.GetKeyCode();
-			if (key == 'W') cam.ProcessKeyboard(CameraMovement::FORWARD, dt);
-			if (key == 'S') cam.ProcessKeyboard(CameraMovement::BACKWARD, dt);
-			if (key == 'A') cam.ProcessKeyboard(CameraMovement::LEFT, dt);
-			if (key == 'D') cam.ProcessKeyboard(CameraMovement::RIGHT, dt);
-			if (key == 32)	cam.ProcessKeyboard(CameraMovement::UP, dt);   // GLFW_KEY_LEFT_SHIFT
-			if (key == 340)  cam.ProcessKeyboard(CameraMovement::DOWN, dt); // GLFW_KEY_SPACE
-			if (key == 258)  GetWindow().SwitchCursorVisibility(); // GLFW_KEY_LEFT_CTRL
-
-			LOG_INFO("{0}", e);
-			return true;
-		}
-	
-		bool OnMouseMoved(MouseMovedEvent& e)
-		{
-			LOG_INFO("{0}", e);
-			if (firstMouse)
-			{
-				lastX = e.GetX();
-				lastY = e.GetY();
-				firstMouse = false;
-			}
-
-			float xoffset = e.GetX() - lastX;
-			float yoffset = lastY - e.GetY(); // reversed since y-coordinates go from bottom to top
-
-			lastX = e.GetX();
-			lastY = e.GetY();
-
-			cam.ProcessMouseMovement(xoffset, yoffset);
-			return true;
+			//EventDispatcher dispatcher(event);
+			//dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(Game::OnKeyPressed));
+			//dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(Game::OnMouseMoved));
 		}
 };
 }
