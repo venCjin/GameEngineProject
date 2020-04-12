@@ -148,7 +148,8 @@ namespace sixengine
 			if (m_Zoom >= 45.0f)
 				m_Zoom = 45.0f;
 		}
-
+		glm::vec3 GetPosition() { return m_Position; }
+		glm::vec3 GetUp() { return m_Up; }
 	private:
 		// Calculates the front vector from the Camera's (updated) Euler Angles
 		void updateCameraVectors()
