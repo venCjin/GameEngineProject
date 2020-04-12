@@ -58,29 +58,29 @@ namespace sixengine {
 			m_SceneRoot->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 25.0f);
 			m_SceneRoot->AddComponent<TestMesh>(vertices, indices);
 			m_SceneRoot->AddComponent<TestMaterial>(m_Shader);
-			m_SceneRoot->AddComponent<Billboard>(&cam);
+			//m_SceneRoot->AddComponent<Billboard>(&cam);
 			
 			// Setup Second (LEFT) Object
-			PrimitiveUtils::GenerateSphere(vertices, indices);
+			PrimitiveUtils::GenerateQuad(vertices, indices);
 
 			go = new GameObject(entities);
 			go->AddComponent<Transform>(go, glm::mat4(1.0f),
-				glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f)));
+				glm::translate(glm::mat4(1.0f), glm::vec3(-3.0f, 0.0f, 3.0f)));
 			go->AddComponent<TestMesh>(vertices, indices);
 			go->AddComponent<TestMaterial>(m_Shader);
+			go->AddComponent<Billboard>(&cam);
+			m_SceneRoot->AddChild(go);
 
-			//m_SceneRoot->AddChild(go);
-
-			// Setup Second (RIGHT) Object
-			PrimitiveUtils::GenerateCapsule(vertices, indices);
+			 //Setup Second (RIGHT) Object
+			PrimitiveUtils::GenerateQuad(vertices, indices);
 
 			go = new GameObject(entities);
 			go->AddComponent<Transform>(go, glm::mat4(1.0f),
-				glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f)));
+				glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 3.0f)));
 			go->AddComponent<TestMesh>(vertices, indices);
 			go->AddComponent<TestMaterial>(m_Shader);
-
-			//m_SceneRoot->AddChild(go);
+			//go->AddComponent<Billboard>(&cam);
+			m_SceneRoot->AddChild(go);
 
 			glEnable(GL_DEPTH_TEST);
 
