@@ -102,10 +102,10 @@ namespace sixengine {
 				m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
 				m_Shader->SetMat4("view", cam.GetViewMatrix());
 				m_Shader->SetMat4("model", model);
-				nanosuitModel->Draw(m_Shader);
+				//nanosuitModel->Draw(m_Shader);
 				//mesh->Draw();
 
-				//m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
+				m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 			}
 		}
 

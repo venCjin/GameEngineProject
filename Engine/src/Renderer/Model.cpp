@@ -147,10 +147,7 @@ namespace sixengine {
 	unsigned int TextureFromFile(const char * path, const std::string & directory, bool gamma)
 	{
 		std::string filename = std::string(path);
-		std::size_t found = filename.find_last_of("/\\");
-		//std::cout << " path: " << filename.substr(0, found) << '\n';
-		//std::cout << " file: " << filename.substr(found + 1) << '\n';
-		filename = directory + '/' + filename.substr(found + 1);
+		filename = directory + '/' + filename;
 
 		unsigned int textureID;
 		glGenTextures(1, &textureID);
