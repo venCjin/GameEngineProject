@@ -47,6 +47,16 @@ namespace sixengine {
             return m_World;
         }
 
+        glm::vec3 getWorldPosition()
+        {
+            return glm::vec3(m_World[3]);
+
+        }
+
+        glm::vec3 getLocalPosition()
+        {
+            return glm::vec3(m_Local[3]);
+        }
     };
 
 }

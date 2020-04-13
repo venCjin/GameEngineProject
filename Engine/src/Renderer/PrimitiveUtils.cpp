@@ -231,6 +231,36 @@ namespace sixengine {
 		return indices;
 	}
 
+	std::vector<Vertex> PrimitiveUtils::generateQuadVertex()
+	{
+		std::vector<Vertex> vertices{
+		
+			Vertex{ glm::vec3{ 0.5f, -0.5f,  0.0f}, glm::vec3{ 0.0f,  0.0f,  1.0f}, glm::vec2{ 0.0f,  0.0f} },	// bottom left
+			Vertex{ glm::vec3{-0.5f, -0.5f,  0.0f}, glm::vec3{ 0.0f,  0.0f,  1.0f}, glm::vec2{ 1.0f,  0.0f} },	// bottom right
+			Vertex{ glm::vec3{ 0.5f,  0.5f,  0.0f}, glm::vec3{ 0.0f,  0.0f,  1.0f}, glm::vec2{ 0.0f,  1.0f} },	// top left
+			Vertex{ glm::vec3{-0.5f,  0.5f,  0.0f}, glm::vec3{ 0.0f,  0.0f,  1.0f}, glm::vec2{ 1.0f,  1.0f} },	// top right
+		};
+
+		return vertices;
+	}
+
+	std::vector<unsigned int> PrimitiveUtils::generateQuadIndices()
+	{
+		std::vector <unsigned int> indices{
+				0, 1, 2,
+				1, 3, 2
+		};
+		return indices;
+	}
+
+
+
+	void PrimitiveUtils::GenerateQuad(std::vector<Vertex>& vertices, std::vector<unsigned int>& indieces)
+	{
+		vertices = PrimitiveUtils::generateQuadVertex();
+		indieces = PrimitiveUtils::generateQuadIndices();
+	}
+
 	void PrimitiveUtils::GenerateCube(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
 	{
 
