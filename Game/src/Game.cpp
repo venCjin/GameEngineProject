@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+//#include "Renderer/Matrix4f.h"
 namespace sixengine {
 	
 	class Game : public Application
@@ -18,8 +19,8 @@ namespace sixengine {
 		Shader* m_Shader;
 		Camera cam;
 		ShaderManager* m_ShaderManager;
-		Mesh* mesh;
-		Model *nanosuitModel;
+		Mesh m_Mesh;
+		std::vector<glm::mat4> transforms;
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
@@ -37,14 +38,11 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			nanosuitModel = new Model("res/models/nanosuit/nanosuit.obj");
+			m_Mesh.LoadMesh("res/models/swat.dae", false);
+			m_Mesh.BoneTransform(0.0f, transforms);
 
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
-
-			PrimitiveUtils::GenerateCube(vertices, indices);
-
-			mesh = new Mesh(vertices, indices);
 
 			GameObject* go;
 
@@ -94,13 +92,22 @@ namespace sixengine {
 				//PROFILE_SCOPE("RENDER")
 				Renderer::Clear(0.3f, 0.3f, 0.3f);
 
+				float time = Application::GetTimer().ElapsedTime();
+				m_Mesh.BoneTransform(time, transforms);
+
 				glm::mat4 model = glm::mat4(1.0f);
+				model = glm::scale(model, glm::vec3(0.01f));
 				m_Shader->Bind();
 				m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
 				m_Shader->SetMat4("view", cam.GetViewMatrix());
 				m_Shader->SetMat4("model", model);
-				nanosuitModel->Draw(m_Shader);
-				//mesh->Draw();
+
+				for (int i = 0; i < transforms.size(); i++)
+				{
+					m_Shader->SetMat4("gBones[" + std::to_string(i) + "]", transforms[i]);
+				}
+
+				m_Mesh.Render();
 
 				//m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 			}

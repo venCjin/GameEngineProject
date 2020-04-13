@@ -133,6 +133,11 @@ namespace sixengine {
 		glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 	}
 
+	/*void Shader::SetBoneTransform(const std::string & name, const Matrix4f & Transform)
+	{
+		glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_TRUE, (const GLfloat*)Transform);
+	}*/
+
 
 	Shader::~Shader()
 	{
