@@ -11,16 +11,16 @@ namespace sixengine {
 	{
 		switch (vertexDataType)
 		{
-			case VertexDataType::BOOL:	return sizeof(bool);			//sizeof(bool) = 1
-			case VertexDataType::INT:	return sizeof(int);				//sizeof(int) = 4
-			case VertexDataType::FLOAT:	return sizeof(float);			//sizeof(float) = 4
-			case VertexDataType::VEC2I:	return sizeof(int)   * 2;		//size of 2 ints = 4*2 and so on
+			case VertexDataType::BOOL:	return sizeof(bool);
+			case VertexDataType::INT:	return sizeof(int);
+			case VertexDataType::VEC2I:	return sizeof(int)   * 2;
 			case VertexDataType::VEC3I:	return sizeof(int)   * 3;
 			case VertexDataType::VEC4I:	return sizeof(int)   * 4;
+			case VertexDataType::FLOAT:	return sizeof(float);
 			case VertexDataType::VEC2F:	return sizeof(float) * 2;
 			case VertexDataType::VEC3F:	return sizeof(float) * 3;
 			case VertexDataType::VEC4F:	return sizeof(float) * 4;
-			case VertexDataType::MAT3:	return sizeof(float) * 3 * 3;	//sizeof(float) * 3x3 matrix, so 4*3*3
+			case VertexDataType::MAT3:	return sizeof(float) * 3 * 3;
 			case VertexDataType::MAT4:	return sizeof(float) * 4 * 4;
 		}
 
@@ -34,10 +34,10 @@ namespace sixengine {
 		{
 			case VertexDataType::BOOL:	return 1;
 			case VertexDataType::INT:	return 1;
-			case VertexDataType::FLOAT:	return 1;
 			case VertexDataType::VEC2I:	return 2;
 			case VertexDataType::VEC3I:	return 3;
 			case VertexDataType::VEC4I:	return 4;
+			case VertexDataType::FLOAT:	return 1;
 			case VertexDataType::VEC2F:	return 2;
 			case VertexDataType::VEC3F:	return 3;
 			case VertexDataType::VEC4F:	return 4;
@@ -56,7 +56,7 @@ namespace sixengine {
 		//(to statically draw)
 		glCreateBuffers(1, &m_ID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
-		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, size * sizeof(Vertex), vertices, GL_STATIC_DRAW);
 	}
 
 	VertexBuffer::~VertexBuffer()

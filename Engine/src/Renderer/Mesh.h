@@ -38,8 +38,6 @@ namespace sixengine {
 	{
 	public:
 
-		VertexArray* VAO;
-
 		Mesh();
 
 		~Mesh();
@@ -117,9 +115,10 @@ namespace sixengine {
 			NUM_VBs
 		};
 
-		GLuint m_VAO;
-		GLuint m_Buffers[NUM_VBs];
-		unsigned int VBO, EBO;
+		VertexArray* VAO;
+		//GLuint m_VAO;
+		//GLuint m_Buffers[NUM_VBs];
+		//unsigned int VBO, EBO;
 		struct MeshEntry {
 			MeshEntry()
 			{

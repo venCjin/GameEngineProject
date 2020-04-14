@@ -10,11 +10,13 @@ namespace sixengine {
 
 		TestMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
 		{
-			VertexBuffer* vbo = new VertexBuffer(vertices.data(), vertices.size() * sizeof(Vertex));
+			VertexBuffer* vbo = new VertexBuffer(vertices.data(), vertices.size());
 			vbo->SetLayout({
 				{ VertexDataType::VEC3F, "position" },
 				{ VertexDataType::VEC3F, "normal" },
-				{ VertexDataType::VEC2F, "texcoord" },
+				{ VertexDataType::VEC2F, "texCoords" },
+				{ VertexDataType::VEC4I, "boneIDs" },
+				{ VertexDataType::VEC4F, "boneWeights" }
 			});
 
 			IndexBuffer* ibo = new IndexBuffer(indices.data(), indices.size());

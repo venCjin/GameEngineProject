@@ -174,7 +174,7 @@ namespace sixengine
 			Input::AddKeyActiveBinding(KeyCode::D, &Camera::goRIGHT, this);
 			Input::AddKeyActiveBinding(KeyCode::SPACE, &Camera::goUP, this);
 			Input::AddKeyActiveBinding(KeyCode::LEFT_SHIFT, &Camera::goDOWN, this);
-			Input::AddKeyActiveBinding(KeyCode::LEFT_CONTROL, &Camera::toogleCursor, this);
+			Input::AddKeyPressedBinding(KeyCode::LEFT_CONTROL, &Camera::toogleCursor, this);
 
 			// Mouse
 			Input::AddMouseDeltaPosBinding(&Camera::mouseMove, this);

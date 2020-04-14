@@ -13,8 +13,9 @@ namespace sixengine {
 
 	Mesh::Mesh()
 	{
-		m_VAO = 0;
-		ZERO_MEM(m_Buffers);
+		VAO = nullptr;
+		//m_VAO = 0;
+		//ZERO_MEM(m_Buffers);
 		m_NumBones = 0;
 		m_pScene = NULL;
 		m_withAdjacencies = false;
@@ -33,13 +34,19 @@ namespace sixengine {
 			SAFE_DELETE(m_Textures[i]);
 		}*/
 
-		if (m_Buffers[0] != 0) {
-			glDeleteBuffers(ARRAY_SIZE_IN_ELEMENTS(m_Buffers), m_Buffers);
-		}
+		//if (m_Buffers[0] != 0) {
+			//glDeleteBuffers(ARRAY_SIZE_IN_ELEMENTS(m_Buffers), m_Buffers);
+		//}
 
-		if (m_VAO != 0) {
-			glDeleteVertexArrays(1, &m_VAO);
-			m_VAO = 0;
+		//if (m_VAO != 0) {
+			//glDeleteVertexArrays(1, &m_VAO);
+			//m_VAO = 0;
+		//}
+
+		if (VAO != nullptr)
+		{
+			VAO->~VertexArray();
+			VAO = nullptr;
 		}
 	}
 
@@ -52,11 +59,11 @@ namespace sixengine {
 		Clear();
 
 		// Create the VAO
-		glGenVertexArrays(1, &m_VAO);
-		glBindVertexArray(m_VAO);
+		//glGenVertexArrays(1, &m_VAO);
+		//glBindVertexArray(m_VAO);
 
 		// Create the buffers for the vertices attributes
-		glGenBuffers(ARRAY_SIZE_IN_ELEMENTS(m_Buffers), m_Buffers);
+		//glGenBuffers(ARRAY_SIZE_IN_ELEMENTS(m_Buffers), m_Buffers);
 
 		bool Ret = false;
 
@@ -75,7 +82,7 @@ namespace sixengine {
 		}
 
 		// Make sure the VAO is not changed from the outside
-		glBindVertexArray(0);
+		//glBindVertexArray(0);
 
 		return Ret;
 	}
@@ -124,19 +131,22 @@ namespace sixengine {
 
 		
 		/// LEARN OPENGL
-		glGenVertexArrays(1, &m_VAO);
-		glGenBuffers(1, &VBO);
-		glGenBuffers(1, &EBO);
+		//glGenVertexArrays(1, &m_VAO);
+		//glBindVertexArray(m_VAO);
+		VAO = new VertexArray();
+		
+		//glGenBuffers(1, &VBO);
+		//glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+		VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
 
-		glBindVertexArray(m_VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+		//glGenBuffers(1, &EBO);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+		IndexBuffer* ebo = new IndexBuffer(&indices[0], indices.size());
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
-			&indices[0], GL_STATIC_DRAW);
-
+		/*
 		// vertex positions
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
@@ -146,16 +156,26 @@ namespace sixengine {
 		// vertex texture coords
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-
+		// vertex bones IDs
 		glEnableVertexAttribArray(3);
 		glVertexAttribIPointer(3, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, IDs));
-
+		// vertex bone weights
 		glEnableVertexAttribArray(4);
 		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Weights));
+		*/
+		vbo->SetLayout({
+			{ VertexDataType::VEC3F, "position" },
+			{ VertexDataType::VEC3F, "normal" },
+			{ VertexDataType::VEC2F, "texCoords" },
+			{ VertexDataType::VEC4I, "boneIDs" },
+			{ VertexDataType::VEC4F, "boneWeights" }
+		});
 
-		glBindVertexArray(0);
+		VAO->AddVertexBuffer(*vbo);
+		VAO->AddIndexBuffer(*ebo);
 
-		
+		//glBindVertexArray(0);
+
 		return true;
 	}
 
@@ -298,11 +318,11 @@ namespace sixengine {
 
 	void Mesh::Render()
 	{
-		/*VAO->Bind();
-		glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);*/
+		VAO->Bind();
+		/*glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);*/
 
 
-		glBindVertexArray(m_VAO);
+		//glBindVertexArray(m_VAO);
 
 		uint Topology = m_withAdjacencies ? GL_TRIANGLES_ADJACENCY : GL_TRIANGLES;
 
@@ -323,7 +343,8 @@ namespace sixengine {
 		}
 
 		// Make sure the VAO is not changed from the outside    
-		glBindVertexArray(0);
+		//glBindVertexArray(0);
+		VAO->UnBind();
 	}
 
 

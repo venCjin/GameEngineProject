@@ -33,8 +33,8 @@ namespace sixengine {
 		NONE = 0,
 		BOOL,
 		INT,
-		FLOAT,
 		VEC2I, VEC3I, VEC4I,
+		FLOAT,
 		VEC2F, VEC3F, VEC4F,
 		MAT3, MAT4
 	};

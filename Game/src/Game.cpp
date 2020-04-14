@@ -16,7 +16,7 @@ namespace sixengine {
 	{
 	private:
 		GameObject* m_SceneRoot;
-		Shader* m_Shader;
+		Shader* m_Shader, *m_BasicShader;
 		Camera cam;
 		ShaderManager* m_ShaderManager;
 		Mesh m_Mesh;
@@ -31,7 +31,7 @@ namespace sixengine {
 			systems.configure();
 
 			m_Shader = m_ShaderManager->makeInstance("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
-
+			m_BasicShader = m_ShaderManager->makeInstance("res/shaders/basic.vert", "res/shaders/basic.frag");
 			float aspectRatio = (float)width / (float)height;
 			cam.MakePerspective(aspectRatio);
 		}
@@ -53,7 +53,7 @@ namespace sixengine {
 			m_SceneRoot->AddComponent<Transform>(m_SceneRoot);
 			m_SceneRoot->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 25.0f);
 			m_SceneRoot->AddComponent<TestMesh>(vertices, indices);
-			m_SceneRoot->AddComponent<TestMaterial>(m_Shader);
+			m_SceneRoot->AddComponent<TestMaterial>(m_BasicShader);
 			
 			// Setup Second (LEFT) Object
 			PrimitiveUtils::GenerateSphere(vertices, indices);
@@ -62,7 +62,7 @@ namespace sixengine {
 			go->AddComponent<Transform>(go, glm::mat4(1.0f),
 				glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f)));
 			go->AddComponent<TestMesh>(vertices, indices);
-			go->AddComponent<TestMaterial>(m_Shader);
+			go->AddComponent<TestMaterial>(m_BasicShader);
 
 			m_SceneRoot->AddChild(go);
 
@@ -73,7 +73,7 @@ namespace sixengine {
 			go->AddComponent<Transform>(go, glm::mat4(1.0f),
 				glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f)));
 			go->AddComponent<TestMesh>(vertices, indices);
-			go->AddComponent<TestMaterial>(m_Shader);
+			go->AddComponent<TestMaterial>(m_BasicShader);
 
 			m_SceneRoot->AddChild(go);
 
@@ -109,7 +109,7 @@ namespace sixengine {
 
 				m_Mesh.Render();
 
-				//m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
+				m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 			}
 		}
 
