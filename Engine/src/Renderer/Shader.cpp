@@ -59,12 +59,15 @@ namespace sixengine {
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 		if (!success)
 		{
-			GLint length;
+			GLint length = 0;
 			glGetProgramiv(m_ID, GL_INFO_LOG_LENGTH, &length);
+
+			length = (length <= 0) ? 256 : length;
 
 			std::vector<GLchar> message(length);
 			glGetProgramInfoLog(m_ID, length, &length, &message[0]);
-			std::cout << "ERROR::SHADER::" << shaderType << "::COMPILATION_FAILED\n" << message.data() << std::endl;
+			std::string errorMessage = std::string("ERROR::SHADER::") + std::to_string(shaderType) + std::string("::COMPILATION_FAILED\n") + std::string(message.data());
+			LOG_ERROR(errorMessage);
 		};
 		return shader;
 	}
@@ -87,9 +90,12 @@ namespace sixengine {
 			GLint length;
 			glGetProgramiv(m_ID, GL_INFO_LOG_LENGTH, &length);
 
+			length = (length <= 0) ? 256 : length;
+
 			std::vector<GLchar> message(length);
 			glGetProgramInfoLog(m_ID, length, &length, &message[0]);
-			std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << message.data() << std::endl;
+			std::string errorMessage = std::string("ERROR::SHADER::PROGRAM::LINKING_FAILED\n") + std::string(message.data());
+			LOG_ERROR(errorMessage);
 		}
 	}
 
@@ -132,12 +138,6 @@ namespace sixengine {
 	{
 		glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 	}
-
-	/*void Shader::SetBoneTransform(const std::string & name, const Matrix4f & Transform)
-	{
-		glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_TRUE, (const GLfloat*)Transform);
-	}*/
-
 
 	Shader::~Shader()
 	{

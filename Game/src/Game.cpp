@@ -19,7 +19,7 @@ namespace sixengine {
 		Shader* m_Shader, *m_BasicShader;
 		Camera cam;
 		ShaderManager* m_ShaderManager;
-		Mesh m_Mesh;
+		Model m_Mesh;
 		std::vector<glm::mat4> transforms;
 
 	public:
@@ -38,7 +38,7 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			m_Mesh.LoadMesh("res/models/swat.dae", false);
+			m_Mesh.LoadMesh("res/models/swat.dae");
 			m_Mesh.BoneTransform(0.0f, transforms);
 
 			std::vector<Vertex> vertices;
@@ -109,7 +109,7 @@ namespace sixengine {
 
 				m_Mesh.Render();
 
-				m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
+				//m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 			}
 		}
 
