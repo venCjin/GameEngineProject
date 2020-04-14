@@ -1,9 +1,8 @@
 #include "pch.h"
 #include "ShaderManager.h"
 
+namespace sixengine {
 
-namespace sixengine
-{
 	Shader* ShaderManager::makeInstance(std::string vertPath, std::string fragPath)
 	{
 		std::string key = vertPath + fragPath;
@@ -14,5 +13,6 @@ namespace sixengine
 		}
 		return this->get(key);
 	}
+
 }
 

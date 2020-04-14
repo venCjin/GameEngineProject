@@ -17,10 +17,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
 #include <Windows.h>
 
-#include "Core\Core.h"
-#include "Core\Log.h"
-#include "Core\Assert.h"
-#include "Core\Events\Event.h"
+#include "Core/Core.h"
+#include "Core/Log.h"
+#include "Core/Assert.h"
+#include "Core/Events/Event.h"

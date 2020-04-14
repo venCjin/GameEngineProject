@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Renderer/VertexArray.h>
+#include "Renderer/VertexArray.h"
 
 namespace sixengine {
 

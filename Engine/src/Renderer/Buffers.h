@@ -1,10 +1,11 @@
 #pragma once
 
 namespace sixengine {
+
 	typedef unsigned int uint;
 
-#define NUM_BONES_PER_VERTEX 4
-#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
+	#define NUM_BONES_PER_VERTEX 4
+	#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 	struct Vertex
 	{

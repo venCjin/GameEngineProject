@@ -61,6 +61,6 @@ namespace sixengine {
 		void AddChild(GameObject* child);
 
 		std::vector<GameObject*> GetChildren();
-
 	};
+
 }

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core\Core.h"
-#include "Core\Assert.h"
+#include "Core/Core.h"
+#include "Core/Assert.h"
 
 #ifdef _WIN32
 extern "C"

@@ -70,4 +70,5 @@ namespace sixengine {
 
 		EVENT_CLASS_TYPE(KeyTyped)
 	};
+
 }

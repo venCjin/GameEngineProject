@@ -78,5 +78,6 @@ namespace sixengine {
 	{
 		return os << e.ToString();
 	}
+
 }
 

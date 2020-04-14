@@ -1,5 +1,5 @@
 #pragma once
-#include "Renderer\Buffers.h"
+#include "Renderer/Buffers.h"
 
 typedef unsigned int GLenum;
 
@@ -31,4 +31,5 @@ namespace sixengine {
 		std::vector<VertexBuffer*> m_VBuffers_List;
 
 	};
+
 }

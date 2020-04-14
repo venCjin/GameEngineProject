@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "Gameplay\GameObject.h"
+#include "Gameplay/GameObject.h"
 
 namespace sixengine {
 

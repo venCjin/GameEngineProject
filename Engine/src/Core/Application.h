@@ -44,4 +44,5 @@ namespace sixengine {
 
 	// Implemented by CLIENT
 	Application* CreateApplication();
+
 }

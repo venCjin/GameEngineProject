@@ -1,7 +1,10 @@
 #pragma once
-#include "pch.h"
-#include "Engine.h"
+
+#include <glm/glm.hpp>
+#include <string>
+
 namespace sixengine {
+
 	class Color
 	{
 	public:
@@ -20,12 +23,12 @@ namespace sixengine {
 		glm::vec4 operator* (Color* arg0);
 		glm::vec4 operator* (glm::vec4 arg0);
 		glm::vec4 operator* (Color arg0);
+		
 		std::string  ToString() {
 			std::stringstream stringStream;
 			stringStream << " Red: "<< value.r << " Green: " << value.g << " Blue: " << value.b << " Alpha: " << value.a;
 			return stringStream.str();
 		}
-
 	};
 
 }

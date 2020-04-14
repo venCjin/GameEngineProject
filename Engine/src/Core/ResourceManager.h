@@ -1,8 +1,11 @@
 #pragma once
-#include <Renderer\Shader.h>
+
 #include <map>
 #include <utility>
+#include "Renderer/Shader.h"
+
 namespace sixengine {
+
 	template <typename T>
 	class ResourceManager
 	{

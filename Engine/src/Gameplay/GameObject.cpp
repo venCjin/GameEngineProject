@@ -2,11 +2,11 @@
 
 #include <pch.h>
 #include "GameObject.h"
-#include "Gameplay\GameObject.h"
-#include "Gameplay\Components\Transform.h"
-#include "Gameplay\Components\TestMaterial.h"
-#include "Gameplay\Components\TestMesh.h"
-#include "Renderer\Renderer.h"
+#include "Gameplay/GameObject.h"
+#include "Gameplay/Components/Transform.h"
+#include "Gameplay/Components/TestMaterial.h"
+#include "Gameplay/Components/TestMesh.h"
+#include "Renderer/Renderer.h"
 
 namespace sixengine {
 

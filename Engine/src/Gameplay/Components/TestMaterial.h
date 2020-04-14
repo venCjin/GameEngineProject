@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Renderer/VertexArray.h>
-#include "Renderer\Shader.h"
+#include "Renderer/VertexArray.h"
+#include "Renderer/Shader.h"
 
 namespace sixengine {
 

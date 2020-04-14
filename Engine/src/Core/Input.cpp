@@ -6,8 +6,8 @@
 
 class Application;
 
-namespace sixengine 
-{
+namespace sixengine {
+
 	Input* Input::m_InputSystemInstance = nullptr;
 
 	Input::Input()
@@ -376,4 +376,5 @@ namespace sixengine
 		m_releasedMouseButtons.insert(event.GetMouseButton());
 		return true;
 	}
+
 }

@@ -4,12 +4,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <vector>
+
 #include "Core/Application.h"
 #include "Core/Input.h"
 #include "Core/Timer.h"
 
-namespace sixengine
-{
+namespace sixengine {
+
 	// Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 	enum class CameraMovement
 	{
@@ -191,4 +192,5 @@ namespace sixengine
 
 		void mouseMove(float xoffset, float yoffset) { ProcessMouseMovement(xoffset, -yoffset); }
 	};
+
 }

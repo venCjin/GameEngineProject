@@ -1,16 +1,17 @@
 #pragma once
-#include <glm/glm.hpp>
 
 #include "Buffers.h"
 #include "Shader.h"
-#include <Renderer/VertexArray.h>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include "Renderer/VertexArray.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
+
 #include <map>
 //#include "Matrix4f.h"
 
@@ -23,9 +24,8 @@ using namespace std;
 
 namespace sixengine {
 
-
 	typedef unsigned int uint;
-#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
+	#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 
 	struct Texture {
@@ -148,4 +148,5 @@ namespace sixengine {
 		const aiScene* m_pScene;
 		Assimp::Importer m_Importer;
 	};
+
 }

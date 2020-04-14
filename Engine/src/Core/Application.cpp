@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 
 #include <Windows.h>
+
 namespace sixengine {
 
 	Application* Application::s_Instance = nullptr;

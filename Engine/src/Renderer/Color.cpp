@@ -2,8 +2,8 @@
 #include "Color.h"
 
 
-namespace sixengine
-{
+namespace sixengine {
+
 	const Color Color::RED = Color(1.0f, 0.0f, 0.0f, 1.0f);
 	const Color Color::GREEN = Color(1.0f, 1.0f, 0.0f, 1.0f);
 	const Color Color::BLUE = Color(0.0f, 0.0f, 1.0f, 1.0f);

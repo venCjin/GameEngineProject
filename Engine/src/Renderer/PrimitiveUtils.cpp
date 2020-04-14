@@ -1,9 +1,7 @@
 #include "pch.h"
 #include "PrimitiveUtils.h"
 
-
 namespace sixengine {
-
 
 	std::vector<Vertex> PrimitiveUtils::generateCubeVertices()
 	{

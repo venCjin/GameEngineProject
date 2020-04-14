@@ -11,8 +11,8 @@
 
 #define BINDABLE template <class _Func, class _Object>
 
-namespace sixengine
-{
+namespace sixengine {
+
 	enum Axis {
 		KEYBOARD_HORIZONTAL,
 		KEYBOARD_VERTICAL,
@@ -238,5 +238,6 @@ namespace sixengine
 		auto binding = std::bind(function, object, std::placeholders::_1, std::placeholders::_2);
 		Get()->m_mouseDeltaPosBindings.push_back(binding);
 	}
+
 }
 

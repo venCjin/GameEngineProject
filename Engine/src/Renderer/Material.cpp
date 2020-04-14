@@ -3,7 +3,6 @@
 
 namespace sixengine {
 
-
 	Material::Material()
 	{
 	}
@@ -52,4 +51,5 @@ namespace sixengine {
 	{
 
 	}
+
 }

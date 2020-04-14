@@ -3,10 +3,10 @@
 #include "entityx/System.h"
 #include "Gameplay/Components/Transform.h"
 #include "Gameplay/Components/TestRotation.h"
-#include <Gameplay/Components/Billbord.h>
+#include <Gameplay/Components/Billboard.h>
 
-namespace sixengine
-{
+namespace sixengine {
+
 	class BillbordSystem : public entityx::System<BillbordSystem>
 	{
 		void update(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt) override
@@ -30,4 +30,5 @@ namespace sixengine
 			}
 		}
 	};
+
 }

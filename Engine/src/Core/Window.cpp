@@ -1,11 +1,11 @@
 #include "pch.h"
+#include "Window.h"
+#include "Core/Events/ApplicationEvent.h"
+#include "Core/Events/MouseEvent.h"
+#include "Core/Events/KeyEvent.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "Window.h"
-
-#include "Core\Events\ApplicationEvent.h"
-#include "Core\Events\MouseEvent.h"
-#include "Core\Events\KeyEvent.h"
 
 namespace sixengine {
 
