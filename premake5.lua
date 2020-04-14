@@ -124,6 +124,7 @@ project "Game"
 		"%{prj.name}/src/**.c", 
 		"%{prj.name}/src/**.hpp", 
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/res/**",
 	}
 
 	includedirs
