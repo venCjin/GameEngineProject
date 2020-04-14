@@ -8,8 +8,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace sixengine {
-
+namespace sixengine
+{
     class RotationSystem : public entityx::System<RotationSystem>
     {
         void update(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt) override
@@ -24,5 +24,4 @@ namespace sixengine {
             }
         }
     };
-
 }

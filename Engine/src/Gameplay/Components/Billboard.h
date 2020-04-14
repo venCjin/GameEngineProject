@@ -1,5 +1,7 @@
 #pragma once
+
 #include <Core\Camera.h>
+
 namespace sixengine
 {
 	struct Billboard
@@ -7,7 +9,5 @@ namespace sixengine
 		Camera* m_Camera;
 
 		Billboard(Camera* camera) : m_Camera(camera){}
-
-
 	};
 }

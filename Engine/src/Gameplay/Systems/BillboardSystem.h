@@ -1,25 +1,20 @@
 #pragma once
+
 #include "entityx/System.h"
 #include "Gameplay/Components/Transform.h"
 #include "Gameplay/Components/TestRotation.h"
-#include <Gameplay\Components\Billbord.h>
-
+#include <Gameplay/Components/Billbord.h>
 
 namespace sixengine
 {
 	class BillbordSystem : public entityx::System<BillbordSystem>
 	{
-
-
-
 		void update(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt) override
 		{
 			entityx::ComponentHandle<Transform> transform;
 			entityx::ComponentHandle<Billboard> camera;
 			for (entityx::Entity entity : es.entities_with_components(transform, camera))
 			{
-
-
 				transform = entity.component<Transform>();
 				camera = entity.component<Billboard>();
 				glm::mat4 viewMatrix = camera->m_Camera->GetViewMatrix();

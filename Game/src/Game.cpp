@@ -1,17 +1,19 @@
 #include <Engine.h>
 #include <EntryPoint.h>
+
 #include "Renderer/PrimitiveUtils.h"
 #include "Core/Timer.h"
 #include "Core/ResourceManager.h"
 #include <Core/ShaderManager.h>
 #include "Gameplay/GameObject.h"
-#include "Gameplay\Components\Billbord.h"
-#include "Gameplay\Systems\BillbordSystem.h"
+#include "Gameplay/Components/Billboard.h"
+#include "Gameplay/Systems/BillboardSystem.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-//#include "Renderer/Matrix4f.h"
+
 namespace sixengine {
 	
 	class Game : public Application
@@ -82,7 +84,6 @@ namespace sixengine {
 			m_SceneRoot->AddChild(go);
 
 			glEnable(GL_DEPTH_TEST);
-
 		}
 
 		virtual void OnUpdate(float dt) override
@@ -127,7 +128,7 @@ namespace sixengine {
 			//dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(Game::OnKeyPressed));
 			//dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(Game::OnMouseMoved));
 		}
-};
+	};
 }
 
 sixengine::Application* sixengine::CreateApplication()
