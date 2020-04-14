@@ -14,8 +14,8 @@
 #include <map>
 
 using namespace std;
-#define ToRadian(x) (float)(((x) * M_PI / 180.0f))
-#define ToDegree(x) (float)(((x) * 180.0f / M_PI))
+//#define ToRadian(x) (float)(((x) * M_PI / 180.0f))
+//#define ToDegree(x) (float)(((x) * 180.0f / M_PI))
 //#define ZERO_MEM(a) memset(a, 0, sizeof(a))
 //#define ZERO_MEM_VAR(var) memset(&var, 0, sizeof(var))
 #define SAFE_DELETE(p) if (p) { delete p; p = NULL; }
@@ -26,6 +26,7 @@ namespace sixengine {
 	typedef unsigned int uint;
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
+	unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false);
 
 	struct Texture {
 		unsigned int id;
@@ -41,9 +42,9 @@ namespace sixengine {
 
 		~Model();
 
-		bool LoadMesh(const string& Filename);
+		bool LoadModel(const string& Filename);
 
-		void Render();
+		void Render(Shader* shader);
 
 		uint NumBones() const
 		{
@@ -62,20 +63,18 @@ namespace sixengine {
 		};
 
 
-		void CalcInterpolatedScaling(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
-		void CalcInterpolatedRotation(aiQuaternion& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
-		void CalcInterpolatedPosition(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim);
-		uint FindScaling(float AnimationTime, const aiNodeAnim* pNodeAnim);
-		uint FindRotation(float AnimationTime, const aiNodeAnim* pNodeAnim);
-		uint FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim);
-		const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const string NodeName);
-		void ReadNodeHierarchy(float AnimationTime, const aiNode* pNode, const glm::mat4& ParentTransform);
-		bool InitFromScene(const aiScene* pScene, const string& Filename);
-		void InitMesh(uint MeshIndex,
-			const aiMesh* paiMesh,
-			vector<Vertex>& Vertices,			
-			vector<unsigned int>& Indices);
-		void LoadBones(uint MeshIndex, const aiMesh* paiMesh, vector<Vertex>& vertices);
+		void CalcInterpolatedScaling(aiVector3D& out, float animationTime, const aiNodeAnim* nodeAnim);
+		void CalcInterpolatedRotation(aiQuaternion& out, float animationTime, const aiNodeAnim* nodeAnim);
+		void CalcInterpolatedPosition(aiVector3D& out, float animationTime, const aiNodeAnim* nodeAnim);
+		uint FindScaling(float animationTime, const aiNodeAnim* nodeAnim);
+		uint FindRotation(float animationTime, const aiNodeAnim* nodeAnim);
+		uint FindPosition(float animationTime, const aiNodeAnim* nodeAnim);
+		const aiNodeAnim* FindNodeAnim(const aiAnimation* animation, const string nodeName);
+		void ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform);
+		bool InitFromScene(const aiScene* scene, const string& filename);
+		void InitMesh(uint MeshIndex, const aiMesh* mesh, vector<Vertex>& vertices, vector<unsigned int>& indices);
+		void LoadBones(uint MeshIndex, const aiMesh* mesh, vector<Vertex>& vertices);
+		vector<Texture> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName);
 		//bool InitMaterials(const aiScene* pScene, const string& Filename);
 		void Clear();
 
@@ -96,6 +95,8 @@ namespace sixengine {
 			unsigned int BaseVertex;
 			unsigned int BaseIndex;
 			unsigned int MaterialIndex;
+
+			vector<Texture> Textures;
 		};
 
 		vector<MeshEntry> m_Entries;
@@ -105,6 +106,9 @@ namespace sixengine {
 		uint m_NumBones;
 		vector<BoneInfo> m_BoneInfo;
 		glm::mat4 m_GlobalInverseTransform;
+		vector<Texture> m_Textures;
+		vector<Texture> m_TexturesLoaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+		string m_Directory;
 
 		const aiScene* m_Scene;
 		Assimp::Importer m_Importer;
