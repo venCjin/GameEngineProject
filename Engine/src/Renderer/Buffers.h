@@ -1,12 +1,31 @@
 #pragma once
 
 namespace sixengine {
+	typedef unsigned int uint;
+
+#define NUM_BONES_PER_VERTEX 4
+#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 	struct Vertex
 	{
 		glm::vec3 Position;
 		glm::vec3 Normal;
 		glm::vec2 TexCoords;
+
+		uint IDs[NUM_BONES_PER_VERTEX] = { 0 };
+		float Weights[NUM_BONES_PER_VERTEX] = { 0 };
+
+		void AddBoneData(uint BoneID, float Weight)
+		{
+			for (uint i = 0; i < ARRAY_SIZE_IN_ELEMENTS(IDs); i++) {
+				if (Weights[i] == 0.0) {
+					IDs[i] = BoneID;
+					Weights[i] = Weight;
+					return;
+				}
+			}
+		}
+
 	};
 
 	enum class VertexDataType
@@ -14,8 +33,8 @@ namespace sixengine {
 		NONE = 0,
 		BOOL,
 		INT,
-		FLOAT,
 		VEC2I, VEC3I, VEC4I,
+		FLOAT,
 		VEC2F, VEC3F, VEC4F,
 		MAT3, MAT4
 	};

@@ -10,17 +10,17 @@ namespace sixengine {
 	{
 		switch (type)
 		{
+			case VertexDataType::BOOL:			return GL_BOOL;
 			case VertexDataType::INT:			return GL_INT;
-			case VertexDataType::FLOAT:			return GL_FLOAT;
 			case VertexDataType::VEC2I:			return GL_INT;
 			case VertexDataType::VEC3I:			return GL_INT;
 			case VertexDataType::VEC4I:			return GL_INT;
+			case VertexDataType::FLOAT:			return GL_FLOAT;
 			case VertexDataType::VEC2F:			return GL_FLOAT;
 			case VertexDataType::VEC3F:			return GL_FLOAT;
 			case VertexDataType::VEC4F:			return GL_FLOAT;
 			case VertexDataType::MAT3:			return GL_FLOAT;
 			case VertexDataType::MAT4:			return GL_FLOAT;
-			case VertexDataType::BOOL:			return GL_BOOL;
 		}
 
 		CORE_ASSERT(0, "COULDN'T CONVERT TO OGL DATA TYPE!");
@@ -66,15 +66,29 @@ namespace sixengine {
 			unsigned int i = 0;
 			for (auto& element : vBuffer.GetLayout().GetLayoutElements())
 			{
-				glVertexAttribPointer(
-					i, 
-					element.VertexDataTypeCount(element.VertexDataType), 
-					ConvertToOpenGLDataType(element.VertexDataType),
-					element.Normalized,
-					vBuffer.GetLayout().GetLayoutStride(), 
-					(const void*)element.Offset
-				);
-
+				//if (element.VertexDataType <= VertexDataType::VEC4I && element.VertexDataType >= VertexDataType::INT)
+				if (ConvertToOpenGLDataType(element.VertexDataType) == GL_INT)
+				{
+					glVertexAttribIPointer(
+						i,
+						element.VertexDataTypeCount(element.VertexDataType),
+						ConvertToOpenGLDataType(element.VertexDataType),
+						vBuffer.GetLayout().GetLayoutStride(),
+						(const void*)element.Offset
+					);
+				}
+				else
+				{
+					glVertexAttribPointer(
+						i, 
+						element.VertexDataTypeCount(element.VertexDataType), 
+						ConvertToOpenGLDataType(element.VertexDataType),
+						element.Normalized,
+						vBuffer.GetLayout().GetLayoutStride(), 
+						(const void*)element.Offset
+					);
+				}
+				
 				glEnableVertexAttribArray(i);
 				i++;
 			}

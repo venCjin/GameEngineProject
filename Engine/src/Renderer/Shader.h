@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
+//#include "Matrix4f.h"
 namespace sixengine {
 
 	class Shader
@@ -26,7 +26,7 @@ namespace sixengine {
 		void SetColor(const std::string &name, float color[]) const;
 		void SetVec3(const std::string &name, const glm::vec3 &vec) const;
 		void SetMat4(const std::string &name, const glm::mat4 &mat) const;
-
+		//void SetBoneTransform(const std::string &name, const Matrix4f& Transform);
 		~Shader();
 	};
 
