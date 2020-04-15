@@ -10,5 +10,8 @@ You can clone the repository using git:
 
 Make sure that you do a `--recursive` clone to fetch all of the submodules!
 
-To generate the project solution run
-`GenerateProjects.bat`
+To generate the project solution for **Visual Studio 2019** run
+`2019.bat`
+
+To generate the project solution for **Visual Studio 2017** run
+`2017.bat`
