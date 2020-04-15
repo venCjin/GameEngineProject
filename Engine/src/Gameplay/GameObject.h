@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entityx/Entity.h"
+#include <ECS/EntityManager.h>
 
 namespace sixengine {
 
@@ -9,45 +9,40 @@ namespace sixengine {
 	class GameObject
 	{
 	private:
-		entityx::Entity m_Entity;
+		Entity m_Entity;
 		bool m_Dirty;
 		std::vector<GameObject*> m_Childeren;
 		//TODO: Add tags and other staff
 
 	public:
-		GameObject(entityx::EntityManager& entityManager) : m_Dirty(true)
+		GameObject(EntityManager& entityManager) : m_Dirty(true)
 		{
-			m_Entity = entityManager.create();
+			m_Entity = entityManager.CreateEntity();
 		}
 		
 		~GameObject()
 		{
-			m_Entity.destroy();
-			for (auto& go : m_Childeren) go->~GameObject();
+			m_Entity.Destroy();
+			for (auto& go : m_Childeren) 
+				go->~GameObject();
 		};
 
 		template<typename T, typename... Args>
 		void AddComponent(Args&& ... args)
 		{
-			m_Entity.assign<T>(std::forward<Args>(args) ... );
-		}
-
-		template<typename T>
-		void AddComponent(const T& component)
-		{
-			m_Entity.assign(T);
+			m_Entity.AddComponent<T>(std::forward<Args>(args) ... );
 		}
 
 		template<typename T>
 		void RemoveComponent()
 		{
-			m_Entity.remove<T>();
+			m_Entity.Remove<T>();
 		}
 
 		template<typename T>
-		entityx::ComponentHandle<T> GetComponent()
+		ComponentHandle<T> GetComponent()
 		{
-			return m_Entity.component<T>();
+			return m_Entity.Component<T>();
 		}
 
 		// Scene graph

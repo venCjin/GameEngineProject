@@ -31,9 +31,8 @@ namespace sixengine {
 			: Application(title, width, height)
 		{
 			m_ShaderManager = new ShaderManager();
-			systems.add<RotationSystem>();
-			systems.add<BillbordSystem>();
-			systems.configure();
+			m_SystemManager.AddSystem<RotationSystem>();
+			m_SystemManager.AddSystem<BillbordSystem>();
 
 			m_Shader = m_ShaderManager->makeInstance("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
 			m_BasicShader = m_ShaderManager->makeInstance("res/shaders/basic.vert", "res/shaders/basic.frag");
@@ -54,7 +53,7 @@ namespace sixengine {
 			// Setup First (CENTER) Object
 			PrimitiveUtils::GenerateCube(vertices, indices);
 
-			m_SceneRoot = new GameObject(entities);
+			m_SceneRoot = new GameObject(m_EntityManager);
 			m_SceneRoot->AddComponent<Transform>(m_SceneRoot);
 			m_SceneRoot->AddComponent<TestMesh>(vertices, indices);
 			m_SceneRoot->AddComponent<TestMaterial>(m_BasicShader);
@@ -62,7 +61,7 @@ namespace sixengine {
 			// Setup Second (LEFT) Object
 			PrimitiveUtils::GenerateQuad(vertices, indices);
 
-			go = new GameObject(entities);
+			go = new GameObject(m_EntityManager);
 			go->AddComponent<Transform>(go, glm::mat4(1.0f),
 				glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f)));
 			go->AddComponent<TestMesh>(vertices, indices);
@@ -74,7 +73,7 @@ namespace sixengine {
 			// Setup Second (RIGHT) Object
 			PrimitiveUtils::GenerateCapsule(vertices, indices);
 
-			go = new GameObject(entities);
+			go = new GameObject(m_EntityManager);
 			go->AddComponent<Transform>(go, glm::mat4(1.0f),
 				glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f)));
 			go->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 25.0f);
@@ -90,11 +89,11 @@ namespace sixengine {
 		{		
 			{
 				//PROFILE_SCOPE("UPDATE")
-				systems.update_all(dt);
+				m_SystemManager.UpdateAll(dt);
 			}
 
 			{
-				//PROFILE_SCOPE("RENDER")
+				PROFILE_SCOPE("RENDER")
 				Renderer::Clear(0.3f, 0.3f, 0.3f);
 
 				float time = Application::GetTimer().ElapsedTime();

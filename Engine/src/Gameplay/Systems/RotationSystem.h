@@ -1,8 +1,8 @@
 #pragma once
 
-#include "entityx/System.h"
-#include "Gameplay/Components/Transform.h"
-#include "Gameplay/Components/TestRotation.h"
+#include <ECS/SystemManager.h>
+#include <Gameplay/Components/Transform.h>
+#include <Gameplay/Components/TestRotation.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -10,16 +10,18 @@
 
 namespace sixengine {
 
-    class RotationSystem : public entityx::System<RotationSystem>
+    class RotationSystem : public System
     {
-        void update(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt) override
+        void Update(EntityManager& es, EventManager& events, float dt) override
         {
-            entityx::ComponentHandle<Transform> transform;
-            entityx::ComponentHandle<TestRotation> rotation;
+            ComponentHandle<Transform> transform;
+            ComponentHandle<TestRotation> rotation;
 
-            for (entityx::Entity entity : es.entities_with_components(transform, rotation)) 
+            for (Entity entity : es.EntitiesWithComponents<Transform, TestRotation>()) 
             {
-                transform = entity.component<Transform>();
+                transform = entity.Component<Transform>();
+                rotation = entity.Component<TestRotation>();
+
                 transform->SetWorld(glm::rotate(transform->GetWorld(), glm::radians(rotation->speed * dt), rotation->axis));
             }
         }

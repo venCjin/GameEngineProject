@@ -22,6 +22,7 @@ namespace sixengine {
 		// TODO: Render Queue
 		//Renderer::AddToRenderQueue(this);
 
+		GetComponent<TestMaterial>()->GetShader();
 		auto transform = GetComponent<Transform>();
 		auto mesh = GetComponent<TestMesh>();
 		auto shader = GetComponent<TestMaterial>()->GetShader();

@@ -2,15 +2,15 @@
 
 #include <string>
 #include <memory>
-#include <entityx/quick.h>
 #include <Core/Window.h>
 #include <Core/Events/ApplicationEvent.h>
 #include <Core/Timer.h>
 #include <Core/Input.h>
+#include <ECS/ECS.h>
 
 namespace sixengine {
 
-	class Application : public entityx::EntityX
+	class Application : public EntityComponentSystem
 	{
 	private:
 		static Application* s_Instance;
