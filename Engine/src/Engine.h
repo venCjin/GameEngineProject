@@ -9,12 +9,12 @@
 
 #include "Core/Profile.h"
 
-#include "Renderer/Renderer.h"
-#include "Renderer/Buffers.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Mesh.h"
-//#include "Renderer/Model.h"
+#include "Renderer\Renderer.h"
+#include "Renderer\Buffers.h"
+#include "Renderer\VertexArray.h"
+#include "Renderer\Shader.h"
+//#include "Renderer\Mesh.h"
+#include "Renderer\Model.h"
 
 #include "Gameplay/GameObject.h"
 
