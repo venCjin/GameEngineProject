@@ -12,13 +12,10 @@
 #include <glad/glad.h>
 #include <assimp/Importer.hpp>
 #include <map>
+#include "Core/Profile.h"
 
-using namespace std;
-//#define ToRadian(x) (float)(((x) * M_PI / 180.0f))
-//#define ToDegree(x) (float)(((x) * 180.0f / M_PI))
-//#define ZERO_MEM(a) memset(a, 0, sizeof(a))
-//#define ZERO_MEM_VAR(var) memset(&var, 0, sizeof(var))
-#define SAFE_DELETE(p) if (p) { delete p; p = NULL; }
+
+//#define SAFE_DELETE(p) if (p) { delete p; p = NULL; }
 
 namespace sixengine {
 
@@ -26,7 +23,7 @@ namespace sixengine {
 	typedef unsigned int uint;
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
-	unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false);
+	unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
 
 	struct Texture {
 		unsigned int id;
@@ -42,7 +39,7 @@ namespace sixengine {
 
 		~Model();
 
-		bool LoadModel(const string& Filename);
+		bool LoadModel(const std::string& Filename);
 
 		void Render(Shader* shader);
 
@@ -51,7 +48,7 @@ namespace sixengine {
 			return m_NumBones;
 		}
 
-		void BoneTransform(float TimeInSeconds, vector<glm::mat4>& Transforms);
+		void BoneTransform(float TimeInSeconds, std::vector<glm::mat4>& Transforms);
 
 	private:
 
@@ -66,17 +63,18 @@ namespace sixengine {
 		void CalcInterpolatedScaling(aiVector3D& out, float animationTime, const aiNodeAnim* nodeAnim);
 		void CalcInterpolatedRotation(aiQuaternion& out, float animationTime, const aiNodeAnim* nodeAnim);
 		void CalcInterpolatedPosition(aiVector3D& out, float animationTime, const aiNodeAnim* nodeAnim);
+		glm::mat4 CalculateInterpolatedTransform(float animationTime, const aiNodeAnim* nodeAnim);
 		uint FindScaling(float animationTime, const aiNodeAnim* nodeAnim);
 		uint FindRotation(float animationTime, const aiNodeAnim* nodeAnim);
 		uint FindPosition(float animationTime, const aiNodeAnim* nodeAnim);
-		const aiNodeAnim* FindNodeAnim(const aiAnimation* animation, const string nodeName);
 		void ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform);
-		bool InitFromScene(const aiScene* scene, const string& filename);
-		void InitMesh(uint MeshIndex, const aiMesh* mesh, vector<Vertex>& vertices, vector<unsigned int>& indices);
-		void LoadBones(uint MeshIndex, const aiMesh* mesh, vector<Vertex>& vertices);
-		vector<Texture> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName);
-		//bool InitMaterials(const aiScene* pScene, const string& Filename);
+		bool InitFromScene(const aiScene* scene, const std::string& filename);
+		void InitMesh(uint MeshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
+		void LoadBones(uint MeshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices);
+		std::vector<Texture> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
+		//bool InitMaterials(const aiScene* pScene, const std::string& Filename);
 		void Clear();
+		void LoadAnimationNodes();
 
 #define INVALID_MATERIAL 0xFFFFFFFF
 
@@ -96,19 +94,20 @@ namespace sixengine {
 			unsigned int BaseIndex;
 			unsigned int MaterialIndex;
 
-			vector<Texture> Textures;
+			std::vector<Texture> Textures;
 		};
 
-		vector<MeshEntry> m_Entries;
-		//vector<Texture*> m_Textures;
+		std::vector<MeshEntry> m_Entries;
+		//std::vector<Texture*> m_Textures;
 
-		map<string, uint> m_BoneMapping; // maps a bone name to its index
+		std::map<std::string, uint> m_BoneMapping; // maps a bone name to its index
+		std::map<std::string, const aiNodeAnim* > m_NodeAnimationMapping;
 		uint m_NumBones;
-		vector<BoneInfo> m_BoneInfo;
+		std::vector<BoneInfo> m_BoneInfo;
 		glm::mat4 m_GlobalInverseTransform;
-		vector<Texture> m_Textures;
-		vector<Texture> m_TexturesLoaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
-		string m_Directory;
+		std::vector<Texture> m_Textures;
+		std::vector<Texture> m_TexturesLoaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+		std::string m_Directory;
 
 		const aiScene* m_Scene;
 		Assimp::Importer m_Importer;

@@ -42,7 +42,7 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			m_Model.LoadModel("res/models/swat/swat.dae");
+			m_Model.LoadModel("res/models/par/par.dae");
 			m_Model.BoneTransform(0.0f, transforms);
 
 			std::vector<Vertex> vertices;
@@ -93,7 +93,6 @@ namespace sixengine {
 			}
 
 			{
-				PROFILE_SCOPE("RENDER")
 				Renderer::Clear(0.3f, 0.3f, 0.3f);
 
 				float time = Application::GetTimer().ElapsedTime();

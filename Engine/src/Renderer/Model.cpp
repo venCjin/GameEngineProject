@@ -34,8 +34,22 @@ namespace sixengine {
 		}
 	}
 
+	void Model::LoadAnimationNodes()
+	{
+		const aiAnimation* animation = m_Scene->mAnimations[0];
 
-	bool Model::LoadModel(const string& filename)
+		for (uint i = 0; i < animation->mNumChannels; i++) {
+			const aiNodeAnim* nodeAnim = animation->mChannels[i];
+
+			if (m_NodeAnimationMapping.find(std::string(nodeAnim->mNodeName.data)) == m_NodeAnimationMapping.end())
+			{
+				m_NodeAnimationMapping[std::string(nodeAnim->mNodeName.data)] = nodeAnim;
+			}			
+		}
+	}
+
+
+	bool Model::LoadModel(const std::string& filename)
 	{
 		// Release the previously loaded mesh (if it exists)
 		Clear();
@@ -51,7 +65,6 @@ namespace sixengine {
 			m_GlobalInverseTransform = glm::inverse(m_GlobalInverseTransform);
 			
 			m_Directory = filename.substr(0, filename.find_last_of('/'));
-
 			ret = InitFromScene(m_Scene, filename);
 		}
 		else {
@@ -61,17 +74,19 @@ namespace sixengine {
 		// Make sure the VAO is not changed from the outside
 		//glBindVertexArray(0);
 
+		LoadAnimationNodes();
+
 		return ret;
 	}
 
 
-	bool Model::InitFromScene(const aiScene* scene, const string& filename)
+	bool Model::InitFromScene(const aiScene* scene, const std::string& filename)
 	{
 		m_Entries.resize(scene->mNumMeshes);
 		//m_Textures.resize(pScene->mNumMaterials);
 
-		vector<Vertex> vertices;
-		vector<uint> indices;
+		std::vector<Vertex> vertices;
+		std::vector<uint> indices;
 
 		uint numVertices = 0;
 		uint numIndices = 0;
@@ -124,9 +139,9 @@ namespace sixengine {
 		return true;
 	}
 
-	void Model::InitMesh(uint meshIndex, const aiMesh* mesh, vector<Vertex>& vertices, vector<uint>& indices)
+	void Model::InitMesh(uint meshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices, std::vector<uint>& indices)
 	{
-		vector<Texture> textures;
+		std::vector<Texture> textures;
 
 
 		// Populate the vertex attribute vectors
@@ -169,10 +184,10 @@ namespace sixengine {
 		
 		// Materials
 		aiMaterial* material = m_Scene->mMaterials[mesh->mMaterialIndex];
-		vector<Texture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+		std::vector<Texture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 		// 2. specular maps
-		vector<Texture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+		std::vector<Texture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 		// 3. normal maps
 		std::vector<Texture> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
@@ -185,11 +200,11 @@ namespace sixengine {
 	}
 
 
-	void Model::LoadBones(uint meshIndex, const aiMesh* mesh, vector<Vertex>& vertices)
+	void Model::LoadBones(uint meshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices)
 	{
 		for (uint i = 0; i < mesh->mNumBones; i++) {
 			uint boneIndex = 0;
-			string boneName(mesh->mBones[i]->mName.data);
+			std::string boneName(mesh->mBones[i]->mName.data);
 
 			if (m_BoneMapping.find(boneName) == m_BoneMapping.end()) {
 				// Allocate an index for a new bone
@@ -212,9 +227,9 @@ namespace sixengine {
 		}
 	}
 
-	vector<Texture> Model::LoadMaterialTextures(aiMaterial * mat, aiTextureType type, string typeName)
+	std::vector<Texture> Model::LoadMaterialTextures(aiMaterial * mat, aiTextureType type, std::string typeName)
 	{
-		vector<Texture> textures;
+		std::vector<Texture> textures;
 		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 		{
 			aiString str;
@@ -244,13 +259,13 @@ namespace sixengine {
 	}
 
 
-	/*bool Mesh::InitMaterials(const aiScene* pScene, const string& filename)
+	/*bool Mesh::InitMaterials(const aiScene* pScene, const std::string& filename)
 	{
 		// Extract the directory part from the file name
-		string::size_type SlashIndex = filename.find_last_of("/");
-		string Dir;
+		std::string::size_type SlashIndex = filename.find_last_of("/");
+		std::string Dir;
 
-		if (SlashIndex == string::npos) {
+		if (SlashIndex == std::string::npos) {
 			Dir = ".";
 		}
 		else if (SlashIndex == 0) {
@@ -272,13 +287,13 @@ namespace sixengine {
 				aiString Path;
 
 				if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
-					string p(Path.data);
+					std::string p(Path.data);
 
 					if (p.substr(0, 2) == ".\\") {
 						p = p.substr(2, p.size() - 2);
 					}
 
-					string FullPath = Dir + "/" + p;
+					std::string FullPath = Dir + "/" + p;
 
 					m_Textures[i] = new Texture(GL_TEXTURE_2D, FullPath.c_str());
 
@@ -327,8 +342,8 @@ namespace sixengine {
 			{
 				glActiveTexture(GL_TEXTURE0 + i* m_Entries.size() + j); // active proper texture unit before binding
 				// retrieve texture number (the N in diffuse_textureN)
-				string number;
-				string name = m_Entries[i].Textures[j].type;
+				std::string number;
+				std::string name = m_Entries[i].Textures[j].type;
 				if (name == "texture_diffuse")
 					number = std::to_string(diffuseNr++);
 				else if (name == "texture_specular")
@@ -343,13 +358,13 @@ namespace sixengine {
 				// and finally bind the texture
 				glBindTexture(GL_TEXTURE_2D, m_Entries[i].Textures[j].id);
 			}
-			/*glDrawElementsBaseVertex(GL_TRIANGLES,
+			glDrawElementsBaseVertex(GL_TRIANGLES,
 				m_Entries[i].NumIndices,
 				GL_UNSIGNED_INT,
 				(void*)(sizeof(uint) * m_Entries[i].BaseIndex),
-				m_Entries[i].BaseVertex);*/
+				m_Entries[i].BaseVertex);
 		}
-		glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
+		//glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 
 		VAO->UnBind();
 
@@ -423,6 +438,14 @@ namespace sixengine {
 		out = start + factor * delta;
 	}
 
+	glm::mat4 Model::CalculateInterpolatedTransform(float animationTime, const aiNodeAnim * nodeAnim)
+	{
+		uint positionIndex = FindPosition(animationTime, nodeAnim);
+		uint nextpositionIndex = (positionIndex + 1);
+
+		return glm::mat4();
+	}
+
 
 	void Model::CalcInterpolatedRotation(aiQuaternion& out, float animationTime, const aiNodeAnim* nodeAnim)
 	{
@@ -467,13 +490,13 @@ namespace sixengine {
 
 	void Model::ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform)
 	{
-		string nodeName(node->mName.data);
+		std::string nodeName(node->mName.data);
 
 		const aiAnimation* animation = m_Scene->mAnimations[0];
 
 		glm::mat4 nodeTransformation(glm::transpose(glm::make_mat4(&node->mTransformation.a1)));
 
-		const aiNodeAnim* nodeAnim = FindNodeAnim(animation, nodeName);
+		const aiNodeAnim* nodeAnim = m_NodeAnimationMapping[nodeName]; /*FindNodeAnim(animation, nodeName);*/
 
 		if (nodeAnim) {
 			// Interpolate scaling and generate scaling transformation matrix
@@ -511,7 +534,7 @@ namespace sixengine {
 	}
 
 
-	void Model::BoneTransform(float timeInSeconds, vector<glm::mat4>& transforms)
+	void Model::BoneTransform(float timeInSeconds, std::vector<glm::mat4>& transforms)
 	{
 		if (!m_Scene->HasAnimations())
 			return;
@@ -521,7 +544,6 @@ namespace sixengine {
 		float animationTime = fmod(timeInTicks, (float)m_Scene->mAnimations[0]->mDuration);
 
 		ReadNodeHierarchy(animationTime, m_Scene->mRootNode, glm::mat4(1.0f));
-
 		transforms.resize(m_NumBones);
 
 		for (uint i = 0; i < m_NumBones; i++) {
@@ -529,23 +551,13 @@ namespace sixengine {
 		}
 	}
 
-
-	const aiNodeAnim* Model::FindNodeAnim(const aiAnimation* animation, const string nodeName)
+	unsigned int TextureFromFile(const char * path, const std::string & directory, bool gamma)
 	{
-		for (uint i = 0; i < animation->mNumChannels; i++) {
-			const aiNodeAnim* nodeAnim = animation->mChannels[i];
+		std::string filename = std::string(path);
+		//std::string fn2 = filename.substr(filename.find_last_of('/'), filename.length());
 
-			if (string(nodeAnim->mNodeName.data) == nodeName) {
-				return nodeAnim;
-			}
-		}
-
-		return NULL;
-	}
-	unsigned int TextureFromFile(const char * path, const string & directory, bool gamma)
-	{
-		string filename = string(path);
-		filename = directory + '/' + filename;
+		filename = directory + "/" + filename;//directory + fn2;
+		//LOG_INFO(filename);
 
 		unsigned int textureID;
 		glGenTextures(1, &textureID);
@@ -575,7 +587,7 @@ namespace sixengine {
 		}
 		else
 		{
-			string message("Texture failed to load at path: " + string(path));
+			std::string message("Texture failed to load at path: " + std::string(path));
 			LOG_WARN(message);
 			stbi_image_free(data);
 		}
