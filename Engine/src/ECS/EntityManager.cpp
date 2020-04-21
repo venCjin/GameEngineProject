@@ -56,9 +56,9 @@ void EntityManager::Destroy(Entity::ID id)
     auto mask = m_EntityComponentMask[index];
     for (size_t i = 0; i < m_ComponentPools.size(); i++)
     {
-        BaseComponentTypeSaver* type = m_ComponentTypes[i];
-        if (type && mask.test(i))
-            type->RemoveComponent(Entity(this, id));
+        PoolAllocator* pool = m_ComponentPools[i];
+        if (mask.test(i))
+            pool->Destroy(index);
     }
 
     m_EntityComponentMask[index].reset();

@@ -99,25 +99,6 @@ ComponentFamily::Family ComponentF<T>::GetFamily()
 
 //////////////////
 
-class BaseComponentTypeSaver
-{
-public:
-    virtual ~BaseComponentTypeSaver() {}
-    virtual void RemoveComponent(Entity entity) = 0;
-};
-
-template <typename T>
-class ComponentTypeSaver : public BaseComponentTypeSaver
-{
-public:
-    void RemoveComponent(Entity entity) override
-    {
-        entity.RemoveComponent<T>();
-    }
-};
-
-//////////////////
-
 template <typename T>
 class ComponentHandle
 {
@@ -172,7 +153,6 @@ private:
 	std::vector<std::bitset<MAX_COMPONENTS>> m_EntityComponentMask;
 	std::vector<uint64_t> m_UnusedEntities;
 	std::vector<PoolAllocator*> m_ComponentPools;
-    std::vector<BaseComponentTypeSaver*> m_ComponentTypes;
 
 public:
     EntityManager(EventManager& eventManager) 
@@ -322,13 +302,6 @@ ComponentManager<T>* EntityManager::AllocateComponent()
         ComponentManager<T>* pool = new ComponentManager<T>();
         pool->AllocateEntity(m_IdCounter);
         m_ComponentPools[family] = pool;
-    }
-
-    if (m_ComponentTypes.size() <= family) 
-    {
-        m_ComponentTypes.resize(family + 1);
-        ComponentTypeSaver<T>* type = new ComponentTypeSaver<T>();
-        m_ComponentTypes[family] = type;
     }
 
     return static_cast<ComponentManager<T>*>(m_ComponentPools[family]);
