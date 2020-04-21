@@ -42,7 +42,7 @@ namespace sixengine {
 			m_UIShader = m_ShaderManager->makeInstance("res/shaders/UIShader.vert", "res/shaders/UIShader.frag");
 			float aspectRatio = (float)width / (float)height;
 			cam.MakePerspective(aspectRatio);
-			camUI.MakeOrtho(aspectRatio);
+			camUI.MakeOrtho(width, height);
 		}
 
 		virtual void OnInit() override
@@ -91,8 +91,8 @@ namespace sixengine {
 			PrimitiveUtils::GenerateQuad(vertices, indices);
 			m_UIRoot = new GameObject(m_EntityManager);
 			glm::mat4 m(1.0f);
-			m = glm::translate(m, glm::vec3(0.0f /* 1280.0f / 720.0f*/, .5f, 0.f));
-			m = glm::scale(m, glm::vec3(1.0f, .5f, 1.0f));
+			m = glm::translate(m, glm::vec3(200.0f, 200.0f, 0.f));
+			m = glm::scale(m, glm::vec3(300.0f, 300.0f, 1.0f));
 			m_UIRoot->AddComponent<Transform>(go, glm::mat4(1.0f), m);
 			m_UIRoot->AddComponent<TestMesh>(vertices, indices);
 			m_UIRoot->AddComponent<TestMaterial>(m_UIShader);

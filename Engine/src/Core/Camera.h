@@ -79,9 +79,9 @@ namespace sixengine {
 			SetProjectionMatrix(glm::perspective(glm::radians(m_Zoom), aspectRatio, m_NearPlane, m_FarPlane));
 		}
 
-		void MakeOrtho(float aspectRatio)
+		void MakeOrtho(float width, float height)
 		{
-			SetProjectionMatrix(glm::ortho(-1.0f * aspectRatio, 1.0f * aspectRatio, -1.0f, 1.0f, m_NearPlane, m_FarPlane));
+			SetProjectionMatrix(glm::ortho(0.f, width, 0.f, height, m_NearPlane, m_FarPlane));
 		}
 
 		void SetProjectionMatrix(glm::mat4 proj)
