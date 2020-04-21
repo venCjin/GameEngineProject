@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ECS/SystemManager.h>
+
 #include <Gameplay/Components/Transform.h>
 #include <Gameplay/Components/TestRotation.h>
 
@@ -10,21 +11,25 @@
 
 namespace sixengine {
 
-    class RotationSystem : public System
+	struct OnTestEvent : BaseEvent
+	{
+	public:
+		bool a;
+
+		OnTestEvent(Entity::ID id, bool a)
+			: BaseEvent(id), a(a) {}
+	};
+
+	SYSTEM(RotationSystem, Transform, TestRotation)
     {
-        void Update(EntityManager& es, EventManager& events, float dt) override
-        {
-            ComponentHandle<Transform> transform;
-            ComponentHandle<TestRotation> rotation;
+		void Update(EventManager& eventManager, float dt) override
+		{
+			m_Transform->SetWorld(glm::rotate(m_Transform->GetWorld(), glm::radians(m_TestRotation->speed * dt), m_TestRotation->axis));
 
-            for (Entity entity : es.EntitiesWithComponents<Transform, TestRotation>()) 
-            {
-                transform = entity.Component<Transform>();
-                rotation = entity.Component<TestRotation>();
-
-                transform->SetWorld(glm::rotate(transform->GetWorld(), glm::radians(rotation->speed * dt), rotation->axis));
-            }
-        }
+			if (m_TestRotation->speed > 3)
+			{
+				eventManager.Emit(OnTestEvent(entity.GetID(), true));
+			}
+		}
     };
-
 }

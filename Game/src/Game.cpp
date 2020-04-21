@@ -32,7 +32,7 @@ namespace sixengine {
 		{
 			m_ShaderManager = new ShaderManager();
 			m_SystemManager.AddSystem<RotationSystem>();
-			m_SystemManager.AddSystem<BillbordSystem>();
+			m_SystemManager.AddSystem<BillboardSystem>();
 
 			m_Shader = m_ShaderManager->makeInstance("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
 			m_BasicShader = m_ShaderManager->makeInstance("res/shaders/basic.vert", "res/shaders/basic.frag");
@@ -88,7 +88,7 @@ namespace sixengine {
 		virtual void OnUpdate(float dt) override
 		{		
 			{
-				//PROFILE_SCOPE("UPDATE")
+				PROFILE_SCOPE("UPDATE")
 				m_SystemManager.UpdateAll(dt);
 			}
 

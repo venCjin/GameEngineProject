@@ -4,8 +4,6 @@
 #include <ECS/EntityManager.h>
 #include <ECS/SystemManager.h>
 
-
-
 class EntityComponentSystem
 {
 protected:

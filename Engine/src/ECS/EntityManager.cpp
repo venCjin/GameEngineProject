@@ -9,13 +9,16 @@ uint64_t ComponentFamily::m_FamilyCounter = 0;
 
 //////////////////
 
-const Entity::ID Entity::INVALID = 0;
+void Entity::ID::Invalidate()
+{
+    m_Valid = false;
+}
 
 //////////////////
 
 void Entity::Invalidate()
 {
-    m_ID = INVALID;
+    m_ID.Invalidate();
     m_EntityManager = nullptr;
 }
 
@@ -31,14 +34,14 @@ Entity EntityManager::CreateEntity()
 {
     uint64_t index;
 
-    if (m_FreeList.empty()) {
+    if (m_UnusedEntities.empty()) {
         index = m_IdCounter++;
-        AccomodateEntity(index);
+        AllocateEntity(index);
     }
     else
     {
-        index = m_FreeList.back();
-        m_FreeList.pop_back();
+        index = m_UnusedEntities.back();
+        m_UnusedEntities.pop_back();
     }
 
     Entity entity(this, Entity::ID(index));
@@ -59,15 +62,15 @@ void EntityManager::Destroy(Entity::ID id)
     }
 
     m_EntityComponentMask[index].reset();
-    m_FreeList.push_back(index);
+    m_UnusedEntities.push_back(index);
 }
 
-void EntityManager::AccomodateEntity(uint64_t index)
+void EntityManager::AllocateEntity(uint64_t index)
 {
     if (m_EntityComponentMask.size() <= index)
     {
         m_EntityComponentMask.resize(index + 1);
         for (PoolAllocator* pool : m_ComponentPools)
-            if (pool) pool->Expand(index + 1);
+            if (pool) pool->AllocateEntity(index + 1);
     }
 }

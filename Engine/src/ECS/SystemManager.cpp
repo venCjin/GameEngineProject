@@ -6,5 +6,12 @@
 void SystemManager::UpdateAll(float dt)
 {
 	for (auto s : m_Systems)
-		s->Update(m_EntityManager, m_EventManager, dt);
+	{
+		s->GetEntities(m_EntityManager);
+		s->UpdateAll(m_EventManager, dt);
+	}
+}
+
+void BaseSystem::OnStart(EventManager& eventManager)
+{
 }
