@@ -23,6 +23,7 @@ namespace sixengine {
                 rotation = entity.Component<TestRotation>();
 
                 transform->SetWorld(glm::rotate(transform->GetWorld(), glm::radians(rotation->speed * dt), rotation->axis));
+
             }
         }
     };
