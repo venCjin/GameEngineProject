@@ -14,7 +14,3 @@
 	path = Engine/dependencies/spdlog
 	url = https://github.com/gabime/spdlog.git
 	branch = master
-[submodule "Engine/dependencies/entityX"]
-	path = Engine/dependencies/entityX
-	url = https://github.com/venCjin/entityx.git
-	branch = master

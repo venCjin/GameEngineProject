@@ -24,12 +24,12 @@ IncludeDir["ImGui"] = "Engine/dependencies/imgui"
 IncludeDir["spdlog"] = "Engine/dependencies/spdlog/include"
 IncludeDir["stb_image"] = "Engine/dependencies/stb_image"
 IncludeDir["assimp"] = "Engine/dependencies/assimp/include"
-IncludeDir["entityX"] = "Engine/dependencies/entityX"
+-- IncludeDir["entityX"] = "Engine/dependencies/entityX"
 IncludeDir["irrKlang"] = "Engine/dependencies/irrKlang/include"
 IncludeDir["freetype2"] = "Engine/dependencies/freetype2/include"
 
 group "Dependencies"
-	include "Engine/dependencies/entityX"
+	-- include "Engine/dependencies/entityX"
 	include "Engine/dependencies/Glad"
 	include "Engine/dependencies/GLFW"
 	include "Engine/dependencies/imgui"
@@ -73,7 +73,7 @@ project "Engine"
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.assimp}",
-		"%{IncludeDir.entityX}",
+		-- "%{IncludeDir.entityX}",
 		"%{IncludeDir.irrKlang}",
 		"%{IncludeDir.freetype2}",
 	}
@@ -83,7 +83,7 @@ project "Engine"
 		"Glad",
 		"GLFW",
 		"ImGui",
-		"entityX",
+		-- "entityX",
 		"opengl32.lib",
 		"Engine/dependencies/assimp/lib/assimp-vc142-mt.lib",
 		"Engine/dependencies/irrKlang/lib/irrKlang.lib",
@@ -138,7 +138,7 @@ project "Game"
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.assimp}",
-		"%{IncludeDir.entityX}",
+		-- "%{IncludeDir.entityX}",
 		"%{IncludeDir.irrKlang}",
 		"%{IncludeDir.freetype2}",
 	}
