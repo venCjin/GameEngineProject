@@ -47,8 +47,8 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			//m_Model.LoadModel("res/models/swat/swat.dae");
-			//m_Model.BoneTransform(0.0f, transforms);
+			m_Model.LoadModel("res/models/par/par.dae");
+			m_Model.BoneTransform(0.0f, transforms);
 
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
@@ -87,6 +87,9 @@ namespace sixengine {
 
 			m_SceneRoot->AddChild(go);
 			
+
+
+
 			//UI Scene Setup
 			PrimitiveUtils::GenerateQuad(vertices, indices);
 			m_UIRoot = new GameObject(m_EntityManager);
@@ -96,23 +99,7 @@ namespace sixengine {
 			m_UIRoot->AddComponent<Transform>(go, glm::mat4(1.0f), m);
 			m_UIRoot->AddComponent<TestMesh>(vertices, indices);
 			m_UIRoot->AddComponent<TestMaterial>(m_UIShader);
-			m_UIRoot->AddComponent<Billboard>(&cam);
-			//m_UIRoot->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 25.0f);
-			//m_UIRoot->AddComponent<UIRoot>(&cam);
 
-
-			/*
-			PrimitiveUtils::GenerateQuad(vertices, indices);
-			go = new GameObject(m_EntityManager);
-			go->AddComponent<Transform>(go, glm::mat4(1.0f),
-				glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
-			go->AddComponent<TestMesh>(vertices, indices);
-			go->AddComponent<TestMaterial>(m_UIShader);
-			go->AddComponent<Billboard>(&cam);
-			*/
-			//go->AddComponent<UIRoot>(&cam);
-			
-			//m_UIRoot->AddChild(go);
 			glEnable(GL_DEPTH_TEST);
 		}
 
@@ -131,21 +118,21 @@ namespace sixengine {
 				//render 3D
 
 				float time = Application::GetTimer().ElapsedTime();
-				//m_Model.BoneTransform(time, transforms);
+				m_Model.BoneTransform(time, transforms);
 
-				//glm::mat4 model = glm::mat4(1.0f);
-				//model = glm::scale(model, glm::vec3(0.01f));
-				///m_Shader->Bind();
-				//m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
-				//m_Shader->SetMat4("view", cam.GetViewMatrix());
-				//m_Shader->SetMat4("model", model);
+				glm::mat4 model = glm::mat4(1.0f);
+				model = glm::scale(model, glm::vec3(0.01f));
+				m_Shader->Bind();
+				m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
+				m_Shader->SetMat4("view", cam.GetViewMatrix());
+				m_Shader->SetMat4("model", model);
 
-				//for (int i = 0; i < transforms.size(); i++)
-				//{
-				//	m_Shader->SetMat4("gBones[" + std::to_string(i) + "]", transforms[i]);
-				//}
+				for (int i = 0; i < transforms.size(); i++)
+				{
+					m_Shader->SetMat4("gBones[" + std::to_string(i) + "]", transforms[i]);
+				}
 
-				//m_Model.Render(m_Shader);
+				m_Model.Render(m_Shader);
 
 				m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 
@@ -155,17 +142,6 @@ namespace sixengine {
 				m_UIRoot->Render(camUI.GetProjectionMatrix(), camUI.GetViewMatrix());
 
 			}
-		}
-
-		virtual void OnEvent(Event& event) override
-		{
-			// Let Aplication handle it's own Events
-			Application::OnEvent(event);
-
-			// Game Events handle here
-			//EventDispatcher dispatcher(event);
-			//dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(Game::OnKeyPressed));
-			//dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(Game::OnMouseMoved));
 		}
 	};
 
