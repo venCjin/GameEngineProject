@@ -112,7 +112,7 @@ namespace sixengine {
 
 				m_Model.Render(m_Shader);
 
-				//m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
+				m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 			}
 		}
 

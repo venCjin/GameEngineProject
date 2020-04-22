@@ -23,7 +23,7 @@ namespace sixengine {
 	};
 
 	// Default camera values
-	const float YAW = -90.0f;
+	const float YAW = 180.0f;
 	const float PITCH = 0.0f;
 	const float SPEED = 10.0f;
 	const float SENSITIVITY = 0.1f;
@@ -47,11 +47,11 @@ namespace sixengine {
 		float m_MovementSpeed;
 		float m_MouseSensitivity;
 		float m_Zoom;
-		float m_NearPlane = 0.1f;
-		float m_FarPlane = 100.0f;
+		float m_NearPlane = 0.01f;
+		float m_FarPlane = 1000.0f;
 	public:
 		// Constructor with vectors
-		Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) 
+		Camera(glm::vec3 position = glm::vec3(0.0f, 1.0f, 2.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) 
 			: m_Front(glm::vec3(0.0f, 0.0f, -1.0f)), m_MovementSpeed(SPEED), m_MouseSensitivity(SENSITIVITY), m_Zoom(ZOOM)
 		{
 			m_Position = position;

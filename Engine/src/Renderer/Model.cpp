@@ -328,6 +328,7 @@ namespace sixengine {
 		/*glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);*/
 		//glBindVertexArray(m_VAO);
 
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		for (uint i = 0; i < m_Entries.size(); i++)
 		{
