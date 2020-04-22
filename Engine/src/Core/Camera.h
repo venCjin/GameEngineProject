@@ -59,7 +59,7 @@ namespace sixengine {
 			m_Yaw = yaw;
 			m_Pitch = pitch;
 			updateCameraVectors();
-			flyCameraInit();
+			//flyCameraInit();
 		}
 		// Constructor with scalar values
 		Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) 
@@ -70,17 +70,18 @@ namespace sixengine {
 			m_Yaw = yaw;
 			m_Pitch = pitch;
 			updateCameraVectors();
-			flyCameraInit();
+			//flyCameraInit();
 		}
 
 		void MakePerspective(float aspectRatio)
 		{
+			flyCameraInit();
 			SetProjectionMatrix(glm::perspective(glm::radians(m_Zoom), aspectRatio, m_NearPlane, m_FarPlane));
 		}
 
-		void MakeOrtho(float aspectRatio)
+		void MakeOrtho(float width, float height)
 		{
-			SetProjectionMatrix(glm::ortho(-1.0f * aspectRatio, 1.0f * aspectRatio, -1.0f, 1.0f, m_NearPlane, m_FarPlane));
+			SetProjectionMatrix(glm::ortho(0.f, width, 0.f, height, m_NearPlane, m_FarPlane));
 		}
 
 		void SetProjectionMatrix(glm::mat4 proj)
@@ -151,6 +152,8 @@ namespace sixengine {
 		}
 		glm::vec3 GetPosition() { return m_Position; }
 		glm::vec3 GetUp() { return m_Up; }
+		float GetYaw() { return m_Yaw; }
+		float GetPitch() { return m_Pitch; }
 	private:
 		// Calculates the front vector from the Camera's (updated) Euler Angles
 		void updateCameraVectors()
