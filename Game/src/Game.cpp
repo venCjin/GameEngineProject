@@ -61,7 +61,7 @@ namespace sixengine {
 			m_SceneRoot = new GameObject(m_EntityManager);
 			m_SceneRoot->AddComponent<Transform>(m_SceneRoot);
 			m_SceneRoot->AddComponent<TestMesh>(vertices, indices);
-			m_SceneRoot->AddComponent<TestMaterial>(m_BasicShader);
+			m_SceneRoot->AddComponent<TestMaterial>(m_UIShader, "res/textures/rusted_iron/metallic.png");
 			
 			// Setup Second (LEFT) Object
 			PrimitiveUtils::GenerateQuad(vertices, indices);
@@ -70,7 +70,7 @@ namespace sixengine {
 			go->AddComponent<Transform>(go, glm::mat4(1.0f),
 				glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f)));
 			go->AddComponent<TestMesh>(vertices, indices);
-			go->AddComponent<TestMaterial>(m_BasicShader);
+			go->AddComponent<TestMaterial>(m_UIShader, "res/textures/floor/ao.png");
 			go->AddComponent<Billboard>(&cam);
 
 			m_SceneRoot->AddChild(go);
@@ -83,7 +83,7 @@ namespace sixengine {
 				glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f)));
 			go->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 25.0f);
 			go->AddComponent<TestMesh>(vertices, indices);
-			go->AddComponent<TestMaterial>(m_BasicShader);
+			go->AddComponent<TestMaterial>(m_UIShader, "res/textures/floor/albedo.png");
 
 			m_SceneRoot->AddChild(go);
 			
@@ -91,25 +91,24 @@ namespace sixengine {
 			PrimitiveUtils::GenerateQuad(vertices, indices);
 			m_UIRoot = new GameObject(m_EntityManager);
 			glm::mat4 m(1.0f);
-			m = glm::translate(m, glm::vec3(200.0f, 200.0f, 0.f));
+			m = glm::translate(m, glm::vec3(0.0f, 720.0f, 0.f));
 			m = glm::scale(m, glm::vec3(300.0f, 300.0f, 1.0f));
-			m_UIRoot->AddComponent<Transform>(go, glm::mat4(1.0f), m);
+			m_UIRoot->AddComponent<Transform>(m_UIRoot, glm::mat4(1.0f), m);
 			m_UIRoot->AddComponent<TestMesh>(vertices, indices);
-			m_UIRoot->AddComponent<TestMaterial>(m_UIShader);
+			m_UIRoot->AddComponent<TestMaterial>(m_UIShader, "res/textures/rusted_iron/albedo.png");
 			//m_UIRoot->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 25.0f);
 			//m_UIRoot->AddComponent<UIRoot>(&cam);
 
 
 			PrimitiveUtils::GenerateQuad(vertices, indices);
 			go = new GameObject(m_EntityManager);
-			go->AddComponent<Transform>(go, glm::mat4(1.0f),
-				glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
+			m = glm::mat4(1.0f);
+			m = glm::translate(m, glm::vec3(200.0f, 200.0f, 0.f));
+			m = glm::scale(m, glm::vec3(300.0f, 30.0f, 1.0f));
+			go->AddComponent<Transform>(go, glm::mat4(1.0f), m);
 			go->AddComponent<TestMesh>(vertices, indices);
-			go->AddComponent<TestMaterial>(m_UIShader);
-			go->AddComponent<Billboard>(&cam);
-			//go->AddComponent<UIRoot>(&cam);
-			
-			//m_UIRoot->AddChild(go);
+			go->AddComponent<TestMaterial>(m_UIShader, "res/textures/rusted_iron/normal.png");
+			m_UIRoot->AddChild(go);
 			glEnable(GL_DEPTH_TEST);
 		}
 
