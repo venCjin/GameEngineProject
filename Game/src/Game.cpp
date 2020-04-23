@@ -13,7 +13,7 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include <Gameplay\Components\UIRoot.h>
+#include <Gameplay\Components\UIElement.h>
 #include <Gameplay\Systems\UIRendererSystem.h>
 
 namespace sixengine {
@@ -61,7 +61,7 @@ namespace sixengine {
 			m_SceneRoot = new GameObject(m_EntityManager);
 			m_SceneRoot->AddComponent<Transform>(m_SceneRoot);
 			m_SceneRoot->AddComponent<TestMesh>(vertices, indices);
-			m_SceneRoot->AddComponent<TestMaterial>(m_BasicShader);
+			m_SceneRoot->AddComponent<TestMaterial>(m_BasicShader, "res/textures/floor/albedo.png");
 			
 			// Setup Second (LEFT) Object
 			PrimitiveUtils::GenerateQuad(vertices, indices);
@@ -70,7 +70,7 @@ namespace sixengine {
 			go->AddComponent<Transform>(go, glm::mat4(1.0f),
 				glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f)));
 			go->AddComponent<TestMesh>(vertices, indices);
-			go->AddComponent<TestMaterial>(m_BasicShader);
+			go->AddComponent<TestMaterial>(m_BasicShader, "res/textures/floor/albedo.png");
 			go->AddComponent<Billboard>(&cam);
 
 			m_SceneRoot->AddChild(go);
@@ -83,7 +83,7 @@ namespace sixengine {
 				glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f)));
 			go->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 25.0f);
 			go->AddComponent<TestMesh>(vertices, indices);
-			go->AddComponent<TestMaterial>(m_BasicShader);
+			go->AddComponent<TestMaterial>(m_UIShader, "res/textures/floor/albedo.png");
 
 			m_SceneRoot->AddChild(go);
 			
@@ -98,7 +98,7 @@ namespace sixengine {
 			m = glm::scale(m, glm::vec3(300.0f, 300.0f, 1.0f));
 			m_UIRoot->AddComponent<Transform>(go, glm::mat4(1.0f), m);
 			m_UIRoot->AddComponent<TestMesh>(vertices, indices);
-			m_UIRoot->AddComponent<TestMaterial>(m_UIShader);
+			m_UIRoot->AddComponent<TestMaterial>(m_UIShader, "res/textures/floor/albedo.png");
 
 			glEnable(GL_DEPTH_TEST);
 		}

@@ -40,7 +40,7 @@ namespace sixengine {
 					format = GL_RGBA;
 
 
-				glActiveTexture(GL_TEXTURE0+textureID);
+				glActiveTexture(GL_TEXTURE0 + textureID);
 				glBindTexture(GL_TEXTURE_2D, textureID);
 				glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 				glGenerateMipmap(GL_TEXTURE_2D);
@@ -54,7 +54,7 @@ namespace sixengine {
 			}
 			else
 			{
-				string message("Texture failed to load at path: " + string(path));
+				std::string message("Texture failed to load at path: " + std::string(path));
 				LOG_WARN(message);
 				stbi_image_free(data);
 			}
