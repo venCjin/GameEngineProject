@@ -23,7 +23,7 @@ namespace sixengine {
 
 		shader->Bind();
 		vertexArray->Bind();
-		LOG_CORE_INFO(texture);
+		//LOG_CORE_INFO(texture);
 		shader->SetInt("texture1", texture);
 
 		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);

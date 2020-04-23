@@ -99,7 +99,10 @@ namespace sixengine {
 
 	void Scene::Render()
 	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		m_Scene->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		m_UI->Render(camUI.GetProjectionMatrix(), camUI.GetViewMatrix());
 	}
 
