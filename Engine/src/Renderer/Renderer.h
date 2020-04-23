@@ -11,7 +11,7 @@ namespace sixengine {
 		Renderer();
 		~Renderer();
 
-		static void Render(const VertexArray* vertexArray, const Shader* shader);
+		static void Render(const VertexArray* vertexArray, const Shader* shader, unsigned int texture);
 		static void Clear(float r = 0.f, float g = 0.f, float b = 0.f);
 	};
 

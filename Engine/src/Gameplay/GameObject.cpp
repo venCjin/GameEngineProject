@@ -21,9 +21,9 @@ namespace sixengine {
 	{
 		// TODO: Render Queue
 		//Renderer::AddToRenderQueue(this);
-		//parentWorld;
+
 		auto transform = GetComponent<Transform>();
-		//transform;
+
 		if (HasComponent<TestMaterial>())
 		{
 			auto shader = GetComponent<TestMaterial>()->GetShader();
@@ -45,8 +45,10 @@ namespace sixengine {
 		
 			if (HasComponent<TestMesh>())
 			{
+				unsigned int texture = GetComponent<TestMaterial>()->m_Texture;
 				auto mesh = GetComponent<TestMesh>();
-				Renderer::Render(mesh->VAO, shader);
+				//Renderer::Render(mesh->VAO, shader);
+				Renderer::Render(mesh->VAO, shader, texture);
 			}
 			else if (HasComponent<Model>())
 			{
@@ -62,6 +64,27 @@ namespace sixengine {
 				model->Render(shader);
 			}
 		}
+/*=======
+		auto mesh = GetComponent<TestMesh>();
+		auto shader = GetComponent<TestMaterial>()->GetShader();
+		unsigned int texture = GetComponent<TestMaterial>()->m_Texture;
+		shader->Bind();
+		shader->SetMat4("projection", projection);
+		shader->SetMat4("view", view);
+
+		dirty |= m_Dirty;
+		if (dirty)
+		{
+			shader->SetMat4("model", transform->Combine(parentWorld));
+			m_Dirty = false;
+		}
+		else
+		{
+			shader->SetMat4("model", transform->Combine());
+		}
+		//shader->SetInt("texture1", texture);
+		Renderer::Render(mesh->VAO, shader, texture);
+>>>>>>> 3f1ed511ba35e7f1532f13a7a6d29d3e9c7b3893*/
 
 		for (auto child : m_Childeren)
 		{

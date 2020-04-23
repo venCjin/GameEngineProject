@@ -1,11 +1,11 @@
 #pragma once
 #include <ECS/SystemManager.h>
 #include <Gameplay\Components\Transform.h>
-#include <Gameplay\Components\UIRoot.h>
+#include <Gameplay\Components\UIElement.h>
 
 namespace sixengine {
 
-    SYSTEM(UIRendererSystem, Transform, UIRoot)
+    SYSTEM(UIRendererSystem, Transform, UIElement)
     {
     public:
         virtual void Update(EventManager & eventManager, float dt) override

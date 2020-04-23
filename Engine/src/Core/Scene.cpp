@@ -195,10 +195,11 @@ namespace sixengine {
 			}
 			else if (s == "-TestMaterial")
 			{
-				std::string v, f;
-				file >> v;
-				file >> f;
-				go->AddComponent<TestMaterial>(sm.makeInstance(v, f));
+				std::string vert, frag, tex;
+				file >> vert;
+				file >> frag;
+				file >> tex;
+				go->AddComponent<TestMaterial>(sm.makeInstance(vert, frag), tex);
 			}
 			else if (s == "-TestRotation")
 			{

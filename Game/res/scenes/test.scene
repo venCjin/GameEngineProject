@@ -8,7 +8,7 @@
     +Transform
     +end
     -TestMesh Cube
-    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag
+    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
 +end
 
 +SceneGameObject
@@ -20,7 +20,7 @@
         +end
     +end
     -TestMesh Quad
-    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag
+    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
     -Billboard
 +end
 
@@ -33,7 +33,7 @@
         +end
     +end
     -TestMesh Capsule
-    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag
+    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
     -TestRotation 0.0 1.0 0.0 25.0
 +end
 
@@ -47,7 +47,7 @@
     +end
     -TestRotation 0.0 1.0 0.0 25.0
     -Model res/models/par/par.dae
-    -TestMaterial res/shaders/TestShader.vert res/shaders/TestShader.frag
+    -TestMaterial res/shaders/TestShader.vert res/shaders/TestShader.frag res/textures/floor/albedo.png
 +end
 
 
@@ -63,6 +63,6 @@
         +end
     +end
     -TestMesh Quad
-    -TestMaterial res/shaders/UIShader.vert res/shaders/UIShader.frag
+    -TestMaterial res/shaders/UIShader.vert res/shaders/UIShader.frag res/textures/floor/albedo.png
 +end
 -eof
