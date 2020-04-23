@@ -11,7 +11,7 @@
     +end
     -TestMesh Cube
     -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
-    -BoxCollider 1.0 1.0 1.0 1
+    -BoxCollider 1.0 1.0 1.0 0
 +end
 
 +SceneGameObject
@@ -19,7 +19,7 @@
         +local
         +end
         +world
-            -translate -2.0 0.0 0.0
+            -translate 0.0 5.0 0.0
         +end
     +end
     -TestMesh Quad
@@ -32,13 +32,28 @@
         +local
         +end
         +world
-            -translate 2.0 0.0 0.0
+            -translate -2.0 0.0 0.0
         +end
     +end
-    -TestMesh Capsule
+    -TestMesh BoxCollider
     -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
-    -TestRotation 0.0 1.0 0.0 25.0
+    -BoxCollider 1.0 1.0 1.0 0
 +end
+
++SceneGameObject
+    +Transform 
+        +local
+        +end
+        +world
+            -translate -0.0 1.0 -3.0
+            -scale 2.0 2.0 2.0 1
+        +end
+    +end
+    -TestMesh BoxCollider
+    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
+    -BoxCollider 2.0 2.0 2.0 1
++end
+
 
 +SceneGameObject
     +Transform 
@@ -48,9 +63,9 @@
             -translate 2.0 0.0 0.0
         +end
     +end
-    -TestMesh Capsule
+    -TestMesh Cube
     -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
-    -TestRotation 0.0 1.0 0.0 25.0
+    -BoxCollider 1.0 1.0 1.0  0
 +end
 
 +SceneGameObject
@@ -93,6 +108,6 @@
         +end
     +end
     -TestMesh Quad
-    -TestMaterial res/shaders/UIShader.vert res/shaders/UIShader.frag res/textures/floor/albedo.png
+    -TestMaterial res/shaders/UIShader.vert res/shaders/UIShader.frag res/textures/floor/ui.png
 +end
 -eof
