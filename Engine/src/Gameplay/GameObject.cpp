@@ -26,7 +26,7 @@ namespace sixengine {
 		auto transform = GetComponent<Transform>();
 		auto mesh = GetComponent<TestMesh>();
 		auto shader = GetComponent<TestMaterial>()->GetShader();
-
+		unsigned int texture = GetComponent<TestMaterial>()->m_Texture;
 		shader->Bind();
 		shader->SetMat4("projection", projection);
 		shader->SetMat4("view", view);
@@ -41,8 +41,8 @@ namespace sixengine {
 		{
 			shader->SetMat4("model", transform->Combine());
 		}
-
-		Renderer::Render(mesh->VAO, shader);
+		//shader->SetInt("texture1", texture);
+		Renderer::Render(mesh->VAO, shader, texture);
 
 		for (auto child : m_Childeren)
 		{

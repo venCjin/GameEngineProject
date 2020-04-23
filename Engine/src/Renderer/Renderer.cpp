@@ -17,12 +17,14 @@ namespace sixengine {
 	{
 	}
 
-	void Renderer::Render(const VertexArray* vertexArray, const Shader* shader)
+	void Renderer::Render(const VertexArray* vertexArray, const Shader* shader, unsigned int texture)
 	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		shader->Bind();
 		vertexArray->Bind();
+		LOG_CORE_INFO(texture);
+		shader->SetInt("texture1", texture);
 
 		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 	}
