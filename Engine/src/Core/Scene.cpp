@@ -7,6 +7,10 @@
 #include "Gameplay/GameObject.h"
 #include "Renderer/PrimitiveUtils.h"
 #include "Core/ShaderManager.h"
+#include "Physics/Components/Collider.h"
+#include "Physics/Systems/CollisionSystem.h"
+#include "Gameplay/Components/SimplePlayer.h"
+#include "Gameplay/Systems/SimplePlayerSystem.h"
 
 namespace sixengine {
 
@@ -56,6 +60,8 @@ namespace sixengine {
 				if (s == "BillboardSystem") sys->AddSystem<BillboardSystem>();
 				else if (s == "RotationSystem") sys->AddSystem<RotationSystem>();
 				else if (s == "UIRendererSystem") sys->AddSystem<UIRendererSystem>();
+				else if (s == "SimplePlayerSystem") sys->AddSystem<SimplePlayerSystem>();
+				else if (s == "CollisionSystem") sys->AddSystem<CollisionSystem>();
 				else LOG_WARN("Not recognized system: {0}", s);
 			}
 			else if (s == "+SceneGameObject")
@@ -185,6 +191,7 @@ namespace sixengine {
 				if (s == "Quad") PrimitiveUtils::GenerateQuad(vertices, indices);
 				else if (s == "Cube") PrimitiveUtils::GenerateCube(vertices, indices);
 				else if (s == "Capsule") PrimitiveUtils::GenerateCapsule(vertices, indices);
+				else if (s == "Sphere") PrimitiveUtils::GenerateSphere(vertices, indices);
 				else PrimitiveUtils::GenerateCube(vertices, indices); //default cube
 				go->AddComponent<TestMesh>(vertices, indices);
 			}
@@ -214,6 +221,34 @@ namespace sixengine {
 			{
 				go->AddComponent<Billboard>(&cam);
 			}
+			else if (s == "-SimplePlayer")
+			{
+				go->AddComponent<SimplePlayer>();
+			}
+			else if (s == "-BoxCollider")
+			{
+				float x, y, z;
+				file >> x;
+				file >> y;
+				file >> z;
+
+				bool isStatic;
+				file >> isStatic;
+
+				go->AddComponent<BoxCollider>(glm::vec3(x, y, z), isStatic);
+			}
+			else if (s == "-SphereCollider")
+			{
+				float radius;
+				file >> radius;
+
+				bool isStatic;
+				file >> isStatic;
+
+				go->AddComponent<SphereCollider>(radius, isStatic);
+			}
+
+
 			else LOG_WARN("Not recognized scene component: {0}", s);
 		} while (true);
 		return go;

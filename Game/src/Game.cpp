@@ -93,6 +93,7 @@ namespace sixengine {
 
 >>>>>>> 3f1ed511ba35e7f1532f13a7a6d29d3e9c7b3893
 */
+
 			glEnable(GL_DEPTH_TEST);
 		}
 
