@@ -6,7 +6,9 @@
 #include "Gameplay/Components/Transform.h"
 #include "Gameplay/Components/TestMaterial.h"
 #include "Gameplay/Components/TestMesh.h"
+#include "Renderer/Model.h"
 #include "Renderer/Renderer.h"
+#include "Core/Timer.h"
 
 namespace sixengine {
 
@@ -17,36 +19,53 @@ namespace sixengine {
 
 	void GameObject::Render(glm::mat4 projection, glm::mat4 view, Transform parentWorld, bool dirty)
 	{
-		auto& t = GetComponent<Transform>();
-
 		// TODO: Render Queue
 		//Renderer::AddToRenderQueue(this);
-
-		GetComponent<TestMaterial>()->GetShader();
+		//parentWorld;
 		auto transform = GetComponent<Transform>();
-		auto mesh = GetComponent<TestMesh>();
-		auto shader = GetComponent<TestMaterial>()->GetShader();
-
-		shader->Bind();
-		shader->SetMat4("projection", projection);
-		shader->SetMat4("view", view);
-
-		dirty |= m_Dirty;
-		if (dirty)
+		//transform;
+		if (HasComponent<TestMaterial>())
 		{
-			shader->SetMat4("model", transform->Combine(parentWorld));
-			m_Dirty = false;
-		}
-		else
-		{
-			shader->SetMat4("model", transform->Combine());
-		}
+			auto shader = GetComponent<TestMaterial>()->GetShader();
 
-		Renderer::Render(mesh->VAO, shader);
+			shader->Bind();
+			shader->SetMat4("projection", projection);
+			shader->SetMat4("view", view);
+
+			dirty |= m_Dirty;
+			if (dirty)
+			{
+				shader->SetMat4("model", transform->Combine(parentWorld));
+				m_Dirty = false;
+			}
+			else
+			{
+				shader->SetMat4("model", transform->Combine());
+			}
+		
+			if (HasComponent<TestMesh>())
+			{
+				auto mesh = GetComponent<TestMesh>();
+				Renderer::Render(mesh->VAO, shader);
+			}
+			else if (HasComponent<Model>())
+			{
+				auto model = GetComponent<Model>();
+				auto& transforms = model->GetCurrentTransforms();
+				float time = Timer::Instance()->ElapsedTime();
+				model->BoneTransform(time, transforms);
+				for (int i = 0; i < transforms.size(); i++)
+				{
+					shader->SetMat4("gBones[" + std::to_string(i) + "]", transforms[i]);
+				}
+
+				model->Render(shader);
+			}
+		}
 
 		for (auto child : m_Childeren)
 		{
-			child->Render(projection, view, *t, dirty);
+			child->Render(projection, view, *transform, dirty);
 		}
 	}
 

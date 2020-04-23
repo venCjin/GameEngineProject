@@ -1,0 +1,68 @@
+-AddSystem RotationSystem
+-AddSystem UIRendererSystem
+-AddSystem BillboardSystem
+
+
+
++SceneGameObject
+    +Transform
+    +end
+    -TestMesh Cube
+    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag
++end
+
++SceneGameObject
+    +Transform 
+        +local
+        +end
+        +world
+            -translate -2.0 0.0 0.0
+        +end
+    +end
+    -TestMesh Quad
+    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag
+    -Billboard
++end
+
++SceneGameObject
+    +Transform 
+        +local
+        +end
+        +world
+            -translate 2.0 0.0 0.0
+        +end
+    +end
+    -TestMesh Capsule
+    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag
+    -TestRotation 0.0 1.0 0.0 25.0
++end
+
++SceneGameObject
+    +Transform 
+        +local
+            -scale 0.01 0.01 0.01
+        +end
+        +world
+        +end
+    +end
+    -TestRotation 0.0 1.0 0.0 25.0
+    -Model res/models/par/par.dae
+    -TestMaterial res/shaders/TestShader.vert res/shaders/TestShader.frag
++end
+
+
+
+
++UIGameObject
+    +Transform 
+        +local
+        +end
+        +world
+            -translate 200.0 200.0 0.0
+            -scale 300.0 300.0 1.0
+        +end
+    +end
+    -TestMesh Quad
+    -TestMaterial res/shaders/UIShader.vert res/shaders/UIShader.frag
++end
+-eof

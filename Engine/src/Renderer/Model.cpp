@@ -18,6 +18,13 @@ namespace sixengine {
 		m_Scene = NULL;
 	}
 
+	Model::Model(const std::string& filename)
+	{
+		VAO = nullptr;
+		m_NumBones = 0;
+		m_Scene = NULL;
+		LoadModel(filename);
+	}
 
 	Model::~Model()
 	{
@@ -68,7 +75,8 @@ namespace sixengine {
 			ret = InitFromScene(m_Scene, filename);
 		}
 		else {
-			printf("Error parsing '%s': '%s'\n", filename.c_str(), m_Importer.GetErrorString());
+			//printf("Error parsing '%s': '%s'\n", filename.c_str(), m_Importer.GetErrorString());
+			LOG_ERROR("Error parsing {0}: {1}", filename.c_str(), m_Importer.GetErrorString());
 		}
 
 		// Make sure the VAO is not changed from the outside

@@ -40,6 +40,12 @@ namespace sixengine {
 		}
 
 		template<typename T>
+		bool HasComponent()
+		{
+			return m_Entity.HasComponent<T>();
+		}
+
+		template<typename T>
 		ComponentHandle<T> GetComponent()
 		{
 			return m_Entity.Component<T>();

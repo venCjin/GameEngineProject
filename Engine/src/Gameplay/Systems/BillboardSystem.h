@@ -7,6 +7,8 @@
 #include <Gameplay/Components/TestRotation.h>
 #include <Gameplay/Components/Billboard.h>
 
+#include <Gameplay/Systems/RotationSystem.h>
+
 namespace sixengine {
 
 	SYSTEM(BillboardSystem, Transform, Billboard)

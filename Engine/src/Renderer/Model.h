@@ -12,6 +12,7 @@
 #include <glad/glad.h>
 #include <assimp/Importer.hpp>
 #include <map>
+
 #include "Core/Profile.h"
 
 
@@ -36,10 +37,11 @@ namespace sixengine {
 	public:
 
 		Model();
+		Model(const std::string& filename);
 
 		~Model();
 
-		bool LoadModel(const std::string& Filename);
+		bool LoadModel(const std::string& filename);
 
 		void Render(Shader* shader);
 
@@ -49,6 +51,8 @@ namespace sixengine {
 		}
 
 		void BoneTransform(float TimeInSeconds, std::vector<glm::mat4>& Transforms);
+
+		inline std::vector<glm::mat4>& GetCurrentTransforms() { return currentTransforms; }
 
 	private:
 
@@ -99,6 +103,8 @@ namespace sixengine {
 
 		std::vector<MeshEntry> m_Entries;
 		//std::vector<Texture*> m_Textures;
+
+		std::vector<glm::mat4> currentTransforms; // current animation transforms for shader
 
 		std::map<std::string, uint> m_BoneMapping; // maps a bone name to its index
 		std::map<std::string, const aiNodeAnim* > m_NodeAnimationMapping;
