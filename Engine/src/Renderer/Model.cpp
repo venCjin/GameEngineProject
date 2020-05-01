@@ -81,8 +81,11 @@ namespace sixengine {
 
 		// Make sure the VAO is not changed from the outside
 		//glBindVertexArray(0);
-
-		LoadAnimationNodes();
+		if (m_Scene->HasAnimations())
+		{
+			LoadAnimationNodes();
+		}
+		
 
 		return ret;
 	}

@@ -85,6 +85,7 @@
 +SceneGameObject
     +Transform 
         +local
+            -translate 5 -.4 -4.0
             -scale 0.01 0.01 0.01
         +end
         +world
@@ -94,7 +95,18 @@
     -TestMaterial res/shaders/TestShader.vert res/shaders/TestShader.frag res/textures/floor/albedo.png
 +end
 
-
++SceneGameObject
+    +Transform 
+        +local
+            -translate -0.5 -1.0 .0
+            -scale .5 .5 .5
+        +end
+        +world
+        +end
+    +end
+    -Model res/models/sample_scene/sample_scene.obj
+    -TestMaterial res/shaders/basic.vert res/shaders/floor.frag res/textures/floor/albedo.png
++end
 
 
 +UIGameObject
