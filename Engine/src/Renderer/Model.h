@@ -54,6 +54,10 @@ namespace sixengine {
 
 		inline std::vector<glm::mat4>& GetCurrentTransforms() { return currentTransforms; }
 
+		std::vector<Vertex> vertices;
+		std::vector<uint> indices;
+		int m_TotalNumIndices = 0;
+
 	private:
 
 		struct BoneInfo

@@ -82,7 +82,8 @@ namespace sixengine {
 		// Make sure the VAO is not changed from the outside
 		//glBindVertexArray(0);
 
-		LoadAnimationNodes();
+		if (m_Scene->HasAnimations())
+			LoadAnimationNodes();
 
 		return ret;
 	}
@@ -93,28 +94,26 @@ namespace sixengine {
 		m_Entries.resize(scene->mNumMeshes);
 		//m_Textures.resize(pScene->mNumMaterials);
 
-		std::vector<Vertex> vertices;
-		std::vector<uint> indices;
-
 		uint numVertices = 0;
-		uint numIndices = 0;
+		m_TotalNumIndices = 0;
 
-		uint VerticesPerPrim = 3;
+		uint verticesPerPrim = 3;
 
 		// Count the number of vertices and indices
 		for (uint i = 0; i < m_Entries.size(); i++) {
 			m_Entries[i].MaterialIndex = scene->mMeshes[i]->mMaterialIndex;
-			m_Entries[i].NumIndices = scene->mMeshes[i]->mNumFaces * VerticesPerPrim;
+			m_Entries[i].NumIndices = scene->mMeshes[i]->mNumFaces * verticesPerPrim;
 			m_Entries[i].BaseVertex = numVertices;
-			m_Entries[i].BaseIndex = numIndices;
+			m_Entries[i].BaseIndex = m_TotalNumIndices;
 
 			numVertices += scene->mMeshes[i]->mNumVertices;
-			numIndices += m_Entries[i].NumIndices;
+			m_TotalNumIndices += m_Entries[i].NumIndices;
+
 		}
 
 		// Reserve space in the vectors for the vertex attributes and indices
 		vertices.reserve(numVertices);
-		indices.reserve(numIndices);
+		indices.reserve(m_TotalNumIndices);
 
 		// Initialize the meshes in the scene one by one
 		for (uint i = 0; i < m_Entries.size(); i++) {

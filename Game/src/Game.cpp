@@ -16,6 +16,8 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+#include "Renderer/ModelManager.h"
+
 
 namespace sixengine {
 	
@@ -23,6 +25,10 @@ namespace sixengine {
 	{
 	private:
 		Scene m_Scene;
+		Shader* m_Shader, *m_BasicShader, *m_UIShader;
+		Camera cam, camUI;
+		ModelManager *mm;
+		ShaderManager* m_ShaderManager;
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
@@ -35,6 +41,14 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
+			m_ShaderManager = new ShaderManager();
+
+			mm = new ModelManager();
+			mm->AddModel("res/models/par/par.dae");
+			mm->AddModel("res/models/nanosuit/nanosuit.obj");
+			mm->CreateVAO();
+			m_Shader = m_ShaderManager->makeInstance("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
+
 			m_Scene.LoadScene("res/scenes/test.scene");
 /*
 =======
@@ -104,11 +118,21 @@ namespace sixengine {
 				m_SystemManager.UpdateAll(dt);
 			}
 
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::scale(model, glm::vec3(0.01f));
+			m_Shader->Bind();
+			m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
+			m_Shader->SetMat4("view", cam.GetViewMatrix());
+			m_Shader->SetMat4("model", model);
+			
+			mm->Draw();
+
 			{
+				//PROFILE_SCOPE("RENDER")
 				//PROFILE_SCOPE("RENDER")
 				Renderer::Clear(0.3f, 0.3f, 0.3f);
 				
-				m_Scene.Render();
+				//m_Scene.Render();
 			}
 		}
 	};
