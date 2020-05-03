@@ -4,7 +4,7 @@
 #include "GameObject.h"
 #include "Gameplay/GameObject.h"
 #include "Gameplay/Components/Transform.h"
-#include "Gameplay/Components/TestMaterial.h"
+#include "Gameplay/Components/Material.h"
 #include "Gameplay/Components/TestMesh.h"
 #include "Renderer/Model.h"
 #include "Renderer/Renderer.h"
@@ -24,9 +24,9 @@ namespace sixengine {
 
 		auto transform = GetComponent<Transform>();
 
-		if (HasComponent<TestMaterial>())
+		if (HasComponent<Material>())
 		{
-			auto shader = GetComponent<TestMaterial>()->GetShader();
+			auto shader = GetComponent<Material>()->GetShader();
 
 			shader->Bind();
 			shader->SetMat4("projection", projection);
@@ -45,7 +45,7 @@ namespace sixengine {
 		
 			if (HasComponent<TestMesh>())
 			{
-				unsigned int texture = GetComponent<TestMaterial>()->m_Texture;
+				unsigned int texture = GetComponent<Material>()->GetTexture();
 				auto mesh = GetComponent<TestMesh>();
 				//Renderer::Render(mesh->VAO, shader);
 				Renderer::Render(mesh->VAO, shader, texture);

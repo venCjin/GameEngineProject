@@ -17,6 +17,8 @@
 
 #include <glm/glm.hpp>
 #include "Renderer/ModelManager.h"
+#include "Renderer/TextureArray.h"
+#include "Renderer/PrimitiveUtils.h"
 
 
 namespace sixengine {
@@ -25,15 +27,28 @@ namespace sixengine {
 	{
 	private:
 		Scene m_Scene;
-		Shader* m_Shader, *m_BasicShader, *m_UIShader;
+		GameObject *obj1, *obj2, *obj3;
+		GameObject* m_SceneRoot, * m_UIRoot;
+		Shader* m_Shader, * m_BasicShader, * m_UIShader;
 		Camera cam, camUI;
-		ModelManager *mm;
 		ShaderManager* m_ShaderManager;
+		TextureArray* m_TextureManager;
+		Model m_Model;
+		std::vector<glm::mat4> transforms;
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
 			: Application(title, width, height), m_Scene(width, height)
 		{
+			m_TextureManager = new TextureArray(2048, 2048);
+			m_ShaderManager = new ShaderManager();
+			m_SystemManager.AddSystem<RotationSystem>();
+			m_Shader = m_ShaderManager->makeInstance("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
+			m_BasicShader = m_ShaderManager->makeInstance("res/shaders/basic.vert", "res/shaders/basic.frag");
+			m_UIShader = m_ShaderManager->makeInstance("res/shaders/UIShader.vert", "res/shaders/UIShader.frag");
+			float aspectRatio = (float)width / (float)height;
+			cam.MakePerspective(aspectRatio);
+			camUI.MakeOrtho(width, height);
 		}
 		
 		~Game()
@@ -41,74 +56,50 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			m_ShaderManager = new ShaderManager();
-
-			mm = new ModelManager();
-			mm->AddModel("res/models/par/par.dae");
-			mm->AddModel("res/models/nanosuit/nanosuit.obj");
-			mm->CreateVAO();
-			m_Shader = m_ShaderManager->makeInstance("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
-
-			m_Scene.LoadScene("res/scenes/test.scene");
-/*
-=======
-			m_Model.LoadModel("res/models/par/par.dae");
-			m_Model.BoneTransform(0.0f, transforms);
+			m_TextureManager->AddTexture("res/textures/test/Bricks.jpg");
+			m_TextureManager->AddTexture("res/textures/test/Wood1.jpg");
+			m_TextureManager->AddTexture("res/textures/test/Wood2.jpg");
+			m_TextureManager->CreateTextureArray();
 
 			std::vector<Vertex> vertices;
 			std::vector<unsigned int> indices;
 
-			GameObject* go;
-
 			// Setup First (CENTER) Object
 			PrimitiveUtils::GenerateCube(vertices, indices);
 
-			m_SceneRoot = new GameObject(m_EntityManager);
-			m_SceneRoot->AddComponent<Transform>(m_SceneRoot);
-			m_SceneRoot->AddComponent<TestMesh>(vertices, indices);
-			m_SceneRoot->AddComponent<TestMaterial>(m_BasicShader, "res/textures/floor/albedo.png");
+			obj1 = new GameObject(m_EntityManager);
+			obj1->AddComponent<Transform>(obj1);
+			obj1->AddComponent<TestMesh>(vertices, indices);
+			obj1->AddComponent<Material>(m_BasicShader, m_TextureManager->GetTexture("Bricks"));
 			
-			// Setup Second (LEFT) Object
-			PrimitiveUtils::GenerateQuad(vertices, indices);
+			// Setup Second (LEFT) Object2
+			PrimitiveUtils::GenerateCube(vertices, indices);
 
-			go = new GameObject(m_EntityManager);
-			go->AddComponent<Transform>(go, glm::mat4(1.0f),
+			obj2 = new GameObject(m_EntityManager);
+			obj2->AddComponent<Transform>(obj2, glm::mat4(1.0f),
 				glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f)));
-			go->AddComponent<TestMesh>(vertices, indices);
-			go->AddComponent<TestMaterial>(m_BasicShader, "res/textures/floor/albedo.png");
-			go->AddComponent<Billboard>(&cam);
-
-			m_SceneRoot->AddChild(go);
+			obj2->AddComponent<TestMesh>(vertices, indices);
+			obj2->AddComponent<Material>(m_BasicShader, m_TextureManager->GetTexture("Wood1"));
 
 			// Setup Second (RIGHT) Object
-			PrimitiveUtils::GenerateCapsule(vertices, indices);
+			PrimitiveUtils::GenerateCube(vertices, indices);
 
-			go = new GameObject(m_EntityManager);
-			go->AddComponent<Transform>(go, glm::mat4(1.0f),
+			obj3 = new GameObject(m_EntityManager);
+			obj3->AddComponent<Transform>(obj3, glm::mat4(1.0f),
 				glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f)));
-			go->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 25.0f);
-			go->AddComponent<TestMesh>(vertices, indices);
-			go->AddComponent<TestMaterial>(m_UIShader, "res/textures/floor/albedo.png");
-
-			m_SceneRoot->AddChild(go);
-			
-
-
-
-			//UI Scene Setup
-			PrimitiveUtils::GenerateQuad(vertices, indices);
-			m_UIRoot = new GameObject(m_EntityManager);
-			glm::mat4 m(1.0f);
-			m = glm::translate(m, glm::vec3(200.0f, 200.0f, 0.f));
-			m = glm::scale(m, glm::vec3(300.0f, 300.0f, 1.0f));
-			m_UIRoot->AddComponent<Transform>(go, glm::mat4(1.0f), m);
-			m_UIRoot->AddComponent<TestMesh>(vertices, indices);
-			m_UIRoot->AddComponent<TestMaterial>(m_UIShader, "res/textures/floor/albedo.png");
-
->>>>>>> 3f1ed511ba35e7f1532f13a7a6d29d3e9c7b3893
-*/
+			obj3->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 25.0f);
+			obj3->AddComponent<TestMesh>(vertices, indices);
+			obj3->AddComponent<Material>(m_BasicShader, m_TextureManager->GetTexture("Wood2"));
 
 			glEnable(GL_DEPTH_TEST);
+
+
+			m_BasicShader->Bind();
+
+			m_TextureManager->Bind();
+			m_BasicShader->SetInt("textureArray", 0);
+
+			m_BasicShader->SetMat4("projection", cam.GetProjectionMatrix());
 		}
 
 		virtual void OnUpdate(float dt) override
@@ -117,23 +108,26 @@ namespace sixengine {
 				//PROFILE_SCOPE("UPDATE")
 				m_SystemManager.UpdateAll(dt);
 			}
-
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::scale(model, glm::vec3(0.01f));
-			m_Shader->Bind();
-			m_Shader->SetMat4("projection", cam.GetProjectionMatrix());
-			m_Shader->SetMat4("view", cam.GetViewMatrix());
-			m_Shader->SetMat4("model", model);
 			
-			mm->Draw();
-
 			{
-				//PROFILE_SCOPE("RENDER")
-				//PROFILE_SCOPE("RENDER")
+				PROFILE_SCOPE("RENDER")
 				Renderer::Clear(0.3f, 0.3f, 0.3f);
-				
-				//m_Scene.Render();
+
+				m_BasicShader->SetMat4("view", cam.GetViewMatrix());
+
+				m_BasicShader->SetMat4("model", obj1->GetComponent<Transform>()->GetWorld());
+				m_BasicShader->SetFloat("layer", obj1->GetComponent<Material>()->GetTexture());
+				Renderer::Render(obj1->GetComponent<TestMesh>()->VAO);
+
+				m_BasicShader->SetMat4("model", obj2->GetComponent<Transform>()->GetWorld());
+				m_BasicShader->SetFloat("layer", obj2->GetComponent<Material>()->GetTexture());
+				Renderer::Render(obj2->GetComponent<TestMesh>()->VAO);
+			
+				m_BasicShader->SetMat4("model", obj3->GetComponent<Transform>()->GetWorld());
+				m_BasicShader->SetFloat("layer", obj3->GetComponent<Material>()->GetTexture());
+				Renderer::Render(obj3->GetComponent<TestMesh>()->VAO);
 			}
+
 		}
 	};
 

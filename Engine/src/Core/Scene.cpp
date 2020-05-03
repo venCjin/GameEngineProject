@@ -209,7 +209,7 @@ namespace sixengine {
 				file >> vert;
 				file >> frag;
 				file >> tex;
-				go->AddComponent<TestMaterial>(sm.makeInstance(vert, frag), tex);
+				//go->AddComponent<Material>(sm.makeInstance(vert, frag), tex);
 			}
 			else if (s == "-TestRotation")
 			{

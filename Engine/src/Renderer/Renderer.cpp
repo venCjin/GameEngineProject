@@ -29,6 +29,12 @@ namespace sixengine {
 		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 	}
 
+	void Renderer::Render(const VertexArray* vertexArray)
+	{
+		vertexArray->Bind();
+		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
+	}
+
 	void Renderer::Clear(float r, float g, float b)
 	{
 		glClearColor(r, g, b, 1.0f);

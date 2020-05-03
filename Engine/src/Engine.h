@@ -22,4 +22,4 @@
 
 #include "Gameplay/Components/Transform.h"
 #include "Gameplay/Components/TestMesh.h"
-#include "Gameplay/Components/TestMaterial.h"
+#include "Gameplay/Components/Material.h"

@@ -201,6 +201,7 @@ namespace sixengine {
 		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 		// 4. height maps
 		std::vector<Texture> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+
 		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 		m_Entries[meshIndex].Textures = textures;

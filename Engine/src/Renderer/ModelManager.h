@@ -2,7 +2,7 @@
 
 #include "Model.h" 
 #include "Buffers.h"
-#include "VertexArray.h""
+#include "VertexArray.h"
 
 #include <map>
 #include <vector>
