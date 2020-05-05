@@ -50,6 +50,7 @@ namespace sixengine {
 		std::map<std::string, Model*> m_ModelsMapping;	// change it to map so we do not add same model twice?
 		std::map<std::string, ModelEntry> m_ModelsEntriesMapping;
 		bool m_ModelsAlreadyLoaded = false;
-		
+		unsigned int m_ModelNumber = 0;
+
 	};
 }

@@ -7,8 +7,10 @@ namespace sixengine {
 	{
 		if (!m_ModelsAlreadyLoaded && m_ModelsMapping.find(path) == m_ModelsMapping.end())
 		{
-			Model *tmp = new Model(path);
+			Model *tmp = new Model(path, m_ModelNumber);
 			m_ModelsMapping[path] = tmp;
+
+			m_ModelNumber++;
 		}
 	}
 
@@ -21,18 +23,13 @@ namespace sixengine {
 
 		std::map<std::string, Model*>::iterator it = m_ModelsMapping.begin();
 
-		unsigned int modelNumber = 0;
-
-
 		while (it != m_ModelsMapping.end())
 		{
-			ModelEntry me(modelNumber, it->second->m_TotalNumIndices, vertices.size(), indices.size());
+			ModelEntry me(it->second->m_ID, it->second->m_TotalNumIndices, vertices.size(), indices.size());
 			m_ModelsEntriesMapping[it->first] = me;
 
 			vertices.insert(vertices.end(), it->second->vertices.begin(), it->second->vertices.end());
 			indices.insert(indices.end(), it->second->indices.begin(), it->second->indices.end());
-
-			modelNumber++;
 
 			it++;
 		}

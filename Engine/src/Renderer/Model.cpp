@@ -18,8 +18,9 @@ namespace sixengine {
 		m_Scene = NULL;
 	}
 
-	Model::Model(const std::string& filename)
+	Model::Model(const std::string& filename, unsigned ID)
 	{
+		m_ID = ID;
 		VAO = nullptr;
 		m_NumBones = 0;
 		m_Scene = NULL;

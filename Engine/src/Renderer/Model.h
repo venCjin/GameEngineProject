@@ -37,7 +37,7 @@ namespace sixengine {
 	public:
 
 		Model();
-		Model(const std::string& filename);
+		Model(const std::string& filename, unsigned ID);
 
 		~Model();
 
@@ -53,6 +53,8 @@ namespace sixengine {
 		void BoneTransform(float TimeInSeconds, std::vector<glm::mat4>& Transforms);
 
 		inline std::vector<glm::mat4>& GetCurrentTransforms() { return currentTransforms; }
+
+		unsigned int m_ID;
 
 		std::vector<Vertex> vertices;
 		std::vector<uint> indices;
