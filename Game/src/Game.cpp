@@ -11,6 +11,8 @@
 #include <Gameplay\Components\UIElement.h>
 #include <Gameplay\Systems\UIRendererSystem.h>*/
 #include "Core/Scene.h"
+#include "Gameplay/Components/SimplePlayer.h"
+#include "Gameplay/Components/Transform.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -36,6 +38,9 @@ namespace sixengine {
 		virtual void OnInit() override
 		{
 			m_Scene.LoadScene("res/scenes/test.scene");
+			m_Scene.cam.m_Target = m_EntityManager.EntitiesWithComponents<SimplePlayer>()[0].Component<Transform>();
+
+			m_EntityManager.EntitiesWithComponents<SimplePlayer>()[0].Component<SimplePlayer>().Get()->camera = &m_Scene.cam;
 /*
 =======
 			m_Model.LoadModel("res/models/par/par.dae");
@@ -99,6 +104,8 @@ namespace sixengine {
 
 		virtual void OnUpdate(float dt) override
 		{		
+			m_Scene.cam.OnUpdate(dt);
+
 			{
 				//PROFILE_SCOPE("UPDATE")
 				m_SystemManager.UpdateAll(dt);

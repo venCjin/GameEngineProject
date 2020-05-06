@@ -8,7 +8,7 @@ namespace sixengine {
 
 	class Scene
 	{
-	private:
+	public:
 		GameObject *m_UI, *m_Scene;
 		Camera cam, camUI;
 	public:

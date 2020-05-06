@@ -9,6 +9,15 @@
 #include "Core/Input.h"
 #include "Core/Timer.h"
 
+#include "Gameplay/GameObject.h"
+#include "Gameplay/Components/Transform.h"
+#include "ECS/EntityManager.h"
+
+#include "Timer.h"
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/rotate_vector.hpp>
+
 namespace sixengine {
 
 	// Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
@@ -33,6 +42,13 @@ namespace sixengine {
 	// An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 	class Camera
 	{
+	private:
+		float m_CurrentAngle = 0.0f;
+		glm::vec3 m_OffsetFromCharacter = glm::vec3(0.0f, 4.0f, 6.0f);
+
+	public:
+		class ComponentHandle<Transform> m_Target;
+
 		// Camera Attributes
 		glm::mat4 m_ProjectionMatrix;
 		glm::vec3 m_Position;
@@ -40,6 +56,7 @@ namespace sixengine {
 		glm::vec3 m_Up;
 		glm::vec3 m_Right;
 		glm::vec3 m_WorldUp;
+	private:
 		// Euler Angles
 		float m_Yaw;
 		float m_Pitch;
@@ -118,28 +135,6 @@ namespace sixengine {
 				m_Position -= m_Up * velocity;
 		}
 
-		// Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-		void ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch = true)
-		{
-			xoffset *= m_MouseSensitivity;
-			yoffset *= m_MouseSensitivity;
-
-			m_Yaw += xoffset;
-			m_Pitch += yoffset;
-
-			// Make sure that when pitch is out of bounds, screen doesn't get flipped
-			if (constrainPitch)
-			{
-				if (m_Pitch > 89.0f)
-					m_Pitch = 89.0f;
-				if (m_Pitch < -89.0f)
-					m_Pitch = -89.0f;
-			}
-
-			// Update Front, Right and Up Vectors using the updated Euler angles
-			updateCameraVectors();
-		}
-
 		// Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
 		void ProcessMouseScroll(float yoffset)
 		{
@@ -158,42 +153,63 @@ namespace sixengine {
 		// Calculates the front vector from the Camera's (updated) Euler Angles
 		void updateCameraVectors()
 		{
-			// Calculate the new Front vector
-			glm::vec3 front;
-			front.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-			front.y = sin(glm::radians(m_Pitch));
-			front.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-			m_Front = glm::normalize(front);
-			// Also re-calculate the Right and Up vector
-			m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-			m_Up = glm::normalize(glm::cross(m_Right, m_Front));
+			//// Calculate the new Front vector
+			//glm::vec3 front;
+			//front.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+			//front.y = sin(glm::radians(m_Pitch));
+			//front.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+			//m_Front = glm::normalize(front);
+			//// Also re-calculate the Right and Up vector
+			//m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+			//m_Up = glm::normalize(glm::cross(m_Right, m_Front));
 		}
 
 		// Camera movement
 		void flyCameraInit()
 		{
-			// Keyboard
-			Input::AddKeyActiveBinding(KeyCode::W, &Camera::goFORWARD, this);
-			Input::AddKeyActiveBinding(KeyCode::S, &Camera::goBACKWARD, this);
-			Input::AddKeyActiveBinding(KeyCode::A, &Camera::goLEFT, this);
-			Input::AddKeyActiveBinding(KeyCode::D, &Camera::goRIGHT, this);
-			Input::AddKeyActiveBinding(KeyCode::SPACE, &Camera::goUP, this);
-			Input::AddKeyActiveBinding(KeyCode::LEFT_SHIFT, &Camera::goDOWN, this);
 			Input::AddKeyPressedBinding(KeyCode::LEFT_CONTROL, &Camera::toogleCursor, this);
-
-			// Mouse
 			Input::AddMouseDeltaPosBinding(&Camera::mouseMove, this);
 		}
 
-		void goFORWARD() { ProcessKeyboard(CameraMovement::FORWARD, Timer::Instance()->DeltaTime()); }
-		void goBACKWARD() { ProcessKeyboard(CameraMovement::BACKWARD, Timer::Instance()->DeltaTime()); }
-		void goLEFT() { ProcessKeyboard(CameraMovement::LEFT, Timer::Instance()->DeltaTime()); }
-		void goRIGHT() { ProcessKeyboard(CameraMovement::RIGHT, Timer::Instance()->DeltaTime()); }
-		void goUP() { ProcessKeyboard(CameraMovement::UP, Timer::Instance()->DeltaTime()); }
-		void goDOWN() { ProcessKeyboard(CameraMovement::DOWN, Timer::Instance()->DeltaTime()); }
-		void toogleCursor() { Application::Get().GetWindow().SwitchCursorVisibility(); }
+		void toogleCursor() 
+		{ 
+			Application::Get().GetWindow().SwitchCursorVisibility(); 
+		}
 
-		void mouseMove(float xoffset, float yoffset) { ProcessMouseMovement(xoffset, -yoffset); }
+
+
+		void mouseMove(float xoffset, float yoffset) 
+		{ 
+			m_CurrentAngle -= xoffset * m_MouseSensitivity;
+
+			//xoffset *= m_MouseSensitivity;
+			//yoffset *= m_MouseSensitivity;
+
+			//m_Yaw += xoffset;
+			//m_Pitch += yoffset;
+
+			//// Make sure that when pitch is out of bounds, screen doesn't get flipped
+			//if (m_Pitch > 89.0f)
+			//	m_Pitch = 89.0f;
+			//if (m_Pitch < -89.0f)
+			//	m_Pitch = -89.0f;
+
+			//// Update Front, Right and Up Vectors using the updated Euler angles
+			//updateCameraVectors();
+		}
+
+		public:
+		void OnUpdate(float dt)
+		{
+			m_Position = m_Target->getWorldPosition();
+			
+			glm::vec3 offset = glm::rotate(m_OffsetFromCharacter, glm::radians(m_CurrentAngle), glm::vec3(0.0f, 1.0f, 0.0f));
+			m_Position += offset;
+
+			m_Front = glm::normalize(m_Target->getWorldPosition() - m_Position);
+			m_Right = glm::cross(m_Front, glm::vec3(0.0f, 1.0f, 0.0f));
+			m_Up = glm::cross(m_Right, m_Front);
+		}
 	};
 
 }
