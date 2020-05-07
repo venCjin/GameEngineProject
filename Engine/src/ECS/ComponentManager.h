@@ -1,3 +1,4 @@
+#pragma once
 
 #include <assert.h>
 
@@ -32,7 +33,7 @@ public:
         return m_Start + offset;
     }
 
-    virtual void Destroy(size_t n) = 0;
+    //virtual void Destroy(size_t n) = 0;
 
 protected:
     char* m_Start;
@@ -40,17 +41,33 @@ protected:
     size_t m_AllocatedEntities = 0;
 };
 
-template <typename T, size_t N = 8192>
+template <typename T, size_t N = 10240>
 class ComponentManager : public PoolAllocator 
 {
 public:
     ComponentManager() : PoolAllocator(sizeof(T), N) {}
     ~ComponentManager() {}
 
-    void Destroy(size_t n) override 
+    /*void Destroy(size_t n) override 
     {
         assert(n < m_AllocatedEntities);
         T* obj = static_cast<T*>(Get(n));
         obj->~T();
-    }
+    }*/
+};
+
+
+template <typename T, size_t N = 10240>
+class FrameAllocator : public PoolAllocator
+{
+public:
+    FrameAllocator() : PoolAllocator(sizeof(T), N) { m_AllocatedEntities = N; }
+    ~FrameAllocator() {}
+
+    /*void Destroy(size_t n) override
+    {
+        assert(n < m_AllocatedEntities);
+        T* obj = static_cast<T*>(Get(n));
+        obj->~T();
+    }*/
 };

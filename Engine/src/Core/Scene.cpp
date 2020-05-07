@@ -100,10 +100,12 @@ namespace sixengine {
 	void Scene::Render()
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		m_Scene->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
+		//m_Scene->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
+		m_Scene->Render();
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		m_UI->Render(camUI.GetProjectionMatrix(), camUI.GetViewMatrix());
+		//m_UI->Render(camUI.GetProjectionMatrix(), camUI.GetViewMatrix());
+		m_UI->Render();
 	}
 
 	GameObject* Scene::ReadGameObject(std::fstream& file, EntityManager& en, ShaderManager& sm)
@@ -196,12 +198,12 @@ namespace sixengine {
 				else if (s == "Capsule") PrimitiveUtils::GenerateCapsule(vertices, indices);
 				else if (s == "Sphere") PrimitiveUtils::GenerateSphere(vertices, indices);
 				else PrimitiveUtils::GenerateCube(vertices, indices); //default cube
-				go->AddComponent<TestMesh>(vertices, indices);
+				//go->AddComponent<Mesh>(vertices, indices);
 			}
 			else if (s == "-Model")
 			{
 				file >> s;
-				go->AddComponent<Model>(s);
+				//go->AddComponent<Model>(s);
 			}
 			else if (s == "-TestMaterial")
 			{
@@ -218,7 +220,7 @@ namespace sixengine {
 				file >> y;
 				file >> z;
 				file >> speed;
-				go->AddComponent<TestRotation>(glm::vec3(x, y, z), speed);
+				go->AddComponent<Rotation>(glm::vec3(x, y, z), speed);
 			}
 			else if (s == "-Billboard")
 			{

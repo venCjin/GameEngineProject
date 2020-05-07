@@ -10,8 +10,9 @@ namespace sixengine {
 	public:
 		void AddTexture(std::string path);
 		void CreateTextureArray();
-		unsigned int GetTexture(std::string textureName) { return m_TextureMap[textureName] % m_TexturesPerMaterial; }
-		void Bind() const;
+		void Bind(unsigned int slot = 0) const;
+
+		inline unsigned int GetTexture(std::string textureName) { return m_TextureMap[textureName] / m_TexturesPerMaterial; }
 
 		TextureArray(unsigned int width, unsigned int height, unsigned int texturesPerMaterial = 1);
 		~TextureArray();

@@ -2,19 +2,27 @@
 
 #include <Gameplay/GameObject.h>
 #include <Renderer/TextureArray.h>
+#include <Renderer/ModelManager.h>
 #include <Core/Camera.h>
+
+#include <ECS/ComponentManager.h>
 
 namespace sixengine {
 
+	struct SSBO
+	{
+		glm::mat4 model;
+		glm::vec4 textureLayer;
+	};
+
 	struct RendererCommand
 	{
-		float distance;
-		unsigned char materialID;
-		unsigned char meshID;
-		bool isTranslucent;
-		bool isDebug;
+		//float distance;
+		class Shader* shader;
+		class Model* model;
+		//bool isTranslucent;
 
-		GameObject* object;
+		SSBO data;
 	};
 
 	struct DrawElementsCommand
@@ -29,21 +37,32 @@ namespace sixengine {
 	class BatchRenderer
 	{
 	private:
-		std::vector<RendererCommand*> m_CommandList;
-		std::vector<DrawElementsCommand*> m_RenderCommandList;
+		FrameAllocator<RendererCommand> m_FrameAllocator;
+		static BatchRenderer* m_BatchRendererInstance;
 
+		std::vector<RendererCommand*> m_CommandList;
+		std::vector<DrawElementsCommand> m_RenderCommandList;
+
+		ModelManager* m_ModelManager;
 		TextureArray* m_TextureArray;
 		Camera* m_PlayerCamera;
 
-	public:
-		BatchRenderer(TextureArray* textureArray, Camera* camera);
-		~BatchRenderer();
+		unsigned int ssboModels;
+		unsigned int ssboLayers;
 
-		void SubmitCommand(GameObject* gameObject); //how to add gizmo?
+		unsigned int idbo;
+
+	public:
+		void SubmitCommand(GameObject* gameObject, glm::mat4 model); //how to add gizmo?
 		void Render();
 
+		static BatchRenderer* Instance() { return m_BatchRendererInstance; }
+		static void Initialize(ModelManager* modelManager, TextureArray* textureArray, Camera* camera);
+
 	private:
-		int Compare(const void* x, const void* y);
+		BatchRenderer(ModelManager* modelManager, TextureArray* textureArray, Camera* camera);
+		~BatchRenderer();
+
 		float Distance(glm::vec3* x, glm::vec3* y);
 	};
 

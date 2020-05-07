@@ -3,12 +3,26 @@
 
 namespace sixengine {
 
+	ModelManager::ModelManager()
+	{
+
+	}
+
+	ModelManager::~ModelManager()
+	{
+
+	}
+
 	void ModelManager::AddModel(std::string path)
 	{
-		if (!m_ModelsAlreadyLoaded && m_ModelsMapping.find(path) == m_ModelsMapping.end())
+		std::size_t slash = path.find_last_of("/\\");
+		std::size_t dot = path.find_last_of(".");
+		std::string modelName = path.substr(slash + 1, dot - slash - 1);
+
+		if (!m_ModelsAlreadyLoaded && m_ModelsMapping.find(modelName) == m_ModelsMapping.end())
 		{
 			Model *tmp = new Model(path, m_ModelNumber);
-			m_ModelsMapping[path] = tmp;
+			m_ModelsMapping[modelName] = tmp;
 
 			m_ModelNumber++;
 		}
@@ -25,8 +39,8 @@ namespace sixengine {
 
 		while (it != m_ModelsMapping.end())
 		{
-			ModelEntry me(it->second->m_ID, it->second->m_TotalNumIndices, vertices.size(), indices.size());
-			m_ModelsEntriesMapping[it->first] = me;
+			ModelEntry me(it->second->m_TotalNumIndices, vertices.size(), indices.size());
+			m_ModelsEntriesMapping[it->second->m_ID] = me;
 
 			vertices.insert(vertices.end(), it->second->vertices.begin(), it->second->vertices.end());
 			indices.insert(indices.end(), it->second->indices.begin(), it->second->indices.end());
@@ -34,7 +48,9 @@ namespace sixengine {
 			it++;
 		}
 
-		VAO = new VertexArray();
+		ModelEntry tmp = m_ModelsEntriesMapping[2];
+
+		m_VAO = new VertexArray();
 		VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
 		IndexBuffer* ebo = new IndexBuffer(&indices[0], indices.size());
 
@@ -44,27 +60,14 @@ namespace sixengine {
 			{ VertexDataType::VEC2F, "texCoords" },
 			{ VertexDataType::VEC4I, "boneIDs" },
 			{ VertexDataType::VEC4F, "boneWeights" }
-			});
+		});
 
-		VAO->AddVertexBuffer(*vbo);
-		VAO->AddIndexBuffer(*ebo);
-
-		// load vao and vbo
-
-		
+		m_VAO->AddVertexBuffer(*vbo);
+		m_VAO->AddIndexBuffer(*ebo);
 	}
 
-	void ModelManager::Draw()
+	void ModelManager::Bind()
 	{
-		glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
-	}
-
-	ModelManager::ModelManager()
-	{
-	}
-
-
-	ModelManager::~ModelManager()
-	{
+		m_VAO->Bind();
 	}
 }

@@ -53,13 +53,13 @@ void EntityManager::Destroy(Entity::ID id)
     assert(Entity::Valid(id));
 
     uint64_t index = id.GetID();
-    auto mask = m_EntityComponentMask[index];
+    /*auto mask = m_EntityComponentMask[index];
     for (size_t i = 0; i < m_ComponentPools.size(); i++)
     {
         PoolAllocator* pool = m_ComponentPools[i];
         if (mask.test(i))
             pool->Destroy(index);
-    }
+    }*/
 
     m_EntityComponentMask[index].reset();
     m_UnusedEntities.push_back(index);

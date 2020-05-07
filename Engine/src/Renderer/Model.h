@@ -55,6 +55,7 @@ namespace sixengine {
 		inline std::vector<glm::mat4>& GetCurrentTransforms() { return currentTransforms; }
 
 		unsigned int m_ID;
+		VertexArray* VAO;
 
 		std::vector<Vertex> vertices;
 		std::vector<uint> indices;
@@ -88,7 +89,6 @@ namespace sixengine {
 
 #define INVALID_MATERIAL 0xFFFFFFFF
 
-		VertexArray* VAO;
 
 		struct MeshEntry {
 			MeshEntry()

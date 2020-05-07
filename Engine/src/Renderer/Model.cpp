@@ -364,7 +364,7 @@ namespace sixengine {
 					number = std::to_string(heightNr++); // transfer unsigned int to stream
 
 				// now set the sampler to the correct texture unit
-				glUniform1i(glGetUniformLocation(shader->m_ID, (name + number).c_str()), i* m_Entries.size() + j);
+				glUniform1i(glGetUniformLocation(shader->GetID(), (name + number).c_str()), i* m_Entries.size() + j);
 				// and finally bind the texture
 				glBindTexture(GL_TEXTURE_2D, m_Entries[i].Textures[j].id);
 			}

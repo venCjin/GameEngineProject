@@ -59,9 +59,9 @@ void sixengine::TextureArray::CreateTextureArray()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-void sixengine::TextureArray::Bind() const
+void sixengine::TextureArray::Bind(unsigned int slot) const
 {
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D_ARRAY, m_ID);
 }
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Gameplay/Components/Transform.h"
-#include "Gameplay/Components/TestRotation.h"
+#include "Gameplay/Components/Rotation.h"
 #include <Gameplay/Components/Billboard.h>
 
 #include <Physics/Components/BoxCollider.h>

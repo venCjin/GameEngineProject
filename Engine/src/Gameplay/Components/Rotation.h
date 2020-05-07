@@ -4,12 +4,12 @@
 
 namespace sixengine {
 
-    struct TestRotation
+    struct Rotation
     {
         glm::vec3 axis;
         float speed;
 
-        TestRotation(glm::vec3 rotationAxis, float rotationSpeed) 
+        Rotation(glm::vec3 rotationAxis, float rotationSpeed) 
             : axis(rotationAxis), speed(rotationSpeed) {}
     };
 

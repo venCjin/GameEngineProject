@@ -3,48 +3,9 @@
 
 namespace sixengine {
 
-	Material::Material()
+	Material::Material(Shader* shader, glm::vec4 texture, std::string name)
+		: m_Shader(shader), m_Texture(texture), m_Name(name)
 	{
-	}
-
-	void Material::Bind()
-	{
-		if (m_Shader == nullptr)
-		{
-			//warn
-			return;
-		}
-
-		m_Shader->Bind();
-		//set model transform?
-		//set texture?
-
-	}
-
-	void Material::Unbind()
-	{
-		m_Shader->Unbind();
-	}
-
-	void Material::SetShader(Shader & shader)
-	{
-		m_Shader = &shader;
-	}
-
-	void Material::SetColor(const std::string & name, float color[])
-	{
-		m_Shader->SetColor(name, color);
-	}
-
-
-	void Material::SetName(std::string name)
-	{
-		m_Name = name;
-	}
-
-	std::string Material::GetName()
-	{
-		return m_Name;
 	}
 
 	Material::~Material()
@@ -52,4 +13,19 @@ namespace sixengine {
 
 	}
 
+	void Material::SetShader(Shader* shader)
+	{
+		m_Shader = shader;
+	}
+
+	void Material::SetTexture(glm::vec4 texture)
+	{
+		m_Texture = texture;
+	}
+
+
+	void Material::SetName(const std::string& name)
+	{
+		m_Name = name;
+	}
 }

@@ -4,7 +4,7 @@
 #include <ECS/EventManager.h>
 
 #include <Gameplay/Components/Transform.h>
-#include <Gameplay/Components/TestRotation.h>
+#include <Gameplay/Components/Rotation.h>
 #include <Gameplay/Components/Billboard.h>
 
 #include <Gameplay/Systems/RotationSystem.h>

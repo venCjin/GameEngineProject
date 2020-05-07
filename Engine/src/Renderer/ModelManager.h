@@ -12,45 +12,47 @@ namespace sixengine {
 	class ModelManager
 	{
 	public:
-		void AddModel(std::string path);
-		void CreateVAO();	// loads all models in m_ModelPaths and then creates one VAO
-		void Draw();
-
-		ModelManager();
-		~ModelManager();
-	private:
-
 		struct ModelEntry
 		{
-			ModelEntry() 
+			ModelEntry()
 			{
-				ModelIndex = 0;
 				BaseVertex = 0;
 				BaseIndex = 0;
 				NumIndices = 0;
 			}
-			
-			ModelEntry(unsigned int modelIndex, unsigned int numIndices, unsigned int baseVertex, unsigned int baseIndex)
+
+			ModelEntry(unsigned int numIndices, unsigned int baseVertex, unsigned int baseIndex)
 			{
-				ModelIndex = modelIndex;
 				BaseVertex = baseVertex;
 				BaseIndex = baseIndex;
 				NumIndices = numIndices;
 			}
 
-			unsigned int ModelIndex;
 			unsigned int BaseVertex;
 			unsigned int BaseIndex;
 			unsigned int NumIndices;
 		};
 
-		VertexArray* VAO;
+	public:
+		void AddModel(std::string path);
+		void CreateVAO();	// loads all models in m_ModelPaths and then creates one VAO
 
-		//std::vector<Model*> m_Models;
-		std::map<std::string, Model*> m_ModelsMapping;	// change it to map so we do not add same model twice?
-		std::map<std::string, ModelEntry> m_ModelsEntriesMapping;
+		void Bind();
+
+		inline Model* GetModel(std::string modelName) { return m_ModelsMapping[modelName]; }
+		inline ModelEntry GetModelEntry(unsigned int modelID) { return m_ModelsEntriesMapping[modelID]; }
+		inline unsigned int GetNumberOfModels() { return m_ModelNumber - 1; }
+
+		ModelManager();
+		~ModelManager();
+
+	private:
+		VertexArray* m_VAO;
+
+		std::map<std::string, Model*> m_ModelsMapping;
+		std::map<unsigned int, ModelEntry> m_ModelsEntriesMapping;
+
 		bool m_ModelsAlreadyLoaded = false;
 		unsigned int m_ModelNumber = 0;
-
 	};
 }

@@ -16,9 +16,11 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+
+#include "Renderer/BatchRenderer.h"
 #include "Renderer/ModelManager.h"
 #include "Renderer/TextureArray.h"
-#include "Renderer/PrimitiveUtils.h"
+#include "Renderer/Material.h"
 
 
 namespace sixengine {
@@ -28,27 +30,33 @@ namespace sixengine {
 	private:
 		Scene m_Scene;
 		GameObject *obj1, *obj2, *obj3;
-		GameObject* m_SceneRoot, * m_UIRoot;
-		Shader* m_Shader, * m_BasicShader, * m_UIShader;
+		GameObject* objects[100][100];
+		GameObject *m_SceneRoot, *m_UIRoot;
+		Shader *m_BasicShader, *m_BasicShader2;
 		Camera cam, camUI;
-		ShaderManager* m_ShaderManager;
-		TextureArray* m_TextureManager;
-		Model m_Model;
 		std::vector<glm::mat4> transforms;
+
+		ShaderManager* m_ShaderManager;
+		ModelManager* m_ModelManager;
+		TextureArray* m_TextureArray;
+		BatchRenderer* m_BatchRenderer;
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
 			: Application(title, width, height), m_Scene(width, height)
 		{
-			m_TextureManager = new TextureArray(2048, 2048);
+			m_TextureArray = new TextureArray(2048, 2048);
+			m_ModelManager = new ModelManager();
 			m_ShaderManager = new ShaderManager();
+
 			m_SystemManager.AddSystem<RotationSystem>();
-			m_Shader = m_ShaderManager->makeInstance("res/shaders/TestShader.vert", "res/shaders/TestShader.frag");
-			m_BasicShader = m_ShaderManager->makeInstance("res/shaders/basic.vert", "res/shaders/basic.frag");
-			m_UIShader = m_ShaderManager->makeInstance("res/shaders/UIShader.vert", "res/shaders/UIShader.frag");
+
 			float aspectRatio = (float)width / (float)height;
 			cam.MakePerspective(aspectRatio);
 			camUI.MakeOrtho(width, height);
+
+			BatchRenderer::Initialize(m_ModelManager, m_TextureArray, &cam);
+			m_BatchRenderer = BatchRenderer::Instance();
 		}
 		
 		~Game()
@@ -56,50 +64,62 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			m_TextureManager->AddTexture("res/textures/test/Bricks.jpg");
-			m_TextureManager->AddTexture("res/textures/test/Wood1.jpg");
-			m_TextureManager->AddTexture("res/textures/test/Wood2.jpg");
-			m_TextureManager->CreateTextureArray();
+			m_TextureArray->AddTexture("res/textures/test/Bricks.jpg");
+			m_TextureArray->AddTexture("res/textures/test/Wood1.jpg");
+			m_TextureArray->AddTexture("res/textures/test/Wood2.jpg");
+			m_TextureArray->CreateTextureArray();
 
-			std::vector<Vertex> vertices;
-			std::vector<unsigned int> indices;
+			std::map<unsigned int, std::string> randomT;
+			randomT[0] = "Bricks";
+			randomT[1] = "Wood1";
+			randomT[2] = "Wood2";
 
-			// Setup First (CENTER) Object
-			PrimitiveUtils::GenerateCube(vertices, indices);
+			std::map<unsigned int, std::string> randomM;
+			randomM[0] = "cube";
+			randomM[1] = "sphere";
+			randomM[2] = "cone";
+			randomM[3] = "cylinder";
+			randomM[4] = "teapot";
 
-			obj1 = new GameObject(m_EntityManager);
-			obj1->AddComponent<Transform>(obj1);
-			obj1->AddComponent<TestMesh>(vertices, indices);
-			obj1->AddComponent<Material>(m_BasicShader, m_TextureManager->GetTexture("Bricks"));
-			
-			// Setup Second (LEFT) Object2
-			PrimitiveUtils::GenerateCube(vertices, indices);
+			//m_Shader = m_ShaderManager->AddShader("res/shaders/TestShader.vert"");
+			//m_UIShader = m_ShaderManager->AddShader("res/shaders/UIShader.vert", "res/shaders/UIShader.frag");
+			m_BasicShader = m_ShaderManager->AddShader("res/shaders/Basic.glsl");
+			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/Basic2.glsl");
 
-			obj2 = new GameObject(m_EntityManager);
-			obj2->AddComponent<Transform>(obj2, glm::mat4(1.0f),
-				glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 0.0f, 0.0f)));
-			obj2->AddComponent<TestMesh>(vertices, indices);
-			obj2->AddComponent<Material>(m_BasicShader, m_TextureManager->GetTexture("Wood1"));
+			m_ModelManager->AddModel("res/models/primitives/cube.obj");
+			m_ModelManager->AddModel("res/models/primitives/sphere.obj");
+			m_ModelManager->AddModel("res/models/primitives/cone.obj");
+			m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
+			m_ModelManager->AddModel("res/models/primitives/teapot.obj");
+			m_ModelManager->CreateVAO();
 
-			// Setup Second (RIGHT) Object
-			PrimitiveUtils::GenerateCube(vertices, indices);
+			m_SceneRoot = new GameObject(m_EntityManager);
+			srand(NULL);
+			for (int i = 0; i < 100; i++)
+			{
+				for (int j = 0; j < 100; j++)
+				{
 
-			obj3 = new GameObject(m_EntityManager);
-			obj3->AddComponent<Transform>(obj3, glm::mat4(1.0f),
-				glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f)));
-			obj3->AddComponent<TestRotation>(glm::vec3(0.0f, 1.0f, 0.0f), 25.0f);
-			obj3->AddComponent<TestMesh>(vertices, indices);
-			obj3->AddComponent<Material>(m_BasicShader, m_TextureManager->GetTexture("Wood2"));
+					objects[i][j] = new GameObject(m_EntityManager);
+					objects[i][j]->AddComponent<Transform>(objects[i][j], glm::mat4(1.0f),
+						glm::translate(glm::mat4(1.0f), glm::vec3(2.0f * i, 0.0f, 2.0f * j)));
+					unsigned int rM = rand() % 5;
+					objects[i][j]->AddComponent<Mesh>(m_ModelManager->GetModel(randomM[rM]));
+					unsigned int rT = rand() % 3;
+
+					m_SceneRoot->AddChild(objects[i][j]);
+
+					if (i == 0 && j == 0) continue;
+					objects[i][j]->AddComponent<Material>(m_BasicShader, glm::vec4(m_TextureArray->GetTexture(randomT[rT]), 0.0f, 0.0f, 0.0f));
+				}
+			}
+
+			objects[0][0]->AddComponent<Material>(m_BasicShader2, glm::vec4(m_TextureArray->GetTexture(randomT[0]), 0.0f, 0.0f, 0.0f));
 
 			glEnable(GL_DEPTH_TEST);
 
-
-			m_BasicShader->Bind();
-
-			m_TextureManager->Bind();
-			m_BasicShader->SetInt("textureArray", 0);
-
-			m_BasicShader->SetMat4("projection", cam.GetProjectionMatrix());
+			m_SceneRoot->Render(true);
+			m_BatchRenderer->Render();
 		}
 
 		virtual void OnUpdate(float dt) override
@@ -108,24 +128,28 @@ namespace sixengine {
 				//PROFILE_SCOPE("UPDATE")
 				m_SystemManager.UpdateAll(dt);
 			}
+
+			{
+				PROFILE_SCOPE("SUBMIT COMMANDS")
+				m_SceneRoot->Render();
+			}
 			
 			{
 				PROFILE_SCOPE("RENDER")
-				Renderer::Clear(0.3f, 0.3f, 0.3f);
+				m_BatchRenderer->Render();
 
-				m_BasicShader->SetMat4("view", cam.GetViewMatrix());
+				//Renderer::Clear(0.3f, 0.3f, 0.3f);
+				//m_BasicShader->SetMat4("view", cam.GetViewMatrix());
 
-				m_BasicShader->SetMat4("model", obj1->GetComponent<Transform>()->GetWorld());
-				m_BasicShader->SetFloat("layer", obj1->GetComponent<Material>()->GetTexture());
-				Renderer::Render(obj1->GetComponent<TestMesh>()->VAO);
-
-				m_BasicShader->SetMat4("model", obj2->GetComponent<Transform>()->GetWorld());
-				m_BasicShader->SetFloat("layer", obj2->GetComponent<Material>()->GetTexture());
-				Renderer::Render(obj2->GetComponent<TestMesh>()->VAO);
-			
-				m_BasicShader->SetMat4("model", obj3->GetComponent<Transform>()->GetWorld());
-				m_BasicShader->SetFloat("layer", obj3->GetComponent<Material>()->GetTexture());
-				Renderer::Render(obj3->GetComponent<TestMesh>()->VAO);
+				/*for (int i = 0; i < 100; i++)
+				{
+					for (int j = 0; j < 100; j++)
+					{
+						m_BasicShader->SetMat4("model", objects[i][j]->GetComponent<Transform>()->GetWorld());
+						m_BasicShader->SetFloat("layer", objects[i][j]->GetComponent<Material>()->GetTexture());
+						Renderer::Render(objects[i][j]->GetComponent<Mesh>()->GetModel()->VAO);
+					}
+				}*/
 			}
 
 		}

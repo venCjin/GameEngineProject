@@ -3,7 +3,7 @@
 #include <ECS/SystemManager.h>
 
 #include <Gameplay/Components/Transform.h>
-#include <Gameplay/Components/TestRotation.h>
+#include <Gameplay/Components/Rotation.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -20,13 +20,13 @@ namespace sixengine {
 			: BaseEvent(id), a(a) {}
 	};
 
-	SYSTEM(RotationSystem, Transform, TestRotation)
+	SYSTEM(RotationSystem, Transform, Rotation)
     {
 		void Update(EventManager& eventManager, float dt) override
 		{
-			m_Transform->SetWorld(glm::rotate(m_Transform->GetWorld(), glm::radians(m_TestRotation->speed * dt), m_TestRotation->axis));
+			m_Transform->SetWorld(glm::rotate(m_Transform->GetWorld(), glm::radians(m_Rotation->speed * dt), m_Rotation->axis));
 
-			if (m_TestRotation->speed > 3)
+			if (m_Rotation->speed > 3)
 			{
 				eventManager.Emit(OnTestEvent(entity.GetID(), true));
 			}

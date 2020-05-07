@@ -57,6 +57,9 @@ public:
     ComponentHandle<T> AddComponent(Args&& ... args);
 
     template <typename T>
+    ComponentHandle<T> AddComponentCopy(const T& component);
+
+    template <typename T>
     void RemoveComponent();
 
     template <typename T>
@@ -313,6 +316,12 @@ template <typename T, typename ... Args>
 ComponentHandle<T> Entity::AddComponent(Args&& ... args)
 {
     return m_EntityManager->AddComponent<T>(m_ID, std::forward<Args>(args) ...);
+}
+
+template<typename T>
+inline ComponentHandle<T> Entity::AddComponentCopy(const T& component)
+{
+    return m_EntityManager->AddComponent<T>(m_ID, std::forward<const T &>(component));
 }
 
 template <typename T>

@@ -14,11 +14,10 @@ namespace sixengine {
 
 	public:
 		ResourceManager();
-		T get(std::string key);
-		bool isResourceInDicktionary(std::string);
+		T Get(std::string key);
+		bool IsResourceInDicktionary(std::string);
 		bool AddResource(std::string key, T value);
-		std::size_t size();
-		//virtual T makeInstance(std::string key) = 0;
+		std::size_t Size();
 	};
 
 }

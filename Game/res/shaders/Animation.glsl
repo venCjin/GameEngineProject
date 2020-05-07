@@ -1,4 +1,5 @@
-#version 450 core
+#shader vertex
+#version 460 core
 
 layout (location = 0) in vec3 aPosition;
 layout (location = 1) in vec3 aNormal;
@@ -22,7 +23,18 @@ void main()
 
 	vec4 PosL = BoneTransform * vec4(aPosition, 1.0);
 
-
     gl_Position = projection * view * model * PosL;
 	TexCoords = aTexCoord;
 }
+
+#shader fragment
+#version 460 core
+
+out vec4 FragColor;
+in vec2 TexCoords;
+uniform sampler2D textureArray;
+
+void main()
+{
+    FragColor = texture(textureArray, TexCoords);
+} 
