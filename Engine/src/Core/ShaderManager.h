@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ResourceManager.h"
+#include "Renderer/Shader.h"
 
 namespace sixengine {
 

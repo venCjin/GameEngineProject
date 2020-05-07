@@ -67,9 +67,7 @@ namespace sixengine {
 		{
 			glm::mat4 BoneOffset = glm::mat4(0.0f);
 			glm::mat4 FinalTransformation = glm::mat4(0.0f);;
-
 		};
-
 
 		void CalcInterpolatedScaling(aiVector3D& out, float animationTime, const aiNodeAnim* nodeAnim);
 		void CalcInterpolatedRotation(aiQuaternion& out, float animationTime, const aiNodeAnim* nodeAnim);

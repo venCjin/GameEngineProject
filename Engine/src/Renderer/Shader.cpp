@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Shader.h"
 
-#include <glad/glad.h>
 
 namespace sixengine {
 
@@ -10,6 +9,7 @@ namespace sixengine {
 	}
 
 	Shader::Shader(const char * shaderPath)
+		: m_Animated(false)
 	{
 		std::stringstream code[6];
 		int shader = -1;
@@ -61,7 +61,7 @@ namespace sixengine {
 		LinkProgram();
 	}
 
-	void Shader::CompileAndAttach(unsigned int shaderType, const char * shaderCode)
+	void Shader::CompileAndAttach(GLenum shaderType, const char * shaderCode)
 	{
 		unsigned int shader = glCreateShader(shaderType);;
 		glShaderSource(shader, 1, &shaderCode, NULL);
@@ -118,6 +118,11 @@ namespace sixengine {
 	void Shader::Unbind() const
 	{
 		glUseProgram(0);
+	}
+
+	void Shader::SetAnimated(bool animated)
+	{
+		m_Animated = animated;
 	}
 
 	void Shader::SetInt(const std::string & name, int value) const

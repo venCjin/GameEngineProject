@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ResourceManager.h"
+#include "Core/ResourceManager.h"
 
 namespace sixengine {
 
@@ -36,5 +36,6 @@ namespace sixengine {
 	}
 
 	template class ResourceManager<float>;
-	template class ResourceManager<Shader*>;
+	template class ResourceManager<class Shader*>;
+	template class ResourceManager<class Material*>;
 }

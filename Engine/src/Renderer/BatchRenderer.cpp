@@ -4,6 +4,7 @@
 #include <Gameplay/Components/Transform.h>
 #include <Gameplay/Components/Mesh.h>
 #include <Renderer/Material.h>
+#include <Core/Timer.h>
 
 
 namespace sixengine {
@@ -35,9 +36,20 @@ namespace sixengine {
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssboLayers);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
+		glGenBuffers(1, &ssboBones);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboBones);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, 100 * sizeof(BonesStruct), 0, GL_DYNAMIC_COPY);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssboBones);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
 		glGenBuffers(1, &idbo);
 		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, idbo);
 		glBufferData(GL_DRAW_INDIRECT_BUFFER, 100 * sizeof(RendererCommand), 0, GL_DYNAMIC_DRAW);
+
+		for (int i = 0; i < 100; i++)
+		{
+			m_Transforms.push_back(std::vector<glm::mat4>());
+		}
 	}
 
 	BatchRenderer::~BatchRenderer()
@@ -89,7 +101,7 @@ namespace sixengine {
 		{
 			if (m_CommandList[s]->shader->GetID() != lastShaderID)
 			{
-				lastShaderID = m_CommandList[s]->model->m_ID;
+				lastShaderID = m_CommandList[s]->shader->GetID();
 				vectorID++;
 			}
 
@@ -146,6 +158,21 @@ namespace sixengine {
 			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, layers.size() * sizeof(layers[0]), layers.data());
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
+			if (commandList[0]->shader->IsAnimated())
+			{
+				float time = Timer::Instance()->ElapsedTime();
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboBones);
+				unsigned int offsetStep = 100 * sizeof(glm::mat4);
+				unsigned int offset = 0;
+
+				for (int i = 0; i < commandList.size(); i++)
+				{
+					commandList[i]->model->BoneTransform(time + (float)i * 2.0f, m_Transforms[i]);
+					glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, m_Transforms[i].size() * sizeof(m_Transforms[i][0]), m_Transforms[i].data());
+					offset += offsetStep;
+				}
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+			}
 
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, idbo);
 			glBufferSubData(GL_DRAW_INDIRECT_BUFFER, 0, m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]), m_RenderCommandList.data());

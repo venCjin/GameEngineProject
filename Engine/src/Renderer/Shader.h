@@ -3,15 +3,19 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <glad/glad.h>
+
 namespace sixengine {
 
 	class Shader
 	{
 	private:
 		unsigned int m_ID;
+		bool m_Animated;
 
 	private:
-		void CompileAndAttach(unsigned int shaderType, const char* shaderCode);
+		void CompileAndAttach(GLenum shaderType, const char* shaderCode);
 		void LinkProgram();
 
 	public:
@@ -22,6 +26,9 @@ namespace sixengine {
 		void Unbind() const;
 
 		inline unsigned int GetID() const { return m_ID; }
+		inline bool IsAnimated() const { return m_Animated; }
+
+		void SetAnimated(bool animated);
 
 		void SetInt(const std::string &name, int value) const;
 		void SetFloat(const std::string &name, float value) const;

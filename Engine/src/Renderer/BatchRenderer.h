@@ -15,6 +15,11 @@ namespace sixengine {
 		glm::vec4 textureLayer;
 	};
 
+	struct BonesStruct
+	{
+		glm::mat4 bones[52];
+	};
+
 	struct RendererCommand
 	{
 		//float distance;
@@ -49,8 +54,11 @@ namespace sixengine {
 
 		unsigned int ssboModels;
 		unsigned int ssboLayers;
+		unsigned int ssboBones;
 
 		unsigned int idbo;
+
+		std::vector<std::vector<glm::mat4>> m_Transforms;
 
 	public:
 		void SubmitCommand(GameObject* gameObject, glm::mat4 model); //how to add gizmo?

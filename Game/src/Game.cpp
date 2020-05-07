@@ -19,9 +19,8 @@
 
 #include "Renderer/BatchRenderer.h"
 #include "Renderer/ModelManager.h"
+#include "Renderer/MaterialManager.h"
 #include "Renderer/TextureArray.h"
-#include "Renderer/Material.h"
-
 
 namespace sixengine {
 	
@@ -39,6 +38,7 @@ namespace sixengine {
 		ShaderManager* m_ShaderManager;
 		ModelManager* m_ModelManager;
 		TextureArray* m_TextureArray;
+		MaterialManager* m_MaterialManager;
 		BatchRenderer* m_BatchRenderer;
 
 	public:
@@ -46,6 +46,7 @@ namespace sixengine {
 			: Application(title, width, height), m_Scene(width, height)
 		{
 			m_TextureArray = new TextureArray(2048, 2048);
+			m_MaterialManager = new MaterialManager();
 			m_ModelManager = new ModelManager();
 			m_ShaderManager = new ShaderManager();
 
@@ -64,15 +65,39 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
+			m_BasicShader = m_ShaderManager->AddShader("res/shaders/Basic.glsl");
+			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/Animation.glsl");
+			m_BasicShader2->SetAnimated(true);
+
 			m_TextureArray->AddTexture("res/textures/test/Bricks.jpg");
 			m_TextureArray->AddTexture("res/textures/test/Wood1.jpg");
 			m_TextureArray->AddTexture("res/textures/test/Wood2.jpg");
+			m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
+			m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_normal.png");
+			m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_specular.png");
 			m_TextureArray->CreateTextureArray();
 
-			std::map<unsigned int, std::string> randomT;
-			randomT[0] = "Bricks";
-			randomT[1] = "Wood1";
-			randomT[2] = "Wood2";
+			m_MaterialManager->CreateMaterial(
+				m_ShaderManager->Get("Basic"),
+				glm::vec4(m_TextureArray->GetTexture("Bricks")),
+				"BrickBasic1");
+
+			m_MaterialManager->CreateMaterial(
+				m_ShaderManager->Get("Basic"),
+				glm::vec4(m_TextureArray->GetTexture("Wood1")),
+				"Wood1Basic1"); 
+
+			m_MaterialManager->CreateMaterial(
+				m_ShaderManager->Get("Basic"),
+				glm::vec4(m_TextureArray->GetTexture("Wood2")),
+				"Wood2Basic1");
+
+			m_MaterialManager->CreateMaterial(
+				m_ShaderManager->Get("Animation"),
+				glm::vec4(m_TextureArray->GetTexture("parasiteZombie_diffuse"), 
+					m_TextureArray->GetTexture("parasiteZombie_normal"), 
+					m_TextureArray->GetTexture("parasiteZombie_specular"), 0.0f),
+				"parasiteZombie");
 
 			std::map<unsigned int, std::string> randomM;
 			randomM[0] = "cube";
@@ -81,40 +106,49 @@ namespace sixengine {
 			randomM[3] = "cylinder";
 			randomM[4] = "teapot";
 
-			//m_Shader = m_ShaderManager->AddShader("res/shaders/TestShader.vert"");
-			//m_UIShader = m_ShaderManager->AddShader("res/shaders/UIShader.vert", "res/shaders/UIShader.frag");
-			m_BasicShader = m_ShaderManager->AddShader("res/shaders/Basic.glsl");
-			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/Basic2.glsl");
+			std::map<unsigned int, std::string> randomT;
+			randomT[0] = "BrickBasic1";
+			randomT[1] = "Wood1Basic1";
+			randomT[2] = "Wood2Basic1";
 
 			m_ModelManager->AddModel("res/models/primitives/cube.obj");
 			m_ModelManager->AddModel("res/models/primitives/sphere.obj");
 			m_ModelManager->AddModel("res/models/primitives/cone.obj");
 			m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
 			m_ModelManager->AddModel("res/models/primitives/teapot.obj");
+			m_ModelManager->AddModel("res/models/par/par.dae");
 			m_ModelManager->CreateVAO();
 
 			m_SceneRoot = new GameObject(m_EntityManager);
 			srand(NULL);
+			
 			for (int i = 0; i < 100; i++)
 			{
 				for (int j = 0; j < 100; j++)
 				{
-
+					if (i == 0 && j < 5) continue;
 					objects[i][j] = new GameObject(m_EntityManager);
 					objects[i][j]->AddComponent<Transform>(objects[i][j], glm::mat4(1.0f),
 						glm::translate(glm::mat4(1.0f), glm::vec3(2.0f * i, 0.0f, 2.0f * j)));
 					unsigned int rM = rand() % 5;
 					objects[i][j]->AddComponent<Mesh>(m_ModelManager->GetModel(randomM[rM]));
+
 					unsigned int rT = rand() % 3;
+					objects[i][j]->AddComponent<Material>(*m_MaterialManager->Get(randomT[rT]));
 
 					m_SceneRoot->AddChild(objects[i][j]);
-
-					if (i == 0 && j == 0) continue;
-					objects[i][j]->AddComponent<Material>(m_BasicShader, glm::vec4(m_TextureArray->GetTexture(randomT[rT]), 0.0f, 0.0f, 0.0f));
 				}
 			}
 
-			objects[0][0]->AddComponent<Material>(m_BasicShader2, glm::vec4(m_TextureArray->GetTexture(randomT[0]), 0.0f, 0.0f, 0.0f));
+			for (int i = 0; i < 5; i++)
+			{
+				objects[0][i] = new GameObject(m_EntityManager);
+				objects[0][i]->AddComponent<Transform>(objects[0][i], glm::mat4(1.0f),
+					glm::translate(glm::mat4(1.0f), glm::vec3(-500.0 + 200.0f * (float)i, 0.0f, -300.0f)));
+				objects[0][i]->AddComponent<Mesh>(m_ModelManager->GetModel("par"));
+				objects[0][i]->AddComponent<Material>(*m_MaterialManager->Get("parasiteZombie"));
+				m_SceneRoot->AddChild(objects[0][i]);
+			}
 
 			glEnable(GL_DEPTH_TEST);
 

@@ -2,15 +2,13 @@
 
 #include <map>
 #include <utility>
-#include "Renderer/Shader.h"
 
 namespace sixengine {
 
 	template <typename T>
 	class ResourceManager
 	{
-		// string is key for now, we will think about hashing it later
-		std::map <std::string, T> m_Dictionary;
+		std::map<std::string, T> m_Dictionary;
 
 	public:
 		ResourceManager();
