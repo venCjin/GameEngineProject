@@ -30,7 +30,8 @@ namespace sixengine {
 	private:
 		Scene m_Scene;
 		GameObject *obj1, *obj2, *obj3;
-		GameObject* objects[100][100];
+		GameObject* objects[90][90];
+		GameObject* anim[7][7];
 		GameObject *m_SceneRoot, *m_UIRoot;
 		Shader *m_BasicShader, *m_BasicShader2;
 		Camera cam, camUI;
@@ -130,11 +131,10 @@ namespace sixengine {
 			m_SceneRoot = new GameObject(m_EntityManager);
 			srand(NULL);
 			
-			for (int i = 0; i < 100; i++)
+			for (int i = 0; i < 90; i++)
 			{
-				for (int j = 0; j < 100; j++)
+				for (int j = 0; j < 90; j++)
 				{
-					if (i == 0 && j < 5) continue;
 					objects[i][j] = new GameObject(m_EntityManager);
 					objects[i][j]->AddComponent<Transform>(objects[i][j], glm::mat4(1.0f),
 						glm::translate(glm::mat4(1.0f), glm::vec3(2.0f * i, 0.0f, 2.0f * j)));
@@ -147,15 +147,23 @@ namespace sixengine {
 					m_SceneRoot->AddChild(objects[i][j]);
 				}
 			}
-			
-			for (int i = 0; i < 5; i++)
+
+			for (int i = 0; i < 7; i++)
 			{
-				objects[0][i] = new GameObject(m_EntityManager);
-				objects[0][i]->AddComponent<Transform>(objects[0][i], glm::mat4(1.0f),
-					glm::translate(glm::mat4(1.0f), glm::vec3(-500.0 + 200.0f * (float)i, 0.0f, -300.0f)));
-				objects[0][i]->AddComponent<Mesh>(m_ModelManager->GetModel("par"));
-				objects[0][i]->AddComponent<Material>(*m_MaterialManager->Get("parasiteZombie"));
-				m_SceneRoot->AddChild(objects[0][i]);
+				for (int j = 0; j < 7; j++)
+				{
+					anim[i][j] = new GameObject(m_EntityManager);
+
+					glm::mat4 mat(1.0f);
+					mat = glm::translate(mat, glm::vec3(-30.0 + 5.0f * j, 0.0f, 0.0f + i * 5.0f));
+					mat = glm::scale(mat, glm::vec3(0.05f, 0.05f, 0.05f));
+
+					anim[i][j]->AddComponent<Transform>(anim[i][j], glm::mat4(1.0f), mat);
+					anim[i][j]->AddComponent<Mesh>(m_ModelManager->GetModel("par"));
+					anim[i][j]->AddComponent<Material>(*m_MaterialManager->Get("parasiteZombie"));
+
+					m_SceneRoot->AddChild(anim[i][j]);
+				}
 			}
 
 			glEnable(GL_DEPTH_TEST);
@@ -175,7 +183,7 @@ namespace sixengine {
 				}
 
 				{
-					PROFILE_SCOPE("SUBMIT COMMANDS")
+					//PROFILE_SCOPE("SUBMIT COMMANDS")
 					m_SceneRoot->Render();
 				}
 

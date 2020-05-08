@@ -3,6 +3,8 @@
 
 #include "Renderer/BatchRenderer.h"
 
+#include <future>
+
 namespace sixengine {
 
 	Technique::Technique(Shader* shader, Camera* camera)
@@ -28,8 +30,8 @@ namespace sixengine {
 
 	void StaticPBR::Render(std::vector<RendererCommand*>& commandList)
 	{
-		m_Shader->Bind();
-		m_Shader->SetMat4("projection", m_Camera->GetProjectionMatrix());
+		m_Shader->Bind(); 
+		m_Shader->SetMat4("projection", m_Camera->GetProjectionMatrix()); 
 		m_Shader->SetMat4("view", m_Camera->GetViewMatrix());
 	}
 
@@ -51,23 +53,35 @@ namespace sixengine {
 	{
 	}
 
-	void AnimationPBR::Render(std::vector<RendererCommand*>& commandList)
+	void Transform(RendererCommand* command, std::vector<glm::mat4>* transform)
 	{
+		float time = Timer::Instance()->ElapsedTime();
+		command->model->BoneTransform(time, *transform);
+	}
+
+	void AnimationPBR::Render(std::vector<RendererCommand*>& commandList)
+	{		
 		m_Shader->Bind();
 		m_Shader->SetMat4("projection", m_Camera->GetProjectionMatrix());
 		m_Shader->SetMat4("view", m_Camera->GetViewMatrix());
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_BonesSSBO);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_BonesSSBO);
+		
+		std::vector<std::future<void>> threads;
+		threads.reserve(commandList.size());
 
-		float time = Timer::Instance()->ElapsedTime();
+		for (int i = 0; i < commandList.size(); i++)
+			threads.emplace_back(std::async(Transform, commandList[i], &m_Transforms[i]));
+
+		for (int i = 0; i < threads.size(); i++)
+			threads[i].wait();
+
 		unsigned int offsetStep = 100 * sizeof(glm::mat4);
 		unsigned int offset = 0;
 		for (int i = 0; i < commandList.size(); i++)
 		{
-			commandList[i]->model->BoneTransform(time + (float)i * 2.0f, m_Transforms[i]);
 			glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, m_Transforms[i].size() * sizeof(m_Transforms[i][0]), m_Transforms[i].data());
-
 			offset += offsetStep;
 		}
 

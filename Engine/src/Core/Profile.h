@@ -4,6 +4,8 @@
 #include "iostream"
 #include "Timer.h"
 
+#define PROFILE_SWITCH true
+
 namespace sixengine {
 
 	class Profile
@@ -22,11 +24,19 @@ namespace sixengine {
 		~Profile()
 		{
 			double duration = Timer::GetTime(MILISECOND) - m_Start;
-			std::cout << duration << " ms " << m_Name << "\n";
+			if (duration > 10)
+				LOG_CORE_WARN("Profile: {0:.3f} ms {1}", duration, m_Name);
+			else
+				LOG_CORE_INFO("Profile: {0:.3f} ms {1}", duration, m_Name);
 		}
 	};
 
 }
 
-#define PROFILE_SCOPE(name) ::sixengine::Profile timer##__LINE__(name);
+#if PROFILE_SWITCH
+	#define PROFILE_SCOPE(name) ::sixengine::Profile timer##__LINE__(name);
+#else
+	#define PROFILE_SCOPE(name)
+#endif // PROFILE_SWITCH
+
 
