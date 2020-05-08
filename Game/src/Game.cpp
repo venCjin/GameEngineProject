@@ -21,6 +21,7 @@
 #include "Renderer/ModelManager.h"
 #include "Renderer/MaterialManager.h"
 #include "Renderer/TextureArray.h"
+#include "Renderer/Technique.h"
 
 namespace sixengine {
 	
@@ -56,7 +57,7 @@ namespace sixengine {
 			cam.MakePerspective(aspectRatio);
 			camUI.MakeOrtho(width, height);
 
-			BatchRenderer::Initialize(m_ModelManager, m_TextureArray, &cam);
+			BatchRenderer::Initialize(m_ModelManager, m_TextureArray);
 			m_BatchRenderer = BatchRenderer::Instance();
 		}
 		
@@ -65,9 +66,15 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
+			// SETUP ASSETS
 			m_BasicShader = m_ShaderManager->AddShader("res/shaders/Basic.glsl");
 			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/Animation.glsl");
-			m_BasicShader2->SetAnimated(true);
+
+			StaticPBR* staticM = new StaticPBR(m_BasicShader, &cam);
+			AnimationPBR* animatedM = new AnimationPBR(m_BasicShader2, &cam);
+
+			m_BatchRenderer->AddTechnique(staticM);
+			m_BatchRenderer->AddTechnique(animatedM);
 
 			m_TextureArray->AddTexture("res/textures/test/Bricks.jpg");
 			m_TextureArray->AddTexture("res/textures/test/Wood1.jpg");
@@ -99,6 +106,15 @@ namespace sixengine {
 					m_TextureArray->GetTexture("parasiteZombie_specular"), 0.0f),
 				"parasiteZombie");
 
+			m_ModelManager->AddModel("res/models/primitives/cube.obj");
+			m_ModelManager->AddModel("res/models/primitives/sphere.obj");
+			m_ModelManager->AddModel("res/models/primitives/cone.obj");
+			m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
+			m_ModelManager->AddModel("res/models/primitives/teapot.obj");
+			m_ModelManager->AddModel("res/models/par/par.dae");
+			m_ModelManager->CreateVAO();
+
+			// SETUP SCENE
 			std::map<unsigned int, std::string> randomM;
 			randomM[0] = "cube";
 			randomM[1] = "sphere";
@@ -110,14 +126,6 @@ namespace sixengine {
 			randomT[0] = "BrickBasic1";
 			randomT[1] = "Wood1Basic1";
 			randomT[2] = "Wood2Basic1";
-
-			m_ModelManager->AddModel("res/models/primitives/cube.obj");
-			m_ModelManager->AddModel("res/models/primitives/sphere.obj");
-			m_ModelManager->AddModel("res/models/primitives/cone.obj");
-			m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
-			m_ModelManager->AddModel("res/models/primitives/teapot.obj");
-			m_ModelManager->AddModel("res/models/par/par.dae");
-			m_ModelManager->CreateVAO();
 
 			m_SceneRoot = new GameObject(m_EntityManager);
 			srand(NULL);
@@ -139,7 +147,7 @@ namespace sixengine {
 					m_SceneRoot->AddChild(objects[i][j]);
 				}
 			}
-
+			
 			for (int i = 0; i < 5; i++)
 			{
 				objects[0][i] = new GameObject(m_EntityManager);
@@ -159,33 +167,23 @@ namespace sixengine {
 		virtual void OnUpdate(float dt) override
 		{		
 			{
-				//PROFILE_SCOPE("UPDATE")
-				m_SystemManager.UpdateAll(dt);
-			}
+				PROFILE_SCOPE("ON UPDATE")
 
-			{
-				PROFILE_SCOPE("SUBMIT COMMANDS")
-				m_SceneRoot->Render();
-			}
-			
-			{
-				PROFILE_SCOPE("RENDER")
-				m_BatchRenderer->Render();
-
-				//Renderer::Clear(0.3f, 0.3f, 0.3f);
-				//m_BasicShader->SetMat4("view", cam.GetViewMatrix());
-
-				/*for (int i = 0; i < 100; i++)
 				{
-					for (int j = 0; j < 100; j++)
-					{
-						m_BasicShader->SetMat4("model", objects[i][j]->GetComponent<Transform>()->GetWorld());
-						m_BasicShader->SetFloat("layer", objects[i][j]->GetComponent<Material>()->GetTexture());
-						Renderer::Render(objects[i][j]->GetComponent<Mesh>()->GetModel()->VAO);
-					}
-				}*/
-			}
+					//PROFILE_SCOPE("ECS")
+					m_SystemManager.UpdateAll(dt);
+				}
 
+				{
+					PROFILE_SCOPE("SUBMIT COMMANDS")
+					m_SceneRoot->Render();
+				}
+
+				{
+					PROFILE_SCOPE("RENDER")
+					m_BatchRenderer->Render();
+				}
+			}
 		}
 	};
 

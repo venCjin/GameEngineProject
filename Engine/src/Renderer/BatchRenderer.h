@@ -3,7 +3,7 @@
 #include <Gameplay/GameObject.h>
 #include <Renderer/TextureArray.h>
 #include <Renderer/ModelManager.h>
-#include <Core/Camera.h>
+#include <Renderer/Technique.h>
 
 #include <ECS/ComponentManager.h>
 
@@ -13,11 +13,6 @@ namespace sixengine {
 	{
 		glm::mat4 model;
 		glm::vec4 textureLayer;
-	};
-
-	struct BonesStruct
-	{
-		glm::mat4 bones[52];
 	};
 
 	struct RendererCommand
@@ -45,30 +40,30 @@ namespace sixengine {
 		FrameAllocator<RendererCommand> m_FrameAllocator;
 		static BatchRenderer* m_BatchRendererInstance;
 
+		std::vector<Technique*> m_TechniqueList;
+
 		std::vector<RendererCommand*> m_CommandList;
 		std::vector<DrawElementsCommand> m_RenderCommandList;
 
 		ModelManager* m_ModelManager;
 		TextureArray* m_TextureArray;
-		Camera* m_PlayerCamera;
 
 		unsigned int ssboModels;
 		unsigned int ssboLayers;
-		unsigned int ssboBones;
 
 		unsigned int idbo;
 
-		std::vector<std::vector<glm::mat4>> m_Transforms;
-
 	public:
-		void SubmitCommand(GameObject* gameObject, glm::mat4 model); //how to add gizmo?
+		void SubmitCommand(GameObject* gameObject, glm::mat4 model);
 		void Render();
 
+		void AddTechnique(Technique* technique);
+
 		static BatchRenderer* Instance() { return m_BatchRendererInstance; }
-		static void Initialize(ModelManager* modelManager, TextureArray* textureArray, Camera* camera);
+		static void Initialize(ModelManager* modelManager, TextureArray* textureArray);
 
 	private:
-		BatchRenderer(ModelManager* modelManager, TextureArray* textureArray, Camera* camera);
+		BatchRenderer(ModelManager* modelManager, TextureArray* textureArray);
 		~BatchRenderer();
 
 		float Distance(glm::vec3* x, glm::vec3* y);

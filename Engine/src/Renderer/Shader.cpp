@@ -9,7 +9,6 @@ namespace sixengine {
 	}
 
 	Shader::Shader(const char * shaderPath)
-		: m_Animated(false)
 	{
 		std::stringstream code[6];
 		int shader = -1;
@@ -118,11 +117,6 @@ namespace sixengine {
 	void Shader::Unbind() const
 	{
 		glUseProgram(0);
-	}
-
-	void Shader::SetAnimated(bool animated)
-	{
-		m_Animated = animated;
 	}
 
 	void Shader::SetInt(const std::string & name, int value) const

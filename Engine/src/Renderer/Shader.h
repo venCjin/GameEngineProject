@@ -12,7 +12,6 @@ namespace sixengine {
 	{
 	private:
 		unsigned int m_ID;
-		bool m_Animated;
 
 	private:
 		void CompileAndAttach(GLenum shaderType, const char* shaderCode);
@@ -26,9 +25,6 @@ namespace sixengine {
 		void Unbind() const;
 
 		inline unsigned int GetID() const { return m_ID; }
-		inline bool IsAnimated() const { return m_Animated; }
-
-		void SetAnimated(bool animated);
 
 		void SetInt(const std::string &name, int value) const;
 		void SetFloat(const std::string &name, float value) const;
