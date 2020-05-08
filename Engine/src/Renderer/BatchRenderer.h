@@ -58,6 +58,7 @@ namespace sixengine {
 		void Render();
 
 		void AddTechnique(Technique* technique);
+		void Configure();
 
 		static BatchRenderer* Instance() { return m_BatchRendererInstance; }
 		static void Initialize(ModelManager* modelManager, TextureArray* textureArray);

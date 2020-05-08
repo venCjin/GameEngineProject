@@ -168,6 +168,7 @@ namespace sixengine {
 
 			glEnable(GL_DEPTH_TEST);
 
+			m_BatchRenderer->Configure();
 			m_SceneRoot->Render(true);
 			m_BatchRenderer->Render();
 		}

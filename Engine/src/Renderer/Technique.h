@@ -6,6 +6,7 @@
 namespace sixengine {
 
 	class RendererCommand;
+	class TextureArray;
 
 	class Technique
 	{
@@ -17,10 +18,11 @@ namespace sixengine {
 		Technique(Shader* shader, Camera* camera);
 		virtual ~Technique();
 
-		virtual void Start() = 0;
+		virtual void Start(TextureArray* textureArray) = 0;
 		virtual void Render(std::vector<RendererCommand*>& commandList) = 0;
 
 		inline Shader* GetShader() const { return m_Shader; }
+		inline Camera* GetCamera() const { return m_Camera; }
 	};
 
 	class Debug : public Technique
@@ -38,7 +40,7 @@ namespace sixengine {
 	public:
 		StaticPBR(Shader* shader, Camera* camera);
 
-		void Start() override;
+		void Start(TextureArray* textureArray) override;
 		void Render(std::vector<RendererCommand*>& commandList) override;
 	};
 
@@ -57,7 +59,7 @@ namespace sixengine {
 	public:
 		AnimationPBR(Shader* shader, Camera* camera);
 
-		void Start() override;
+		void Start(TextureArray* textureArray) override;
 		void Render(std::vector<RendererCommand*>& commandList) override;
 	};
 

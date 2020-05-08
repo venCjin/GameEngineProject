@@ -2,6 +2,7 @@
 #include "Technique.h"
 
 #include "Renderer/BatchRenderer.h"
+#include "Renderer/TextureArray.h"
 
 #include <future>
 
@@ -23,16 +24,19 @@ namespace sixengine {
 	{
 	}
 
-	void StaticPBR::Start()
+	void StaticPBR::Start(TextureArray* textureArray)
 	{
+		m_Shader->Bind();
 
+		textureArray->Bind(0);
+		m_Shader->SetInt("textureArray", 0);
+
+		m_Shader->Unbind();
 	}
 
 	void StaticPBR::Render(std::vector<RendererCommand*>& commandList)
 	{
 		m_Shader->Bind(); 
-		m_Shader->SetMat4("projection", m_Camera->GetProjectionMatrix()); 
-		m_Shader->SetMat4("view", m_Camera->GetViewMatrix());
 	}
 
 	AnimationPBR::AnimationPBR(Shader* shader, Camera* camera)
@@ -49,8 +53,14 @@ namespace sixengine {
 		}
 	}
 
-	void AnimationPBR::Start()
+	void AnimationPBR::Start(TextureArray* textureArray)
 	{
+		m_Shader->Bind();
+
+		textureArray->Bind(0);
+		m_Shader->SetInt("textureArray", 0);
+
+		m_Shader->Unbind();
 	}
 
 	void Transform(RendererCommand* command, std::vector<glm::mat4>* transform)
@@ -62,8 +72,6 @@ namespace sixengine {
 	void AnimationPBR::Render(std::vector<RendererCommand*>& commandList)
 	{		
 		m_Shader->Bind();
-		m_Shader->SetMat4("projection", m_Camera->GetProjectionMatrix());
-		m_Shader->SetMat4("view", m_Camera->GetViewMatrix());
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_BonesSSBO);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_BonesSSBO);

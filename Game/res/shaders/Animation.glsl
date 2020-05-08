@@ -10,11 +10,10 @@ layout (location = 4) in vec4 aWeights;
 out vec2 TexCoords;
 out int instanceID;
 
-uniform mat4 view;
-uniform mat4 projection;
-
 layout(std430, binding = 0) buffer modelInstance
 {
+    mat4 view;
+    mat4 projection; 
     mat4 model[10000];
 };
 

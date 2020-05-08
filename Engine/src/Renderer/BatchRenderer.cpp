@@ -26,7 +26,7 @@ namespace sixengine {
 	{
 		glGenBuffers(1, &ssboModels);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboModels);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, 10000 * sizeof(glm::mat4), 0, GL_DYNAMIC_COPY);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, 10002 * sizeof(glm::mat4), 0, GL_DYNAMIC_COPY);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssboModels);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
@@ -67,8 +67,6 @@ namespace sixengine {
 
 	void BatchRenderer::Render()
 	{
-		m_ModelManager->Bind();
-		
 		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -139,23 +137,27 @@ namespace sixengine {
 				{ me.NumIndices, modelInstanceCounter, me.BaseIndex, me.BaseVertex, allIntstanceCounter }
 			);
 			
-			//Bind all stuff
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboModels);
-			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, models.size() * sizeof(models[0]), models.data());
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+			
+				//Bind all stuff
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboModels);
 
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboLayers);
-			glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, layers.size() * sizeof(layers[0]), layers.data());
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+				std::size_t mat4Size = sizeof(glm::mat4);
+				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, mat4Size, &m_TechniqueList[t]->GetCamera()->GetViewMatrix());
+				glBufferSubData(GL_SHADER_STORAGE_BUFFER, mat4Size, mat4Size, &m_TechniqueList[t]->GetCamera()->GetProjectionMatrix());
+				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 2 * mat4Size, models.size() * sizeof(models[0]), models.data());
 
-			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, idbo);
-			glBufferSubData(GL_DRAW_INDIRECT_BUFFER, 0, m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]), m_RenderCommandList.data());
-
-			m_TechniqueList[t]->Render(commandList);
-
-			m_TextureArray->Bind(0);
-			m_TechniqueList[t]->GetShader()->SetInt("textureArray", 0);
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 				
+
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboLayers);
+				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, layers.size() * sizeof(layers[0]), layers.data());
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+				
+
+				glBindBuffer(GL_DRAW_INDIRECT_BUFFER, idbo);
+				glBufferSubData(GL_DRAW_INDIRECT_BUFFER, 0, m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]), m_RenderCommandList.data());
+
+				m_TechniqueList[t]->Render(commandList);
 
 			//Render
 			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)0, m_RenderCommandList.size(), 0);
@@ -170,6 +172,13 @@ namespace sixengine {
 	void BatchRenderer::AddTechnique(Technique* technique)
 	{
 		m_TechniqueList.push_back(technique);
+	}
+
+	void BatchRenderer::Configure()
+	{
+		m_ModelManager->Bind();
+		for (auto tech : m_TechniqueList)
+			tech->Start(m_TextureArray);
 	}
 
 	void BatchRenderer::Initialize(ModelManager* modelManager, TextureArray* textureArray)
