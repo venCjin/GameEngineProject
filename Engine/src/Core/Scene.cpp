@@ -48,15 +48,17 @@ namespace sixengine {
 		m_UI = new GameObject(*en);
 		m_UI->AddComponent<Transform>(m_UI, glm::mat4(1.0f), glm::mat4(1.0f));
 
-		std::string s;
-		//while (!file.eof())
-		while (true)
+		std::string line, s;
+		std::getline(file, line);
+		std::stringstream ss(line);
+
+		while (file)
 		{
-			file >> s;
+			std::getline(ss, s, ' ');
 
 			if (s == "-AddSystem")
 			{
-				file >> s;
+				std::getline(ss, s, ' ');
 				if (s == "BillboardSystem") sys->AddSystem<BillboardSystem>();
 				else if (s == "RotationSystem") sys->AddSystem<RotationSystem>();
 				else if (s == "UIRendererSystem") sys->AddSystem<UIRendererSystem>();
@@ -72,14 +74,14 @@ namespace sixengine {
 			{
 				m_UI->AddChild(ReadGameObject(file, *en, sm));
 			}
-			else if (s == "-eof")
-			{
-				break;
-			}
-			else
+			else if (!s.empty())
 			{
 				LOG_WARN("Not recognized command: {0}", s);
 			}
+
+			std::getline(file, line);
+			ss.str(line);
+			ss.clear();
 		}
 		file.close();
 		return true;
@@ -99,10 +101,10 @@ namespace sixengine {
 
 	void Scene::Render()
 	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		m_Scene->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		m_UI->Render(camUI.GetProjectionMatrix(), camUI.GetViewMatrix());
 	}
 

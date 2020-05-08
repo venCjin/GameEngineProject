@@ -37,7 +37,6 @@ namespace sixengine {
 		{
 			m_Scene.LoadScene("res/scenes/test.scene");
 /*
-=======
 			m_Model.LoadModel("res/models/par/par.dae");
 			m_Model.BoneTransform(0.0f, transforms);
 
@@ -90,10 +89,7 @@ namespace sixengine {
 			m_UIRoot->AddComponent<Transform>(go, glm::mat4(1.0f), m);
 			m_UIRoot->AddComponent<TestMesh>(vertices, indices);
 			m_UIRoot->AddComponent<TestMaterial>(m_UIShader, "res/textures/floor/albedo.png");
-
->>>>>>> 3f1ed511ba35e7f1532f13a7a6d29d3e9c7b3893
 */
-
 			glEnable(GL_DEPTH_TEST);
 		}
 
