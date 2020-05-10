@@ -97,8 +97,20 @@ public:
 template <typename T>
 void SystemManager::AddSystem()
 {
-	T* system = new T();
-	m_Systems.push_back(system);
+	auto it = std::find_if(m_Systems.begin(), m_Systems.end(),
+		[](BaseSystem* val) {
+			return (dynamic_cast<T*>(val));
+		});
 
-	system->OnStart(m_EventManager);
+	if (it != m_Systems.end())
+	{
+		LOG_CORE_WARN("System already added");
+		return;
+	}
+	else
+	{
+		T* system = new T();
+		m_Systems.push_back(system);
+		system->OnStart(m_EventManager);
+	}
 }
