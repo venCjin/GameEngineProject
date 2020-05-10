@@ -20,7 +20,7 @@ namespace sixengine {
 
 		m_Window = std::make_unique<Window>(title, width, height);
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
-		m_Window->SetVSync(false);
+		m_Window->SetVSync(true);
 	}
 
 	Application::~Application()

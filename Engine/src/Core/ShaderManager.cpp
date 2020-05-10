@@ -3,15 +3,20 @@
 
 namespace sixengine {
 
-	Shader* ShaderManager::makeInstance(std::string vertPath, std::string fragPath)
+	Shader* ShaderManager::AddShader(std::string shaderPath)
 	{
-		std::string key = vertPath + fragPath;
-		if (!this->isResourceInDicktionary(key))
+
+		std::size_t slash = shaderPath.find_last_of("/\\");
+		std::size_t dot = shaderPath.find_last_of(".");
+		std::string shaderName = shaderPath.substr(slash + 1, dot - slash - 1);
+
+		if (!this->IsResourceInDicktionary(shaderName))
 		{
-			Shader* shader = new Shader(vertPath.c_str(), fragPath.c_str());
-			this->AddResource(key, shader);
+			Shader* shader = new Shader(shaderPath.c_str());
+			this->AddResource(shaderName, shader);
 		}
-		return this->get(key);
+
+		return this->Get(shaderName);
 	}
 
 }

@@ -1,0 +1,57 @@
+-AddShader AnimationPBR res/shaders/Animation.glsl 
+
+-AddMaterial parasiteZombie Animation 3 res/models/par/textures/parasiteZombie_diffuse.png res/models/par/textures/parasiteZombie_normal.png res/models/par/textures/parasiteZombie_specular.png
++SceneGameObject
+    +Transform 
+        +local
+            -scale 0.01 0.01 0.01
+        +end
+        +world
+        +end
+    +end
+    -Model res/models/par/par.dae
+    -Material parasiteZombie
++end
+
+
+
+-AddShader StaticPBR res/shaders/Basic.glsl 
+
+-AddMaterial BrickBasic Basic 1 res/textures/test/Bricks.jpg
++SceneGameObject
+    +Transform 
+        +local
+            -translate -1.0 0.0 0.0
+        +end
+        +world
+        +end
+    +end
+    -Model res/models/primitives/cube.obj
+    -Material BrickBasic
++end
+
+-AddMaterial Wood1Basic Basic 1 res/textures/test/Wood1.jpg
++SceneGameObject
+    +Transform 
+        +local
+            -translate 1.0 0.0 0.0
+        +end
+        +world
+        +end
+    +end
+    -Model res/models/primitives/sphere.obj
+    -Material Wood1Basic
++end
+
+-AddMaterial Wood2Basic Basic 1 res/textures/test/Wood2.jpg
++SceneGameObject
+    +Transform 
+        +local
+            -translate 0.0 0.0 -1.0
+        +end
+        +world
+        +end
+    +end
+    -Model res/models/primitives/teapot.obj
+    -Material Wood2Basic
++end

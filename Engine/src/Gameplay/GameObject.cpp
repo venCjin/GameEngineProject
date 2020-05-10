@@ -4,29 +4,58 @@
 #include "GameObject.h"
 #include "Gameplay/GameObject.h"
 #include "Gameplay/Components/Transform.h"
-#include "Gameplay/Components/TestMaterial.h"
-#include "Gameplay/Components/TestMesh.h"
+#include "Renderer/Material.h"
 #include "Renderer/Model.h"
 #include "Renderer/Renderer.h"
+#include "Renderer/BatchRenderer.h"
 #include "Core/Timer.h"
 
 namespace sixengine {
 
-	void GameObject::Render(glm::mat4 projection, glm::mat4 view)
+	void GameObject::Render(bool first)
 	{
-		Render(projection, view, Transform(this), false);
+		for (auto child : m_Childeren)
+		{
+			child->Render(Transform(this), first);
+		}
 	}
 
-	void GameObject::Render(glm::mat4 projection, glm::mat4 view, Transform parentWorld, bool dirty)
+	void GameObject::Render(Transform parentWorld, bool dirty)
 	{
+		auto transform = GetComponent<Transform>();
+
+		dirty |= m_Dirty;
+		if (dirty)
+		{
+			BatchRenderer::Instance()->SubmitCommand(this, transform->Combine(parentWorld));
+			m_Dirty = false;
+		}
+		else
+			BatchRenderer::Instance()->SubmitCommand(this, transform->Combine());
+
+		for (auto child : m_Childeren)
+		{
+			child->Render();
+		}
+	}
+
+	/*void GameObject::Render(glm::mat4 projection, glm::mat4 view)
+	{
+		Render(projection, view, Transform(this), false);
+	}*/
+
+	/*void GameObject::Render(glm::mat4 projection, glm::mat4 view, Transform parentWorld, bool dirty)
+	{*/
 		// TODO: Render Queue
 		//Renderer::AddToRenderQueue(this);
 
+
+		/*
 		auto transform = GetComponent<Transform>();
 
-		if (HasComponent<TestMaterial>())
+		if (HasComponent<Material>())
 		{
-			auto shader = GetComponent<TestMaterial>()->GetShader();
+			auto shader = GetComponent<Material>()->GetShader();
 
 			shader->Bind();
 			shader->SetMat4("projection", projection);
@@ -42,15 +71,8 @@ namespace sixengine {
 			{
 				shader->SetMat4("model", transform->Combine());
 			}
-		
-			if (HasComponent<TestMesh>())
-			{
-				unsigned int texture = GetComponent<TestMaterial>()->m_Texture;
-				auto mesh = GetComponent<TestMesh>();
-				//Renderer::Render(mesh->VAO, shader);
-				Renderer::Render(mesh->VAO, shader, texture);
-			}
-			else if (HasComponent<Model>())
+
+			if (HasComponent<Model>())
 			{
 				auto model = GetComponent<Model>();
 				auto& transforms = model->GetCurrentTransforms();
@@ -63,7 +85,7 @@ namespace sixengine {
 
 				model->Render(shader);
 			}
-		}
+		}*/
 /*=======
 		auto mesh = GetComponent<TestMesh>();
 		auto shader = GetComponent<TestMaterial>()->GetShader();
@@ -86,11 +108,11 @@ namespace sixengine {
 		Renderer::Render(mesh->VAO, shader, texture);
 >>>>>>> 3f1ed511ba35e7f1532f13a7a6d29d3e9c7b3893*/
 
-		for (auto child : m_Childeren)
+		/*for (auto child : m_Childeren)
 		{
 			child->Render(projection, view, *transform, dirty);
-		}
-	}
+		}*/
+	//}
 
 	void GameObject::SetDirty(bool dirty)
 	{

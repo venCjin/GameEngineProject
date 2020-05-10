@@ -34,6 +34,12 @@ namespace sixengine {
 		}
 
 		template<typename T>
+		void AddComponentCopy(const T& component)
+		{
+			m_Entity.AddComponentCopy<T>(std::forward<const T&>(component));
+		}
+
+		template<typename T>
 		void RemoveComponent()
 		{
 			m_Entity.Remove<T>();
@@ -53,9 +59,9 @@ namespace sixengine {
 
 		// Scene graph
 
-		void Render(glm::mat4 projection, glm::mat4 view);
+		void Render(bool first = false);
 
-		void Render(glm::mat4 projection, glm::mat4 view, Transform parentWorld, bool dirty);
+		void Render(Transform parentWorld, bool dirty);
 
 		void SetDirty(bool dirty);
 

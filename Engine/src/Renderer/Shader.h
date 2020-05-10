@@ -3,21 +3,28 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <glad/glad.h>
+
 namespace sixengine {
 
 	class Shader
 	{
 	private:
-		unsigned int Compile(unsigned int shaderType, const char* shaderCode);
-		void LinkProgram(unsigned int vertex, unsigned int fragment);
-
-	public:
 		unsigned int m_ID;
 
-		Shader(const char* vertexPath, const char* fragmentPath);
+	private:
+		void CompileAndAttach(GLenum shaderType, const char* shaderCode);
+		void LinkProgram();
+
+	public:
+		Shader(const char* shaderPath);
+		~Shader();
 		
 		void Bind() const;
 		void Unbind() const;
+
+		inline unsigned int GetID() const { return m_ID; }
 
 		void SetInt(const std::string &name, int value) const;
 		void SetFloat(const std::string &name, float value) const;
@@ -25,7 +32,6 @@ namespace sixengine {
 		void SetColor(const std::string &name, float color[]) const;
 		void SetVec3(const std::string &name, const glm::vec3 &vec) const;
 		void SetMat4(const std::string &name, const glm::mat4 &mat) const;
-		~Shader();
 	};
 
 }

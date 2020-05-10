@@ -9,8 +9,8 @@
 +SceneGameObject
     +Transform
     +end
-    -TestMesh Cube
-    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
+    -Model 
+    -Material 
     -BoxCollider 1.0 1.0 1.0 0
 +end
 
@@ -22,8 +22,8 @@
             -translate 0.0 5.0 0.0
         +end
     +end
-    -TestMesh Quad
-    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
+    -Model 
+    -Material 
     -Billboard
 +end
 
@@ -35,8 +35,8 @@
             -translate -2.0 0.0 0.0
         +end
     +end
-    -TestMesh BoxCollider
-    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
+    -Model 
+    -Material 
     -BoxCollider 1.0 1.0 1.0 0
 +end
 
@@ -49,8 +49,8 @@
             -scale 2.0 2.0 2.0 1
         +end
     +end
-    -TestMesh BoxCollider
-    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
+    -Model 
+    -Material 
     -BoxCollider 2.0 2.0 2.0 1
 +end
 
@@ -63,8 +63,8 @@
             -translate 2.0 0.0 0.0
         +end
     +end
-    -TestMesh Cube
-    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
+    -Model 
+    -Material 
     -BoxCollider 1.0 1.0 1.0  0
 +end
 
@@ -76,8 +76,8 @@
             -translate 0.0 0.0 3.0
         +end
     +end
-    -TestMesh Sphere
-    -TestMaterial res/shaders/basic.vert res/shaders/basic.frag res/textures/floor/albedo.png
+    -Model 
+    -Material 
     -SimplePlayer
     -SphereCollider 0.5 0
 +end
@@ -92,8 +92,9 @@
         +end
     +end
     -Model res/models/par/par.dae
-    -TestMaterial res/shaders/TestShader.vert res/shaders/TestShader.frag res/textures/floor/albedo.png
+    -Material 
 +end
+<<<<<<< HEAD
 
 +SceneGameObject
     +Transform 
@@ -121,3 +122,5 @@
     -TestMesh Quad
     -TestMaterial res/shaders/UIShader.vert res/shaders/UIShader.frag res/textures/ui/ui.png
 +end
+=======
+>>>>>>> ModelManager

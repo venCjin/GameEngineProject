@@ -1,21 +1,33 @@
 #include "pch.h"
 #include "Scene.h"
+
 #include "Core/Application.h"
+#include "Core/ShaderManager.h"
+
 #include "Gameplay/Systems/BillboardSystem.h"
 #include "Gameplay/Systems/RotationSystem.h"
 #include "Gameplay/Systems/UIRendererSystem.h"
 #include "Gameplay/GameObject.h"
+
 #include "Renderer/PrimitiveUtils.h"
-#include "Core/ShaderManager.h"
+
 #include "Physics/Components/Collider.h"
 #include "Physics/Systems/CollisionSystem.h"
+
 #include "Gameplay/Components/SimplePlayer.h"
 #include "Gameplay/Systems/SimplePlayerSystem.h"
 
 namespace sixengine {
 
-	Scene::Scene(unsigned int width, unsigned int height) : m_UI(nullptr), m_Scene(nullptr)
+	Scene::Scene(unsigned int width, unsigned int height) : m_UIRoot(nullptr), m_SceneRoot(nullptr)
 	{
+		m_ModelManager = new ModelManager();
+		m_ShaderManager = new ShaderManager();
+		m_MaterialManager = new MaterialManager();
+		m_TextureArray = new TextureArray(2048, 2048);
+		BatchRenderer::Initialize(m_ModelManager, m_TextureArray);
+		m_BatchRenderer = BatchRenderer::Instance();
+
 		cam.MakePerspective((float)width / (float)height);
 		camUI.MakeOrtho(width, height);
 	}
@@ -33,32 +45,78 @@ namespace sixengine {
 			LOG_FATAL("Cannot open scene file: {0}", filePath);
 			return false;
 		}
-		
 		LOG_TRACE("Loading scene from file: {0}", filePath);
 		
+
 		EntityManager* en = Application::Get().GetEntityManager();
-		///EventManager* ev = Application::Get().GetEventManager();
+		//EventManager* ev = Application::Get().GetEventManager();
 		SystemManager* sys = Application::Get().GetSystemManager();
 
-		ShaderManager sm;
+		m_SceneRoot = new GameObject(*en);
+		m_SceneRoot->AddComponent<Transform>(m_SceneRoot, glm::mat4(1.0f), glm::mat4(1.0f));
 
-		m_Scene = new GameObject(*en);
-		m_Scene->AddComponent<Transform>(m_Scene, glm::mat4(1.0f), glm::mat4(1.0f));
+		m_UIRoot = new GameObject(*en);
+		m_UIRoot->AddComponent<Transform>(m_UIRoot, glm::mat4(1.0f), glm::mat4(1.0f));
 
-		m_UI = new GameObject(*en);
-		m_UI->AddComponent<Transform>(m_UI, glm::mat4(1.0f), glm::mat4(1.0f));
 
 		std::string line, s;
 		std::getline(file, line);
 		std::stringstream ss(line);
-
+		
 		while (file)
 		{
 			std::getline(ss, s, ' ');
-
-			if (s == "-AddSystem")
+			if (s == "-AddShader")
 			{
-				std::getline(ss, s, ' ');
+				ss >> s;
+				if (s == "StaticPBR")
+				{
+					ss >> s;
+					m_BatchRenderer->AddTechnique(
+						new StaticPBR(
+							m_ShaderManager->AddShader(s),
+							&cam)
+						);
+				}
+				else if (s == "AnimationPBR")
+				{
+					ss >> s;
+					m_BatchRenderer->AddTechnique(
+						new AnimationPBR(
+							m_ShaderManager->AddShader(s),
+							&cam)
+						);
+				}
+				else
+				{
+					LOG_ERROR("Cannot read shader or technique in line: {0}", line);
+				}
+			}
+			else if (s == "-AddMaterial")
+			{
+				std::string materialName, shaderName;
+				ss >> materialName;
+				ss >> shaderName;
+				
+				int count;
+				ss >> count;
+
+				glm::vec4 tex(0.0f);
+				for (int i = 0; i < count; i++)
+				{
+					ss >> s;
+					tex[i] = m_TextureArray->AddTexture(s);
+				}
+
+				m_MaterialManager->CreateMaterial(
+					m_ShaderManager->Get(shaderName),
+					tex,
+					materialName
+					);
+			}
+			else if (s == "-AddSystem")
+			{
+				file >> s;
 				if (s == "BillboardSystem") sys->AddSystem<BillboardSystem>();
 				else if (s == "RotationSystem") sys->AddSystem<RotationSystem>();
 				else if (s == "UIRendererSystem") sys->AddSystem<UIRendererSystem>();
@@ -68,11 +126,11 @@ namespace sixengine {
 			}
 			else if (s == "+SceneGameObject")
 			{
-				m_Scene->AddChild(ReadGameObject(file, *en, sm));
+				m_SceneRoot->AddChild(ReadGameObject(file, *en));
 			}
 			else if (s == "+UIGameObject")
 			{
-				m_UI->AddChild(ReadGameObject(file, *en, sm));
+				m_UIRoot->AddChild(ReadGameObject(file, *en));
 			}
 			else if (!s.empty())
 			{
@@ -84,6 +142,10 @@ namespace sixengine {
 			ss.clear();
 		}
 		file.close();
+
+		m_TextureArray->CreateTextureArray();
+		m_ModelManager->CreateVAO();
+
 		return true;
 	}
 
@@ -99,16 +161,18 @@ namespace sixengine {
 		return true;
 	}
 
-	void Scene::Render()
+	void Scene::Render(bool first)
 	{
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		m_Scene->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
+		//m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
+		m_SceneRoot->Render(first);
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		m_UI->Render(camUI.GetProjectionMatrix(), camUI.GetViewMatrix());
+		//m_UI->Render(camUI.GetProjectionMatrix(), camUI.GetViewMatrix());
+		//m_UIRoot->Render(first);
 	}
 
-	GameObject* Scene::ReadGameObject(std::fstream& file, EntityManager& en, ShaderManager& sm)
+	GameObject* Scene::ReadGameObject(std::fstream& file, EntityManager& en)
 	{
 		std::string s;
 		GameObject* go = new GameObject(en);
@@ -188,7 +252,7 @@ namespace sixengine {
 				} while (true);
 				go->AddComponent<Transform>(go, l, w);
 			}
-			else if (s == "-TestMesh")
+			/*else if (s == "-TestMesh")
 			{
 				std::vector<Vertex> vertices;
 				std::vector<unsigned int> indices;
@@ -198,29 +262,27 @@ namespace sixengine {
 				else if (s == "Capsule") PrimitiveUtils::GenerateCapsule(vertices, indices);
 				else if (s == "Sphere") PrimitiveUtils::GenerateSphere(vertices, indices);
 				else PrimitiveUtils::GenerateCube(vertices, indices); //default cube
-				go->AddComponent<TestMesh>(vertices, indices);
-			}
+				//go->AddComponent<Mesh>(vertices, indices);
+			}*/
 			else if (s == "-Model")
 			{
 				file >> s;
-				go->AddComponent<Model>(s);
+				go->AddComponent<Mesh>(m_ModelManager->AddModel(s));
 			}
-			else if (s == "-TestMaterial")
+			else if (s == "-Material")
 			{
-				std::string vert, frag, tex;
-				file >> vert;
-				file >> frag;
-				file >> tex;
-				go->AddComponent<TestMaterial>(sm.makeInstance(vert, frag), tex);
+				file >> s;
+				// TODO: Material adding here or in header
+				go->AddComponent<Material>(*m_MaterialManager->Get(s));
 			}
-			else if (s == "-TestRotation")
+			else if (s == "-Rotation")
 			{
 				float x, y, z, speed;
 				file >> x;
 				file >> y;
 				file >> z;
 				file >> speed;
-				go->AddComponent<TestRotation>(glm::vec3(x, y, z), speed);
+				go->AddComponent<Rotation>(glm::vec3(x, y, z), speed);
 			}
 			else if (s == "-Billboard")
 			{
@@ -252,8 +314,6 @@ namespace sixengine {
 
 				go->AddComponent<SphereCollider>(radius, isStatic);
 			}
-
-
 			else LOG_WARN("Not recognized scene component: {0}", s);
 		} while (true);
 		return go;

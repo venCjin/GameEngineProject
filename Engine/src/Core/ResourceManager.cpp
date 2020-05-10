@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ResourceManager.h"
+#include "Core/ResourceManager.h"
 
 namespace sixengine {
 
@@ -10,13 +10,13 @@ namespace sixengine {
 	}
 
 	template<typename T>
-	T ResourceManager<T>::get(std::string key)
+	T ResourceManager<T>::Get(std::string key)
 	{
 		return m_Dictionary[key];
 	}
 
 	template <typename T>
-	bool ResourceManager<T>::isResourceInDicktionary(std::string key)
+	bool ResourceManager<T>::IsResourceInDicktionary(std::string key)
 	{
 		return m_Dictionary.find(key) != m_Dictionary.end();
 	}
@@ -30,13 +30,12 @@ namespace sixengine {
 	}
 
 	template<typename T>
-	std::size_t ResourceManager<T>::size()
+	std::size_t ResourceManager<T>::Size()
 	{
 		return m_Dictionary.size();
 	}
 
-
 	template class ResourceManager<float>;
-	template class ResourceManager<Shader*>;
-
+	template class ResourceManager<class Shader*>;
+	template class ResourceManager<class Material*>;
 }

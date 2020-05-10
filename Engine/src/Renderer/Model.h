@@ -37,7 +37,7 @@ namespace sixengine {
 	public:
 
 		Model();
-		Model(const std::string& filename);
+		Model(const std::string& filename, unsigned ID);
 
 		~Model();
 
@@ -54,15 +54,20 @@ namespace sixengine {
 
 		inline std::vector<glm::mat4>& GetCurrentTransforms() { return currentTransforms; }
 
+		unsigned int m_ID;
+		VertexArray* VAO;
+
+		std::vector<Vertex> vertices;
+		std::vector<uint> indices;
+		int m_TotalNumIndices = 0;
+
 	private:
 
 		struct BoneInfo
 		{
 			glm::mat4 BoneOffset = glm::mat4(0.0f);
 			glm::mat4 FinalTransformation = glm::mat4(0.0f);;
-
 		};
-
 
 		void CalcInterpolatedScaling(aiVector3D& out, float animationTime, const aiNodeAnim* nodeAnim);
 		void CalcInterpolatedRotation(aiQuaternion& out, float animationTime, const aiNodeAnim* nodeAnim);
@@ -82,7 +87,6 @@ namespace sixengine {
 
 #define INVALID_MATERIAL 0xFFFFFFFF
 
-		VertexArray* VAO;
 
 		struct MeshEntry {
 			MeshEntry()

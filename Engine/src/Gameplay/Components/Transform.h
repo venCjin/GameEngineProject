@@ -18,12 +18,12 @@ namespace sixengine {
 
         glm::mat4 Combine(Transform& other)
         {
-            return other.m_World * m_World * m_Local;
+            return other.m_World * m_World *m_Local;
         }
 
         glm::mat4 Combine()
         {
-            return m_World * m_Local;
+            return m_World *m_Local;
         }
 
         void SetLocal(glm::mat4 local)

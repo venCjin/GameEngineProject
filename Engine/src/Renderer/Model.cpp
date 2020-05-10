@@ -18,8 +18,9 @@ namespace sixengine {
 		m_Scene = NULL;
 	}
 
-	Model::Model(const std::string& filename)
+	Model::Model(const std::string& filename, unsigned ID)
 	{
+		m_ID = ID;
 		VAO = nullptr;
 		m_NumBones = 0;
 		m_Scene = NULL;
@@ -96,28 +97,26 @@ namespace sixengine {
 		m_Entries.resize(scene->mNumMeshes);
 		//m_Textures.resize(pScene->mNumMaterials);
 
-		std::vector<Vertex> vertices;
-		std::vector<uint> indices;
-
 		uint numVertices = 0;
-		uint numIndices = 0;
+		m_TotalNumIndices = 0;
 
-		uint VerticesPerPrim = 3;
+		uint verticesPerPrim = 3;
 
 		// Count the number of vertices and indices
 		for (uint i = 0; i < m_Entries.size(); i++) {
 			m_Entries[i].MaterialIndex = scene->mMeshes[i]->mMaterialIndex;
-			m_Entries[i].NumIndices = scene->mMeshes[i]->mNumFaces * VerticesPerPrim;
+			m_Entries[i].NumIndices = scene->mMeshes[i]->mNumFaces * verticesPerPrim;
 			m_Entries[i].BaseVertex = numVertices;
-			m_Entries[i].BaseIndex = numIndices;
+			m_Entries[i].BaseIndex = m_TotalNumIndices;
 
 			numVertices += scene->mMeshes[i]->mNumVertices;
-			numIndices += m_Entries[i].NumIndices;
+			m_TotalNumIndices += m_Entries[i].NumIndices;
+
 		}
 
 		// Reserve space in the vectors for the vertex attributes and indices
 		vertices.reserve(numVertices);
-		indices.reserve(numIndices);
+		indices.reserve(m_TotalNumIndices);
 
 		// Initialize the meshes in the scene one by one
 		for (uint i = 0; i < m_Entries.size(); i++) {
@@ -205,6 +204,7 @@ namespace sixengine {
 		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 		// 4. height maps
 		std::vector<Texture> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+
 		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 		m_Entries[meshIndex].Textures = textures;
@@ -366,7 +366,7 @@ namespace sixengine {
 					number = std::to_string(heightNr++); // transfer unsigned int to stream
 
 				// now set the sampler to the correct texture unit
-				glUniform1i(glGetUniformLocation(shader->m_ID, (name + number).c_str()), i* m_Entries.size() + j);
+				glUniform1i(glGetUniformLocation(shader->GetID(), (name + number).c_str()), i* m_Entries.size() + j);
 				// and finally bind the texture
 				glBindTexture(GL_TEXTURE_2D, m_Entries[i].Textures[j].id);
 			}
