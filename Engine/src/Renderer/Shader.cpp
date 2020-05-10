@@ -14,7 +14,7 @@ namespace sixengine {
 		int shader = -1;
 
 		std::ifstream shaderFile;
-		shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		//shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
 		try {
 			shaderFile.open(shaderPath);

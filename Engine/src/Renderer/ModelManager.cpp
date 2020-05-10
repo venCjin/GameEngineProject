@@ -13,7 +13,7 @@ namespace sixengine {
 
 	}
 
-	void ModelManager::AddModel(std::string path)
+	Model* ModelManager::AddModel(std::string path)
 	{
 		std::size_t slash = path.find_last_of("/\\");
 		std::size_t dot = path.find_last_of(".");
@@ -26,6 +26,8 @@ namespace sixengine {
 
 			m_ModelNumber++;
 		}
+
+		return GetModel(modelName);
 	}
 
 	void ModelManager::CreateVAO()

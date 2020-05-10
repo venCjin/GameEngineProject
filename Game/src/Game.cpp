@@ -1,15 +1,6 @@
 #include <Engine.h>
 #include <EntryPoint.h>
 
-/*#include "Renderer/PrimitiveUtils.h"
-#include "Core/Timer.h"
-#include "Core/ResourceManager.h"
-#include "Core/ShaderManager.h"
-#include "Gameplay/GameObject.h"
-#include "Gameplay/Components/Billboard.h"
-#include "Gameplay/Systems/BillboardSystem.h"
-#include <Gameplay\Components\UIElement.h>
-#include <Gameplay\Systems\UIRendererSystem.h>*/
 #include "Core/Scene.h"
 
 #include <glad/glad.h>
@@ -23,42 +14,48 @@
 #include "Renderer/TextureArray.h"
 #include "Renderer/Technique.h"
 
+#define SCENE_FILE 1
+
 namespace sixengine {
 	
 	class Game : public Application
 	{
 	private:
+		#if SCENE_FILE
 		Scene m_Scene;
-		GameObject *obj1, *obj2, *obj3;
+		#else
 		GameObject* objects[90][90];
 		GameObject* anim[7][7];
 		GameObject *m_SceneRoot, *m_UIRoot;
 		Shader *m_BasicShader, *m_BasicShader2;
 		Camera cam, camUI;
-		std::vector<glm::mat4> transforms;
 
 		ShaderManager* m_ShaderManager;
 		ModelManager* m_ModelManager;
 		TextureArray* m_TextureArray;
 		MaterialManager* m_MaterialManager;
+		#endif
 		BatchRenderer* m_BatchRenderer;
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
-			: Application(title, width, height), m_Scene(width, height)
+			: Application(title, width, height)
+			#if SCENE_FILE
+			, m_Scene(width, height)
+		{
+			#else
 		{
 			m_TextureArray = new TextureArray(2048, 2048);
 			m_MaterialManager = new MaterialManager();
 			m_ModelManager = new ModelManager();
 			m_ShaderManager = new ShaderManager();
 
-			m_SystemManager.AddSystem<RotationSystem>();
-
 			float aspectRatio = (float)width / (float)height;
 			cam.MakePerspective(aspectRatio);
 			camUI.MakeOrtho(width, height);
 
 			BatchRenderer::Initialize(m_ModelManager, m_TextureArray);
+			#endif
 			m_BatchRenderer = BatchRenderer::Instance();
 		}
 		
@@ -67,7 +64,11 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			// SETUP ASSETS
+			#if SCENE_FILE
+			m_Scene.LoadScene("res/scenes/br.scene");
+			#else
+			/// SETUP ASSETS
+			/// =========================================================
 			m_BasicShader = m_ShaderManager->AddShader("res/shaders/Basic.glsl");
 			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/Animation.glsl");
 
@@ -165,11 +166,17 @@ namespace sixengine {
 					m_SceneRoot->AddChild(anim[i][j]);
 				}
 			}
-
+			#endif
+			
 			glEnable(GL_DEPTH_TEST);
 
 			m_BatchRenderer->Configure();
+
+			#if SCENE_FILE
+			m_Scene.Render(true);
+			#else
 			m_SceneRoot->Render(true);
+			#endif
 			m_BatchRenderer->Render();
 		}
 
@@ -185,7 +192,11 @@ namespace sixengine {
 
 				{
 					//PROFILE_SCOPE("SUBMIT COMMANDS")
+					#if SCENE_FILE
+					m_Scene.Render();
+					#else
 					m_SceneRoot->Render();
+					#endif
 				}
 
 				{

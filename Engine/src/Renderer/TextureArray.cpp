@@ -7,7 +7,7 @@
 
 #include <Renderer/Shader.h>
 
-void sixengine::TextureArray::AddTexture(std::string path)
+unsigned int sixengine::TextureArray::AddTexture(std::string path)
 {
 	std::size_t slash = path.find_last_of("/\\");
 	std::size_t dot = path.find_last_of(".");
@@ -36,6 +36,8 @@ void sixengine::TextureArray::AddTexture(std::string path)
 
 		m_TextureLayers++;
 	}
+
+	return GetTexture(textureName);
 }
 
 void sixengine::TextureArray::CreateTextureArray()

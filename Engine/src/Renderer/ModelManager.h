@@ -34,7 +34,7 @@ namespace sixengine {
 		};
 
 	public:
-		void AddModel(std::string path);
+		Model* AddModel(std::string path);
 		void CreateVAO();	// loads all models in m_ModelPaths and then creates one VAO
 
 		void Bind();

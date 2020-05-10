@@ -8,7 +8,7 @@ namespace sixengine {
 	class TextureArray
 	{
 	public:
-		void AddTexture(std::string path);
+		unsigned int AddTexture(std::string path);
 		void CreateTextureArray();
 		void Bind(unsigned int slot = 0) const;
 
