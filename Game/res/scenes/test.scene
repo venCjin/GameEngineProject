@@ -94,7 +94,6 @@
     -Model res/models/par/par.dae
     -Material 
 +end
-<<<<<<< HEAD
 
 +SceneGameObject
     +Transform 
@@ -122,5 +121,3 @@
     -TestMesh Quad
     -TestMaterial res/shaders/UIShader.vert res/shaders/UIShader.frag res/textures/ui/ui.png
 +end
-=======
->>>>>>> ModelManager

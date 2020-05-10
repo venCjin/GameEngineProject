@@ -116,7 +116,7 @@ namespace sixengine {
 			}
 			else if (s == "-AddSystem")
 			{
-				file >> s;
+				ss >> s;
 				if (s == "BillboardSystem") sys->AddSystem<BillboardSystem>();
 				else if (s == "RotationSystem") sys->AddSystem<RotationSystem>();
 				else if (s == "UIRendererSystem") sys->AddSystem<UIRendererSystem>();
