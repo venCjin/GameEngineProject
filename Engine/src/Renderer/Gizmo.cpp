@@ -16,8 +16,6 @@ namespace sixengine {
 
 	void Gizmo::Draw(glm::mat4& model)
 	{
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 		//m_Shader->Bind();
 		m_VAO->Bind();
 		m_Shader->SetMat4("model", model);
