@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 
 #include <Windows.h>
+#include <Core/Profile.h>
 
 namespace sixengine {
 
@@ -20,7 +21,7 @@ namespace sixengine {
 
 		m_Window = std::make_unique<Window>(title, width, height);
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
-		m_Window->SetVSync(true);
+		m_Window->SetVSync(false);
 	}
 
 	Application::~Application()
@@ -33,17 +34,21 @@ namespace sixengine {
 		OnInit();
 		while (m_Running)
 		{
-			if (!m_Minimized)
+			PROFILE_SCOPE("UPDATE\n")
 			{
-				m_Input->OnPreUpdate();
-				OnUpdate(m_Timer->DeltaTime());
-				m_Input->OnPostUpdate();
+				m_Timer->Tick();
+				m_Timer->Reset();
+
+				if (!m_Minimized)
+				{
+					m_Input->OnPreUpdate();
+					OnUpdate(m_Timer->DeltaTime());
+					m_Input->OnPostUpdate();
+				}
+				m_Window->OnUpdate();
+
+				while (m_Timer->TimeSinceReset() < sixengine::FRAMERATE_60);
 			}
-			m_Window->OnUpdate();
-
-			m_Timer->Tick();
-			m_Timer->Reset();
-
 		}
 		OnShutdown();
 	}

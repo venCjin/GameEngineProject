@@ -24,7 +24,7 @@ namespace sixengine {
 		~Profile()
 		{
 			double duration = Timer::GetTime(MILISECOND) - m_Start;
-			if (duration > 10)
+			if (duration > 17)
 				LOG_CORE_WARN("Profile: {0:.3f} ms {1}", duration, m_Name);
 			else
 				LOG_CORE_INFO("Profile: {0:.3f} ms {1}", duration, m_Name);

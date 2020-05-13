@@ -11,6 +11,7 @@ namespace sixengine {
 	Technique::Technique(Shader* shader, Camera* camera)
 		: m_Shader(shader), m_Camera(camera)
 	{
+		m_Shader = shader;
 	}
 
 	Technique::~Technique()
@@ -32,20 +33,49 @@ namespace sixengine {
 		m_Shader->SetInt("textureArray", 0);
 
 		m_Shader->Unbind();
+
+		glGenBuffers(1, &m_ModelsSSBO);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ModelsSSBO);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, 10002 * sizeof(glm::mat4), 0, GL_DYNAMIC_COPY);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_ModelsSSBO);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+		glGenBuffers(1, &m_LayersSSBO);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_LayersSSBO);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, 10000 * sizeof(glm::vec4), 0, GL_DYNAMIC_COPY);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, m_LayersSSBO);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
 	}
 
-	void StaticPBR::Render(std::vector<RendererCommand*>& commandList)
+	void StaticPBR::Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)
 	{
-		m_Shader->Bind(); 
+		m_Shader->Bind();
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ModelsSSBO);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, models.size() * sizeof(models[0]), models.data());
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_LayersSSBO);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, layers.size() * sizeof(layers[0]), layers.data());
 	}
 
 	AnimationPBR::AnimationPBR(Shader* shader, Camera* camera)
 		: Technique(shader, camera)
 	{
+		glGenBuffers(1, &m_ModelsSSBO);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ModelsSSBO);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, 102 * sizeof(glm::mat4), 0, GL_DYNAMIC_COPY);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_ModelsSSBO);
+
+		glGenBuffers(1, &m_LayersSSBO);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_LayersSSBO);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, 100 * sizeof(glm::vec4), 0, GL_DYNAMIC_COPY);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, m_LayersSSBO);
+
 		glGenBuffers(1, &m_BonesSSBO);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_BonesSSBO);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, 100 * sizeof(BonesStruct), 0, GL_DYNAMIC_COPY);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, m_BonesSSBO);
 
 		for (int i = 0; i < 100; i++)
 		{
@@ -69,13 +99,17 @@ namespace sixengine {
 		command->model->BoneTransform(time, *transform);
 	}
 
-	void AnimationPBR::Render(std::vector<RendererCommand*>& commandList)
-	{		
-		m_Shader->Bind();
+	void AnimationPBR::Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ModelsSSBO);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, models.size() * sizeof(models[0]), models.data());
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_LayersSSBO);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, layers.size() * sizeof(layers[0]), layers.data());
+
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_BonesSSBO);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_BonesSSBO);
-		
+
 		std::vector<std::future<void>> threads;
 		threads.reserve(commandList.size());
 
@@ -85,7 +119,7 @@ namespace sixengine {
 		for (int i = 0; i < threads.size(); i++)
 			threads[i].wait();
 
-		unsigned int offsetStep = 100 * sizeof(glm::mat4);
+		unsigned int offsetStep = sizeof(BonesStruct);
 		unsigned int offset = 0;
 		for (int i = 0; i < commandList.size(); i++)
 		{
@@ -93,12 +127,8 @@ namespace sixengine {
 			offset += offsetStep;
 		}
 
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		m_Shader->Bind();
 	}
-
-	
-
-	
 
 }
 

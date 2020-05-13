@@ -13,7 +13,7 @@ namespace sixengine {
 
 	bool SortModels(RendererCommand* x, RendererCommand* y)
 	{
-		return x->model->m_ID < y->model->m_ID;	
+		return x->model->m_ID < y->model->m_ID;
 	}
 
 	bool SortShaders(RendererCommand* x, RendererCommand* y)
@@ -24,21 +24,11 @@ namespace sixengine {
 	BatchRenderer::BatchRenderer(ModelManager* modelManager, TextureArray* textureArray)
 		: m_ModelManager(modelManager), m_TextureArray(textureArray)
 	{
-		glGenBuffers(1, &ssboModels);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboModels);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, 10002 * sizeof(glm::mat4), 0, GL_DYNAMIC_COPY);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssboModels);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-		glGenBuffers(1, &ssboLayers);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboLayers);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, 10000 * sizeof(glm::vec4), 0, GL_DYNAMIC_COPY);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssboLayers);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-		glGenBuffers(1, &idbo);
-		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, idbo);
+		glGenBuffers(1, &m_IDBO);
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_IDBO);
 		glBufferData(GL_DRAW_INDIRECT_BUFFER, 100 * sizeof(RendererCommand), 0, GL_DYNAMIC_DRAW);
+
+		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	}
 
 	BatchRenderer::~BatchRenderer()
@@ -56,23 +46,23 @@ namespace sixengine {
 		//command->distance = Distance(&m_PlayerCamera->GetPosition(), &t->getWorldPosition());
 		//command->isTranslucent = false;
 
-		command->shader = gameObject->GetComponent<Material>()->GetShader();
 		command->model = gameObject->GetComponent<Mesh>()->GetModel();
-
-		command->data.textureLayer = gameObject->GetComponent<Material>()->GetTexture();
 		command->data.model = model;
-		
+
+		command->shader = gameObject->GetComponent<Material>()->GetShader();
+		command->data.textureLayer = gameObject->GetComponent<Material>()->GetTexture();
+
 		m_CommandList.push_back(command);
 	}
 
 	void BatchRenderer::Render()
 	{
-		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//Sort Commands by techniques
 		std::vector<std::vector<RendererCommand*>> sortedTechniques;
+		//Sort Commands by techniques
 		sortedTechniques.reserve(m_TechniqueList.size());
+
 
 		for (int i = 0; i < m_TechniqueList.size(); i++)
 		{
@@ -95,15 +85,19 @@ namespace sixengine {
 		}
 
 		// Iterate over techniques
+
 		for (int t = 0; t < sortedTechniques.size(); t++)
 		{
-			std::vector<RendererCommand*> &commandList = sortedTechniques[t];
+			std::vector<RendererCommand*>& commandList = sortedTechniques[t];
 
 			//Sort Commands by models
 			std::vector<glm::mat4> models;
 			models.reserve(commandList.size());
 			std::vector<glm::vec4> layers;
 			layers.reserve(commandList.size());
+
+			models.push_back(m_TechniqueList[t]->GetCamera()->GetViewMatrix());
+			models.push_back(m_TechniqueList[t]->GetCamera()->GetProjectionMatrix());
 
 			std::sort(commandList.begin(), commandList.end(), SortModels);
 
@@ -136,32 +130,12 @@ namespace sixengine {
 			m_RenderCommandList.push_back(
 				{ me.NumIndices, modelInstanceCounter, me.BaseIndex, me.BaseVertex, allIntstanceCounter }
 			);
-			
-			
-				//Bind all stuff
-				glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboModels);
 
-				std::size_t mat4Size = sizeof(glm::mat4);
-				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, mat4Size, &m_TechniqueList[t]->GetCamera()->GetViewMatrix());
-				glBufferSubData(GL_SHADER_STORAGE_BUFFER, mat4Size, mat4Size, &m_TechniqueList[t]->GetCamera()->GetProjectionMatrix());
-				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 2 * mat4Size, models.size() * sizeof(models[0]), models.data());
+			m_TechniqueList[t]->Render(commandList, models, layers);
 
-				glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-				
+			glBufferSubData(GL_DRAW_INDIRECT_BUFFER, 0, m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]), m_RenderCommandList.data());
 
-				glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssboLayers);
-				glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, layers.size() * sizeof(layers[0]), layers.data());
-				glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-				
-
-				glBindBuffer(GL_DRAW_INDIRECT_BUFFER, idbo);
-				glBufferSubData(GL_DRAW_INDIRECT_BUFFER, 0, m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]), m_RenderCommandList.data());
-
-				m_TechniqueList[t]->Render(commandList);
-
-			//Render
 			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)0, m_RenderCommandList.size(), 0);
-				
 
 			m_RenderCommandList.clear();
 		}

@@ -41,7 +41,7 @@ protected:
     size_t m_AllocatedEntities = 0;
 };
 
-template <typename T, size_t N = 10240>
+template <typename T, size_t N = 50000>
 class ComponentManager : public PoolAllocator 
 {
 public:
@@ -57,7 +57,7 @@ public:
 };
 
 
-template <typename T, size_t N = 10240>
+template <typename T, size_t N = 50000>
 class FrameAllocator : public PoolAllocator
 {
 public:

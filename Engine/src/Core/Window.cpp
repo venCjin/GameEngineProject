@@ -34,6 +34,7 @@ namespace sixengine {
 	{
 		glfwPollEvents();
 		glfwSwapBuffers(m_Window);
+		glFinish();
 	}
 
 	std::pair<float, float> Window::GetWindowPos() const

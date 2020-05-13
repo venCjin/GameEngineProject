@@ -18,8 +18,8 @@ namespace sixengine {
 	struct RendererCommand
 	{
 		//float distance;
-		class Shader* shader;
-		class Model* model;
+		class Shader* shader = nullptr;
+		class Model* model = nullptr;
 		//bool isTranslucent;
 
 		SSBO data;
@@ -48,10 +48,7 @@ namespace sixengine {
 		ModelManager* m_ModelManager;
 		TextureArray* m_TextureArray;
 
-		unsigned int ssboModels;
-		unsigned int ssboLayers;
-
-		unsigned int idbo;
+		unsigned int m_IDBO;
 
 	public:
 		void SubmitCommand(GameObject* gameObject, glm::mat4 model);
@@ -66,7 +63,6 @@ namespace sixengine {
 	private:
 		BatchRenderer(ModelManager* modelManager, TextureArray* textureArray);
 		~BatchRenderer();
-
 		float Distance(glm::vec3* x, glm::vec3* y);
 	};
 
