@@ -5,6 +5,7 @@
 namespace sixengine {
 
 	class Transform;
+	class Gizmo;
 
 	class GameObject
 	{
@@ -12,6 +13,7 @@ namespace sixengine {
 		Entity m_Entity;
 		bool m_Dirty;
 		std::vector<GameObject*> m_Childeren;
+		std::vector<Gizmo*> m_Gizmos;
 		//TODO: Add tags and other staff
 
 	public:
@@ -63,9 +65,15 @@ namespace sixengine {
 
 		void Render(Transform parentWorld, bool dirty);
 
+		void OnDrawGizmos(bool first = false);
+
+		void OnDrawGizmos(Transform parentWorld, bool dirty);
+
 		void SetDirty(bool dirty);
 
 		void AddChild(GameObject* child);
+
+		void AddGizmo(Gizmo* gizmo);
 
 		std::vector<GameObject*> GetChildren();
 	};

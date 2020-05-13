@@ -1,0 +1,26 @@
+
+
+-AddShader StaticPBR res/shaders/Basic.glsl
+
+-AddMaterial Wood1Basic Basic 1 res/models/Environment/Ground/Textures/Ground_Albedo.png
++SceneGameObject
+    +Transform 
+        +world
+            -translate 0.0 0.0 0.0
+        +end
+    +end
+    -Model res/models/Environment/Ground/Ground.glb
+    -Material Wood1Basic
++end
+
+-AddMaterial mat Basic 1 res/models/Environment/Vegetation/Textures/BushBig_Albedo.tga
++SceneGameObject
+    +Transform 
+        +world
+            -scale 0.01 0.01 0.01
+        +end
+    +end
+    -Model res/models/Environment/Vegetation/BigBush.obj
+    -Material mat
++end
+

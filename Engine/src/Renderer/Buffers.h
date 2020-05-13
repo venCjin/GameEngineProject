@@ -29,6 +29,11 @@ namespace sixengine {
 
 	};
 
+	struct GizmoVertex
+	{
+		glm::vec3 Position;
+	};
+
 	enum class VertexDataType
 	{
 		NONE = 0,
@@ -96,6 +101,7 @@ namespace sixengine {
 	public:
 
 		VertexBuffer(Vertex* vertices, unsigned int size);
+		VertexBuffer(GizmoVertex* vertices, unsigned int size);
 		~VertexBuffer();
 
 		void Bind() const;

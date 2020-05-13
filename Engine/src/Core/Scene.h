@@ -27,6 +27,7 @@ namespace sixengine {
 		bool LoadScene(const char* filePath);
 		bool SaveScene(const char* filePath);
 		void Render(bool first = false);
+		void DrawGizmos();
 	private:
 		GameObject* ReadGameObject(std::fstream& file, EntityManager& en);
 	};

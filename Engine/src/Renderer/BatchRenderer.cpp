@@ -69,6 +69,7 @@ namespace sixengine {
 	{
 		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		//Sort Commands by techniques
 		std::vector<std::vector<RendererCommand*>> sortedTechniques;

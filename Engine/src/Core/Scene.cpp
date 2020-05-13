@@ -10,6 +10,7 @@
 #include "Gameplay/GameObject.h"
 
 #include "Renderer/PrimitiveUtils.h"
+#include "Renderer/Gizmo.h"
 
 #include "Physics/Components/Collider.h"
 #include "Physics/Systems/CollisionSystem.h"
@@ -172,6 +173,20 @@ namespace sixengine {
 		//m_UIRoot->Render(first);
 	}
 
+	void Scene::DrawGizmos()
+	{
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		Shader* s = m_ShaderManager->Get("Gizmo");
+		if (s)
+		{
+			s->Bind();
+			s->SetMat4("projection", cam.GetProjectionMatrix());
+			s->SetMat4("view", cam.GetViewMatrix());
+			m_SceneRoot->OnDrawGizmos(true);
+		}
+	}
+
 	GameObject* Scene::ReadGameObject(std::fstream& file, EntityManager& en)
 	{
 		std::string s;
@@ -252,18 +267,41 @@ namespace sixengine {
 				} while (true);
 				go->AddComponent<Transform>(go, l, w);
 			}
-			/*else if (s == "-TestMesh")
+			else if (s == "-Gizmo")
 			{
-				std::vector<Vertex> vertices;
+				std::vector<GizmoVertex> vertices;
 				std::vector<unsigned int> indices;
 				file >> s;
-				if (s == "Quad") PrimitiveUtils::GenerateQuad(vertices, indices);
-				else if (s == "Cube") PrimitiveUtils::GenerateCube(vertices, indices);
-				else if (s == "Capsule") PrimitiveUtils::GenerateCapsule(vertices, indices);
-				else if (s == "Sphere") PrimitiveUtils::GenerateSphere(vertices, indices);
-				else PrimitiveUtils::GenerateCube(vertices, indices); //default cube
-				//go->AddComponent<Mesh>(vertices, indices);
-			}*/
+				if (s == "Quad")
+				{
+					PrimitiveUtils::GenerateQuad(vertices, indices);
+				}
+				else if (s == "Cube")
+				{
+					PrimitiveUtils::GenerateCube(vertices, indices);
+				}
+				else if (s == "Capsule")
+				{
+					PrimitiveUtils::GenerateCapsule(vertices, indices);
+				}
+				else if (s == "Sphere")
+				{
+					PrimitiveUtils::GenerateSphere(vertices, indices);
+				}
+				VertexArray* vao = new VertexArray();
+				VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
+				vbo->SetLayout({
+					{ VertexDataType::VEC3F, "Position" }
+				});
+				IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
+				vao->AddVertexBuffer(*vbo);
+				vao->AddIndexBuffer(*ibo);
+
+				float r, g, b;
+				file >> r >> g >> b;
+
+				go->AddGizmo(new Gizmo(vao, m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(r, g, b)));
+			}
 			else if (s == "-Model")
 			{
 				file >> s;
@@ -272,7 +310,6 @@ namespace sixengine {
 			else if (s == "-Material")
 			{
 				file >> s;
-				// TODO: Material adding here or in header
 				go->AddComponent<Material>(*m_MaterialManager->Get(s));
 			}
 			else if (s == "-Rotation")

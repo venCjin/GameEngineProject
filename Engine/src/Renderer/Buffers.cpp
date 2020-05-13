@@ -58,6 +58,16 @@ namespace sixengine {
 		glBufferData(GL_ARRAY_BUFFER, size * sizeof(Vertex), vertices, GL_STATIC_DRAW);
 	}
 
+	VertexBuffer::VertexBuffer(GizmoVertex* vertices, unsigned int size)
+	{
+		//Setting the buffer to generate (an Array one), the buffer size,
+		//the data source (the float* vertices), and for what we are using it
+		//(to statically draw)
+		glCreateBuffers(1, &m_ID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
+		glBufferData(GL_ARRAY_BUFFER, size * sizeof(GizmoVertex), vertices, GL_STATIC_DRAW);
+	}
+
 	VertexBuffer::~VertexBuffer()
 	{
 		glDeleteBuffers(1, &m_ID);
