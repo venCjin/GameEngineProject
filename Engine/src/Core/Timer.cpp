@@ -77,6 +77,8 @@ namespace sixengine {
 	void Timer::SetTimeScale(float timeScale) { m_TimeScale = timeScale; }
 	float Timer::GetTimeScale() const { return m_TimeScale; }
 
+	double Timer::TimeSinceReset() const { return (HighResClock::now() - m_CurrentTime).count() / SECOND; }
+
 	double Timer::DeltaTime() const { return m_DeltaTime * m_TimeScale; }
 	double Timer::DeltaTimeUnscaled() const { return m_DeltaTime; }
 

@@ -50,6 +50,8 @@ namespace sixengine {
 		float GetTimeScale() const;
 		void SetTimeScale(float timeScale);
 
+		double TimeSinceReset() const;
+
 		double DeltaTime() const;
 		double DeltaTimeUnscaled() const;
 		double ElapsedTime() const;

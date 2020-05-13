@@ -14,7 +14,7 @@
 #include "Renderer/TextureArray.h"
 #include "Renderer/Technique.h"
 
-#define SCENE_FILE 1
+#define SCENE_FILE 0
 
 namespace sixengine {
 	
@@ -24,8 +24,8 @@ namespace sixengine {
 		#if SCENE_FILE
 		Scene m_Scene;
 		#else
-		GameObject* objects[90][90];
-		GameObject* anim[7][7];
+		GameObject* objects[100][100];
+		GameObject* anim[10][10];
 		GameObject *m_SceneRoot, *m_UIRoot;
 		Shader *m_BasicShader, *m_BasicShader2;
 		Camera cam, camUI;
@@ -132,9 +132,9 @@ namespace sixengine {
 			m_SceneRoot = new GameObject(m_EntityManager);
 			srand(NULL);
 			
-			for (int i = 0; i < 90; i++)
+			for (int i = 0; i < 100; i++)
 			{
-				for (int j = 0; j < 90; j++)
+				for (int j = 0; j < 100; j++)
 				{
 					objects[i][j] = new GameObject(m_EntityManager);
 					objects[i][j]->AddComponent<Transform>(objects[i][j], glm::mat4(1.0f),
@@ -149,9 +149,9 @@ namespace sixengine {
 				}
 			}
 
-			for (int i = 0; i < 7; i++)
+			for (int i = 0; i < 10; i++)
 			{
-				for (int j = 0; j < 7; j++)
+				for (int j = 0; j < 10; j++)
 				{
 					anim[i][j] = new GameObject(m_EntityManager);
 
@@ -182,28 +182,16 @@ namespace sixengine {
 
 		virtual void OnUpdate(float dt) override
 		{		
-			{
-				PROFILE_SCOPE("ON UPDATE")
+			m_SystemManager.UpdateAll(dt);
 
-				{
-					//PROFILE_SCOPE("ECS")
-					m_SystemManager.UpdateAll(dt);
-				}
+			#if SCENE_FILE
+			m_Scene.Render();
+			#else
+			m_SceneRoot->Render();
+			#endif
 
-				{
-					//PROFILE_SCOPE("SUBMIT COMMANDS")
-					#if SCENE_FILE
-					m_Scene.Render();
-					#else
-					m_SceneRoot->Render();
-					#endif
-				}
-
-				{
-					PROFILE_SCOPE("RENDER")
-					m_BatchRenderer->Render();
-				}
-			}
+			m_BatchRenderer->Render();
+			
 		}
 	};
 
