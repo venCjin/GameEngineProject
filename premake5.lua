@@ -148,7 +148,7 @@ project "Game"
 
 	postbuildcommands 
 	{
-		"{COPY} ../Game/res %{cfg.targetdir}/res",
+		"{COPY} ../%{prj.name}/res %{cfg.targetdir}/res",
 		"{COPY} ../Engine/dependencies/assimp/lib/assimp-vc142-mt.dll %{cfg.targetdir}",
 		"{COPY} ../Engine/dependencies/irrKlang/lib/*.dll %{cfg.targetdir}",
 	}
@@ -210,7 +210,7 @@ project "Level"
 
 	postbuildcommands 
 	{
-		"{COPY} ../Game/res %{cfg.targetdir}/res",
+		"{COPY} ../%{prj.name}/res %{cfg.targetdir}/res",
 		"{COPY} ../Engine/dependencies/assimp/lib/assimp-vc142-mt.dll %{cfg.targetdir}",
 		"{COPY} ../Engine/dependencies/irrKlang/lib/*.dll %{cfg.targetdir}",
 	}
