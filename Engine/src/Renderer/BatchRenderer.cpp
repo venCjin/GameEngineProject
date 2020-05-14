@@ -135,6 +135,8 @@ namespace sixengine {
 			m_TechniqueList[t]->Render(commandList, models, layers);
 
 			glBufferSubData(GL_DRAW_INDIRECT_BUFFER, 0, m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]), m_RenderCommandList.data());
+			
+			m_ModelManager->Bind();
 
 			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)0, m_RenderCommandList.size(), 0);
 

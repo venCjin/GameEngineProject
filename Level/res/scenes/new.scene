@@ -1,8 +1,9 @@
-
+-AddSystem SimplePlayerSystem
+-AddSystem CollisionSystem
 
 -AddShader StaticPBR res/shaders/Basic.glsl
 
--AddMaterial Wood1Basic Basic 1 res/models/Environment/Ground/Textures/Ground_Albedo.png
+-AddMaterial GroundBasic Basic 1 res/models/Environment/Ground/Textures/Ground_Albedo.png
 +SceneGameObject
     +Transform 
         +world
@@ -10,9 +11,12 @@
         +end
     +end
     -Gizmo Sphere 255 0 0
+    -SphereCollider 0.5 0
+    -SimplePlayer
     -Model res/models/Environment/Ground/Ground.glb
-    -Material Wood1Basic
+    -Material GroundBasic
 +end
+
 +SceneGameObject
     +Transform 
         +world
@@ -20,6 +24,20 @@
         +end
     +end
     -Gizmo Cube 0 255 0
+    -BoxCollider 1.0 1.0 1.0 0
     -Model res/models/Environment/Ground/Ground.glb
-    -Material Wood1Basic
+    -Material GroundBasic
++end
+
+-AddMaterial BrickBasic Basic 1 res/textures/test/Bricks.jpg
++SceneGameObject
+    +Transform 
+        +world
+            -translate -1.0 0.0 0.0
+        +end
+    +end
+    -Gizmo Cube 0 255 0
+    -Model res/models/primitives/cube.obj
+    -Material BrickBasic
+    -BoxCollider 1.0 1.0 1.0 0
 +end
