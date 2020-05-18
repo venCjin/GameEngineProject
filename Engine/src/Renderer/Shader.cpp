@@ -78,7 +78,7 @@ namespace sixengine {
 
 			std::vector<GLchar> message(length);
 			glGetProgramInfoLog(m_ID, length, &length, &message[0]);
-			std::string errorMessage = std::string("ERROR::SHADER::") + std::to_string(shaderType) + std::string("::COMPILATION_FAILED\n") + std::string(message.data());
+			std::string errorMessage = std::string("ERROR::SHADER::") + m_shaderTypeMapping[shaderType] + std::string("::COMPILATION_FAILED\n") + std::string(message.data());
 			LOG_ERROR(errorMessage);
 		}
 		else

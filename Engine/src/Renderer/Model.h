@@ -42,6 +42,7 @@ namespace sixengine {
 		~Model();
 
 		bool LoadModel(const std::string& filename);
+		bool LoadAnimation(const std::string& filename, std::string name);
 
 		void Render(Shader* shader);
 
@@ -88,7 +89,8 @@ namespace sixengine {
 #define INVALID_MATERIAL 0xFFFFFFFF
 
 
-		struct MeshEntry {
+		struct MeshEntry 
+		{
 			MeshEntry()
 			{
 				NumIndices = 0;
@@ -105,6 +107,27 @@ namespace sixengine {
 			std::vector<Texture> Textures;
 		};
 
+		struct AnimationEntry
+		{
+			AnimationEntry()
+			{
+				scene = nullptr;
+				animation = nullptr;
+			}
+
+			AnimationEntry(const std::string& filename)
+			{
+				scene = importer.ReadFile(filename.c_str(), aiProcess_FlipUVs);
+				if (scene->HasAnimations())
+					animation = scene->mAnimations[0];
+
+			}
+
+			Assimp::Importer importer;
+			const aiScene* scene;
+			aiAnimation* animation;			
+		};
+
 		std::vector<MeshEntry> m_Entries;
 		//std::vector<Texture*> m_Textures;
 
@@ -112,6 +135,7 @@ namespace sixengine {
 
 		std::map<std::string, uint> m_BoneMapping; // maps a bone name to its index
 		std::map<std::string, const aiNodeAnim* > m_NodeAnimationMapping;
+		std::map<std::string, AnimationEntry*> m_AnimationsMapping;
 		uint m_NumBones;
 		std::vector<BoneInfo> m_BoneInfo;
 		glm::mat4 m_GlobalInverseTransform;

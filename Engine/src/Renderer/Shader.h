@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <glad/glad.h>
+#include <map>
 
 namespace sixengine {
 
@@ -16,6 +17,14 @@ namespace sixengine {
 	private:
 		void CompileAndAttach(GLenum shaderType, const char* shaderCode);
 		void LinkProgram();
+		std::map<GLenum, std::string> m_shaderTypeMapping{
+			{GL_VERTEX_SHADER, "GL_VERTEX_SHADER"},
+			{GL_TESS_CONTROL_SHADER, "GL_TESS_CONTROL_SHADER"},
+			{GL_TESS_EVALUATION_SHADER, "GL_TESS_EVALUATION_SHADER"},
+			{GL_GEOMETRY_SHADER, "GL_GEOMETRY_SHADER"},
+			{GL_FRAGMENT_SHADER, "GL_FRAGMENT_SHADER"},
+			{GL_COMPUTE_SHADER, "GL_COMPUTE_SHADER"}
+		};
 
 	public:
 		Shader(const char* shaderPath);

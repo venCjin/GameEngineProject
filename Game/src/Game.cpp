@@ -69,7 +69,7 @@ namespace sixengine {
 			#else
 			/// SETUP ASSETS
 			/// =========================================================
-			m_BasicShader = m_ShaderManager->AddShader("res/shaders/Basic.glsl");
+			m_BasicShader = m_ShaderManager->AddShader("res/shaders/PBR.glsl");
 			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/Animation.glsl");
 
 			StaticPBR* staticM = new StaticPBR(m_BasicShader, &cam);
@@ -87,17 +87,17 @@ namespace sixengine {
 			m_TextureArray->CreateTextureArray();
 
 			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("Basic"),
+				m_ShaderManager->Get("PBR"),
 				glm::vec4(m_TextureArray->GetTexture("Bricks")),
 				"BrickBasic1");
 
 			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("Basic"),
+				m_ShaderManager->Get("PBR"),
 				glm::vec4(m_TextureArray->GetTexture("Wood1")),
 				"Wood1Basic1"); 
 
 			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("Basic"),
+				m_ShaderManager->Get("PBR"),
 				glm::vec4(m_TextureArray->GetTexture("Wood2")),
 				"Wood2Basic1");
 
@@ -132,9 +132,9 @@ namespace sixengine {
 			m_SceneRoot = new GameObject(m_EntityManager);
 			srand(NULL);
 			
-			for (int i = 0; i < 100; i++)
+			for (int i = 0; i < 10; i++)
 			{
-				for (int j = 0; j < 100; j++)
+				for (int j = 0; j < 2; j++)
 				{
 					objects[i][j] = new GameObject(m_EntityManager);
 					objects[i][j]->AddComponent<Transform>(objects[i][j], glm::mat4(1.0f),
@@ -149,9 +149,9 @@ namespace sixengine {
 				}
 			}
 
-			for (int i = 0; i < 10; i++)
+			for (int i = 0; i < 2; i++)
 			{
-				for (int j = 0; j < 10; j++)
+				for (int j = 0; j < 1; j++)
 				{
 					anim[i][j] = new GameObject(m_EntityManager);
 

@@ -85,10 +85,24 @@ namespace sixengine {
 		if (m_Scene->HasAnimations())
 		{
 			LoadAnimationNodes();
+			LoadAnimation(filename, "samba");
+		}
+
+
+		return ret;
+	}
+
+	bool Model::LoadAnimation(const std::string & filename, std::string name)
+	{
+		AnimationEntry* ae = new AnimationEntry(filename);
+
+		if (m_AnimationsMapping.find(name) == m_AnimationsMapping.end())
+		{
+			m_AnimationsMapping[name] = ae;
 		}
 		
 
-		return ret;
+		return false;
 	}
 
 
@@ -504,7 +518,7 @@ namespace sixengine {
 	{
 		std::string nodeName(node->mName.data);
 
-		const aiAnimation* animation = m_Scene->mAnimations[0];
+		const aiAnimation* animation = m_AnimationsMapping["samba"]->animation;//m_Scene->mAnimations[0];
 
 		glm::mat4 nodeTransformation(glm::transpose(glm::make_mat4(&node->mTransformation.a1)));
 
@@ -548,12 +562,12 @@ namespace sixengine {
 
 	void Model::BoneTransform(float timeInSeconds, std::vector<glm::mat4>& transforms)
 	{
-		if (!m_Scene->HasAnimations())
+		if (!m_Scene->HasAnimations() || m_AnimationsMapping.size() == 0)
 			return;
 
-		float ticksPerSecond = (float)(m_Scene->mAnimations[0]->mTicksPerSecond != 0 ? m_Scene->mAnimations[0]->mTicksPerSecond : 25.0f);
+		float ticksPerSecond = (float)(m_AnimationsMapping["samba"]->animation->mTicksPerSecond != 0 ? m_AnimationsMapping["samba"]->animation->mTicksPerSecond : 25.0f);
 		float timeInTicks = timeInSeconds * ticksPerSecond;
-		float animationTime = fmod(timeInTicks, (float)m_Scene->mAnimations[0]->mDuration);
+		float animationTime = fmod(timeInTicks, (float)m_AnimationsMapping["samba"]->animation->mDuration);
 
 		ReadNodeHierarchy(animationTime, m_Scene->mRootNode, glm::mat4(1.0f));
 		transforms.resize(m_NumBones);
