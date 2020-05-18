@@ -12,7 +12,7 @@ layout(std430, binding = 0) buffer matrixes
 {
     mat4 view;
     mat4 projection;
-    mat4 model[10000];
+    mat4 model[40000];
 };
 
 void main()
@@ -32,7 +32,7 @@ in flat int instanceID;
 
 layout(std430, binding = 1) buffer textureLayers
 {
-    vec4 layer[10000];
+    vec4 layer[40000];
 };
 
 uniform sampler2DArray textureArray;

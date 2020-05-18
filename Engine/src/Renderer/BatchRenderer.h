@@ -4,6 +4,8 @@
 #include <Renderer/TextureArray.h>
 #include <Renderer/ModelManager.h>
 #include <Renderer/Technique.h>
+#include <Renderer/BufferLockManager.h>
+
 
 #include <ECS/ComponentManager.h>
 
@@ -18,9 +20,10 @@ namespace sixengine {
 	struct RendererCommand
 	{
 		//float distance;
-		class Shader* shader = nullptr;
-		class Model* model = nullptr;
+		class Shader* shader;
+		class Model* model;
 		//bool isTranslucent;
+		GameObject* gameObject;
 
 		SSBO data;
 	};
@@ -48,7 +51,8 @@ namespace sixengine {
 		ModelManager* m_ModelManager;
 		TextureArray* m_TextureArray;
 
-		unsigned int m_IDBO;
+		BufferStorage m_IDBO;
+		BufferLockManager m_LockManager;
 
 	public:
 		void SubmitCommand(GameObject* gameObject, glm::mat4 model);

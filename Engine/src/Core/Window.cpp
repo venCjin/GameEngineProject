@@ -3,6 +3,7 @@
 #include "Core/Events/ApplicationEvent.h"
 #include "Core/Events/MouseEvent.h"
 #include "Core/Events/KeyEvent.h"
+#include <Core/Profile.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -30,11 +31,14 @@ namespace sixengine {
 	{
 	}
 
-	void Window::OnUpdate()
+	void Window::SwapBuffers()
+	{
+		glfwSwapBuffers(m_Window);
+	}
+
+	void Window::ProcessInput()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
-		glFinish();
 	}
 
 	std::pair<float, float> Window::GetWindowPos() const
@@ -61,9 +65,9 @@ namespace sixengine {
 
 	void Window::SwitchCursorVisibility()
 	{
-		if (m_Data.CursorVisibility) 
+		if (m_Data.CursorVisibility)
 		{
-			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			m_Data.CursorVisibility = false;
 		}
 		else
