@@ -24,8 +24,6 @@ namespace sixengine {
 		#if SCENE_FILE
 		Scene m_Scene;
 		#else
-		GameObject* objects[100][100];
-		GameObject* anim[10][10];
 		GameObject *m_SceneRoot, *m_UIRoot;
 		Shader *m_BasicShader, *m_BasicShader2;
 		Camera cam, camUI;
@@ -132,20 +130,21 @@ namespace sixengine {
 			m_SceneRoot = new GameObject(m_EntityManager);
 			srand(NULL);
 			
-			for (int i = 0; i < 100; i++)
+			GameObject* obj;
+			for (int i = 0; i < 50; i++)
 			{
-				for (int j = 0; j < 100; j++)
+				for (int j = 0; j < 50; j++)
 				{
-					objects[i][j] = new GameObject(m_EntityManager);
-					objects[i][j]->AddComponent<Transform>(objects[i][j], glm::mat4(1.0f),
+					obj = new GameObject(m_EntityManager);
+					obj->AddComponent<Transform>(obj, glm::mat4(1.0f),
 						glm::translate(glm::mat4(1.0f), glm::vec3(2.0f * i, 0.0f, 2.0f * j)));
 					unsigned int rM = rand() % 5;
-					objects[i][j]->AddComponent<Mesh>(m_ModelManager->GetModel(randomM[rM]));
+					obj->AddComponent<Mesh>(m_ModelManager->GetModel(randomM[rM]));
 
 					unsigned int rT = rand() % 3;
-					objects[i][j]->AddComponent<Material>(*m_MaterialManager->Get(randomT[rT]));
+					obj->AddComponent<Material>(*m_MaterialManager->Get(randomT[rT]));
 
-					m_SceneRoot->AddChild(objects[i][j]);
+					m_SceneRoot->AddChild(obj);
 				}
 			}
 
@@ -153,17 +152,17 @@ namespace sixengine {
 			{
 				for (int j = 0; j < 10; j++)
 				{
-					anim[i][j] = new GameObject(m_EntityManager);
+					obj = new GameObject(m_EntityManager);
 
 					glm::mat4 mat(1.0f);
 					mat = glm::translate(mat, glm::vec3(-30.0 + 5.0f * j, 0.0f, 0.0f + i * 5.0f));
 					mat = glm::scale(mat, glm::vec3(0.05f, 0.05f, 0.05f));
 
-					anim[i][j]->AddComponent<Transform>(anim[i][j], glm::mat4(1.0f), mat);
-					anim[i][j]->AddComponent<Mesh>(m_ModelManager->GetModel("par"));
-					anim[i][j]->AddComponent<Material>(*m_MaterialManager->Get("parasiteZombie"));
+					obj->AddComponent<Transform>(obj, glm::mat4(1.0f), mat);
+					obj->AddComponent<Mesh>(m_ModelManager->GetModel("par"));
+					obj->AddComponent<Material>(*m_MaterialManager->Get("parasiteZombie"));
 
-					m_SceneRoot->AddChild(anim[i][j]);
+					m_SceneRoot->AddChild(obj);
 				}
 			}
 			#endif
@@ -181,17 +180,14 @@ namespace sixengine {
 		}
 
 		virtual void OnUpdate(float dt) override
-		{		
+		{
 			m_SystemManager.UpdateAll(dt);
+		}
 
-			#if SCENE_FILE
-			m_Scene.Render();
-			#else
+		virtual void OnRender(float dt) override
+		{
 			m_SceneRoot->Render();
-			#endif
-
 			m_BatchRenderer->Render();
-			
 		}
 	};
 

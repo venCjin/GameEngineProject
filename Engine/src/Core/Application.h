@@ -28,6 +28,7 @@ namespace sixengine {
 		virtual void OnInit() {}
 		virtual void OnShutdown() {}
 		virtual void OnUpdate(float dt) {}
+		virtual void OnRender(float dt) {}
 
 		virtual void OnEvent(Event& event);
 

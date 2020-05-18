@@ -28,7 +28,8 @@ namespace sixengine {
 		Window(std::string title, unsigned int width, unsigned int height);
 		~Window();
 
-		void OnUpdate();
+		void SwapBuffers();
+		void ProcessInput();
 
 		inline unsigned int GetWidth() const { return m_Data.Width; }
 		inline unsigned int GetHeight() const { return m_Data.Height; }

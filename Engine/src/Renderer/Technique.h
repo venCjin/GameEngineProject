@@ -1,12 +1,27 @@
 #pragma once
 
 #include "Renderer/Shader.h"
+#include "Renderer/BufferLockManager.h"
 #include "Core/Camera.h"
 
 namespace sixengine {
 
 	class RendererCommand;
 	class TextureArray;
+
+	struct BufferStorage
+	{
+		size_t m_Head;
+		size_t m_Size;
+
+		unsigned int m_ID;
+		void* m_Ptr;
+
+		unsigned int m_Buffering;
+
+		BufferStorage(size_t size, unsigned int buffering = 3)
+			: m_Head(0), m_Size(size), m_Buffering(buffering) {}
+	};
 
 	class Technique
 	{
@@ -36,8 +51,11 @@ namespace sixengine {
 	class StaticPBR : public Technique
 	{
 	private:
-		unsigned int m_ModelsSSBO;
-		unsigned int m_LayersSSBO;
+		BufferStorage m_Models;
+		BufferStorage m_Layers;
+
+		BufferLockManager m_ModelsLockManager;
+		BufferLockManager m_LayersLockManager;
 
 	public:
 		StaticPBR(Shader* shader, Camera* camera);
@@ -54,9 +72,13 @@ namespace sixengine {
 	class AnimationPBR : public Technique
 	{
 	private:
-		unsigned int m_ModelsSSBO;
-		unsigned int m_LayersSSBO;
-		unsigned int m_BonesSSBO;
+		BufferStorage m_Models;
+		BufferStorage m_Layers;
+		BufferStorage m_Bones;
+
+		BufferLockManager m_ModelsLockManager;
+		BufferLockManager m_LayersLockManager;
+		BufferLockManager m_BonesLockManager;
 
 		std::vector<std::vector<glm::mat4>> m_Transforms;
 
