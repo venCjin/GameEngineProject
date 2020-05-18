@@ -62,14 +62,14 @@ namespace sixengine {
 				}
 
 				{
-					PROFILE_SCOPE("DRAW GIZMOS")
+					//PROFILE_SCOPE("DRAW GIZMOS")
 					m_Scene.DrawGizmos();
 				}
 			}
 		}
-		};
+	};
 
-	}
+}
 
 sixengine::Application* sixengine::CreateApplication()
 {

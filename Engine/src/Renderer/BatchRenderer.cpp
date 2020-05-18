@@ -144,6 +144,7 @@ namespace sixengine {
 			void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head;
 			memcpy(ptr, m_RenderCommandList.data(), m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]));
 
+			m_ModelManager->Bind();
 			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)m_IDBO.m_Head, m_RenderCommandList.size(), 0);
 
 			m_LockManager.LockRange(m_IDBO.m_Head, m_IDBO.m_Size);
