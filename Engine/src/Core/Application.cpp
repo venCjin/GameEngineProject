@@ -31,23 +31,42 @@ namespace sixengine {
 
 	void Application::Run()
 	{
+		double renderAccumulator = 0.0;
+
 		OnInit();
 		while (m_Running)
 		{
-			PROFILE_SCOPE("UPDATE\n")
 			{
-				m_Timer->Tick();
+				PROFILE_SCOPE("GAME UPDATE\n")
+
+					m_Timer->Tick();
 				m_Timer->Reset();
 
 				if (!m_Minimized)
 				{
+					m_Window->ProcessInput();
+
 					m_Input->OnPreUpdate();
+
 					OnUpdate(m_Timer->DeltaTime());
+
 					m_Input->OnPostUpdate();
 				}
-				m_Window->OnUpdate();
+
+				OnRender(m_Timer->DeltaTime());
 
 				while (m_Timer->TimeSinceReset() < sixengine::FRAMERATE_60);
+
+				m_Window->SwapBuffers();
+				/*if (renderAccumulator < sixengine::FRAMERATE_60)
+				{
+					OnRender(m_Timer->DeltaTime());
+					m_Window->SwapBuffers();
+					renderAccumulator = 0.0;
+				}
+				else
+					renderAccumulator += m_Timer->DeltaTime();
+	*/
 			}
 		}
 		OnShutdown();

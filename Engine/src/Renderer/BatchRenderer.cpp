@@ -22,13 +22,18 @@ namespace sixengine {
 	}
 
 	BatchRenderer::BatchRenderer(ModelManager* modelManager, TextureArray* textureArray)
-		: m_ModelManager(modelManager), m_TextureArray(textureArray)
+		: m_ModelManager(modelManager), m_TextureArray(textureArray), m_IDBO(100 * sizeof(DrawElementsCommand), 6), m_LockManager(true)
 	{
-		glGenBuffers(1, &m_IDBO);
-		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_IDBO);
-		glBufferData(GL_DRAW_INDIRECT_BUFFER, 100 * sizeof(RendererCommand), 0, GL_DYNAMIC_DRAW);
+		GLbitfield mapFlags = GL_MAP_WRITE_BIT
+			| GL_MAP_PERSISTENT_BIT
+			| GL_MAP_COHERENT_BIT;
+		GLbitfield createFlags = mapFlags | GL_DYNAMIC_STORAGE_BIT;
 
-		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+		glGenBuffers(1, &m_IDBO.m_ID);
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_IDBO.m_ID);
+		glBufferStorage(GL_DRAW_INDIRECT_BUFFER, m_IDBO.m_Buffering * m_IDBO.m_Size, 0, createFlags);
+		m_IDBO.m_Ptr = glMapBufferRange(GL_DRAW_INDIRECT_BUFFER, 0, m_IDBO.m_Buffering * m_IDBO.m_Size, mapFlags);
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 	}
 
 	BatchRenderer::~BatchRenderer()
@@ -45,12 +50,13 @@ namespace sixengine {
 
 		//command->distance = Distance(&m_PlayerCamera->GetPosition(), &t->getWorldPosition());
 		//command->isTranslucent = false;
-
-		command->model = gameObject->GetComponent<Mesh>()->GetModel();
-		command->data.model = model;
+		command->gameObject = gameObject;
 
 		command->shader = gameObject->GetComponent<Material>()->GetShader();
+		command->model = gameObject->GetComponent<Mesh>()->GetModel();
+
 		command->data.textureLayer = gameObject->GetComponent<Material>()->GetTexture();
+		command->data.model = model;
 
 		m_CommandList.push_back(command);
 	}
@@ -58,7 +64,6 @@ namespace sixengine {
 	void BatchRenderer::Render()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		std::vector<std::vector<RendererCommand*>> sortedTechniques;
 		//Sort Commands by techniques
@@ -132,13 +137,17 @@ namespace sixengine {
 				{ me.NumIndices, modelInstanceCounter, me.BaseIndex, me.BaseVertex, allIntstanceCounter }
 			);
 
+			m_LockManager.WaitForLockedRange(m_IDBO.m_Head, m_IDBO.m_Size);
+
 			m_TechniqueList[t]->Render(commandList, models, layers);
 
-			glBufferSubData(GL_DRAW_INDIRECT_BUFFER, 0, m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]), m_RenderCommandList.data());
-			
-			m_ModelManager->Bind();
+			void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head;
+			memcpy(ptr, m_RenderCommandList.data(), m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]));
 
-			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)0, m_RenderCommandList.size(), 0);
+			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)m_IDBO.m_Head, m_RenderCommandList.size(), 0);
+
+			m_LockManager.LockRange(m_IDBO.m_Head, m_IDBO.m_Size);
+			m_IDBO.m_Head = (m_IDBO.m_Head + m_IDBO.m_Size) % (m_IDBO.m_Buffering * m_IDBO.m_Size);
 
 			m_RenderCommandList.clear();
 		}
@@ -156,6 +165,17 @@ namespace sixengine {
 		m_ModelManager->Bind();
 		for (auto tech : m_TechniqueList)
 			tech->Start(m_TextureArray);
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_IDBO.m_ID);
+
+		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+
+		glEnable(GL_DEPTH_TEST);
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+
+		glEnable(GL_SCISSOR_TEST);
+		glScissor(0, 0, 1280, 720);
 	}
 
 	void BatchRenderer::Initialize(ModelManager* modelManager, TextureArray* textureArray)
