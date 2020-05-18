@@ -6,6 +6,8 @@
 
 #include <future>
 
+#include "Gameplay/Components/Animation.h"
+
 namespace sixengine {
 
 	Technique::Technique(Shader* shader, Camera* camera)
@@ -123,9 +125,8 @@ namespace sixengine {
 	{
 		float time = Timer::Instance()->ElapsedTime();
 
-		// example
-		//command->gameObject->GetComponent<AnimationState>()->
-		command->model->BoneTransform(time, *transform);
+		std::string animationName = command->gameObject->GetComponent<Animation>().Get()->name;
+		command->model->BoneTransform(time, *transform, animationName);
 	}
 
 	void AnimationPBR::Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)

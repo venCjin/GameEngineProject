@@ -42,9 +42,9 @@ namespace sixengine {
 		}
 	}
 
-	void Model::LoadAnimationNodes()
+	/*void Model::LoadAnimationNodes()
 	{
-		const aiAnimation* animation = m_Scene->mAnimations[0];
+		const aiAnimation* animation = m_AnimationsMapping["walk"]->animation;
 
 		for (uint i = 0; i < animation->mNumChannels; i++) {
 			const aiNodeAnim* nodeAnim = animation->mChannels[i];
@@ -54,7 +54,7 @@ namespace sixengine {
 				m_NodeAnimationMapping[std::string(nodeAnim->mNodeName.data)] = nodeAnim;
 			}			
 		}
-	}
+	}*/
 
 
 	bool Model::LoadModel(const std::string& filename)
@@ -84,8 +84,7 @@ namespace sixengine {
 		//glBindVertexArray(0);
 		if (m_Scene->HasAnimations())
 		{
-			LoadAnimationNodes();
-			LoadAnimation(filename, "samba");
+			//LoadAnimationNodes();
 		}
 
 
@@ -431,7 +430,7 @@ namespace sixengine {
 
 	uint Model::FindScaling(float animationTime, const aiNodeAnim* nodeAnim)
 	{
-		assert(nodeAnim->mNumScalingKeys > 0);
+		//assert(nodeAnim->mNumScalingKeys > 0);
 
 		for (uint i = 0; i < nodeAnim->mNumScalingKeys - 1; i++) {
 			if (animationTime < (float)nodeAnim->mScalingKeys[i + 1].mTime) {
@@ -439,7 +438,7 @@ namespace sixengine {
 			}
 		}
 
-		assert(0);
+		//assert(0);
 
 		return 0;
 	}
@@ -454,7 +453,7 @@ namespace sixengine {
 
 		uint positionIndex = FindPosition(animationTime, nodeAnim);
 		uint nextpositionIndex = (positionIndex + 1);
-		assert(nextpositionIndex < nodeAnim->mNumPositionKeys);
+		//assert(nextpositionIndex < nodeAnim->mNumPositionKeys);
 		float deltaTime = (float)(nodeAnim->mPositionKeys[nextpositionIndex].mTime - nodeAnim->mPositionKeys[positionIndex].mTime);
 		float factor = (animationTime - (float)nodeAnim->mPositionKeys[positionIndex].mTime) / deltaTime;
 		//assert(Factor >= 0.0f && Factor <= 1.0f);
@@ -483,7 +482,7 @@ namespace sixengine {
 
 		uint rotationIndex = FindRotation(animationTime, nodeAnim);
 		uint nextRotationIndex = (rotationIndex + 1);
-		assert(nextRotationIndex < nodeAnim->mNumRotationKeys);
+		//assert(nextRotationIndex < nodeAnim->mNumRotationKeys);
 		float deltaTime = (float)(nodeAnim->mRotationKeys[nextRotationIndex].mTime - nodeAnim->mRotationKeys[rotationIndex].mTime);
 		float factor = (animationTime - (float)nodeAnim->mRotationKeys[rotationIndex].mTime) / deltaTime;
 		//assert(Factor >= 0.0f && Factor <= 1.0f);
@@ -503,7 +502,7 @@ namespace sixengine {
 
 		uint scalingIndex = FindScaling(animationTime, nodeAnim);
 		uint nextScalingIndex = (scalingIndex + 1);
-		assert(nextScalingIndex < nodeAnim->mNumScalingKeys);
+		//assert(nextScalingIndex < nodeAnim->mNumScalingKeys);
 		float deltaTime = (float)(nodeAnim->mScalingKeys[nextScalingIndex].mTime - nodeAnim->mScalingKeys[scalingIndex].mTime);
 		float factor = (animationTime - (float)nodeAnim->mScalingKeys[scalingIndex].mTime) / deltaTime;
 		//assert(Factor >= 0.0f && Factor <= 1.0f);
@@ -514,15 +513,15 @@ namespace sixengine {
 	}
 
 
-	void Model::ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform)
+	void Model::ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform, std::string animationName)
 	{
 		std::string nodeName(node->mName.data);
 
-		const aiAnimation* animation = m_AnimationsMapping["samba"]->animation;//m_Scene->mAnimations[0];
+		const aiAnimation* animation = m_AnimationsMapping[animationName]->animation;//m_Scene->mAnimations[0];
 
 		glm::mat4 nodeTransformation(glm::transpose(glm::make_mat4(&node->mTransformation.a1)));
 
-		const aiNodeAnim* nodeAnim = m_NodeAnimationMapping[nodeName]; /*FindNodeAnim(animation, nodeName);*/
+		const aiNodeAnim* nodeAnim = m_AnimationsMapping[animationName]->nodeAnimationMapping[nodeName]; /*FindNodeAnim(animation, nodeName);*/
 
 		if (nodeAnim) {
 			// Interpolate scaling and generate scaling transformation matrix
@@ -555,21 +554,21 @@ namespace sixengine {
 		}
 
 		for (uint i = 0; i < node->mNumChildren; i++) {
-			ReadNodeHierarchy(animationTime, node->mChildren[i], globalTransformation);
+			ReadNodeHierarchy(animationTime, node->mChildren[i], globalTransformation, animationName);
 		}
 	}
 
 
-	void Model::BoneTransform(float timeInSeconds, std::vector<glm::mat4>& transforms)
+	void Model::BoneTransform(float timeInSeconds, std::vector<glm::mat4>& transforms, std::string animationName)
 	{
 		if (!m_Scene->HasAnimations() || m_AnimationsMapping.size() == 0)
 			return;
 
-		float ticksPerSecond = (float)(m_AnimationsMapping["samba"]->animation->mTicksPerSecond != 0 ? m_AnimationsMapping["samba"]->animation->mTicksPerSecond : 25.0f);
+		float ticksPerSecond = (float)(m_AnimationsMapping[animationName]->animation->mTicksPerSecond != 0 ? m_AnimationsMapping[animationName]->animation->mTicksPerSecond : 25.0f);
 		float timeInTicks = timeInSeconds * ticksPerSecond;
-		float animationTime = fmod(timeInTicks, (float)m_AnimationsMapping["samba"]->animation->mDuration);
+		float animationTime = fmod(timeInTicks, (float)m_AnimationsMapping[animationName]->animation->mDuration);
 
-		ReadNodeHierarchy(animationTime, m_Scene->mRootNode, glm::mat4(1.0f));
+		ReadNodeHierarchy(animationTime, m_Scene->mRootNode, glm::mat4(1.0f), animationName);
 		transforms.resize(m_NumBones);
 
 		for (uint i = 0; i < m_NumBones; i++) {

@@ -22,3 +22,4 @@
 
 #include "Gameplay/Components/Transform.h"
 #include "Gameplay/Components/Mesh.h"
+#include "Gameplay/Components/Animation.h"

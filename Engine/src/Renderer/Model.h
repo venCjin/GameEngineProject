@@ -51,7 +51,7 @@ namespace sixengine {
 			return m_NumBones;
 		}
 
-		void BoneTransform(float TimeInSeconds, std::vector<glm::mat4>& Transforms);
+		void BoneTransform(float TimeInSeconds, std::vector<glm::mat4>& Transforms, std::string animationName);
 
 		inline std::vector<glm::mat4>& GetCurrentTransforms() { return currentTransforms; }
 
@@ -61,6 +61,7 @@ namespace sixengine {
 		std::vector<Vertex> vertices;
 		std::vector<uint> indices;
 		int m_TotalNumIndices = 0;
+		//void LoadAnimationNodes();
 
 	private:
 
@@ -77,14 +78,13 @@ namespace sixengine {
 		uint FindScaling(float animationTime, const aiNodeAnim* nodeAnim);
 		uint FindRotation(float animationTime, const aiNodeAnim* nodeAnim);
 		uint FindPosition(float animationTime, const aiNodeAnim* nodeAnim);
-		void ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform);
+		void ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform, std::string animationName);
 		bool InitFromScene(const aiScene* scene, const std::string& filename);
 		void InitMesh(uint MeshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 		void LoadBones(uint MeshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices);
 		std::vector<Texture> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 		//bool InitMaterials(const aiScene* pScene, const std::string& Filename);
 		void Clear();
-		void LoadAnimationNodes();
 
 #define INVALID_MATERIAL 0xFFFFFFFF
 
@@ -119,13 +119,30 @@ namespace sixengine {
 			{
 				scene = importer.ReadFile(filename.c_str(), aiProcess_FlipUVs);
 				if (scene->HasAnimations())
+				{
 					animation = scene->mAnimations[0];
+					LoadAnimationNodes();
+				}
 
+			}
+
+			void LoadAnimationNodes()
+			{			
+				for (uint i = 0; i < animation->mNumChannels; i++) {
+					const aiNodeAnim* nodeAnim = animation->mChannels[i];
+
+					if (nodeAnimationMapping.find(std::string(nodeAnim->mNodeName.data)) == nodeAnimationMapping.end())
+					{
+						nodeAnimationMapping[std::string(nodeAnim->mNodeName.data)] = nodeAnim;
+					}
+				}
 			}
 
 			Assimp::Importer importer;
 			const aiScene* scene;
-			aiAnimation* animation;			
+			aiAnimation* animation;
+			std::map<std::string, const aiNodeAnim* > nodeAnimationMapping;
+
 		};
 
 		std::vector<MeshEntry> m_Entries;
@@ -134,7 +151,7 @@ namespace sixengine {
 		std::vector<glm::mat4> currentTransforms; // current animation transforms for shader
 
 		std::map<std::string, uint> m_BoneMapping; // maps a bone name to its index
-		std::map<std::string, const aiNodeAnim* > m_NodeAnimationMapping;
+		//std::map<std::string, const aiNodeAnim* > m_NodeAnimationMapping;
 		std::map<std::string, AnimationEntry*> m_AnimationsMapping;
 		uint m_NumBones;
 		std::vector<BoneInfo> m_BoneInfo;

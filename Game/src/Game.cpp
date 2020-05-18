@@ -14,6 +14,8 @@
 #include "Renderer/TextureArray.h"
 #include "Renderer/Technique.h"
 
+#include "Gameplay/Systems/AnimationSystem.h"
+
 #define SCENE_FILE 0
 
 namespace sixengine {
@@ -65,9 +67,12 @@ namespace sixengine {
 			#if SCENE_FILE
 			m_Scene.LoadScene("res/scenes/br.scene");
 			#else
+			
+			m_SystemManager.AddSystem<AnimationSystem>();
+
 			/// SETUP ASSETS
 			/// =========================================================
-			m_BasicShader = m_ShaderManager->AddShader("res/shaders/PBR.glsl");
+			m_BasicShader = m_ShaderManager->AddShader("res/shaders/Basic.glsl");
 			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/Animation.glsl");
 
 			StaticPBR* staticM = new StaticPBR(m_BasicShader, &cam);
@@ -85,17 +90,17 @@ namespace sixengine {
 			m_TextureArray->CreateTextureArray();
 
 			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("PBR"),
+				m_ShaderManager->Get("Basic"),
 				glm::vec4(m_TextureArray->GetTexture("Bricks")),
 				"BrickBasic1");
 
 			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("PBR"),
+				m_ShaderManager->Get("Basic"),
 				glm::vec4(m_TextureArray->GetTexture("Wood1")),
 				"Wood1Basic1"); 
 
 			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("PBR"),
+				m_ShaderManager->Get("Basic"),
 				glm::vec4(m_TextureArray->GetTexture("Wood2")),
 				"Wood2Basic1");
 
@@ -130,6 +135,8 @@ namespace sixengine {
 			m_SceneRoot = new GameObject(m_EntityManager);
 			srand(NULL);
 			
+			GameObject* obj;
+
 			for (int i = 0; i < 10; i++)
 			{
 				for (int j = 0; j < 2; j++)
@@ -160,6 +167,10 @@ namespace sixengine {
 					obj->AddComponent<Transform>(obj, glm::mat4(1.0f), mat);
 					obj->AddComponent<Mesh>(m_ModelManager->GetModel("par"));
 					obj->AddComponent<Material>(*m_MaterialManager->Get("parasiteZombie"));
+					obj->AddComponent<Animation>();
+
+					obj->GetComponent<Mesh>().Get()->GetModel()->LoadAnimation("res/models/par/par.dae", "samba");
+					obj->GetComponent<Mesh>().Get()->GetModel()->LoadAnimation("res/models/par/par_walk.dae", "walk");
 
 					m_SceneRoot->AddChild(obj);
 				}
