@@ -148,7 +148,6 @@ namespace sixengine {
 			const aiScene* scene;
 			aiAnimation* animation;
 			std::map<std::string, const aiNodeAnim* > nodeAnimationMapping;
-
 		};
 
 		std::vector<MeshEntry> m_Entries;

@@ -33,7 +33,7 @@ void main()
 
 const float PI = 3.14159265359;
 
-struct DirLight
+struct DirectionalLight
 {
 	vec3 position;	// needed for shadow mapping // should position be calculated in View Space? it's onlt used for shadow mapping
 	vec3 direction; // direction probably needs to be calculated in View Space - in CPU as well
@@ -74,6 +74,20 @@ layout(std430, binding = 1) buffer textureLayers
 
 uniform sampler2DArray textureArray;
 
+layout(std430, binding = 5) buffer lightData
+{    
+	//float ao;
+	//float metallic;
+	//float roughness;
+
+	//vec3 position;	// needed for shadow mapping // should position be calculated in View Space? it's onlt used for shadow mapping
+	//vec3 direction; // direction probably needs to be calculated in View Space - in CPU as well
+	//vec3 color1;
+
+	DirectionalLight dirLight;
+};
+
+
 
 // Material parameters
 uniform float metallic;
@@ -81,12 +95,12 @@ uniform float roughness;
 uniform float ao;
 
 // Lights
-uniform DirLight dirLights[NR_DIRLIGHTS];
+//uniform DirectionalLight dirLights[NR_DIRLIGHTS];
 uniform PointLight pointLights[NR_POINTLIGHTS];
 uniform SpotLight spotLights[NR_SPOTLIGHTS];
 
 // Light Types Functions
-vec3 CalcDirLight(DirLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo);
+vec3 CalcDirLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo);
 vec3 CalcPointLight(PointLight light, vec3 N, vec3 V, vec3 fragPos, vec3 F0, vec3 albedo);
 vec3 CalcSpotLight(SpotLight light, vec3 N, vec3 V, vec3 fragPos, vec3 F0, vec3 albedo);
 
@@ -109,12 +123,14 @@ void main()
 
 	vec3 Lo = vec3(0.0);
 
-	for (int i = 0; i < NR_DIRLIGHTS; i++)
-		Lo += CalcDirLight(dirLights[i], N, V, F0, albedo);
-	for (int i = 0; i < NR_POINTLIGHTS; i++)
-		Lo += CalcPointLight(pointLights[i], N, V, FragPos, F0, albedo);
-	for (int i = 0; i < NR_SPOTLIGHTS; i++)
-		Lo += CalcSpotLight(spotLights[i], N, V, FragPos, F0, albedo);
+	Lo += CalcDirLight(dirLight, N, V, F0, albedo);
+
+	//for (int i = 0; i < NR_DIRLIGHTS; i++)
+		//Lo += CalcDirLight(dirLights[i], N, V, F0, albedo);
+	//for (int i = 0; i < NR_POINTLIGHTS; i++)
+		//Lo += CalcPointLight(pointLights[i], N, V, FragPos, F0, albedo);
+	//for (int i = 0; i < NR_SPOTLIGHTS; i++)
+		//Lo += CalcSpotLight(spotLights[i], N, V, FragPos, F0, albedo);
 
 	// should we multiply specular by kS? According to the formula - yes, according to the learnopengl code - no (he says that we already multiplied BRDF by kS (F), but it's not correct according to the formula)
 	
@@ -130,7 +146,7 @@ void main()
 
 } 
 
-vec3 CalcDirLight(DirLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo)
+vec3 CalcDirLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo)
 {
 	vec3 L = normalize(-light.direction);
 	vec3 H = normalize(V + L);

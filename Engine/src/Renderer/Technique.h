@@ -3,6 +3,7 @@
 #include "Renderer/Shader.h"
 #include "Renderer/BufferLockManager.h"
 #include "Core/Camera.h"
+#include "Renderer/LightData.h"
 
 namespace sixengine {
 
@@ -53,9 +54,14 @@ namespace sixengine {
 	private:
 		BufferStorage m_Models;
 		BufferStorage m_Layers;
+		BufferStorage m_Lights;
 
 		BufferLockManager m_ModelsLockManager;
 		BufferLockManager m_LayersLockManager;
+		BufferLockManager m_LightsLockManager;
+
+		LightData m_LightData;
+		glm::vec3 m_DirectionalLightPos;
 
 	public:
 		StaticPBR(Shader* shader, Camera* camera);
