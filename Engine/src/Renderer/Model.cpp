@@ -99,6 +99,8 @@ namespace sixengine {
 		{
 			m_AnimationsMapping[name] = ae;
 		}
+		else
+			std::cout << "Already exists" << std::endl;
 		
 
 		return false;
@@ -517,11 +519,27 @@ namespace sixengine {
 	{
 		std::string nodeName(node->mName.data);
 
-		const aiAnimation* animation = m_AnimationsMapping[animationName]->animation;//m_Scene->mAnimations[0];
+		const aiAnimation* animation = m_AnimationsMapping[animationName]->animation;
 
 		glm::mat4 nodeTransformation(glm::transpose(glm::make_mat4(&node->mTransformation.a1)));
 
-		const aiNodeAnim* nodeAnim = m_AnimationsMapping[animationName]->nodeAnimationMapping[nodeName]; /*FindNodeAnim(animation, nodeName);*/
+
+		const aiNodeAnim* nodeAnim = nullptr;
+
+		/*m_AnimationsMapping[animationName];
+		std::cout << "map" << std::endl;
+		m_AnimationsMapping[animationName]->nodeAnimationMapping[nodeName];
+		std::cout << "map node" << std::endl;*/
+
+		//std::cout << "ReadNodeHierarchy" << std::endl;
+
+		if (m_AnimationsMapping.find(animationName) != m_AnimationsMapping.end())
+		{
+			nodeAnim = m_AnimationsMapping[animationName]->nodeAnimationMapping[nodeName];
+
+		}
+		else
+			std::cout << "AAAAAA" << std::endl;
 
 		if (nodeAnim) {
 			// Interpolate scaling and generate scaling transformation matrix
@@ -568,7 +586,7 @@ namespace sixengine {
 		float timeInTicks = timeInSeconds * ticksPerSecond;
 		float animationTime = fmod(timeInTicks, (float)m_AnimationsMapping[animationName]->animation->mDuration);
 
-		ReadNodeHierarchy(animationTime, m_Scene->mRootNode, glm::mat4(1.0f), animationName);
+		ReadNodeHierarchy(animationTime, m_AnimationsMapping[animationName]->scene->mRootNode /*m_Scene->mRootNode*/, glm::mat4(1.0f), animationName);
 		transforms.resize(m_NumBones);
 
 		for (uint i = 0; i < m_NumBones; i++) {

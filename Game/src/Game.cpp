@@ -72,7 +72,7 @@ namespace sixengine {
 
 			/// SETUP ASSETS
 			/// =========================================================
-			m_BasicShader = m_ShaderManager->AddShader("res/shaders/Basic.glsl");
+			m_BasicShader = m_ShaderManager->AddShader("res/shaders/PBR.glsl");
 			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/Animation.glsl");
 
 			StaticPBR* staticM = new StaticPBR(m_BasicShader, &cam);
@@ -90,17 +90,17 @@ namespace sixengine {
 			m_TextureArray->CreateTextureArray();
 
 			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("Basic"),
+				m_ShaderManager->Get("PBR"),
 				glm::vec4(m_TextureArray->GetTexture("Bricks")),
 				"BrickBasic1");
 
 			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("Basic"),
+				m_ShaderManager->Get("PBR"),
 				glm::vec4(m_TextureArray->GetTexture("Wood1")),
 				"Wood1Basic1"); 
 
 			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("Basic"),
+				m_ShaderManager->Get("PBR"),
 				glm::vec4(m_TextureArray->GetTexture("Wood2")),
 				"Wood2Basic1");
 
@@ -119,6 +119,9 @@ namespace sixengine {
 			m_ModelManager->AddModel("res/models/par/par.dae");
 			m_ModelManager->CreateVAO();
 
+			m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par.dae", "samba");
+			m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
+				
 			// SETUP SCENE
 			std::map<unsigned int, std::string> randomM;
 			randomM[0] = "cube";
@@ -167,10 +170,7 @@ namespace sixengine {
 					obj->AddComponent<Transform>(obj, glm::mat4(1.0f), mat);
 					obj->AddComponent<Mesh>(m_ModelManager->GetModel("par"));
 					obj->AddComponent<Material>(*m_MaterialManager->Get("parasiteZombie"));
-					obj->AddComponent<Animation>();
-
-					obj->GetComponent<Mesh>().Get()->GetModel()->LoadAnimation("res/models/par/par.dae", "samba");
-					obj->GetComponent<Mesh>().Get()->GetModel()->LoadAnimation("res/models/par/par_walk.dae", "walk");
+					obj->AddComponent<Animation>();					
 
 					m_SceneRoot->AddChild(obj);
 				}
