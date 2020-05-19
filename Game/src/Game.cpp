@@ -164,7 +164,7 @@ namespace sixengine {
 					obj = new GameObject(m_EntityManager);
 
 					glm::mat4 mat(1.0f);
-					mat = glm::translate(mat, glm::vec3(-30.0 + 5.0f * j, 0.0f, 0.0f + i * 5.0f));
+					mat = glm::translate(mat, glm::vec3(30.0 + 5.0f * j, 0.0f, 0.0f + i * 5.0f));
 					mat = glm::scale(mat, glm::vec3(0.05f, 0.05f, 0.05f));
 
 					obj->AddComponent<Transform>(obj, glm::mat4(1.0f), mat);

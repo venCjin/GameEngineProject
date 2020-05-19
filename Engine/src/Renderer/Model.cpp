@@ -531,15 +531,21 @@ namespace sixengine {
 		m_AnimationsMapping[animationName]->nodeAnimationMapping[nodeName];
 		std::cout << "map node" << std::endl;*/
 
-		//std::cout << "ReadNodeHierarchy" << std::endl;
+		if (!firstRNH)
+		{
+			std::cout << "ReadNodeHierarchy" << std::endl;
+			firstRNH = true;
+		}
 
 		if (m_AnimationsMapping.find(animationName) != m_AnimationsMapping.end())
 		{
-			nodeAnim = m_AnimationsMapping[animationName]->nodeAnimationMapping[nodeName];
-
+			if (m_AnimationsMapping[animationName]->nodeAnimationMapping.find(nodeName) != m_AnimationsMapping[animationName]->nodeAnimationMapping.end())
+				nodeAnim = m_AnimationsMapping[animationName]->nodeAnimationMapping[nodeName];
+			//else
+				//LOG_ERROR("no elements in node map");
 		}
 		else
-			std::cout << "AAAAAA" << std::endl;
+			LOG_ERROR("no elements in animation map");
 
 		if (nodeAnim) {
 			// Interpolate scaling and generate scaling transformation matrix

@@ -65,6 +65,8 @@ namespace sixengine {
 
 	private:
 
+		bool firstRNH = false;
+
 		struct BoneInfo
 		{
 			glm::mat4 BoneOffset = glm::mat4(0.0f);
@@ -113,6 +115,7 @@ namespace sixengine {
 			{
 				scene = nullptr;
 				animation = nullptr;
+				LOG_ERROR("nullptr CONSTRUCTOR");
 			}
 
 			AnimationEntry(const std::string& filename)
@@ -123,6 +126,9 @@ namespace sixengine {
 					animation = scene->mAnimations[0];
 					LoadAnimationNodes();
 				}
+
+				if (!scene->HasAnimations() || animation == nullptr || nodeAnimationMapping.size() == 0)
+					LOG_ERROR("AnimationEntry nullptr");
 
 			}
 
