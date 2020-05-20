@@ -29,13 +29,13 @@ namespace sixengine {
 
 		m_DirectionalLightPos = glm::vec3(-2.0f, 4.0f, -1.0f);
 
-		//m_LightData.ao = 0.4f;
-		//m_LightData.roughness = 0.6f;
-		//m_LightData.metallic = 0.4f;
+		m_LightData.ao = 0.4f;
+		m_LightData.roughness = 0.6f;
+		m_LightData.metallic = 0.4f;
 
-		m_LightData.dirLight.position = glm::vec3(m_Camera->GetViewMatrix() * glm::vec4(m_DirectionalLightPos, 1.0f));
-		m_LightData.dirLight.direction = glm::vec3(m_Camera->GetViewMatrix()* glm::vec4(-m_DirectionalLightPos, 0.0f));
-		m_LightData.dirLight.color = glm::vec3(1.0f, 0.0f, 0.0f);
+		m_LightData.dirLight.position = glm::vec4(m_Camera->GetViewMatrix() * glm::vec4(m_DirectionalLightPos, 1.0f));
+		m_LightData.dirLight.direction = glm::vec4(m_Camera->GetViewMatrix()* glm::vec4(-m_DirectionalLightPos, 0.0f));
+		m_LightData.dirLight.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	void StaticPBR::Start(TextureArray* textureArray)
@@ -77,8 +77,8 @@ namespace sixengine {
 		m_Shader->Bind();
 
 		// update position and direction of light - move it to the main loop or somewhere else
-		m_LightData.dirLight.position = glm::vec3(m_Camera->GetViewMatrix() * glm::vec4(m_DirectionalLightPos, 1.0f));
-		m_LightData.dirLight.direction = glm::vec3(m_Camera->GetViewMatrix()* glm::vec4(-m_DirectionalLightPos, 0.0f));
+		m_LightData.dirLight.position = glm::vec4(m_Camera->GetViewMatrix() * glm::vec4(m_DirectionalLightPos, 1.0f));
+		m_LightData.dirLight.direction = glm::vec4(m_Camera->GetViewMatrix()* glm::vec4(-m_DirectionalLightPos, 0.0f));
 
 		m_ModelsLockManager.WaitForLockedRange(m_Models.m_Head, m_Models.m_Size);
 		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, m_Models.m_ID, m_Models.m_Head, m_Models.m_Size);

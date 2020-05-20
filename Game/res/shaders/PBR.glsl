@@ -76,9 +76,9 @@ uniform sampler2DArray textureArray;
 
 layout(std430, binding = 5) buffer lightData
 {    
-	//float ao;
-	//float metallic;
-	//float roughness;
+	float ao;
+	float metallic;
+	float roughness;
 
 	//vec3 position;	// needed for shadow mapping // should position be calculated in View Space? it's onlt used for shadow mapping
 	//vec3 direction; // direction probably needs to be calculated in View Space - in CPU as well
@@ -90,9 +90,9 @@ layout(std430, binding = 5) buffer lightData
 
 
 // Material parameters
-uniform float metallic;
-uniform float roughness;
-uniform float ao;
+//uniform float metallic;
+//uniform float roughness;
+//uniform float ao;
 
 // Lights
 //uniform DirectionalLight dirLights[NR_DIRLIGHTS];
@@ -148,10 +148,10 @@ void main()
 
 vec3 CalcDirLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo)
 {
-	vec3 L = normalize(-light.direction);
+	vec3 L = normalize(-light.direction.xyz);
 	vec3 H = normalize(V + L);
 	
-	vec3 radiance = light.color;	
+	vec3 radiance = light.color.rgb;	
 
 	// cook-torrance brdf
 	float NDF	= DistributionGGX(N, H, roughness);
