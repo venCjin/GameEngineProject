@@ -13,7 +13,7 @@ namespace sixengine {
 		~VertexArray();
 
 		void Bind() const;
-		void UnBind() const;
+		void Unbind() const;
 
 		void AddVertexBuffer(VertexBuffer& vBuffer);
 		void AddIndexBuffer(IndexBuffer& iBuffer);

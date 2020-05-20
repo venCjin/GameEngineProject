@@ -79,7 +79,7 @@ namespace sixengine {
 		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
 	}
 
-	void VertexBuffer::UnBind() const
+	void VertexBuffer::Unbind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
@@ -103,7 +103,7 @@ namespace sixengine {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 	}
 
-	void IndexBuffer::UnBind() const
+	void IndexBuffer::Unbind() const
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}

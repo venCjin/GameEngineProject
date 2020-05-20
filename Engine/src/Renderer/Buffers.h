@@ -105,7 +105,7 @@ namespace sixengine {
 		~VertexBuffer();
 
 		void Bind() const;
-		void UnBind() const;
+		void Unbind() const;
 
 		inline const BufferLayout& GetLayout() const { return m_VBLayout; }
 		void SetLayout(const BufferLayout& bufferLayout) { m_VBLayout = bufferLayout; }
@@ -124,7 +124,7 @@ namespace sixengine {
 		~IndexBuffer();
 
 		void Bind() const;
-		void UnBind() const;
+		void Unbind() const;
 
 		inline const unsigned int GetCount() const { return m_Count; }
 	
