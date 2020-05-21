@@ -50,7 +50,7 @@ namespace sixengine {
 		glBindVertexArray(m_ID);
 	}
 
-	void VertexArray::UnBind() const
+	void VertexArray::Unbind() const
 	{
 		glBindVertexArray(0);
 	}
@@ -95,6 +95,8 @@ namespace sixengine {
 
 			m_VBuffers_List.push_back(&vBuffer);
 		}
+
+		vBuffer.Unbind();
 		glBindVertexArray(0);
 	}
 
@@ -102,7 +104,10 @@ namespace sixengine {
 	{
 		glBindVertexArray(m_ID);
 		iBuffer.Bind();
+
 		m_IBuffer = &iBuffer;
+
+		//iBuffer.Unbind();
 		glBindVertexArray(0);
 	}
 

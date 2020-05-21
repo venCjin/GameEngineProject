@@ -23,7 +23,7 @@ namespace sixengine {
 
 		glDrawElements(GL_TRIANGLES, m_VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 
-		m_VAO->UnBind();
+		m_VAO->Unbind();
 		//m_Shader->Unbind();
 	}
 

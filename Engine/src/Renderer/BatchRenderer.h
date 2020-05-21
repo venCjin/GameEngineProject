@@ -20,8 +20,8 @@ namespace sixengine {
 	struct RendererCommand
 	{
 		//float distance;
-		class Shader* shader;
-		class Model* model;
+		class Shader* shader = nullptr;
+		int ModelID = -1;
 		//bool isTranslucent;
 		GameObject* gameObject;
 

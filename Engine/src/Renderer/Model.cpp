@@ -393,7 +393,7 @@ namespace sixengine {
 		}
 		//glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 
-		VAO->UnBind();
+		VAO->Unbind();
 
 		// Make sure the VAO is not changed from the outside    
 		//glBindVertexArray(0);

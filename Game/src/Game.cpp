@@ -19,7 +19,7 @@
 #define SCENE_FILE 0
 
 namespace sixengine {
-	
+
 	class Game : public Application
 	{
 	private:
@@ -27,7 +27,7 @@ namespace sixengine {
 		Scene m_Scene;
 		#else
 		GameObject *m_SceneRoot, *m_UIRoot;
-		Shader *m_BasicShader, *m_BasicShader2;
+		Shader *m_BasicShader, *m_BasicShader2, *m_FontShader;
 		Camera cam, camUI;
 
 		ShaderManager* m_ShaderManager;
@@ -74,12 +74,18 @@ namespace sixengine {
 			/// =========================================================
 			m_BasicShader = m_ShaderManager->AddShader("res/shaders/PBR.glsl");
 			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/Animation.glsl");
+			m_FontShader = m_ShaderManager->AddShader("res/shaders/Font.glsl");
+
+			Font* font = new Font("res/fonts/DroidSans.ttf");
+			UI* ui = new UI(m_FontShader, &camUI);
+			ui->AddFont(font);
 
 			StaticPBR* staticM = new StaticPBR(m_BasicShader, &cam);
 			AnimationPBR* animatedM = new AnimationPBR(m_BasicShader2, &cam);
 
 			m_BatchRenderer->AddTechnique(staticM);
 			m_BatchRenderer->AddTechnique(animatedM);
+			m_BatchRenderer->AddTechnique(ui);
 
 			m_TextureArray->AddTexture("res/textures/test/Bricks.jpg");
 			m_TextureArray->AddTexture("res/textures/test/Wood1.jpg");
@@ -90,7 +96,12 @@ namespace sixengine {
 			m_TextureArray->CreateTextureArray();
 
 			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("PBR"),
+				m_ShaderManager->Get("Font"),
+				glm::vec4(0),
+				"FontMaterial");
+
+			m_MaterialManager->CreateMaterial(
+				m_ShaderManager->Get("Basic"),
 				glm::vec4(m_TextureArray->GetTexture("Bricks")),
 				"BrickBasic1");
 
@@ -136,11 +147,25 @@ namespace sixengine {
 			randomT[2] = "Wood2Basic1";
 
 			m_SceneRoot = new GameObject(m_EntityManager);
+			m_UIRoot = new GameObject(m_EntityManager);
 			srand(NULL);
 			
 			GameObject* obj;
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj, glm::mat4(1.0f), 
+				glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 10.0f, 0.0f)));
+			obj->AddComponent<Text>("Testowy tekst, do testowania.", glm::vec3(0.0f, 1.0f, 1.0f), 1.0f);
+			obj->AddComponent<Material>(*m_MaterialManager->Get("FontMaterial"));
+			m_UIRoot->AddChild(obj);
 
-			for (int i = 0; i < 10; i++)
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj, glm::mat4(1.0f), 
+				glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 690.0f, 0.0f)));
+			obj->AddComponent<Text>("Sixengine 0.?", glm::vec3(1.0f, 0.0f, 1.0f), 0.3f);
+			obj->AddComponent<Material>(*m_MaterialManager->Get("FontMaterial"));
+			m_UIRoot->AddChild(obj);
+			
+			for (int i = 0; i < 50; i++)
 			{
 				for (int j = 0; j < 2; j++)
 				{
@@ -157,9 +182,9 @@ namespace sixengine {
 				}
 			}
 
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < 5; i++)
 			{
-				for (int j = 0; j < 1; j++)
+				for (int j = 0; j < 5; j++)
 				{
 					obj = new GameObject(m_EntityManager);
 
@@ -185,6 +210,7 @@ namespace sixengine {
 			m_Scene.Render(true);
 			#else
 			m_SceneRoot->Render(true);
+			m_UIRoot->Render(true);
 			#endif
 			m_BatchRenderer->Render();
 		}
@@ -197,6 +223,7 @@ namespace sixengine {
 		virtual void OnRender(float dt) override
 		{
 			m_SceneRoot->Render();
+			m_UIRoot->Render();
 			m_BatchRenderer->Render();
 		}
 	};
