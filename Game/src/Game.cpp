@@ -101,7 +101,7 @@ namespace sixengine {
 				"FontMaterial");
 
 			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("Basic"),
+				m_ShaderManager->Get("PBR"),
 				glm::vec4(m_TextureArray->GetTexture("Bricks")),
 				"BrickBasic1");
 
