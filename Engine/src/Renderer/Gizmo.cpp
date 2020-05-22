@@ -14,7 +14,7 @@ namespace sixengine {
 	{
 	}
 
-	void Gizmo::Draw(glm::mat4& model)
+	void Gizmo::Draw(const glm::mat4& model)
 	{
 		//m_Shader->Bind();
 		m_VAO->Bind();
@@ -23,7 +23,7 @@ namespace sixengine {
 
 		glDrawElements(GL_TRIANGLES, m_VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
 
-		m_VAO->Unbind();
+		//m_VAO->UnBind();
 		//m_Shader->Unbind();
 	}
 

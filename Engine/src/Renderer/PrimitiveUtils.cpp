@@ -4,45 +4,48 @@
 
 namespace sixengine {
 
-	std::vector<GizmoVertex> PrimitiveUtils::generateCubeVertices()
+	std::vector<GizmoVertex> PrimitiveUtils::generateBoxVertices(float x, float y, float z)
 	{
+		x = x / 2.0f;
+		y = y / 2.0f;
+		z = z / 2.0f;
 		std::vector<GizmoVertex> vertices{
 			// top face
-			GizmoVertex{ glm::vec3{-0.5f,  0.5f, -0.5f}/*, glm::vec3{ 0.0f,  1.0f,  0.0f}, glm::vec2{ 0.0f,  0.0f}*/ },	// bottom left
-			GizmoVertex{ glm::vec3{ 0.5f,  0.5f, -0.5f}/*, glm::vec3{ 0.0f,  1.0f,  0.0f}, glm::vec2{ 1.0f,  0.0f}*/ },	// bottom right
-			GizmoVertex{ glm::vec3{-0.5f,  0.5f,  0.5f}/*, glm::vec3{ 0.0f,  1.0f,  0.0f}, glm::vec2{ 0.0f,  1.0f}*/ },	// top left
-			GizmoVertex{ glm::vec3{ 0.5f,  0.5f,  0.5f}/*, glm::vec3{ 0.0f,  1.0f,  0.0f}, glm::vec2{ 1.0f,  1.0f}*/ },	// top right
+			GizmoVertex{ glm::vec3{-x,  y, -z}/*, glm::vec3{ 0.0f,  1.0f,  0.0f}, glm::vec2{ 0.0f,  0.0f}*/ },	// bottom left
+			GizmoVertex{ glm::vec3{ x,  y, -z}/*, glm::vec3{ 0.0f,  1.0f,  0.0f}, glm::vec2{ 1.0f,  0.0f}*/ },	// bottom right
+			GizmoVertex{ glm::vec3{-x,  y,  z}/*, glm::vec3{ 0.0f,  1.0f,  0.0f}, glm::vec2{ 0.0f,  1.0f}*/ },	// top left
+			GizmoVertex{ glm::vec3{ x,  y,  z}/*, glm::vec3{ 0.0f,  1.0f,  0.0f}, glm::vec2{ 1.0f,  1.0f}*/ },	// top right
 			// bottom face
-			GizmoVertex{ glm::vec3{ 0.5f, -0.5f, -0.5f}/*, glm::vec3{ 0.0f, -1.0f,  0.0f}, glm::vec2{ 0.0f,  0.0f}*/ },	// bottom left
-			GizmoVertex{ glm::vec3{-0.5f, -0.5f, -0.5f}/*, glm::vec3{ 0.0f, -1.0f,  0.0f}, glm::vec2{ 1.0f,  0.0f}*/ },	// bottom right
-			GizmoVertex{ glm::vec3{ 0.5f, -0.5f,  0.5f}/*, glm::vec3{ 0.0f, -1.0f,  0.0f}, glm::vec2{ 0.0f,  1.0f}*/ },	// top left
-			GizmoVertex{ glm::vec3{-0.5f, -0.5f,  0.5f}/*, glm::vec3{ 0.0f, -1.0f,  0.0f}, glm::vec2{ 1.0f,  1.0f}*/ },	// top right
+			GizmoVertex{ glm::vec3{ x, -y, -z}/*, glm::vec3{ 0.0f, -1.0f,  0.0f}, glm::vec2{ 0.0f,  0.0f}*/ },	// bottom left
+			GizmoVertex{ glm::vec3{-x, -y, -z}/*, glm::vec3{ 0.0f, -1.0f,  0.0f}, glm::vec2{ 1.0f,  0.0f}*/ },	// bottom right
+			GizmoVertex{ glm::vec3{ x, -y,  z}/*, glm::vec3{ 0.0f, -1.0f,  0.0f}, glm::vec2{ 0.0f,  1.0f}*/ },	// top left
+			GizmoVertex{ glm::vec3{-x, -y,  z}/*, glm::vec3{ 0.0f, -1.0f,  0.0f}, glm::vec2{ 1.0f,  1.0f}*/ },	// top right
 			// front face
-			GizmoVertex{ glm::vec3{ 0.5f, -0.5f,  0.5f}/*, glm::vec3{ 0.0f,  0.0f,  1.0f}, glm::vec2{ 0.0f,  0.0f}*/ },	// bottom left
-			GizmoVertex{ glm::vec3{-0.5f, -0.5f,  0.5f}/*, glm::vec3{ 0.0f,  0.0f,  1.0f}, glm::vec2{ 1.0f,  0.0f}*/ },	// bottom right
-			GizmoVertex{ glm::vec3{ 0.5f,  0.5f,  0.5f}/*, glm::vec3{ 0.0f,  0.0f,  1.0f}, glm::vec2{ 0.0f,  1.0f}*/ },	// top left
-			GizmoVertex{ glm::vec3{-0.5f,  0.5f,  0.5f}/*, glm::vec3{ 0.0f,  0.0f,  1.0f}, glm::vec2{ 1.0f,  1.0f}*/ },	// top right
+			GizmoVertex{ glm::vec3{ x, -y,  z}/*, glm::vec3{ 0.0f,  0.0f,  1.0f}, glm::vec2{ 0.0f,  0.0f}*/ },	// bottom left
+			GizmoVertex{ glm::vec3{-x, -y,  z}/*, glm::vec3{ 0.0f,  0.0f,  1.0f}, glm::vec2{ 1.0f,  0.0f}*/ },	// bottom right
+			GizmoVertex{ glm::vec3{ x,  y,  z}/*, glm::vec3{ 0.0f,  0.0f,  1.0f}, glm::vec2{ 0.0f,  1.0f}*/ },	// top left
+			GizmoVertex{ glm::vec3{-x,  y,  z}/*, glm::vec3{ 0.0f,  0.0f,  1.0f}, glm::vec2{ 1.0f,  1.0f}*/ },	// top right
 			// back face
-			GizmoVertex{ glm::vec3{-0.5f, -0.5f, -0.5f}/*, glm::vec3{ 0.0f,  0.0f, -1.0f}, glm::vec2{ 0.0f,  0.0f}*/ },	// bottom left
-			GizmoVertex{ glm::vec3{ 0.5f, -0.5f, -0.5f}/*, glm::vec3{ 0.0f,  0.0f, -1.0f}, glm::vec2{ 1.0f,  0.0f}*/ },	// bottom right
-			GizmoVertex{ glm::vec3{-0.5f,  0.5f, -0.5f}/*, glm::vec3{ 0.0f,  0.0f, -1.0f}, glm::vec2{ 0.0f,  1.0f}*/ },	// top left
-			GizmoVertex{ glm::vec3{ 0.5f,  0.5f, -0.5f}/*, glm::vec3{ 0.0f,  0.0f, -1.0f}, glm::vec2{ 1.0f,  1.0f}*/ },	// top right
+			GizmoVertex{ glm::vec3{-x, -y, -z}/*, glm::vec3{ 0.0f,  0.0f, -1.0f}, glm::vec2{ 0.0f,  0.0f}*/ },	// bottom left
+			GizmoVertex{ glm::vec3{ x, -y, -z}/*, glm::vec3{ 0.0f,  0.0f, -1.0f}, glm::vec2{ 1.0f,  0.0f}*/ },	// bottom right
+			GizmoVertex{ glm::vec3{-x,  y, -z}/*, glm::vec3{ 0.0f,  0.0f, -1.0f}, glm::vec2{ 0.0f,  1.0f}*/ },	// top left
+			GizmoVertex{ glm::vec3{ x,  y, -z}/*, glm::vec3{ 0.0f,  0.0f, -1.0f}, glm::vec2{ 1.0f,  1.0f}*/ },	// top right
 			// right face
-			GizmoVertex{ glm::vec3{ 0.5f, -0.5f, -0.5f}/*, glm::vec3{ 1.0f,  0.0f,  0.0f}, glm::vec2{ 0.0f,  0.0f}*/ },	// bottom left
-			GizmoVertex{ glm::vec3{ 0.5f, -0.5f,  0.5f}/*, glm::vec3{ 1.0f,  0.0f,  0.0f}, glm::vec2{ 1.0f,  0.0f}*/ },	// bottom right
-			GizmoVertex{ glm::vec3{ 0.5f,  0.5f, -0.5f}/*, glm::vec3{ 1.0f,  0.0f,  0.0f}, glm::vec2{ 0.0f,  1.0f}*/ },	// top left
-			GizmoVertex{ glm::vec3{ 0.5f,  0.5f,  0.5f}/*, glm::vec3{ 1.0f,  0.0f,  0.0f}, glm::vec2{ 1.0f,  1.0f}*/ },	// top right
+			GizmoVertex{ glm::vec3{ x, -y, -z}/*, glm::vec3{ 1.0f,  0.0f,  0.0f}, glm::vec2{ 0.0f,  0.0f}*/ },	// bottom left
+			GizmoVertex{ glm::vec3{ x, -y,  z}/*, glm::vec3{ 1.0f,  0.0f,  0.0f}, glm::vec2{ 1.0f,  0.0f}*/ },	// bottom right
+			GizmoVertex{ glm::vec3{ x,  y, -z}/*, glm::vec3{ 1.0f,  0.0f,  0.0f}, glm::vec2{ 0.0f,  1.0f}*/ },	// top left
+			GizmoVertex{ glm::vec3{ x,  y,  z}/*, glm::vec3{ 1.0f,  0.0f,  0.0f}, glm::vec2{ 1.0f,  1.0f}*/ },	// top right
 			// left face
-			GizmoVertex{ glm::vec3{-0.5f, -0.5f,  0.5f}/*, glm::vec3{-1.0f,  0.0f,  0.0f}, glm::vec2{ 0.0f,  0.0f}*/ },	// bottom left
-			GizmoVertex{ glm::vec3{-0.5f, -0.5f, -0.5f}/*, glm::vec3{-1.0f,  0.0f,  0.0f}, glm::vec2{ 1.0f,  0.0f}*/ },	// bottom right
-			GizmoVertex{ glm::vec3{-0.5f,  0.5f,  0.5f}/*, glm::vec3{-1.0f,  0.0f,  0.0f}, glm::vec2{ 0.0f,  1.0f}*/ },	// top left
-			GizmoVertex{ glm::vec3{-0.5f,  0.5f, -0.5f}/*, glm::vec3{-1.0f,  0.0f,  0.0f}, glm::vec2{ 1.0f,  1.0f}*/ },	// top right
+			GizmoVertex{ glm::vec3{-x, -y,  z}/*, glm::vec3{-1.0f,  0.0f,  0.0f}, glm::vec2{ 0.0f,  0.0f}*/ },	// bottom left
+			GizmoVertex{ glm::vec3{-x, -y, -z}/*, glm::vec3{-1.0f,  0.0f,  0.0f}, glm::vec2{ 1.0f,  0.0f}*/ },	// bottom right
+			GizmoVertex{ glm::vec3{-x,  y,  z}/*, glm::vec3{-1.0f,  0.0f,  0.0f}, glm::vec2{ 0.0f,  1.0f}*/ },	// top left
+			GizmoVertex{ glm::vec3{-x,  y, -z}/*, glm::vec3{-1.0f,  0.0f,  0.0f}, glm::vec2{ 1.0f,  1.0f}*/ },	// top right
 		};
 
 		return vertices;
 	}
 
-	std::vector<unsigned int> PrimitiveUtils::generateCubeIndices()
+	std::vector<unsigned int> PrimitiveUtils::generateBoxIndices()
 	{
 		std::vector <unsigned int> indices{
 			0, 1, 2,
@@ -88,7 +91,7 @@ namespace sixengine {
 				// GizmoVertex position (x, y, z)
 				x = xz * glm::cos(sectorAngle);             // r * cos(u) * cos(v)
 				z = xz * glm::sin(sectorAngle);             // r * cos(u) * sin(v)
-				vertices.push_back(GizmoVertex{ glm::vec3{ x, y , z } });
+				vertices.push_back(GizmoVertex{ glm::vec3{ x, y, z } });
 
 				// normalized GizmoVertex normal (nx, ny, nz)
 				//nx = x * lengthInv;
@@ -260,20 +263,19 @@ namespace sixengine {
 		indieces = PrimitiveUtils::generateQuadIndices();
 	}
 
-	void PrimitiveUtils::GenerateCube(std::vector<GizmoVertex>& vertices, std::vector<unsigned int>& indices)
+	void PrimitiveUtils::GenerateBox(std::vector<GizmoVertex>& vertices, std::vector<unsigned int>& indices, float x, float y, float z)
 	{
-
-		vertices = PrimitiveUtils::generateCubeVertices();
-		indices = PrimitiveUtils::generateCubeIndices();
+		vertices = PrimitiveUtils::generateBoxVertices(x, y, z);
+		indices = PrimitiveUtils::generateBoxIndices();
 	}
 
-	void PrimitiveUtils::GenerateSphere(std::vector<GizmoVertex>& vertices, std::vector<unsigned int>& indices, int sectorCount, int stackCount, float radius)
+	void PrimitiveUtils::GenerateSphere(std::vector<GizmoVertex>& vertices, std::vector<unsigned int>& indices, float radius, int sectorCount, int stackCount)
 	{
 		vertices = PrimitiveUtils::generateSphereVertices(sectorCount, stackCount, radius);
 		indices = PrimitiveUtils::generateSphereIndices(sectorCount, stackCount);
 	}
 
-	void PrimitiveUtils::GenerateCapsule(std::vector<GizmoVertex>& vertices, std::vector<unsigned int>& indices, int sectorCount, int stackCount, float radius, float height)
+	void PrimitiveUtils::GenerateCapsule(std::vector<GizmoVertex>& vertices, std::vector<unsigned int>& indices, float radius, float height, int sectorCount, int stackCount)
 	{
 		vertices = PrimitiveUtils::generateCapsuleVertices(sectorCount, stackCount, radius, height);
 		indices = PrimitiveUtils::generateCapsuleIndices(sectorCount, stackCount);

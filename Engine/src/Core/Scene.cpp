@@ -177,6 +177,9 @@ namespace sixengine {
 	{
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDisable(GL_CULL_FACE);
+		glLineWidth(5.0f);
+
 		Shader* s = m_ShaderManager->Get("Gizmo");
 		if (s)
 		{
@@ -185,6 +188,10 @@ namespace sixengine {
 			s->SetMat4("view", cam.GetViewMatrix());
 			m_SceneRoot->OnDrawGizmos(true);
 		}
+
+		glPolygonMode(GL_FRONT, GL_FILL);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 	}
 
 	GameObject* Scene::ReadGameObject(std::fstream& file, EntityManager& en)
@@ -269,6 +276,9 @@ namespace sixengine {
 			}
 			else if (s == "-Gizmo")
 			{
+				float r, g, b;
+				file >> r >> g >> b;
+
 				std::vector<GizmoVertex> vertices;
 				std::vector<unsigned int> indices;
 				file >> s;
@@ -278,7 +288,9 @@ namespace sixengine {
 				}
 				else if (s == "Cube")
 				{
-					PrimitiveUtils::GenerateCube(vertices, indices);
+					float x, y, z;
+					file >> x >> y >> z;
+					PrimitiveUtils::GenerateBox(vertices, indices, x, y, z);
 				}
 				else if (s == "Capsule")
 				{
@@ -286,7 +298,21 @@ namespace sixengine {
 				}
 				else if (s == "Sphere")
 				{
-					PrimitiveUtils::GenerateSphere(vertices, indices);
+					float radius;
+					file >> radius;
+					PrimitiveUtils::GenerateSphere(vertices, indices, radius);
+				}
+				else if (s == "Line")
+				{
+					float x, y, z;
+					file >> x >> y >> z;
+					vertices.emplace_back(GizmoVertex{ glm::vec3{ x, y, z } });
+					vertices.emplace_back(GizmoVertex{ glm::vec3{ x, y, z } });
+					file >> x >> y >> z;
+					vertices.emplace_back(GizmoVertex{ glm::vec3{ x, y, z } });
+					indices.push_back(0);
+					indices.push_back(1);
+					indices.push_back(2);
 				}
 				VertexArray* vao = new VertexArray();
 				VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
@@ -296,9 +322,6 @@ namespace sixengine {
 				IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
 				vao->AddVertexBuffer(*vbo);
 				vao->AddIndexBuffer(*ibo);
-
-				float r, g, b;
-				file >> r >> g >> b;
 
 				go->AddGizmo(new Gizmo(vao, m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(r, g, b)));
 			}

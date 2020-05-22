@@ -54,7 +54,7 @@ namespace sixengine {
 
 		for (auto gizmo : m_Gizmos)
 		{
-			gizmo->Draw(transform->Combine());
+			gizmo->Draw(transform->GetWorld());
 		}
 		for (auto child : m_Childeren)
 		{

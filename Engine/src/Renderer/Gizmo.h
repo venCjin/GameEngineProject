@@ -16,7 +16,7 @@ namespace sixengine {
 		Gizmo(VertexArray* vao, Shader* shader, glm::vec3 color);
 		~Gizmo();
 
-		void Draw(glm::mat4& model);
+		void Draw(const glm::mat4& model);
 	};
 
 }
