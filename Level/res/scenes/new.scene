@@ -22,6 +22,7 @@
         +end
     +end
     -Gizmo 0 255 0 Cube 1.0 1.0 1.0
+    -Gizmo 255 0 0 Line 0 0 0 10 0 0
     -BoxCollider 1.0 1.0 1.0 0
     -SimplePlayer
     -Model res/models/Primitives/Cube.obj

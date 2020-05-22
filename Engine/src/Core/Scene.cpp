@@ -178,6 +178,8 @@ namespace sixengine {
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDisable(GL_CULL_FACE);
+		glLineWidth(5.0f);
+
 		Shader* s = m_ShaderManager->Get("Gizmo");
 		if (s)
 		{
@@ -299,6 +301,18 @@ namespace sixengine {
 					float radius;
 					file >> radius;
 					PrimitiveUtils::GenerateSphere(vertices, indices, radius);
+				}
+				else if (s == "Line")
+				{
+					float x, y, z;
+					file >> x >> y >> z;
+					vertices.emplace_back(GizmoVertex{ glm::vec3{ x, y, z } });
+					vertices.emplace_back(GizmoVertex{ glm::vec3{ x, y, z } });
+					file >> x >> y >> z;
+					vertices.emplace_back(GizmoVertex{ glm::vec3{ x, y, z } });
+					indices.push_back(0);
+					indices.push_back(1);
+					indices.push_back(2);
 				}
 				VertexArray* vao = new VertexArray();
 				VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
