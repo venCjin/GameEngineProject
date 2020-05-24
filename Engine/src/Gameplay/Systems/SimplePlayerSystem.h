@@ -23,9 +23,9 @@ namespace sixengine {
 			if (Input::IsKeyActive(KeyCode::PAGE_UP)) { dir.y += 1.0f; }
 			if (Input::IsKeyActive(KeyCode::PAGE_DOWN)) { dir.y -= 1.0f; }
 
-			auto w = m_Transform->GetWorld();
-			w = glm::translate(w, dir * dt * 4.0f);
-			m_Transform->SetWorld(w);
+			auto pos = m_Transform->getWorldPosition();
+			pos += dir * dt * 25.0f;
+			m_Transform->SetWorldPosition(pos);
 		}
 	};
 }

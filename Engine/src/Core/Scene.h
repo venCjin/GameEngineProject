@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Gameplay/GameObject.h"
-#include "Core/Camera.h"
+#include "Core/CameraSystem/Camera.h"
 #include "Core/ShaderManager.h"
 #include "Renderer/BatchRenderer.h"
 #include "Renderer/ModelManager.h"
@@ -15,7 +15,6 @@ namespace sixengine {
 	{
 	private:
 		GameObject *m_UIRoot, *m_SceneRoot;
-		Camera cam, camUI;
 		ModelManager* m_ModelManager;
 		ShaderManager* m_ShaderManager;
 		MaterialManager * m_MaterialManager;

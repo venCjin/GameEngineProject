@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Camera.h"
+#include "Core/CameraSystem/Camera.h"
 
 namespace sixengine {
 
@@ -8,7 +8,10 @@ namespace sixengine {
 	{
 		Camera* m_Camera;
 
-		Billboard(Camera* camera) : m_Camera(camera){}
+		Billboard(Camera* camera)
+		{
+			m_Camera = camera;
+		}
 	};
 
 }
