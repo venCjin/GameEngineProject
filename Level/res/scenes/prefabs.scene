@@ -48,7 +48,7 @@
 +SceneGameObject
     +Transform
     +end
-    -BoxCollider 1000.0 0.1 1000.0 1
+    -BoxCollider 1000.0 0.001 1000.0 1
     -Model res/models/Environment/Ground/Ground.obj
     -Material GroundBasic
 +end

@@ -2,7 +2,7 @@
 
 #include "Renderer/Shader.h"
 #include "Renderer/BufferLockManager.h"
-#include "Core/Camera.h"
+#include "Core/CameraSystem/Camera.h"
 #include "Renderer/LightData.h"
 #include "Font.h";
 

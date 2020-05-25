@@ -25,14 +25,7 @@ namespace sixengine {
 	{
 		auto transform = GetComponent<Transform>();
 
-		dirty |= m_Dirty;
-		if (dirty)
-		{
-			BatchRenderer::Instance()->SubmitCommand(this, transform->Combine(parentWorld));
-			m_Dirty = false;
-		}
-		else
-			BatchRenderer::Instance()->SubmitCommand(this, transform->Combine());
+		BatchRenderer::Instance()->SubmitCommand(this, transform->GetModelMatrix());
 
 		for (auto child : m_Childeren)
 		{
@@ -54,7 +47,7 @@ namespace sixengine {
 
 		for (auto gizmo : m_Gizmos)
 		{
-			gizmo->Draw(transform->GetWorld());
+			gizmo->Draw(transform->GetModelMatrix());
 		}
 		for (auto child : m_Childeren)
 		{

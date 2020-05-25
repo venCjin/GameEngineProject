@@ -18,6 +18,9 @@
 #include "Gameplay/Components/SimplePlayer.h"
 #include "Gameplay/Systems/SimplePlayerSystem.h"
 
+#include "Core/CameraSystem/FlyingCamera.h"
+#include <Core\CameraSystem\FlyingCameraSystem.h>
+
 namespace sixengine {
 
 	Scene::Scene(unsigned int width, unsigned int height) : m_UIRoot(nullptr), m_SceneRoot(nullptr)
@@ -29,8 +32,13 @@ namespace sixengine {
 		BatchRenderer::Initialize(m_ModelManager, m_TextureArray);
 		m_BatchRenderer = BatchRenderer::Instance();
 
-		cam.MakePerspective((float)width / (float)height);
-		camUI.MakeOrtho(width, height);
+		GameObject* go = new GameObject(*Application::Get().GetEntityManager());
+		go->AddComponent<Transform>(go);
+		go->AddComponent<Camera>(go);
+		go->GetComponent<Camera>()->SetPerspective((float)width / (float)height);
+		go->AddComponent<FlyingCamera>();
+
+		Camera::ActiveCamera = go->GetComponent<Camera>().Get();
 	}
 
 	Scene::~Scene()
@@ -54,10 +62,10 @@ namespace sixengine {
 		SystemManager* sys = Application::Get().GetSystemManager();
 
 		m_SceneRoot = new GameObject(*en);
-		m_SceneRoot->AddComponent<Transform>(m_SceneRoot, glm::mat4(1.0f), glm::mat4(1.0f));
+		m_SceneRoot->AddComponent<Transform>(m_SceneRoot);
 
 		m_UIRoot = new GameObject(*en);
-		m_UIRoot->AddComponent<Transform>(m_UIRoot, glm::mat4(1.0f), glm::mat4(1.0f));
+		m_UIRoot->AddComponent<Transform>(m_UIRoot);
 
 
 		std::string line, s;
@@ -76,7 +84,7 @@ namespace sixengine {
 					m_BatchRenderer->AddTechnique(
 						new StaticPBR(
 							m_ShaderManager->AddShader(s),
-							&cam)
+							Camera::ActiveCamera)
 						);
 				}
 				else if (s == "AnimationPBR")
@@ -85,7 +93,7 @@ namespace sixengine {
 					m_BatchRenderer->AddTechnique(
 						new AnimationPBR(
 							m_ShaderManager->AddShader(s),
-							&cam)
+							Camera::ActiveCamera)
 						);
 				}
 				else
@@ -123,6 +131,7 @@ namespace sixengine {
 				else if (s == "UIRendererSystem") sys->AddSystem<UIRendererSystem>();
 				else if (s == "SimplePlayerSystem") sys->AddSystem<SimplePlayerSystem>();
 				else if (s == "CollisionSystem") sys->AddSystem<CollisionSystem>();
+				else if (s == "FlyingCameraSystem") sys->AddSystem<FlyingCameraSystem>();
 				else LOG_WARN("Not recognized system: {0}", s);
 			}
 			else if (s == "+SceneGameObject")
@@ -184,8 +193,8 @@ namespace sixengine {
 		if (s)
 		{
 			s->Bind();
-			s->SetMat4("projection", cam.GetProjectionMatrix());
-			s->SetMat4("view", cam.GetViewMatrix());
+			s->SetMat4("projection", Camera::ActiveCamera->GetProjectionMatrix());
+			s->SetMat4("view", Camera::ActiveCamera->GetViewMatrix());
 			m_SceneRoot->OnDrawGizmos(true);
 		}
 
@@ -272,7 +281,8 @@ namespace sixengine {
 						} while (true);
 					}
 				} while (true);
-				go->AddComponent<Transform>(go, l, w);
+				go->AddComponent<Transform>(go);
+				go->GetComponent<Transform>()->SetLocalMatrix(l * w);
 			}
 			else if (s == "-Gizmo")
 			{
@@ -346,7 +356,7 @@ namespace sixengine {
 			}
 			else if (s == "-Billboard")
 			{
-				go->AddComponent<Billboard>(&cam);
+				go->AddComponent<Billboard>(Camera::ActiveCamera);
 			}
 			else if (s == "-SimplePlayer")
 			{
