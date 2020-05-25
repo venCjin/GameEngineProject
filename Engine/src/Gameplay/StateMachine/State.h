@@ -5,5 +5,5 @@ namespace sixengine
 	class State
 	{
 
-	}
+	};
 }

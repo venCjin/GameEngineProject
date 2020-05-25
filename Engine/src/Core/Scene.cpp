@@ -19,7 +19,16 @@
 #include "Gameplay/Systems/SimplePlayerSystem.h"
 
 #include "Core/CameraSystem/FlyingCamera.h"
-#include <Core\CameraSystem\FlyingCameraSystem.h>
+#include <Core/CameraSystem/FlyingCameraSystem.h>
+#include "Core/CameraSystem/FollowCamera.h"
+#include <Core/CameraSystem/FollowCameraSystem.h>
+#include "Core/CameraSystem/MixingCamera.h"
+#include <Core/CameraSystem/MixingCameraSystem.h>
+#include "Core/CameraSystem/OrbitalCamera.h"
+#include <Core/CameraSystem/OrbitalCameraSystem.h>
+
+#include "Gameplay/StateMachine/State.h"
+#include "Gameplay/StateMachine/StateMachineSystem.h"
 
 namespace sixengine {
 
@@ -131,7 +140,11 @@ namespace sixengine {
 				else if (s == "UIRendererSystem") sys->AddSystem<UIRendererSystem>();
 				else if (s == "SimplePlayerSystem") sys->AddSystem<SimplePlayerSystem>();
 				else if (s == "CollisionSystem") sys->AddSystem<CollisionSystem>();
+				else if (s == "StateMachineSystem") sys->AddSystem<StateMachineSystem>();
 				else if (s == "FlyingCameraSystem") sys->AddSystem<FlyingCameraSystem>();
+				else if (s == "FollowCameraSystem") sys->AddSystem<FollowCameraSystem>();
+				else if (s == "MixingCameraSystem") sys->AddSystem<MixingCameraSystem>();
+				else if (s == "OrbitalCameraSystem") sys->AddSystem<OrbitalCameraSystem>();
 				else LOG_WARN("Not recognized system: {0}", s);
 			}
 			else if (s == "+SceneGameObject")
