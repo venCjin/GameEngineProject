@@ -10,11 +10,11 @@ out int instanceID;
 out vec3 FragPos;
 out vec3 Normal;
 
-layout(std430, binding = 0) buffer matrixes
+layout(std140, binding = 0) buffer matrixes
 {
     mat4 view;
     mat4 projection;
-    mat4 model[40000];
+    mat4 model[12];
 };
 
 void main()
@@ -67,14 +67,14 @@ in flat int instanceID;
 in vec3 FragPos;
 in vec3 Normal;
 
-layout(std430, binding = 1) buffer textureLayers
+layout(std140, binding = 1) buffer textureLayers
 {
-    vec4 layer[40000];
+    vec4 layer[10];
 };
 
 uniform sampler2DArray textureArray;
 
-layout(std430, binding = 5) buffer lightData
+layout(std140, binding = 2) buffer lightData
 {    
 	float ao;
 	float metallic;
@@ -86,8 +86,6 @@ layout(std430, binding = 5) buffer lightData
 
 	DirectionalLight dirLight;
 };
-
-
 
 // Material parameters
 //uniform float metallic;
@@ -143,7 +141,9 @@ void main()
 	color = pow(color, vec3(1.0/2.2));
 
 	FragColor = vec4(color, 1.0);
-
+	//FragColor = vec4(ao, metallic, roughness, 1.0);
+	//FragColor = vec4(dirLight.color, 1.0);
+	
 } 
 
 vec3 CalcDirLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo)

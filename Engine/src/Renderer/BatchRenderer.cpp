@@ -6,7 +6,6 @@
 #include <Renderer/Material.h>
 #include <Core/Timer.h>
 
-
 namespace sixengine {
 
 	BatchRenderer* BatchRenderer::m_BatchRendererInstance = nullptr;

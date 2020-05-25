@@ -12,6 +12,9 @@
 #include "Renderer/PrimitiveUtils.h"
 #include "Renderer/Gizmo.h"
 
+#include "Renderer/Techniques/AnimationPBR.h"
+#include "Renderer/Techniques/StaticPBR.h"
+
 #include "Physics/Components/Collider.h"
 #include "Physics/Systems/CollisionSystem.h"
 

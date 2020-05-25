@@ -12,7 +12,10 @@
 #include "Renderer/ModelManager.h"
 #include "Renderer/MaterialManager.h"
 #include "Renderer/TextureArray.h"
-#include "Renderer/Technique.h"
+
+#include "Renderer/Techniques/AnimationPBR.h"
+#include "Renderer/Techniques/StaticPBR.h"
+#include "Renderer/Techniques/UI.h"
 
 #include "Gameplay/Systems/AnimationSystem.h"
 #include <Core\CameraSystem\FlyingCameraSystem.h>
@@ -200,7 +203,7 @@ namespace sixengine {
 					obj = new GameObject(m_EntityManager);
 
 					obj->AddComponent<Transform>(obj);
-					obj->GetComponent<Transform>()->SetWorldPosition(2.0f * i, 0.0f, 2.0f * j);
+					obj->GetComponent<Transform>()->SetWorldPosition(5.0f * i, 0.0f, 5.0f * j);
 					obj->GetComponent<Transform>()->SetLocalScale(0.05f, 0.05f, 0.05f);
 					obj->AddComponent<Mesh>(m_ModelManager->GetModel("par"));
 					obj->AddComponent<Material>(*m_MaterialManager->Get("parasiteZombie"));

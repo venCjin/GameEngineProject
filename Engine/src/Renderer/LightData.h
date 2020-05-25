@@ -31,7 +31,7 @@ namespace sixengine {
 		float ao;
 		float metallic;
 		float roughness;
-		float a;
+		float a = 0.0f;
 
 		DirectionalLight dirLight;
 	};

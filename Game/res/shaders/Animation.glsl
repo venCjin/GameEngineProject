@@ -10,7 +10,7 @@ layout(location = 4) in vec4 aWeights;
 out vec2 TexCoords;
 out int instanceID;
 
-layout(std430, binding = 2) buffer modelInstance
+layout(std430, binding = 3) buffer modelInstance
 {
     mat4 view;
     mat4 projection;
@@ -22,7 +22,7 @@ struct BonesStruct
     mat4 bones[100];
 };
 
-layout(std430, binding = 4) buffer bones
+layout(std430, binding = 5) buffer bones
 {
     BonesStruct gBones[100];
 };
@@ -53,7 +53,7 @@ in flat int instanceID;
 
 uniform sampler2DArray textureArray;
 
-layout(std430, binding = 3) buffer textureLayers
+layout(std430, binding = 4) buffer textureLayers
 {
     vec4 layer[100];
 };

@@ -7,7 +7,7 @@
 #include "Renderer/ModelManager.h"
 #include "Renderer/MaterialManager.h"
 #include "Renderer/TextureArray.h"
-#include "Renderer/Technique.h"
+#include "Renderer/Techniques/Technique.h"
 
 namespace sixengine {
 
