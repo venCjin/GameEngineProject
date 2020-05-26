@@ -4,6 +4,8 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
+layout(location = 3) in ivec4 aBoneIDs;
+layout(location = 4) in vec4 aWeights;
 
 out vec2 TexCoords;
 out int instanceID;
@@ -13,20 +15,37 @@ out vec4 FragPosLightSpace1;
 
 uniform mat4 lightSpaceMatrix1;
 
-layout(std140, binding = 0) buffer matrixes
+layout(std430, binding = 3) buffer modelInstance
 {
     mat4 view;
     mat4 projection;
-    mat4 model[12];
+    mat4 model[100];
 };
+
+struct BonesStruct
+{
+    mat4 bones[100];
+};
+
+layout(std430, binding = 5) buffer bones
+{
+    BonesStruct gBones[100];
+};
+
 
 void main()
 {
     instanceID = gl_BaseInstance + gl_InstanceID;
     TexCoords = aTexCoords;
 
-    gl_Position = projection * view * model[instanceID] * vec4(aPos, 1.0);    
-	FragPos = vec3(view * model[instanceID] * vec4(aPos, 1.0));	
+	mat4 BoneTransform = gBones[instanceID].bones[aBoneIDs[0]] * aWeights[0];
+    BoneTransform += gBones[instanceID].bones[aBoneIDs[1]] * aWeights[1];
+    BoneTransform += gBones[instanceID].bones[aBoneIDs[2]] * aWeights[2];
+    BoneTransform += gBones[instanceID].bones[aBoneIDs[3]] * aWeights[3];
+
+    vec4 PosL = BoneTransform * vec4(aPos, 1.0);
+    gl_Position = projection * view * model[instanceID] * PosL;	
+	FragPos = vec3(view * model[instanceID] * PosL);	
 	Normal = mat3(transpose(inverse(view * model[instanceID]))) * aNormal;
 
 	FragPosLightSpace1 = lightSpaceMatrix1 * vec4(vec3(model[instanceID] * vec4(aPos, 1.0)), 1.0);
@@ -75,7 +94,7 @@ in vec4 FragPosLightSpace1;
 
 uniform sampler2D shadowMap1;
 
-layout(std140, binding = 1) buffer textureLayers
+layout(std430, binding = 4) buffer textureLayers
 {
     vec4 layer[10];
 };

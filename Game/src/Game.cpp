@@ -73,7 +73,7 @@ namespace sixengine {
 			/// SETUP ASSETS
 			/// =========================================================
 			m_BasicShader = m_ShaderManager->AddShader("res/shaders/PBR.glsl");
-			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/Animation.glsl");
+			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
 			m_FontShader = m_ShaderManager->AddShader("res/shaders/Font.glsl");
 
 			GameObject* go = new GameObject(*Application::Get().GetEntityManager());
@@ -129,7 +129,7 @@ namespace sixengine {
 				"Wood2Basic1");
 
 			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("Animation"),
+				m_ShaderManager->Get("AnimationPBR"),
 				glm::vec4(m_TextureArray->GetTexture("parasiteZombie_diffuse"), 
 					m_TextureArray->GetTexture("parasiteZombie_normal"), 
 					m_TextureArray->GetTexture("parasiteZombie_specular"), 0.0f),
