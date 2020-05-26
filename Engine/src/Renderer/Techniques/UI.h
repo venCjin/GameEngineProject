@@ -23,7 +23,7 @@ namespace sixengine {
 		unsigned int m_VBO;
 
 	public:
-		UI(Shader* shader, Camera* camera);
+		UI(Shader* shader);
 
 		void AddFont(Font* font);
 		void RenderText(Text* text, glm::vec2 position);

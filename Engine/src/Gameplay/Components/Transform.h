@@ -20,7 +20,7 @@ namespace sixengine {
 		glm::mat4 m_Local;
 
 	public:
-		Transform(GameObject* parent) : m_Local(glm::mat4(1.0f)) {}
+		Transform(GameObject* parent) : m_Parent(nullptr), m_Local(glm::mat4(1.0f)) {}
 
 		// Sets the parent of the transform.
 		void SetParent(Transform* parent)

@@ -11,11 +11,6 @@ namespace sixengine {
 
 	struct ShaderBuffer
 	{
-
-	};
-
-	struct UniformBuffer
-	{
 		BufferLockManager m_LockManager;
 
 		size_t m_Head;
@@ -27,8 +22,21 @@ namespace sixengine {
 
 		unsigned int m_Buffering;
 
-		UniformBuffer(size_t size, unsigned int binding, unsigned int buffering = 3)
+		ShaderBuffer(size_t size, unsigned int binding, unsigned int buffering)
 			: m_Head(0), m_Binding(binding), m_Buffering(buffering), m_LockManager(true)
+		{
+		}
+
+		ShaderBuffer(size_t size, unsigned int buffering = 3)
+			: m_Size(size), m_Head(0), m_Binding(0), m_Buffering(buffering), m_LockManager(true)
+		{
+		}
+	};
+
+	struct UniformBuffer : public ShaderBuffer
+	{
+		UniformBuffer(size_t size, unsigned int binding, unsigned int buffering = 3)
+			: ShaderBuffer(size, binding, buffering)
 		{
 			int uniformBufferAlign = 0;
 			glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &uniformBufferAlign);
@@ -71,22 +79,13 @@ namespace sixengine {
 		}
 	};
 
-	struct StorageBuffer
+	struct StorageBuffer : public ShaderBuffer
 	{
-		BufferLockManager m_LockManager;
-
-		size_t m_Head;
-		size_t m_Size;
-
-		unsigned int m_ID;
-		unsigned int m_Binding;
-		void* m_Ptr;
-
-		unsigned int m_Buffering;
-
 		StorageBuffer(size_t size, unsigned int binding, unsigned int buffering = 3)
-			: m_Head(0), m_Binding(binding), m_Size(size), m_Buffering(buffering), m_LockManager(true)
+			: ShaderBuffer(size, binding, buffering)
 		{
+			m_Size = size;
+
 			GLbitfield mapFlags = GL_MAP_WRITE_BIT
 				| GL_MAP_PERSISTENT_BIT
 				| GL_MAP_COHERENT_BIT;
@@ -115,17 +114,15 @@ namespace sixengine {
 	{
 	protected:
 		Shader* m_Shader;
-		Camera* m_Camera;
 
 	public:
-		Technique(Shader* shader, Camera* camera);
+		Technique(Shader* shader);
 		virtual ~Technique();
 
 		virtual void Start(TextureArray* textureArray) = 0;
 		virtual void Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers) = 0;
 
 		inline Shader* GetShader() const { return m_Shader; }
-		inline Camera* GetCamera() const { return m_Camera; }
 	};
 
 }

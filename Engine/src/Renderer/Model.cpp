@@ -12,6 +12,7 @@
 namespace sixengine {
 
 	Model::Model()
+		: m_MinAxis(10000.0f), m_MaxAxis(0.0001f)
 	{
 		VAO = nullptr;
 		m_NumBones = 0;
@@ -19,6 +20,7 @@ namespace sixengine {
 	}
 
 	Model::Model(const std::string& filename, unsigned ID)
+		: m_MinAxis(10000.0f), m_MaxAxis(0.0001f)
 	{
 		m_ID = ID;
 		VAO = nullptr;
@@ -178,6 +180,15 @@ namespace sixengine {
 			// Postion
 			vector = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
 			vertex.Position = vector;
+
+			// Bounding box
+			m_MinAxis.x = min(m_MinAxis.x, vector.x);
+			m_MinAxis.y = min(m_MinAxis.y, vector.y);
+			m_MinAxis.z = min(m_MinAxis.z, vector.z);
+
+			m_MaxAxis.x = max(m_MaxAxis.x, vector.x);
+			m_MaxAxis.y = max(m_MaxAxis.y, vector.y);
+			m_MaxAxis.z = max(m_MaxAxis.z, vector.z);
 
 			// Normals
 			if (mesh->mNormals)

@@ -6,6 +6,8 @@
 #include <Renderer/Material.h>
 #include <Core/Timer.h>
 
+#include <iomanip>
+
 namespace sixengine {
 
 	BatchRenderer* BatchRenderer::m_BatchRendererInstance = nullptr;
@@ -21,7 +23,7 @@ namespace sixengine {
 	}
 
 	BatchRenderer::BatchRenderer(ModelManager* modelManager, TextureArray* textureArray)
-		: m_ModelManager(modelManager), m_TextureArray(textureArray), m_IDBO(100 * sizeof(DrawElementsCommand), 6), m_LockManager(true)
+		: m_ModelManager(modelManager), m_TextureArray(textureArray), m_IDBO(100 * sizeof(DrawElementsCommand))
 	{
 	
 	}
@@ -31,30 +33,177 @@ namespace sixengine {
 
 	}
 
+	void BatchRenderer::NormalizePlane(glm::vec4& plane)
+	{
+		float t = std::sqrt(
+			plane.x * plane.x +
+			plane.y * plane.y +
+			plane.z * plane.z);
+
+		plane.x /= t;
+		plane.y /= t;
+		plane.z /= t;
+		plane.w /= t;
+	}
+
+	void BatchRenderer::CalculateFrustum()
+	{
+		//glm::mat4 proj = Camera::ActiveCamera->GetProjectionMatrix();
+		//glm::mat4 view = Camera::ActiveCamera->GetViewMatrix();
+		glm::mat4 clip = Camera::ActiveCamera->GetProjectionMatrix() * Camera::ActiveCamera->GetViewMatrix();
+
+		/*glm::vec4 tmp;
+		// LEFT
+		tmp = glm::vec4(clip[0][3] + clip[0][0], clip[1][3] + clip[1][0], clip[2][3] + clip[2][0], clip[3][3] + clip[3][0]);
+		m_FrustumPlanes[0] = tmp;
+		// RIGHT
+		tmp = glm::vec4(clip[0][3] - clip[0][0], clip[1][3] - clip[1][0], clip[2][3] - clip[2][0], clip[3][3] - clip[3][0]);
+		m_FrustumPlanes[1] = tmp;
+		// TOP
+		tmp = glm::vec4(clip[0][3] - clip[0][1], clip[1][3] - clip[1][1], clip[2][3] - clip[2][1], clip[3][3] - clip[3][1]);
+		m_FrustumPlanes[2] = tmp;
+		// BOTTOM
+		tmp = glm::vec4(clip[0][3] + clip[0][1], clip[1][3] + clip[1][1], clip[2][3] + clip[2][1], clip[3][3] + clip[3][1]);
+		m_FrustumPlanes[3] = tmp;
+		// NEAR
+		tmp = glm::vec4(clip[0][3] + clip[0][2], clip[1][3] + clip[1][2], clip[2][3] + clip[2][2], clip[3][3] + clip[3][2]);
+		m_FrustumPlanes[4] = tmp;
+		// FAR
+		tmp = glm::vec4(clip[0][3] - clip[0][2], clip[1][3] - clip[1][2], clip[2][3] - clip[2][2], clip[3][3] - clip[3][2]);
+		m_FrustumPlanes[5] = tmp;*/
+
+		
+		clip = glm::transpose(clip);
+
+		std::cout << std::setprecision(4) << std::fixed;
+		/*for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				std::cout << clip[i][j] << " ";
+			}
+
+			std::cout << "\n";
+		}
+		std::cout << "\n";*/
+		
+		// Left plane 
+		m_FrustumPlanes[0] = clip[3] + clip[0];
+		// Right plane
+		m_FrustumPlanes[1] = clip[3] - clip[0];
+		// Bottom plane
+		m_FrustumPlanes[2] = clip[3] + clip[1];
+		// Top plane
+		m_FrustumPlanes[3] = clip[3] - clip[1];
+		// Near plane
+		m_FrustumPlanes[4] = clip[3] + clip[2];
+		// Far plane
+		m_FrustumPlanes[5] = clip[3] - clip[2];
+
+		for (int i = 0; i < 6; i++)
+			NormalizePlane(m_FrustumPlanes[i]);
+
+
+		/*for (int i = 0; i < 6; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				std::cout << m_FrustumPlanes[i][j] << " ";
+			}
+
+			std::cout << "\n";
+		}*/
+	}
+
+	bool BatchRenderer::FrustumAABB(glm::vec3 min, glm::vec3 max)
+	{
+		int out;
+		for (int i = 0; i < 6; i++)
+		{
+			out = 0;
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(min.x, min.y, min.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(max.x, min.y, min.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(min.x, max.y, min.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(max.x, max.y, min.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(min.x, min.y, max.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(max.x, min.y, max.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(min.x, max.y, max.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(max.x, max.y, max.z, 1.0f)) < 0.0) ? 1 : 0);
+			if (out == 8) return false; // outside
+		}
+
+		return true; // inside or intersect
+	}
+
+	bool BatchRenderer::FrustumAABB(glm::vec3 center, float size)
+	{
+		for (int i = 0; i < 6; i++)
+		{
+			if (m_FrustumPlanes[i].x * (center.x - size) + m_FrustumPlanes[i].y * (center.y - size) + m_FrustumPlanes[i].z * (center.z - size) + m_FrustumPlanes[i].w > 0) continue;
+			if (m_FrustumPlanes[i].x * (center.x + size) + m_FrustumPlanes[i].y * (center.y - size) + m_FrustumPlanes[i].z * (center.z - size) + m_FrustumPlanes[i].w > 0) continue;
+			if (m_FrustumPlanes[i].x * (center.x - size) + m_FrustumPlanes[i].y * (center.y + size) + m_FrustumPlanes[i].z * (center.z - size) + m_FrustumPlanes[i].w > 0) continue;
+			if (m_FrustumPlanes[i].x * (center.x + size) + m_FrustumPlanes[i].y * (center.y + size) + m_FrustumPlanes[i].z * (center.z - size) + m_FrustumPlanes[i].w > 0) continue;
+			if (m_FrustumPlanes[i].x * (center.x - size) + m_FrustumPlanes[i].y * (center.y - size) + m_FrustumPlanes[i].z * (center.z + size) + m_FrustumPlanes[i].w > 0) continue;
+			if (m_FrustumPlanes[i].x * (center.x + size) + m_FrustumPlanes[i].y * (center.y - size) + m_FrustumPlanes[i].z * (center.z + size) + m_FrustumPlanes[i].w > 0) continue;
+			if (m_FrustumPlanes[i].x * (center.x - size) + m_FrustumPlanes[i].y * (center.y + size) + m_FrustumPlanes[i].z * (center.z + size) + m_FrustumPlanes[i].w > 0) continue;
+			if (m_FrustumPlanes[i].x * (center.x + size) + m_FrustumPlanes[i].y * (center.y + size) + m_FrustumPlanes[i].z * (center.z + size) + m_FrustumPlanes[i].w > 0) continue;
+			return false;
+		}
+
+		return true; // inside or intersect
+	}
+
 	void BatchRenderer::SubmitCommand(GameObject* gameObject, glm::mat4 model)
 	{
-		RendererCommand* command = new(m_FrameAllocator.Get(m_CommandList.size())) RendererCommand();
+		bool render = true;
 
-		Transform* t = gameObject->GetComponent<Transform>().Get();
-		//Transform* t = gameObject->GetComponent<Transform>().Get();
-
-		//command->distance = Distance(&m_PlayerCamera->GetPosition(), &t->getWorldPosition());
-		//command->isTranslucent = false;
-		command->gameObject = gameObject;
-
-		command->shader = gameObject->GetComponent<Material>()->GetShader();
+		ComponentHandle<Mesh> mesh;
 		if (gameObject->HasComponent<Mesh>())
-			command->ModelID = gameObject->GetComponent<Mesh>()->GetModel()->m_ID;
+		{
+			mesh = gameObject->GetComponent<Mesh>();
+			glm::mat4 proj = Camera::ActiveCamera->GetProjectionMatrix();
+			glm::mat4 view = Camera::ActiveCamera->GetViewMatrix();
 
-		command->data.textureLayer = gameObject->GetComponent<Material>()->GetTexture();
-		command->data.model = model;
+			glm::vec3 min = mesh->GetModel()->m_MinAxis;
+			glm::vec3 max = mesh->GetModel()->m_MaxAxis;
+			min = proj * view * model * glm::vec4(min, 1.0f);
+			max = proj * view * model * glm::vec4(max, 1.0f);
 
-		m_CommandList.push_back(command);
+			float z = min.z;
+			min.z = max.z;
+			max.z = z;
+
+			glm::vec3 center = 0.5f * (min + max);
+			float size = 0.5f * glm::distance(min, max);
+
+			render = FrustumAABB(min, max);
+		}
+
+		if (render)
+		{
+			RendererCommand* command = new(m_FrameAllocator.Get(m_CommandList.size())) RendererCommand();
+
+			//command->distance = Distance(&m_PlayerCamera->GetPosition(), &t->getWorldPosition());
+			//command->isTranslucent = false;
+
+			command->gameObject = gameObject;
+
+			command->shader = gameObject->GetComponent<Material>()->GetShader();
+			
+			if (gameObject->HasComponent<Mesh>())
+				command->ModelID = mesh->GetModel()->m_ID;
+
+			command->data.textureLayer = gameObject->GetComponent<Material>()->GetTexture();
+			command->data.model = model;
+
+			m_CommandList.push_back(command);
+		}
 	}
 
 	void BatchRenderer::Render()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		LOG_CORE_INFO(m_CommandList.size());
 
 		std::vector<std::vector<RendererCommand*>> sortedTechniques;
 		//Sort Commands by techniques
@@ -94,8 +243,8 @@ namespace sixengine {
 			std::vector<glm::vec4> layers;
 			layers.reserve(commandList.size());
 
-			models.push_back(m_TechniqueList[t]->GetCamera()->GetViewMatrix());
-			models.push_back(m_TechniqueList[t]->GetCamera()->GetProjectionMatrix());
+			models.push_back(Camera::ActiveCamera->GetViewMatrix());
+			models.push_back(Camera::ActiveCamera->GetProjectionMatrix());
 			//Sort Commands by models
 			
 			std::sort(commandList.begin(), commandList.end(), SortModels);
@@ -155,7 +304,7 @@ namespace sixengine {
 
 			if (!m_RenderCommandList.empty())
 			{
-				m_LockManager.WaitForLockedRange(m_IDBO.m_Head, m_IDBO.m_Size);
+				m_IDBO.m_LockManager.WaitForLockedRange(m_IDBO.m_Head, m_IDBO.m_Size);
 
 				void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head;
 				memcpy(ptr, m_RenderCommandList.data(), m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]));
@@ -164,7 +313,7 @@ namespace sixengine {
 				glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)m_IDBO.m_Head, m_RenderCommandList.size(), 0);
 				glBindVertexArray(0);
 
-				m_LockManager.LockRange(m_IDBO.m_Head, m_IDBO.m_Size);
+				m_IDBO.m_LockManager.LockRange(m_IDBO.m_Head, m_IDBO.m_Size);
 				m_IDBO.m_Head = (m_IDBO.m_Head + m_IDBO.m_Size) % (m_IDBO.m_Buffering * m_IDBO.m_Size);
 
 				m_RenderCommandList.clear();
@@ -193,13 +342,10 @@ namespace sixengine {
 		glBufferStorage(GL_DRAW_INDIRECT_BUFFER, m_IDBO.m_Buffering * m_IDBO.m_Size, 0, createFlags);
 		m_IDBO.m_Ptr = glMapBufferRange(GL_DRAW_INDIRECT_BUFFER, 0, m_IDBO.m_Buffering * m_IDBO.m_Size, mapFlags);
 
-		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 		glBindVertexArray(0);
 
 		for (auto tech : m_TechniqueList)
 			tech->Start(m_TextureArray);
-
-		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_IDBO.m_ID);
 
 		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 

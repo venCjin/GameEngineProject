@@ -3,10 +3,12 @@
 
 #include "Renderer/BatchRenderer.h"
 
+#include <glm/glm.hpp>
+
 namespace sixengine {
 
-	UI::UI(Shader* shader, Camera* camera)
-		: Technique(shader, camera), m_Models(2 * sizeof(glm::mat4) + sizeof(glm::vec4), 5)
+	UI::UI(Shader* shader)
+		: Technique(shader), m_Models(2 * sizeof(glm::mat4) + sizeof(glm::vec4), 5)
 	{
 	}
 
@@ -98,8 +100,7 @@ namespace sixengine {
 		m_Shader->Bind();
 		m_Font->Bind(0);
 		m_Shader->SetInt("fontTexture", 0);
-		m_Shader->SetMat4("projection", m_Camera->GetProjectionMatrix());
-		m_Shader->SetMat4("view", m_Camera->GetViewMatrix());
+		m_Shader->SetMat4("projection", glm::ortho(0.f, (float)Application::Get().GetWindow().GetWidth(), 0.f, (float)Application::Get().GetWindow().GetHeight(), 0.01f, 1000.0f));
 	}
 
 	void UI::Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)

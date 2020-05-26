@@ -95,18 +95,16 @@ namespace sixengine {
 					ss >> s;
 					m_BatchRenderer->AddTechnique(
 						new StaticPBR(
-							m_ShaderManager->AddShader(s),
-							Camera::ActiveCamera)
-						);
+							m_ShaderManager->AddShader(s)
+						));
 				}
 				else if (s == "AnimationPBR")
 				{
 					ss >> s;
 					m_BatchRenderer->AddTechnique(
 						new AnimationPBR(
-							m_ShaderManager->AddShader(s),
-							Camera::ActiveCamera)
-						);
+							m_ShaderManager->AddShader(s)
+							));
 				}
 				else
 				{
