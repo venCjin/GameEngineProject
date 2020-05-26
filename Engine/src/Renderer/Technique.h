@@ -93,6 +93,9 @@ namespace sixengine {
 
 		LightData m_LightData;
 		glm::vec3 m_DirectionalLightPos;
+		glm::vec4 m_temp = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		unsigned int temp;
+
 
 	public:
 		StaticPBR(Shader* shader, Camera* camera);

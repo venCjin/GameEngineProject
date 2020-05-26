@@ -13,27 +13,39 @@ namespace sixengine {
 
 	SYSTEM(AnimationSystem, Animation)
 	{
-		std::string previousAnim;
+
 		void Update(EventManager & eventManager, float dt) override
 		{
 					   
 			if (Input::IsKeyActive(KeyCode::DOWN) || Input::IsKeyActive(KeyCode::UP) ||
-				Input::IsKeyActive(KeyCode::RIGHT) || Input::IsKeyActive(KeyCode::LEFT)|| Input::IsKeyActive(KeyCode::Q))
+				Input::IsKeyActive(KeyCode::RIGHT) || Input::IsKeyActive(KeyCode::LEFT))
 			{ 
-				m_Animation.Get()->name = "walk";
+				ChangeAnimation("walk");
+			}
+			else if (Input::IsKeyActive(KeyCode::LEFT_CONTROL))
+			{
+				ChangeAnimation("punch");
 			}
 			else
 			{
-				m_Animation.Get()->name = "samba";
-
+				ChangeAnimation("idle");
 			}
-			m_Animation.Get()->timer += dt;
 
-			if (m_Animation.Get()->name != previousAnim)
-			{
-				m_Animation.Get()->timer = 0.0f;
-				previousAnim = m_Animation.Get()->name;
-			}
+			m_Animation.Get()->currentAnimationTimer += dt;
+			m_Animation.Get()->previousAnimationTimer += dt;
+
+		}
+
+		void ChangeAnimation(std::string newAnimationName)
+		{
+			if (m_Animation.Get()->currentAnimationName == newAnimationName)
+				return;
+
+			m_Animation.Get()->previousAnimationName = m_Animation.Get()->currentAnimationName;
+			m_Animation.Get()->currentAnimationName = newAnimationName;
+			m_Animation.Get()->previousAnimationTimer = m_Animation.Get()->currentAnimationTimer;
+			m_Animation.Get()->currentAnimationTimer = 0.0f;
+
 
 		}
 	};

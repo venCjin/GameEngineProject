@@ -67,16 +67,23 @@ namespace sixengine {
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 		glGenBuffers(1, &m_Lights.m_ID);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_Lights.m_ID);
-		glBufferStorage(GL_SHADER_STORAGE_BUFFER, m_Lights.m_Buffering * m_Lights.m_Size, 0, createFlags);
-		m_Lights.m_Ptr = glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, m_Lights.m_Buffering * m_Lights.m_Size, mapFlags);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		glBindBuffer(GL_UNIFORM_BUFFER, m_Lights.m_ID);
+		glBufferStorage(GL_UNIFORM_BUFFER, m_Lights.m_Buffering * m_Lights.m_Size, 0, createFlags);
+		m_Lights.m_Ptr = glMapBufferRange(GL_UNIFORM_BUFFER, 0, m_Lights.m_Buffering * m_Lights.m_Size, mapFlags);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+		glGenBuffers(1, &temp);
+		glBindBuffer(GL_UNIFORM_BUFFER, temp);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::vec4), &m_temp, GL_STATIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
 
 	}
 
 	void StaticPBR::Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)
 	{
 		m_Shader->Bind();
+		glBindBufferRange(GL_UNIFORM_BUFFER, 6, temp, 0, sizeof(glm::vec4));
 
 		// update position and direction of light - move it to the main loop or somewhere else
 		m_LightData.dirLight.position = glm::vec4(m_Camera->GetViewMatrix() * glm::vec4(m_DirectionalLightPos, 1.0f));
@@ -99,13 +106,15 @@ namespace sixengine {
 		m_Layers.m_Head = (m_Layers.m_Head + m_Layers.m_Size) % (m_Layers.m_Buffering * m_Layers.m_Size);
 
 		m_LightsLockManager.WaitForLockedRange(m_Lights.m_Head, m_Lights.m_Size);
-		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 5, m_Lights.m_ID, m_Lights.m_Head, m_Lights.m_Size);
-		ptr = (unsigned char*)m_Lights.m_Ptr + m_Lights.m_Head;
-		memcpy(ptr, &m_LightData, sizeof(m_LightData));
+		glBindBufferRange(GL_UNIFORM_BUFFER, 5, m_Lights.m_ID, m_Lights.m_Head, m_Lights.m_Size);
+		//ptr = (unsigned char*)m_Lights.m_Ptr + m_Lights.m_Head;
+		//memcpy(ptr, &m_LightData, sizeof(m_LightData));
 
 
-		m_LightsLockManager.LockRange(m_Lights.m_Head, m_Lights.m_Size);
-		m_Lights.m_Head = (m_Lights.m_Head + m_Lights.m_Size) % (m_Lights.m_Buffering * m_Lights.m_Size);
+		//m_LightsLockManager.LockRange(m_Lights.m_Head, m_Lights.m_Size);
+		//m_Lights.m_Head = (m_Lights.m_Head + m_Lights.m_Size) % (m_Lights.m_Buffering * m_Lights.m_Size);
+	
+
 	}
 
 	AnimationPBR::AnimationPBR(Shader* shader, Camera* camera)
@@ -156,8 +165,13 @@ namespace sixengine {
 	{
 		float time = Timer::Instance()->ElapsedTime();
 
-		std::string animationName = command->gameObject->GetComponent<Animation>().Get()->name;
-		command->gameObject->GetComponent<Mesh>()->GetModel()->BoneTransform(time, *transform, animationName);
+		std::string currentAnimationName = command->gameObject->GetComponent<Animation>().Get()->currentAnimationName;
+		std::string previousAnimationName = command->gameObject->GetComponent<Animation>().Get()->previousAnimationName;
+
+		float currentTimer = command->gameObject->GetComponent<Animation>().Get()->currentAnimationTimer;
+		float previousTimer = command->gameObject->GetComponent<Animation>().Get()->previousAnimationTimer;
+
+		command->gameObject->GetComponent<Mesh>()->GetModel()->BoneTransform(currentTimer, previousTimer, *transform, currentAnimationName, previousAnimationName);
 	}
 
 	void AnimationPBR::Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)

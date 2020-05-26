@@ -51,7 +51,7 @@ namespace sixengine {
 			return m_NumBones;
 		}
 
-		void BoneTransform(float TimeInSeconds, std::vector<glm::mat4>& Transforms, std::string animationName);
+		void BoneTransform(float currentTimer, float previousTimer, std::vector<glm::mat4>& Transforms, std::string currentAnimationName, std::string previousAnimationName);
 
 		inline std::vector<glm::mat4>& GetCurrentTransforms() { return currentTransforms; }
 
@@ -64,8 +64,6 @@ namespace sixengine {
 		//void LoadAnimationNodes();
 
 	private:
-
-		bool firstRNH = false;
 
 		struct BoneInfo
 		{
@@ -80,7 +78,7 @@ namespace sixengine {
 		uint FindScaling(float animationTime, const aiNodeAnim* nodeAnim);
 		uint FindRotation(float animationTime, const aiNodeAnim* nodeAnim);
 		uint FindPosition(float animationTime, const aiNodeAnim* nodeAnim);
-		void ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform, std::string animationName);
+		void ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform, std::string animationName, std::vector<glm::mat4>& transforms);
 		bool InitFromScene(const aiScene* scene, const std::string& filename);
 		void InitMesh(uint MeshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 		void LoadBones(uint MeshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices);

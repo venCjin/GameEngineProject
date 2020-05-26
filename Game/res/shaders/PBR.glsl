@@ -74,7 +74,7 @@ layout(std430, binding = 1) buffer textureLayers
 
 uniform sampler2DArray textureArray;
 
-layout(std430, binding = 5) buffer lightData
+layout(std140, binding = 5) buffer lightData
 {    
 	float ao;
 	float metallic;
@@ -87,7 +87,10 @@ layout(std430, binding = 5) buffer lightData
 	DirectionalLight dirLight;
 };
 
-
+layout(std140, binding = 6) buffer temp
+{    
+	vec4 tempc;
+};
 
 // Material parameters
 //uniform float metallic;
@@ -142,7 +145,7 @@ void main()
 	// Gamma
 	color = pow(color, vec3(1.0/2.2));
 
-	FragColor = vec4(color, 1.0);
+	FragColor = tempc;//vec4(color, 1.0);
 
 } 
 

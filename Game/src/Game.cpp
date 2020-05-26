@@ -130,8 +130,9 @@ namespace sixengine {
 			m_ModelManager->AddModel("res/models/par/par.dae");
 			m_ModelManager->CreateVAO();
 
-			m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par.dae", "samba");
+			m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
 			m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
+			m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
 				
 			// SETUP SCENE
 			std::map<unsigned int, std::string> randomM;
@@ -182,9 +183,9 @@ namespace sixengine {
 				}
 			}
 
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 1; i++)
 			{
-				for (int j = 0; j < 5; j++)
+				for (int j = 0; j < 1; j++)
 				{
 					obj = new GameObject(m_EntityManager);
 
