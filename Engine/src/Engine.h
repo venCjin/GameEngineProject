@@ -5,7 +5,7 @@
 #include "Core/Events/KeyEvent.h"
 #include "Core/Events/MouseEvent.h"
 
-#include "Core/Camera.h"
+#include "Core/CameraSystem/Camera.h"
 
 #include "Core/Profile.h"
 
@@ -23,3 +23,5 @@
 #include "Gameplay/Components/Transform.h"
 #include "Gameplay/Components/Mesh.h"
 #include "Gameplay/Components/Animation.h"
+
+#include "Core/Input.h"

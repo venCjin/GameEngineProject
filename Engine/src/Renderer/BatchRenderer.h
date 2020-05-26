@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Gameplay/GameObject.h>
 #include <Renderer/TextureArray.h>
 #include <Renderer/ModelManager.h>
-#include <Renderer/Technique.h>
+#include <Renderer/Techniques/Technique.h>
 #include <Renderer/BufferLockManager.h>
 
+#include <Gameplay/GameObject.h>
 
 #include <ECS/ComponentManager.h>
 
@@ -51,7 +51,7 @@ namespace sixengine {
 		ModelManager* m_ModelManager;
 		TextureArray* m_TextureArray;
 
-		BufferStorage m_IDBO;
+		StorageBuffer m_IDBO;
 		BufferLockManager m_LockManager;
 
 	public:

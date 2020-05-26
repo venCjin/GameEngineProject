@@ -1,43 +1,47 @@
+-AddSystem FlyingCameraSystem
 -AddSystem SimplePlayerSystem
 -AddSystem CollisionSystem
 
 -AddShader StaticPBR res/shaders/Basic.glsl
 
+//GROUND
 -AddMaterial GroundBasic Basic 1 res/models/Environment/Ground/Textures/Ground_Albedo.png
 +SceneGameObject
-    +Transform 
-        +world
-            -translate 0.0 0.0 0.0
-        +end
+    +Transform
     +end
-    -Gizmo Sphere 255 0 0
-    -SphereCollider 0.5 0
-    -SimplePlayer
-    -Model res/models/Environment/Ground/Ground.glb
+    -BoxCollider 1000.0 0.001 1000.0 1
+    -Model res/models/Environment/Ground/Ground.obj
     -Material GroundBasic
 +end
 
-+SceneGameObject
-    +Transform 
-        +world
-            -translate 2.0 0.0 0.0
-        +end
-    +end
-    -Gizmo Cube 0 255 0
-    -BoxCollider 1.0 1.0 1.0 0
-    -Model res/models/Environment/Ground/Ground.glb
-    -Material GroundBasic
-+end
-
+//CUBE
 -AddMaterial BrickBasic Basic 1 res/textures/test/Bricks.jpg
 +SceneGameObject
-    +Transform 
+    +Transform
         +world
-            -translate -1.0 0.0 0.0
+            -translate 3.0 0.5 0.0
         +end
     +end
-    -Gizmo Cube 0 255 0
-    -Model res/models/primitives/cube.obj
-    -Material BrickBasic
+    -Gizmo 0 255 0 Cube 1.0 1.0 1.0
     -BoxCollider 1.0 1.0 1.0 0
+    -SimplePlayer
+    -Model res/models/Primitives/Cube.obj
+    -Material BrickBasic
 +end
+
+//WoodenCrate
+-AddMaterial WoodenCrateBasic Basic 1 res/models/Props/WoodenCrate/Textures/WoodenCrate_Albedo.png
+//Second_Texture
+//-AddMaterial WoodenCrateBasic Basic 1 res/models/Props/WoodenCrate/Textures/WoodenCrate2_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.5 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 1.0 1.0 1.0
+    -BoxCollider 1.0 1.0 1.0 0
+    -Model res/models/Props/WoodenCrate/WoodenCrate.obj
+    -Material WoodenCrateBasic
++end
+//========================================

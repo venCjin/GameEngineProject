@@ -12,9 +12,13 @@
 #include "Renderer/ModelManager.h"
 #include "Renderer/MaterialManager.h"
 #include "Renderer/TextureArray.h"
-#include "Renderer/Technique.h"
+
+#include "Renderer/Techniques/AnimationPBR.h"
+#include "Renderer/Techniques/StaticPBR.h"
+#include "Renderer/Techniques/UI.h"
 
 #include "Gameplay/Systems/AnimationSystem.h"
+#include <Core\CameraSystem\FlyingCameraSystem.h>
 
 #define SCENE_FILE 0
 
@@ -28,7 +32,6 @@ namespace sixengine {
 		#else
 		GameObject *m_SceneRoot, *m_UIRoot;
 		Shader *m_BasicShader, *m_BasicShader2, *m_FontShader;
-		Camera cam, camUI;
 
 		ShaderManager* m_ShaderManager;
 		ModelManager* m_ModelManager;
@@ -50,10 +53,6 @@ namespace sixengine {
 			m_ModelManager = new ModelManager();
 			m_ShaderManager = new ShaderManager();
 
-			float aspectRatio = (float)width / (float)height;
-			cam.MakePerspective(aspectRatio);
-			camUI.MakeOrtho(width, height);
-
 			BatchRenderer::Initialize(m_ModelManager, m_TextureArray);
 			#endif
 			m_BatchRenderer = BatchRenderer::Instance();
@@ -69,6 +68,7 @@ namespace sixengine {
 			#else
 			
 			m_SystemManager.AddSystem<AnimationSystem>();
+			m_SystemManager.AddSystem<FlyingCameraSystem>();
 
 			/// SETUP ASSETS
 			/// =========================================================
@@ -76,12 +76,25 @@ namespace sixengine {
 			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/Animation.glsl");
 			m_FontShader = m_ShaderManager->AddShader("res/shaders/Font.glsl");
 
+			GameObject* go = new GameObject(*Application::Get().GetEntityManager());
+			go->AddComponent<Transform>(go);
+			go->AddComponent<Camera>(go);
+			go->GetComponent<Camera>()->SetPerspective((float)Application::Get().GetWindow().GetWidth()/ (float)Application::Get().GetWindow().GetHeight());
+			go->AddComponent<FlyingCamera>();
+
+			Camera::ActiveCamera = go->GetComponent<Camera>().Get();
+
+			go = new GameObject(*Application::Get().GetEntityManager());
+			go->AddComponent<Transform>(go);
+			go->AddComponent<Camera>(go);
+			go->GetComponent<Camera>()->SetOrthogonal((float)Application::Get().GetWindow().GetWidth(), (float)Application::Get().GetWindow().GetHeight());
+
 			Font* font = new Font("res/fonts/DroidSans.ttf");
-			UI* ui = new UI(m_FontShader, &camUI);
+			UI* ui = new UI(m_FontShader, go->GetComponent<Camera>().Get());
 			ui->AddFont(font);
 
-			StaticPBR* staticM = new StaticPBR(m_BasicShader, &cam);
-			AnimationPBR* animatedM = new AnimationPBR(m_BasicShader2, &cam);
+			StaticPBR* staticM = new StaticPBR(m_BasicShader, Camera::ActiveCamera);
+			AnimationPBR* animatedM = new AnimationPBR(m_BasicShader2, Camera::ActiveCamera);
 
 			m_BatchRenderer->AddTechnique(staticM);
 			m_BatchRenderer->AddTechnique(animatedM);
@@ -153,15 +166,16 @@ namespace sixengine {
 			
 			GameObject* obj;
 			obj = new GameObject(m_EntityManager);
-			obj->AddComponent<Transform>(obj, glm::mat4(1.0f), 
-				glm::translate(glm::mat4(1.0f), glm::vec3(5.0f, 10.0f, 0.0f)));
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(5.0f, 10.0f, 0.0f);
 			obj->AddComponent<Text>("Testowy tekst, do testowania.", glm::vec3(0.0f, 1.0f, 1.0f), 1.0f);
 			obj->AddComponent<Material>(*m_MaterialManager->Get("FontMaterial"));
 			m_UIRoot->AddChild(obj);
 
 			obj = new GameObject(m_EntityManager);
-			obj->AddComponent<Transform>(obj, glm::mat4(1.0f), 
-				glm::translate(glm::mat4(1.0f), glm::vec3(5.0, 690.0f, 0.0f)));
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 690.0f, 0.0f);
+
 			obj->AddComponent<Text>("Sixengine 0.?", glm::vec3(1.0f, 0.0f, 1.0f), 0.3f);
 			obj->AddComponent<Material>(*m_MaterialManager->Get("FontMaterial"));
 			m_UIRoot->AddChild(obj);
@@ -171,8 +185,8 @@ namespace sixengine {
 				for (int j = 0; j < 2; j++)
 				{
 					obj = new GameObject(m_EntityManager);
-					obj->AddComponent<Transform>(obj, glm::mat4(1.0f),
-						glm::translate(glm::mat4(1.0f), glm::vec3(2.0f * i, 0.0f, 2.0f * j)));
+					obj->AddComponent<Transform>(obj);
+					obj->GetComponent<Transform>()->SetWorldPosition(2.0f * i, 0.0f, 2.0f * j);
 					unsigned int rM = rand() % 5;
 					obj->AddComponent<Mesh>(m_ModelManager->GetModel(randomM[rM]));
 
@@ -189,11 +203,9 @@ namespace sixengine {
 				{
 					obj = new GameObject(m_EntityManager);
 
-					glm::mat4 mat(1.0f);
-					mat = glm::translate(mat, glm::vec3(30.0 + 5.0f * j, 0.0f, 0.0f + i * 5.0f));
-					mat = glm::scale(mat, glm::vec3(0.05f, 0.05f, 0.05f));
-
-					obj->AddComponent<Transform>(obj, glm::mat4(1.0f), mat);
+					obj->AddComponent<Transform>(obj);
+					obj->GetComponent<Transform>()->SetWorldPosition(5.0f * i, 0.0f, 5.0f * j);
+					obj->GetComponent<Transform>()->SetLocalScale(0.05f, 0.05f, 0.05f);
 					obj->AddComponent<Mesh>(m_ModelManager->GetModel("par"));
 					obj->AddComponent<Material>(*m_MaterialManager->Get("parasiteZombie"));
 					obj->AddComponent<Animation>();					

@@ -12,11 +12,36 @@
 #include "Renderer/PrimitiveUtils.h"
 #include "Renderer/Gizmo.h"
 
+#include "Renderer/Techniques/AnimationPBR.h"
+#include "Renderer/Techniques/StaticPBR.h"
+
 #include "Physics/Components/Collider.h"
 #include "Physics/Systems/CollisionSystem.h"
 
 #include "Gameplay/Components/SimplePlayer.h"
 #include "Gameplay/Systems/SimplePlayerSystem.h"
+
+#include "Core/CameraSystem/FlyingCamera.h"
+#include <Core/CameraSystem/FlyingCameraSystem.h>
+#include "Core/CameraSystem/FollowCamera.h"
+#include <Core/CameraSystem/FollowCameraSystem.h>
+#include "Core/CameraSystem/MixingCamera.h"
+#include <Core/CameraSystem/MixingCameraSystem.h>
+#include "Core/CameraSystem/OrbitalCamera.h"
+#include <Core/CameraSystem/OrbitalCameraSystem.h>
+
+#include "Gameplay/StateMachine/State.h"
+#include "Gameplay/StateMachine/StateMachineSystem.h"
+
+#define LOAD(COMPONENT)								\
+{													\
+	if (s == #COMPONENT)							\
+	{												\
+		go->AddComponent<COMPONENT>(go);			\
+		go->GetComponent<COMPONENT>()->Load(file);	\
+		continue;									\
+	}												\
+}			
 
 namespace sixengine {
 
@@ -29,8 +54,13 @@ namespace sixengine {
 		BatchRenderer::Initialize(m_ModelManager, m_TextureArray);
 		m_BatchRenderer = BatchRenderer::Instance();
 
-		cam.MakePerspective((float)width / (float)height);
-		camUI.MakeOrtho(width, height);
+		GameObject* go = new GameObject(*Application::Get().GetEntityManager());
+		go->AddComponent<Transform>(go);
+		go->AddComponent<Camera>(go);
+		go->GetComponent<Camera>()->SetPerspective((float)width / (float)height);
+		go->AddComponent<FlyingCamera>();
+
+		Camera::ActiveCamera = go->GetComponent<Camera>().Get();
 	}
 
 	Scene::~Scene()
@@ -54,10 +84,10 @@ namespace sixengine {
 		SystemManager* sys = Application::Get().GetSystemManager();
 
 		m_SceneRoot = new GameObject(*en);
-		m_SceneRoot->AddComponent<Transform>(m_SceneRoot, glm::mat4(1.0f), glm::mat4(1.0f));
+		m_SceneRoot->AddComponent<Transform>(m_SceneRoot);
 
 		m_UIRoot = new GameObject(*en);
-		m_UIRoot->AddComponent<Transform>(m_UIRoot, glm::mat4(1.0f), glm::mat4(1.0f));
+		m_UIRoot->AddComponent<Transform>(m_UIRoot);
 
 
 		std::string line, s;
@@ -76,7 +106,7 @@ namespace sixengine {
 					m_BatchRenderer->AddTechnique(
 						new StaticPBR(
 							m_ShaderManager->AddShader(s),
-							&cam)
+							Camera::ActiveCamera)
 						);
 				}
 				else if (s == "AnimationPBR")
@@ -85,7 +115,7 @@ namespace sixengine {
 					m_BatchRenderer->AddTechnique(
 						new AnimationPBR(
 							m_ShaderManager->AddShader(s),
-							&cam)
+							Camera::ActiveCamera)
 						);
 				}
 				else
@@ -123,6 +153,11 @@ namespace sixengine {
 				else if (s == "UIRendererSystem") sys->AddSystem<UIRendererSystem>();
 				else if (s == "SimplePlayerSystem") sys->AddSystem<SimplePlayerSystem>();
 				else if (s == "CollisionSystem") sys->AddSystem<CollisionSystem>();
+				else if (s == "StateMachineSystem") sys->AddSystem<StateMachineSystem>();
+				else if (s == "FlyingCameraSystem") sys->AddSystem<FlyingCameraSystem>();
+				else if (s == "FollowCameraSystem") sys->AddSystem<FollowCameraSystem>();
+				else if (s == "MixingCameraSystem") sys->AddSystem<MixingCameraSystem>();
+				else if (s == "OrbitalCameraSystem") sys->AddSystem<OrbitalCameraSystem>();
 				else LOG_WARN("Not recognized system: {0}", s);
 			}
 			else if (s == "+SceneGameObject")
@@ -177,14 +212,21 @@ namespace sixengine {
 	{
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDisable(GL_CULL_FACE);
+		glLineWidth(5.0f);
+
 		Shader* s = m_ShaderManager->Get("Gizmo");
 		if (s)
 		{
 			s->Bind();
-			s->SetMat4("projection", cam.GetProjectionMatrix());
-			s->SetMat4("view", cam.GetViewMatrix());
+			s->SetMat4("projection", Camera::ActiveCamera->GetProjectionMatrix());
+			s->SetMat4("view", Camera::ActiveCamera->GetViewMatrix());
 			m_SceneRoot->OnDrawGizmos(true);
 		}
+
+		glPolygonMode(GL_FRONT, GL_FILL);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 	}
 
 	GameObject* Scene::ReadGameObject(std::fstream& file, EntityManager& en)
@@ -194,81 +236,14 @@ namespace sixengine {
 		do {
 			file >> s;
 			if (s == "+end") break;
-			else if (s == "+Transform")
+			
+			LOAD(Transform);
+
+			if (s == "-Gizmo")
 			{
-				glm::mat4 l(1.0f), w(1.0f);
-				do {
-					file >> s;
-					if (s == "+end") break;
-					else if (s == "+local")
-					{
-						do {
-							file >> s;
-							if (s == "+end") break;
-							else if (s == "-translate")
-							{
-								float x, y, z;
-								file >> x;
-								file >> y;
-								file >> z;
-								l = glm::translate(l, glm::vec3(x, y, z));
-							}
-							else if (s == "-rotate")
-							{
-								float x, y, z, degrees;
-								file >> x;
-								file >> y;
-								file >> z;
-								file >> degrees;
-								l = glm::rotate(l, glm::radians(degrees), glm::vec3(x, y, z));
-							}
-							else if (s == "-scale")
-							{
-								float x, y, z;
-								file >> x;
-								file >> y;
-								file >> z;
-								l = glm::scale(l, glm::vec3(x, y, z));
-							}
-						} while (true);
-					}
-					else if (s == "+world")
-					{
-						do {
-							file >> s;
-							if (s == "+end") break;
-							else if (s == "-translate")
-							{
-								float x, y, z;
-								file >> x;
-								file >> y;
-								file >> z;
-								w = glm::translate(w, glm::vec3(x, y, z));
-							}
-							else if (s == "-rotate")
-							{
-								float x, y, z, degrees;
-								file >> x;
-								file >> y;
-								file >> z;
-								file >> degrees;
-								w = glm::rotate(w, glm::radians(degrees), glm::vec3(x, y, z));
-							}
-							else if (s == "-scale")
-							{
-								float x, y, z;
-								file >> x;
-								file >> y;
-								file >> z;
-								w = glm::scale(w, glm::vec3(x, y, z));
-							}
-						} while (true);
-					}
-				} while (true);
-				go->AddComponent<Transform>(go, l, w);
-			}
-			else if (s == "-Gizmo")
-			{
+				float r, g, b;
+				file >> r >> g >> b;
+
 				std::vector<GizmoVertex> vertices;
 				std::vector<unsigned int> indices;
 				file >> s;
@@ -278,7 +253,9 @@ namespace sixengine {
 				}
 				else if (s == "Cube")
 				{
-					PrimitiveUtils::GenerateCube(vertices, indices);
+					float x, y, z;
+					file >> x >> y >> z;
+					PrimitiveUtils::GenerateBox(vertices, indices, x, y, z);
 				}
 				else if (s == "Capsule")
 				{
@@ -286,7 +263,21 @@ namespace sixengine {
 				}
 				else if (s == "Sphere")
 				{
-					PrimitiveUtils::GenerateSphere(vertices, indices);
+					float radius;
+					file >> radius;
+					PrimitiveUtils::GenerateSphere(vertices, indices, radius);
+				}
+				else if (s == "Line")
+				{
+					float x, y, z;
+					file >> x >> y >> z;
+					vertices.emplace_back(GizmoVertex{ glm::vec3{ x, y, z } });
+					vertices.emplace_back(GizmoVertex{ glm::vec3{ x, y, z } });
+					file >> x >> y >> z;
+					vertices.emplace_back(GizmoVertex{ glm::vec3{ x, y, z } });
+					indices.push_back(0);
+					indices.push_back(1);
+					indices.push_back(2);
 				}
 				VertexArray* vao = new VertexArray();
 				VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
@@ -296,9 +287,6 @@ namespace sixengine {
 				IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
 				vao->AddVertexBuffer(*vbo);
 				vao->AddIndexBuffer(*ibo);
-
-				float r, g, b;
-				file >> r >> g >> b;
 
 				go->AddGizmo(new Gizmo(vao, m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(r, g, b)));
 			}
@@ -323,7 +311,7 @@ namespace sixengine {
 			}
 			else if (s == "-Billboard")
 			{
-				go->AddComponent<Billboard>(&cam);
+				go->AddComponent<Billboard>(Camera::ActiveCamera);
 			}
 			else if (s == "-SimplePlayer")
 			{
