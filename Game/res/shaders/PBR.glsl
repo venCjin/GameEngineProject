@@ -112,7 +112,9 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowM
 
 void main()
 {
-	vec3 textureColor = texture(textureArray, vec3(TexCoords, layer[instanceID].x)).rgb;
+	vec4 tex = texture(textureArray, vec3(TexCoords, layer[instanceID].x));
+	if (tex.a < 0.2) discard;
+	vec3 textureColor = tex.rgb;
 
 	vec3 N = normalize(Normal);
 	vec3 V = normalize(-FragPos);	// Calculated in View Space
