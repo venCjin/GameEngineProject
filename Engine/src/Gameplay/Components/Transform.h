@@ -9,6 +9,8 @@
 
 #include <algorithm>
 
+#include <iostream>
+
 namespace sixengine {
 
 	class Transform
@@ -17,10 +19,28 @@ namespace sixengine {
 		Transform* m_Parent;
 		std::vector<Transform*> m_Children;
 
-		glm::mat4 m_Local;
+		glm::mat4 m_Local = glm::mat4(1.0f);
 
 	public:
-		Transform(GameObject* parent) : m_Local(glm::mat4(1.0f)) {}
+		Transform(GameObject* parent)
+		{
+			
+		}
+
+		void Load(std::iostream& stream)
+		{
+			glm::vec3 pos;
+			glm::vec3 orientation;
+			glm::vec3 scale;
+
+			stream >> pos.x >> pos.y >> pos.z;
+			stream >> orientation.x >> orientation.y >> orientation.z;
+			stream >> scale.x >> scale.y >> scale.z;
+
+			SetLocalPosition(pos);
+			SetLocalOrientation(orientation);
+			SetLocalScale(scale);
+		}
 
 		// Sets the parent of the transform.
 		void SetParent(Transform* parent)
@@ -207,24 +227,24 @@ namespace sixengine {
 		}
 
 		// Sets the rotation as Yaw, Pitch and Roll angles in degrees relative to the parent transform's rotation.
-		void SetLocalOrientation(glm::vec3 euler)
+		void SetLocalOrientation(glm::vec3 orientation)
 		{
-			euler.x = glm::radians(euler.x);
-			euler.y = glm::radians(euler.y);
-			euler.z = glm::radians(euler.z);
+			SetLocalOrientation(orientation.x, orientation.y, orientation.z);
+		}
 
-			glm::mat4 rotation = glm::yawPitchRoll(euler.x, euler.y, euler.z);
+		// Sets the rotation as Yaw, Pitch and Roll angles in degrees relative to the parent transform's rotation.
+		void SetLocalOrientation(float yaw, float pitch, float roll)
+		{
+			yaw = glm::radians(yaw);
+			pitch = glm::radians(pitch);
+			roll = glm::radians(roll);
+
+			glm::mat4 rotation = glm::yawPitchRoll(yaw, pitch, roll);
 			glm::vec3 scale = GetWorldScale();
 
 			m_Local[0] = rotation[0] * scale.x;
 			m_Local[1] = rotation[1] * scale.y;
 			m_Local[2] = rotation[2] * scale.z;
-		}
-
-		// Sets the rotation as Yaw, Pitch and Roll angles in degrees relative to the parent transform's rotation.
-		void SetLocalOrientation(float x, float y, float z)
-		{
-			SetLocalOrientation(glm::vec3(x, y, z));
 		}
 
 		// Rotates the transform by given Yaw, Pitch and Roll angles.

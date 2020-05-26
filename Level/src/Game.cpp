@@ -30,7 +30,7 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			m_Scene.LoadScene("res/scenes/new.scene");
+			m_Scene.LoadScene("res/scenes/exported.scene");
 
 			glEnable(GL_DEPTH_TEST);
 
@@ -43,6 +43,11 @@ namespace sixengine {
 
 		virtual void OnUpdate(float dt) override
 		{
+			if (Input::IsKeyPressed(KeyCode::F9))
+			{
+				Application::Get().GetWindow().SwitchCursorVisibility();
+			}
+
 			{
 				PROFILE_SCOPE("ON UPDATE")
 
