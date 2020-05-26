@@ -166,8 +166,8 @@ namespace sixengine {
 
 			glm::vec3 min = mesh->GetModel()->m_MinAxis;
 			glm::vec3 max = mesh->GetModel()->m_MaxAxis;
-			min = proj * view * model * glm::vec4(min, 1.0f);
-			max = proj * view * model * glm::vec4(max, 1.0f);
+			min = model * glm::vec4(min, 1.0f);
+			max = model * glm::vec4(max, 1.0f);
 
 			float z = min.z;
 			min.z = max.z;
