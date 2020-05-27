@@ -32,8 +32,6 @@ namespace sixengine {
 		{
 			m_Scene.LoadScene("res/scenes/exported.scene");
 
-			glEnable(GL_DEPTH_TEST);
-
 			m_BatchRenderer->Configure();
 
 			m_Scene.Render(true);

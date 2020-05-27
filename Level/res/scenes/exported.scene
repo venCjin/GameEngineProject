@@ -2,34 +2,34 @@
 -AddSystem CollisionSystem
 -AddSystem FlyingCameraSystem
 
--AddShader StaticPBR res/shaders/Basic.glsl
+-AddShader StaticPBR res/shaders/PBR.glsl
 
--AddMaterial GroundBasic Basic 1 res/models/Environment/Ground/Textures/Ground_Albedo.png 
--AddMaterial RocksBasic Basic 1 res/models/Environment/Rocks/Textures/Rocks_Albedo.png 
--AddMaterial BigBushBasic Basic 1 res/models/Environment/Vegetation/Textures/BigBush_Albedo.png 
--AddMaterial PalmTreeBasic Basic 1 res/models/Environment/Vegetation/Textures/PalmTree_Albedo.png 
--AddMaterial AmmoBoxBasic Basic 1 res/models/Props/AmmoBox/Textures/AmmoBox_Albedo.png 
--AddMaterial RedBarrelBasic Basic 1 res/models/Props/Barrel/Textures/RedBarrel_Albedo.png 
--AddMaterial BlueBarrelBasic Basic 1 res/models/Props/Barrel/Textures/BlueBarrel_Albedo.png 
--AddMaterial BarrierBasic Basic 1 res/models/Props/Barrier/Textures/Barrier_Albedo.png 
--AddMaterial BulletHolesBarrierBasic Basic 1 res/models/Props/Barrier/Textures/BulletHolesBarrier_Albedo.png 
--AddMaterial BlueContainerBasic Basic 1 res/models/Props/Container/Textures/BlueContainer_Albedo.png 
--AddMaterial RedContainerBasic Basic 1 res/models/Props/Container/Textures/RedContainer_Albedo.png 
--AddMaterial GreenContainerBasic Basic 1 res/models/Props/Container/Textures/GreenContainer_Albedo.png 
--AddMaterial OliveContainerBasic Basic 1 res/models/Props/Container/Textures/OliveContainer_Albedo.png 
--AddMaterial RedGeneratorBasic Basic 1 res/models/Props/Generator/Textures/RedGenerator_Albedo.png 
--AddMaterial YellowGeneratorBasic Basic 1 res/models/Props/Generator/Textures/YellowGenerator_Albedo.png 
--AddMaterial GrenadeBasic Basic 1 res/models/Props/Grenade/Textures/Grenade_Albedo.png 
--AddMaterial HouseBasic Basic 1 res/models/Props/House/Textures/House_Albedo.png 
--AddMaterial JerryCanBasic Basic 1 res/models/Props/Jerrycan/Textures/JerryCan_Albedo.png 
--AddMaterial LadderBasic Basic 1 res/models/Props/Ladders/Textures/Ladder_Albedo.png 
--AddMaterial LightsBasic Basic 1 res/models/Props/Lights/Textures/Light_Albedo.png 
--AddMaterial PotsBasic Basic 1 res/models/Props/Pots/Textures/Pots_Albedo.png 
--AddMaterial PressureTankBasic Basic 1 res/models/Props/PressureTank/Textures/PressureTank_Albedo.png 
--AddMaterial TiresBasic Basic 1 res/models/Props/Tires/Textures/Tires_Albedo.png 
--AddMaterial WellBasic Basic 1 res/models/Props/Well/Textures/Well_Albedo.png 
--AddMaterial WoodenCrateBasic Basic 1 res/models/Props/WoodenCrate/Textures/WoodenCrate_Albedo.png 
--AddMaterial WoodenCrate2Basic Basic 1 res/models/Props/WoodenCrate/Textures/WoodenCrate2_Albedo.png 
+-AddMaterial GroundBasic PBR 1 res/models/Environment/Ground/Textures/Ground_Albedo.png 
+-AddMaterial RocksBasic PBR 1 res/models/Environment/Rocks/Textures/Rocks_Albedo.png 
+-AddMaterial BigBushBasic PBR 1 res/models/Environment/Vegetation/Textures/BigBush_Albedo.png 
+-AddMaterial PalmTreeBasic PBR 1 res/models/Environment/Vegetation/Textures/PalmTree_Albedo.png 
+-AddMaterial AmmoBoxBasic PBR 1 res/models/Props/AmmoBox/Textures/AmmoBox_Albedo.png 
+-AddMaterial RedBarrelBasic PBR 1 res/models/Props/Barrel/Textures/RedBarrel_Albedo.png 
+-AddMaterial BlueBarrelBasic PBR 1 res/models/Props/Barrel/Textures/BlueBarrel_Albedo.png 
+-AddMaterial BarrierBasic PBR 1 res/models/Props/Barrier/Textures/Barrier_Albedo.png 
+-AddMaterial BulletHolesBarrierBasic PBR 1 res/models/Props/Barrier/Textures/BulletHolesBarrier_Albedo.png 
+-AddMaterial BlueContainerBasic PBR 1 res/models/Props/Container/Textures/BlueContainer_Albedo.png 
+-AddMaterial RedContainerBasic PBR 1 res/models/Props/Container/Textures/RedContainer_Albedo.png 
+-AddMaterial GreenContainerBasic PBR 1 res/models/Props/Container/Textures/GreenContainer_Albedo.png 
+-AddMaterial OliveContainerBasic PBR 1 res/models/Props/Container/Textures/OliveContainer_Albedo.png 
+-AddMaterial RedGeneratorBasic PBR 1 res/models/Props/Generator/Textures/RedGenerator_Albedo.png 
+-AddMaterial YellowGeneratorBasic PBR 1 res/models/Props/Generator/Textures/YellowGenerator_Albedo.png 
+-AddMaterial GrenadeBasic PBR 1 res/models/Props/Grenade/Textures/Grenade_Albedo.png 
+-AddMaterial HouseBasic PBR 1 res/models/Props/House/Textures/House_Albedo.png 
+-AddMaterial JerryCanBasic PBR 1 res/models/Props/Jerrycan/Textures/JerryCan_Albedo.png 
+-AddMaterial LadderBasic PBR 1 res/models/Props/Ladders/Textures/Ladder_Albedo.png 
+-AddMaterial LightsBasic PBR 1 res/models/Props/Lights/Textures/Light_Albedo.png 
+-AddMaterial PotsBasic PBR 1 res/models/Props/Pots/Textures/Pots_Albedo.png 
+-AddMaterial PressureTankBasic PBR 1 res/models/Props/PressureTank/Textures/PressureTank_Albedo.png 
+-AddMaterial TiresBasic PBR 1 res/models/Props/Tires/Textures/Tires_Albedo.png 
+-AddMaterial WellBasic PBR 1 res/models/Props/Well/Textures/Well_Albedo.png 
+-AddMaterial WoodenCrateBasic PBR 1 res/models/Props/WoodenCrate/Textures/WoodenCrate_Albedo.png 
+-AddMaterial WoodenCrate2Basic PBR 1 res/models/Props/WoodenCrate/Textures/WoodenCrate2_Albedo.png 
 
 +SceneGameObject
 - Transform
