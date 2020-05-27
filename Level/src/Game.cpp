@@ -52,6 +52,20 @@ namespace sixengine {
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
 			Shader* m_FontShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Font.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
+			
+			m_Scene.m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
+			Skybox* skybox = new Skybox(
+				{
+					"res/textures/skybox/right.jpg",
+					"res/textures/skybox/left.jpg",
+					"res/textures/skybox/top.jpg",
+					"res/textures/skybox/bottom.jpg",
+					"res/textures/skybox/front.jpg",
+					"res/textures/skybox/back.jpg"
+				}
+			);
+			m_BatchRenderer->SetSkybox(new SkyboxRender(m_Scene.m_ShaderManager->Get("Skybox"), skybox));
+
 
 			Font* font = new Font("res/fonts/DroidSans.ttf");
 			UI* ui = new UI(m_FontShader);
