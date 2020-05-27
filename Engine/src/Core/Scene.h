@@ -14,13 +14,14 @@ namespace sixengine {
 	class Scene
 	{
 	private:
+	public:
 		GameObject *m_UIRoot, *m_SceneRoot;
 		ModelManager* m_ModelManager;
 		ShaderManager* m_ShaderManager;
 		MaterialManager * m_MaterialManager;
 		TextureArray* m_TextureArray;
 		BatchRenderer* m_BatchRenderer;
-	public:
+	
 		Scene(unsigned int width, unsigned int height);
 		~Scene();
 		bool LoadScene(const char* filePath);

@@ -177,8 +177,8 @@ namespace sixengine {
 		}
 		file.close();
 
-		m_TextureArray->CreateTextureArray();
-		m_ModelManager->CreateVAO();
+		//m_TextureArray->CreateTextureArray();
+		//m_ModelManager->CreateVAO();
 
 		return true;
 	}
@@ -197,13 +197,8 @@ namespace sixengine {
 
 	void Scene::Render(bool first)
 	{
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		//m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 		m_SceneRoot->Render(first);
-
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		//m_UI->Render(camUI.GetProjectionMatrix(), camUI.GetViewMatrix());
-		//m_UIRoot->Render(first);
+		m_UIRoot->Render(first);
 	}
 
 	void Scene::DrawGizmos()

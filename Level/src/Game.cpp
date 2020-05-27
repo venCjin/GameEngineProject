@@ -5,6 +5,13 @@
 
 #include "Renderer/BatchRenderer.h"
 
+// hacks
+#include "Gameplay/Systems/AnimationSystem.h"
+#include "Renderer/Techniques/AnimationPBR.h"
+#include "Renderer/Techniques/DepthRender.h"
+#include "Renderer/Techniques/UI.h"
+// hacks end
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -32,6 +39,72 @@ namespace sixengine {
 		{
 			m_Scene.LoadScene("res/scenes/exported.scene");
 
+			// HACKS
+			m_SystemManager.AddSystem<AnimationSystem>();
+
+			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
+			Shader* m_FontShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Font.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
+
+			Font* font = new Font("res/fonts/DroidSans.ttf");
+			UI* ui = new UI(m_FontShader);
+			ui->AddFont(font);
+
+			m_BatchRenderer->SetDepth(new DepthRender(m_Scene.m_ShaderManager->Get("Depth")));
+			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
+			m_BatchRenderer->AddTechnique(ui);
+
+			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
+			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_normal.png");
+			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_specular.png");
+m_Scene.m_TextureArray->CreateTextureArray();
+			m_Scene.m_MaterialManager->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("Font"),
+				glm::vec4(0),
+				"FontMaterial");
+
+			m_Scene.m_MaterialManager->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("AnimationPBR"),
+				glm::vec4(m_Scene.m_TextureArray->GetTexture("parasiteZombie_diffuse"),
+					m_Scene.m_TextureArray->GetTexture("parasiteZombie_normal"),
+					m_Scene.m_TextureArray->GetTexture("parasiteZombie_specular"), 0.0f),
+				"parasiteZombie");
+
+			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
+m_Scene.m_ModelManager->CreateVAO();
+			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
+			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
+			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
+
+			GameObject* obj;
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(5.0f, 10.0f, 0.0f);
+			obj->AddComponent<Text>("Testowy tekst, do testowania.", glm::vec3(0.0f, 1.0f, 1.0f), 1.0f);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
+			m_Scene.m_UIRoot->AddChild(obj);
+
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 690.0f, 0.0f);
+
+			obj->AddComponent<Text>("Sixengine 0.?", glm::vec3(1.0f, 0.0f, 1.0f), 0.3f);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
+			m_Scene.m_UIRoot->AddChild(obj);
+
+			obj = new GameObject(m_EntityManager);
+
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
+			obj->GetComponent<Transform>()->SetLocalScale(0.05f, 0.05f, 0.05f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("parasiteZombie"));
+			obj->AddComponent<Animation>();
+
+			m_Scene.m_SceneRoot->AddChild(obj);
+
+			// HACKS END
+
 			m_BatchRenderer->Configure();
 
 			m_Scene.Render(true);
@@ -47,29 +120,31 @@ namespace sixengine {
 			}
 
 			{
-				PROFILE_SCOPE("ON UPDATE")
-
-				{
-					//PROFILE_SCOPE("ECS")
-					m_SystemManager.UpdateAll(dt);
-				}
-
-				{
-					//PROFILE_SCOPE("SUBMIT COMMANDS")
-					m_Scene.Render();
-				}
-
-				{
-					//PROFILE_SCOPE("RENDER")
-					m_BatchRenderer->Render();
-				}
-
-				{
-					//PROFILE_SCOPE("DRAW GIZMOS")
-					m_Scene.DrawGizmos();
-				}
+				//PROFILE_SCOPE("ECS")
+				m_SystemManager.UpdateAll(dt);
 			}
 		}
+
+		virtual void OnRender(float dt) override
+		{
+			//PROFILE_SCOPE("ON RENDER")
+			m_BatchRenderer->CalculateFrustum();
+			{
+				//PROFILE_SCOPE("SUBMIT COMMANDS")
+				m_Scene.Render();
+			}
+
+			{
+				//PROFILE_SCOPE("RENDER")
+				m_BatchRenderer->Render();
+			}
+
+			{
+				//PROFILE_SCOPE("DRAW GIZMOS")
+				//m_Scene.DrawGizmos();
+			}
+		}
+
 	};
 
 }
