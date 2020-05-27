@@ -15,6 +15,7 @@
 
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/StaticPBR.h"
+#include "Renderer/Techniques/DepthRender.h"
 #include "Renderer/Techniques/UI.h"
 
 #include "Gameplay/Systems/AnimationSystem.h"
@@ -75,6 +76,7 @@ namespace sixengine {
 			m_BasicShader = m_ShaderManager->AddShader("res/shaders/PBR.glsl");
 			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/Animation.glsl");
 			m_FontShader = m_ShaderManager->AddShader("res/shaders/Font.glsl");
+			m_ShaderManager->AddShader("res/shaders/Depth.glsl");
 
 			GameObject* go = new GameObject(*Application::Get().GetEntityManager());
 			go->AddComponent<Transform>(go);
@@ -93,6 +95,7 @@ namespace sixengine {
 			UI* ui = new UI(m_FontShader);
 			ui->AddFont(font);
 
+			m_BatchRenderer->SetDepth(new DepthRender(m_ShaderManager->Get("Depth")));
 			m_BatchRenderer->AddTechnique(new StaticPBR(m_BasicShader));
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
 			m_BatchRenderer->AddTechnique(ui);
@@ -175,7 +178,7 @@ namespace sixengine {
 			obj->AddComponent<Text>("Sixengine 0.?", glm::vec3(1.0f, 0.0f, 1.0f), 0.3f);
 			obj->AddComponent<Material>(*m_MaterialManager->Get("FontMaterial"));
 			m_UIRoot->AddChild(obj);
-			
+
 			for (int i = 0; i < 10; i++)
 			{
 				for (int j = 0; j < 10; j++)

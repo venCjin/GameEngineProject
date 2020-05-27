@@ -23,7 +23,7 @@ namespace sixengine {
 	}
 
 	BatchRenderer::BatchRenderer(ModelManager* modelManager, TextureArray* textureArray)
-		: m_ModelManager(modelManager), m_TextureArray(textureArray), m_IDBO(100 * sizeof(DrawElementsCommand))
+		: m_ModelManager(modelManager), m_DepthFramebuffer(2048, 2048), m_TextureArray(textureArray), m_IDBO(20 * sizeof(DrawElementsCommand), 9)
 	{
 	
 	}
@@ -166,17 +166,17 @@ namespace sixengine {
 
 			glm::vec3 min = mesh->GetModel()->m_MinAxis;
 			glm::vec3 max = mesh->GetModel()->m_MaxAxis;
-			min = model * glm::vec4(min, 1.0f);
-			max = model * glm::vec4(max, 1.0f);
-
+			min = proj * view * model * glm::vec4(min, 1.0f);
+			max = proj * view * model * glm::vec4(max, 1.0f);
+			/*
 			float z = min.z;
 			min.z = max.z;
 			max.z = z;
 
 			glm::vec3 center = 0.5f * (min + max);
-			float size = 0.5f * glm::distance(min, max);
+			float size = 0.5f * glm::distance(min, max);*/
 
-			render = FrustumAABB(min, max);
+			//render = FrustumAABB(min, max);
 		}
 
 		if (render)
@@ -202,13 +202,96 @@ namespace sixengine {
 
 	void BatchRenderer::Render()
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		LOG_CORE_INFO(m_CommandList.size());
+
+		// Draw depth
+		//***********************************************
+		std::vector<RendererCommand*> depth(m_CommandList);
+
+		std::sort(depth.begin(), depth.end(), SortModels);
+
+		std::vector<glm::mat4> models;
+		bool pass = false;
+		unsigned int lastModelID;
+
+		int index = 0;
+		for (int i = 0; i < depth.size(); i++)
+		{
+			if (depth[i]->ModelID == -1)
+			{
+				index++;
+				continue;
+			}
+			else
+			{
+				lastModelID = depth[i]->ModelID;
+				index = i;
+				break;
+			}
+		}
+
+		if (index < depth.size())
+		{
+			unsigned int modelInstanceCounter = 0;
+			unsigned int allIntstanceCounter = 0;
+			for (int i = index; i < depth.size(); i++)
+			{
+				if (depth[i]->ModelID != lastModelID)
+				{
+					ModelManager::ModelEntry me = m_ModelManager->GetModelEntry(lastModelID);
+					m_RenderCommandList.push_back(
+						{ me.NumIndices, modelInstanceCounter, me.BaseIndex, me.BaseVertex, allIntstanceCounter }
+					);
+
+					lastModelID = depth[i]->ModelID;
+					allIntstanceCounter += modelInstanceCounter;
+					modelInstanceCounter = 0;
+					pass = true;
+				}
+
+				models.push_back(depth[i]->data.model);
+
+				modelInstanceCounter++;
+			}
+
+			ModelManager::ModelEntry me = m_ModelManager->GetModelEntry(lastModelID);
+			m_RenderCommandList.push_back(
+				{ me.NumIndices, modelInstanceCounter, me.BaseIndex, me.BaseVertex, allIntstanceCounter }
+			);
+		}
+
+
+		if (!m_RenderCommandList.empty())
+		{
+			m_Depth->Render(depth, models, std::vector<glm::vec4>());
+
+			m_IDBO.m_LockManager.WaitForLockedRange(m_IDBO.m_Head, m_IDBO.m_Size);
+
+			void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head;
+			memcpy(ptr, m_RenderCommandList.data(), m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]));
+
+			m_DepthFramebuffer.Bind();
+
+			m_ModelManager->Bind();
+			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)m_IDBO.m_Head, m_RenderCommandList.size(), 0);
+			glBindVertexArray(0);
+
+			m_DepthFramebuffer.Unbind();
+
+			m_IDBO.m_LockManager.LockRange(m_IDBO.m_Head, m_IDBO.m_Size);
+			m_IDBO.m_Head = (m_IDBO.m_Head + m_IDBO.m_Size) % (m_IDBO.m_Buffering * m_IDBO.m_Size);
+
+			m_RenderCommandList.clear();
+		}
+
+		// Draw normal
+		//***********************************************
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 		std::vector<std::vector<RendererCommand*>> sortedTechniques;
 		//Sort Commands by techniques
 		sortedTechniques.reserve(m_TechniqueList.size());
-
 
 		for (int i = 0; i < m_TechniqueList.size(); i++)
 		{
@@ -231,7 +314,6 @@ namespace sixengine {
 		}
 
 		// Iterate over techniques
-
 		for (int t = 0; t < sortedTechniques.size(); t++)
 		{
 			std::vector<RendererCommand*>& commandList = sortedTechniques[t];
@@ -319,8 +401,13 @@ namespace sixengine {
 				m_RenderCommandList.clear();
 			}
 		}
-
+		
 		m_CommandList.clear();
+	}
+
+	void BatchRenderer::SetDepth(DepthRender* technique)
+	{
+		m_Depth = technique;
 	}
 
 	void BatchRenderer::AddTechnique(Technique* technique)

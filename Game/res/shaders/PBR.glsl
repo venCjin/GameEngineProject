@@ -10,11 +10,11 @@ out int instanceID;
 out vec3 FragPos;
 out vec3 Normal;
 
-layout(std140, binding = 0) buffer matrixes
+layout(std430, binding = 0) buffer matrixes
 {
     mat4 view;
     mat4 projection;
-    mat4 model[12];
+    mat4 model[10000];
 };
 
 void main()
@@ -67,9 +67,9 @@ in flat int instanceID;
 in vec3 FragPos;
 in vec3 Normal;
 
-layout(std140, binding = 1) buffer textureLayers
+layout(std430, binding = 1) buffer textureLayers
 {
-    vec4 layer[10];
+    vec4 layer[10000];
 };
 
 uniform sampler2DArray textureArray;

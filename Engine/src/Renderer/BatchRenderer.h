@@ -2,6 +2,7 @@
 
 #include <Renderer/TextureArray.h>
 #include <Renderer/ModelManager.h>
+#include <Renderer/Techniques/DepthRender.h>
 #include <Renderer/Techniques/Technique.h>
 #include <Renderer/BufferLockManager.h>
 
@@ -43,6 +44,9 @@ namespace sixengine {
 		FrameAllocator<RendererCommand> m_FrameAllocator;
 		static BatchRenderer* m_BatchRendererInstance;
 
+		DepthRender* m_Depth;
+		DepthFramebuffer m_DepthFramebuffer;
+
 		std::vector<Technique*> m_TechniqueList;
 
 		std::vector<RendererCommand*> m_CommandList;
@@ -63,6 +67,7 @@ namespace sixengine {
 		void SubmitCommand(GameObject* gameObject, glm::mat4 model);
 		void Render();
 
+		void SetDepth(DepthRender* technique);
 		void AddTechnique(Technique* technique);
 		void Configure();
 

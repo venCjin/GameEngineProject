@@ -16,7 +16,6 @@ namespace sixengine {
 			glm::vec2 texCoord;
 		};
 
-		StorageBuffer m_Models;
 		//std::map<std::string, Font*> m_Fonts;
 		Font* m_Font;
 		unsigned int m_VAO;
