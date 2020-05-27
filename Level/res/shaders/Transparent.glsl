@@ -43,5 +43,5 @@ void main()
     gl_FragDepth = .1f;
     //float alpha = ;
 
-    FragColor = vec4(1.0f, 1.f, 1.f, .5f); //texture(textureArray, vec3(TexCoords, layer[instanceID].x));
+    FragColor = vec4(1.0f, 1.f, 1.f, .5f) * texture(textureArray, vec3(TexCoords, layer[instanceID].x));
 } 
