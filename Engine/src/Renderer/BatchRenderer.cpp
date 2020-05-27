@@ -335,6 +335,7 @@ namespace sixengine {
 
 			m_ModelManager->Bind();
 			glCullFace(GL_FRONT);
+			glPolygonMode(GL_BACK, GL_FILL);
 			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)m_IDBO.m_Head, m_RenderCommandList.size(), 0);
 			glCullFace(GL_BACK);
 			glBindVertexArray(0);
