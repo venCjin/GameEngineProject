@@ -48,44 +48,9 @@ namespace sixengine {
 
 	void BatchRenderer::CalculateFrustum()
 	{
-		//glm::mat4 proj = Camera::ActiveCamera->GetProjectionMatrix();
-		//glm::mat4 view = Camera::ActiveCamera->GetViewMatrix();
 		glm::mat4 clip = Camera::ActiveCamera->GetProjectionMatrix() * Camera::ActiveCamera->GetViewMatrix();
-
-		/*glm::vec4 tmp;
-		// LEFT
-		tmp = glm::vec4(clip[0][3] + clip[0][0], clip[1][3] + clip[1][0], clip[2][3] + clip[2][0], clip[3][3] + clip[3][0]);
-		m_FrustumPlanes[0] = tmp;
-		// RIGHT
-		tmp = glm::vec4(clip[0][3] - clip[0][0], clip[1][3] - clip[1][0], clip[2][3] - clip[2][0], clip[3][3] - clip[3][0]);
-		m_FrustumPlanes[1] = tmp;
-		// TOP
-		tmp = glm::vec4(clip[0][3] - clip[0][1], clip[1][3] - clip[1][1], clip[2][3] - clip[2][1], clip[3][3] - clip[3][1]);
-		m_FrustumPlanes[2] = tmp;
-		// BOTTOM
-		tmp = glm::vec4(clip[0][3] + clip[0][1], clip[1][3] + clip[1][1], clip[2][3] + clip[2][1], clip[3][3] + clip[3][1]);
-		m_FrustumPlanes[3] = tmp;
-		// NEAR
-		tmp = glm::vec4(clip[0][3] + clip[0][2], clip[1][3] + clip[1][2], clip[2][3] + clip[2][2], clip[3][3] + clip[3][2]);
-		m_FrustumPlanes[4] = tmp;
-		// FAR
-		tmp = glm::vec4(clip[0][3] - clip[0][2], clip[1][3] - clip[1][2], clip[2][3] - clip[2][2], clip[3][3] - clip[3][2]);
-		m_FrustumPlanes[5] = tmp;*/
-
 		
 		clip = glm::transpose(clip);
-
-		std::cout << std::setprecision(4) << std::fixed;
-		/*for (int i = 0; i < 4; i++)
-		{
-			for (int j = 0; j < 4; j++)
-			{
-				std::cout << clip[i][j] << " ";
-			}
-
-			std::cout << "\n";
-		}
-		std::cout << "\n";*/
 		
 		// Left plane 
 		m_FrustumPlanes[0] = clip[3] + clip[0];
@@ -102,17 +67,6 @@ namespace sixengine {
 
 		for (int i = 0; i < 6; i++)
 			NormalizePlane(m_FrustumPlanes[i]);
-
-
-		/*for (int i = 0; i < 6; i++)
-		{
-			for (int j = 0; j < 4; j++)
-			{
-				std::cout << m_FrustumPlanes[i][j] << " ";
-			}
-
-			std::cout << "\n";
-		}*/
 	}
 
 	bool BatchRenderer::FrustumAABB(glm::vec3 min, glm::vec3 max)
@@ -135,24 +89,6 @@ namespace sixengine {
 		return true; // inside or intersect
 	}
 
-	bool BatchRenderer::FrustumAABB(glm::vec3 center, float size)
-	{
-		for (int i = 0; i < 6; i++)
-		{
-			if (m_FrustumPlanes[i].x * (center.x - size) + m_FrustumPlanes[i].y * (center.y - size) + m_FrustumPlanes[i].z * (center.z - size) + m_FrustumPlanes[i].w > 0) continue;
-			if (m_FrustumPlanes[i].x * (center.x + size) + m_FrustumPlanes[i].y * (center.y - size) + m_FrustumPlanes[i].z * (center.z - size) + m_FrustumPlanes[i].w > 0) continue;
-			if (m_FrustumPlanes[i].x * (center.x - size) + m_FrustumPlanes[i].y * (center.y + size) + m_FrustumPlanes[i].z * (center.z - size) + m_FrustumPlanes[i].w > 0) continue;
-			if (m_FrustumPlanes[i].x * (center.x + size) + m_FrustumPlanes[i].y * (center.y + size) + m_FrustumPlanes[i].z * (center.z - size) + m_FrustumPlanes[i].w > 0) continue;
-			if (m_FrustumPlanes[i].x * (center.x - size) + m_FrustumPlanes[i].y * (center.y - size) + m_FrustumPlanes[i].z * (center.z + size) + m_FrustumPlanes[i].w > 0) continue;
-			if (m_FrustumPlanes[i].x * (center.x + size) + m_FrustumPlanes[i].y * (center.y - size) + m_FrustumPlanes[i].z * (center.z + size) + m_FrustumPlanes[i].w > 0) continue;
-			if (m_FrustumPlanes[i].x * (center.x - size) + m_FrustumPlanes[i].y * (center.y + size) + m_FrustumPlanes[i].z * (center.z + size) + m_FrustumPlanes[i].w > 0) continue;
-			if (m_FrustumPlanes[i].x * (center.x + size) + m_FrustumPlanes[i].y * (center.y + size) + m_FrustumPlanes[i].z * (center.z + size) + m_FrustumPlanes[i].w > 0) continue;
-			return false;
-		}
-
-		return true; // inside or intersect
-	}
-
 	void BatchRenderer::SubmitCommand(GameObject* gameObject, glm::mat4 model)
 	{
 		bool render = true;
@@ -166,17 +102,10 @@ namespace sixengine {
 
 			glm::vec3 min = mesh->GetModel()->m_MinAxis;
 			glm::vec3 max = mesh->GetModel()->m_MaxAxis;
-			min = proj * view * model * glm::vec4(min, 1.0f);
-			max = proj * view * model * glm::vec4(max, 1.0f);
-			/*
-			float z = min.z;
-			min.z = max.z;
-			max.z = z;
+			min = model * glm::vec4(min, 1.0f);
+			max = model * glm::vec4(max, 1.0f);
 
-			glm::vec3 center = 0.5f * (min + max);
-			float size = 0.5f * glm::distance(min, max);*/
-
-			//render = FrustumAABB(min, max);
+			render = FrustumAABB(min, max);
 		}
 
 		if (render)
