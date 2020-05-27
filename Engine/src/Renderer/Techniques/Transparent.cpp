@@ -3,7 +3,7 @@
 
 namespace sixengine
 {
-	TransparentTechnique::TransparentTechnique(Shader* shader, Camera* camera) : Technique(shader, camera),
+	TransparentTechnique::TransparentTechnique(Shader* shader) : Technique(shader),
 		m_Models(40002 * sizeof(glm::mat4), 0), m_Layers(40000 * sizeof(glm::vec4), 1)
 	{
 

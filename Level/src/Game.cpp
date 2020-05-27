@@ -20,6 +20,7 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+#include <Renderer\Techniques\Transparent.h>
 
 namespace sixengine {
 
@@ -51,10 +52,12 @@ namespace sixengine {
 
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
 			Shader* m_FontShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Font.glsl");
+			Shader* m_TransparentShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Transparent.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
 
 			Font* font = new Font("res/fonts/DroidSans.ttf");
 			UI* ui = new UI(m_FontShader);
+			TransparentTechnique* transparent = new TransparentTechnique(m_TransparentShader);
 			ui->AddFont(font);
 
 			m_BatchRenderer->SetDepth(new DepthRender(m_Scene.m_ShaderManager->Get("Depth")));
@@ -64,7 +67,8 @@ namespace sixengine {
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_normal.png");
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_specular.png");
-m_Scene.m_TextureArray->CreateTextureArray();
+			m_Scene.m_TextureArray->AddTexture("res/textures/test/Bricks.jpg");
+			m_Scene.m_TextureArray->CreateTextureArray();
 			m_Scene.m_MaterialManager->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("Font"),
 				glm::vec4(0),
@@ -77,13 +81,26 @@ m_Scene.m_TextureArray->CreateTextureArray();
 					m_Scene.m_TextureArray->GetTexture("parasiteZombie_specular"), 0.0f),
 				"parasiteZombie");
 
+			m_Scene.m_MaterialManager->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("Transparent"),
+				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks")),
+				"Transparent");
+
 			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
-m_Scene.m_ModelManager->CreateVAO();
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/cube.obj");
+			m_Scene.m_ModelManager->CreateVAO();
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
 
 			GameObject* obj;
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 10.0f, 0.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cube"));
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Transparent"));
+			m_Scene.m_SceneRoot->AddChild(obj);
+
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0f, 10.0f, 0.0f);
