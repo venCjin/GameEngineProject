@@ -49,7 +49,7 @@ namespace sixengine {
 		DepthFramebuffer m_DepthFramebuffer;
 		glm::mat4 ortho;
 
-		Light(int width = 2048, int height = 2048)
+		Light(int width = 4096, int height = 4096)
 			: m_DepthFramebuffer(width, height)
 		{
 

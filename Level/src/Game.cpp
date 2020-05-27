@@ -44,6 +44,9 @@ namespace sixengine {
 			m_Scene.LoadScene("res/scenes/exported.scene");
 
 			// HACKS
+
+			m_BatchRenderer->SetLight(new Light());
+
 			m_SystemManager.AddSystem<AnimationSystem>();
 
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");

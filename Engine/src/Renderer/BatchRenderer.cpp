@@ -106,7 +106,7 @@ namespace sixengine {
 			min = model * glm::vec4(min, 1.0f);
 			max = model * glm::vec4(max, 1.0f);
 
-			//render = FrustumAABB(min, max);
+			render = FrustumAABB(min, max);
 		}
 
 		if (render)
