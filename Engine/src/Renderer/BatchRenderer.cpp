@@ -23,7 +23,7 @@ namespace sixengine {
 	}
 
 	BatchRenderer::BatchRenderer(ModelManager* modelManager, TextureArray* textureArray)
-		: m_ModelManager(modelManager), m_DepthFramebuffer(2048, 2048), m_TextureArray(textureArray), m_IDBO(20 * sizeof(DrawElementsCommand), 9)
+		: m_ModelManager(modelManager), m_DepthFramebuffer(2048, 2048), m_TextureArray(textureArray), m_IDBO(100 * sizeof(DrawElementsCommand), 9)
 	{
 	
 	}
