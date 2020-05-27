@@ -96,12 +96,12 @@ uniform sampler2D shadowMap1;
 
 layout(std430, binding = 4) buffer textureLayers
 {
-    vec4 layer[10];
+    vec4 layer[100];
 };
 
 uniform sampler2DArray textureArray;
 
-layout(std140, binding = 2) buffer lightData
+layout(std140, binding = 7) buffer lightData
 {    
 	float ao;
 	float metallic;

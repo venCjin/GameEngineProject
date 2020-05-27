@@ -13,7 +13,7 @@ namespace sixengine {
 
 	AnimationPBR::AnimationPBR(Shader* shader)
 		: Technique(shader), m_Models(102 * sizeof(glm::mat4), 3), m_Layers(100 * sizeof(glm::vec4), 4),
-		m_Bones(100 * sizeof(BonesStruct), 5)
+		m_Bones(100 * sizeof(BonesStruct), 5), m_Lights(sizeof(LightData), 7)
 	{
 		for (int i = 0; i < 100; i++)
 		{
@@ -73,6 +73,28 @@ namespace sixengine {
 
 		m_Bones.m_LockManager.LockRange(m_Bones.m_Head, m_Bones.m_Size);
 		m_Bones.m_Head = (m_Bones.m_Head + m_Bones.m_Size) % (m_Bones.m_Buffering * m_Bones.m_Size);
+	}
+
+	void AnimationPBR::SetLight(Light& light)
+	{
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, light.m_DepthFramebuffer.m_TextureID);
+		m_Shader->SetInt("shadowMap1", light.m_DepthFramebuffer.m_TextureID);
+
+		glm::mat4 lightProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 1.0f, 50.0f);
+		glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 24.0f, -1.0f),
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f));
+
+		glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+
+		m_Shader->SetMat4("lightSpaceMatrix1", lightSpaceMatrix);
+
+		Light tmp = light;
+		tmp.m_LightData.dirLight.position = glm::vec4(Camera::ActiveCamera->GetViewMatrix() * glm::vec4(light.m_DirectionalLightPos, 1.0f));
+		tmp.m_LightData.dirLight.direction = glm::vec4(Camera::ActiveCamera->GetViewMatrix() * glm::vec4(-light.m_DirectionalLightPos, 0.0f));
+
+		m_Lights.Update(&tmp, sizeof(tmp));
 	}
 
 }

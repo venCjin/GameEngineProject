@@ -7,7 +7,7 @@ uniform mat4 lightSpaceMatrix;
 
 layout(std430, binding = 6) buffer matrixes
 {
-    mat4 model[2000];
+    mat4 model[10000];
 };
 
 void main()

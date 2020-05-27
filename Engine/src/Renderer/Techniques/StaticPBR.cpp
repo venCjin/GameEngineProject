@@ -2,23 +2,16 @@
 #include "StaticPBR.h"
 
 #include "Renderer/TextureArray.h"
+#include "Renderer/BatchRenderer.h"
 
 namespace sixengine {
 
 	StaticPBR::StaticPBR(Shader* shader)
-		: Technique(shader), m_Models(1002 * sizeof(glm::mat4), 0), m_Layers(1000 * sizeof(glm::vec4), 1),
+		: Technique(shader), m_Models(10002 * sizeof(glm::mat4), 0), m_Layers(10000 * sizeof(glm::vec4), 1),
 		m_Lights(sizeof(LightData), 2)
 	{
 
-		m_DirectionalLightPos = glm::vec3(-2.0f, 24.0f, -1.0f);
-
-		m_LightData.ao = 0.4f;
-		m_LightData.metallic = 0.4f;
-		m_LightData.roughness = 0.6f;
-
-		m_LightData.dirLight.position = glm::vec4(Camera::ActiveCamera->GetViewMatrix() * glm::vec4(m_DirectionalLightPos, 1.0f));
-		m_LightData.dirLight.direction = glm::vec4(Camera::ActiveCamera->GetViewMatrix() * glm::vec4(-m_DirectionalLightPos, 0.0f));
-		m_LightData.dirLight.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		
 	}
 
 	void StaticPBR::Start(TextureArray* textureArray)
@@ -35,12 +28,31 @@ namespace sixengine {
 	{
 		m_Shader->Bind();
 
-		m_LightData.dirLight.position = glm::vec4(Camera::ActiveCamera->GetViewMatrix() * glm::vec4(m_DirectionalLightPos, 1.0f));
-		m_LightData.dirLight.direction = glm::vec4(Camera::ActiveCamera->GetViewMatrix() * glm::vec4(-m_DirectionalLightPos, 0.0f));
-
+		
 		m_Models.Update(models.data(), models.size() * sizeof(models[0]));
 		m_Layers.Update(layers.data(), layers.size() * sizeof(layers[0]));
-		m_Lights.Update(&m_LightData, sizeof(m_LightData));
+	}
+
+	void StaticPBR::SetLight(Light& light)
+	{
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, light.m_DepthFramebuffer.m_TextureID);
+		m_Shader->SetInt("shadowMap1", light.m_DepthFramebuffer.m_TextureID);
+
+		glm::mat4 lightProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 1.0f, 50.0f);
+		glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 24.0f, -1.0f),
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f));
+
+		glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+
+		m_Shader->SetMat4("lightSpaceMatrix1", lightSpaceMatrix);
+
+		Light tmp = light;
+		tmp.m_LightData.dirLight.position = glm::vec4(Camera::ActiveCamera->GetViewMatrix() * glm::vec4(light.m_DirectionalLightPos, 1.0f));
+		tmp.m_LightData.dirLight.direction = glm::vec4(Camera::ActiveCamera->GetViewMatrix() * glm::vec4(-light.m_DirectionalLightPos, 0.0f));
+
+		m_Lights.Update(&tmp, sizeof(tmp));
 	}
 
 }

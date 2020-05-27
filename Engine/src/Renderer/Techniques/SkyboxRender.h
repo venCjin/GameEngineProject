@@ -1,24 +1,26 @@
 #pragma once
 
 #include "Technique.h"
-
-#include "Renderer/LightData.h"
+#include "Renderer/Skybox.h"
 
 namespace sixengine {
 
-	class StaticPBR : public Technique
+	class SkyboxRender : public Technique
 	{
 	private:
-		StorageBuffer m_Models;
-		StorageBuffer m_Layers;
-		UniformBuffer m_Lights;
+		Skybox* m_Skybox;
+
+		unsigned int m_VAO;
+		unsigned int m_VBO;
 
 	public:
-		StaticPBR(Shader* shader);
+		SkyboxRender(Shader* shader, Skybox* skybox);
 
 		void Start(TextureArray* textureArray) override;
 		void Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers) override;
-		void SetLight(Light& light) override;
+		void Render();
 	};
 
 }
+
+

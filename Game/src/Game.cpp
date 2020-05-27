@@ -77,6 +77,18 @@ namespace sixengine {
 			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
 			m_FontShader = m_ShaderManager->AddShader("res/shaders/Font.glsl");
 			m_ShaderManager->AddShader("res/shaders/Depth.glsl");
+			m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
+
+			Skybox* skybox = new Skybox(
+				{
+					"res/textures/skybox/right.jpg",
+					"res/textures/skybox/left.jpg",
+					"res/textures/skybox/top.jpg",
+					"res/textures/skybox/bottom.jpg",
+					"res/textures/skybox/front.jpg",
+					"res/textures/skybox/back.jpg"
+				}
+			);
 
 			GameObject* go = new GameObject(*Application::Get().GetEntityManager());
 			go->AddComponent<Transform>(go);
@@ -95,7 +107,10 @@ namespace sixengine {
 			UI* ui = new UI(m_FontShader);
 			ui->AddFont(font);
 
+
 			m_BatchRenderer->SetDepth(new DepthRender(m_ShaderManager->Get("Depth")));
+			m_BatchRenderer->SetSkybox(new SkyboxRender(m_ShaderManager->Get("Skybox"), skybox));
+
 			m_BatchRenderer->AddTechnique(new StaticPBR(m_BasicShader));
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
 			m_BatchRenderer->AddTechnique(ui);
@@ -180,13 +195,21 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_MaterialManager->Get("FontMaterial"));
 			m_UIRoot->AddChild(obj);
 
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(0.0, -1.0f, 0.0f);
+			obj->GetComponent<Transform>()->SetLocalScale(100.0f, 1.0f, 100.0f);
+			obj->AddComponent<Mesh>(m_ModelManager->GetModel(randomM[0]));
+			obj->AddComponent<Material>(*m_MaterialManager->Get("Wood2Basic1"));
+			m_SceneRoot->AddChild(obj);
+
 			for (int i = 0; i < 10; i++)
 			{
 				for (int j = 0; j < 10; j++)
 				{
 					obj = new GameObject(m_EntityManager);
 					obj->AddComponent<Transform>(obj);
-					obj->GetComponent<Transform>()->SetWorldPosition(2.0f * i + 30.0f, i * 1.0f + j * 0.5f, 2.0f * j);
+					obj->GetComponent<Transform>()->SetWorldPosition(2.0f * i + 10.0f, i * 1.0f + j * 0.5f, 2.0f * j);
 					unsigned int rM = rand() % 5;
 					obj->AddComponent<Mesh>(m_ModelManager->GetModel(randomM[rM]));
 
@@ -197,14 +220,14 @@ namespace sixengine {
 				}
 			}
 
-			for (int i = 0; i < 1; i++)
+			for (int i = 0; i < 3; i++)
 			{
-				for (int j = 0; j < 1; j++)
+				for (int j = 0; j < 3; j++)
 				{
 					obj = new GameObject(m_EntityManager);
 
 					obj->AddComponent<Transform>(obj);
-					obj->GetComponent<Transform>()->SetWorldPosition(5.0f * i, 0.0f, 5.0f * j);
+					obj->GetComponent<Transform>()->SetWorldPosition(8.0f * i - 20.0f, 0.0f, 8.0f * j);
 					obj->GetComponent<Transform>()->SetLocalScale(0.05f, 0.05f, 0.05f);
 					obj->AddComponent<Mesh>(m_ModelManager->GetModel("par"));
 					obj->AddComponent<Material>(*m_MaterialManager->Get("parasiteZombie"));
@@ -213,6 +236,9 @@ namespace sixengine {
 					m_SceneRoot->AddChild(obj);
 				}
 			}
+
+			m_BatchRenderer->SetLight(new Light());
+
 			#endif
 
 			m_BatchRenderer->Configure();

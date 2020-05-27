@@ -14,4 +14,9 @@ namespace sixengine {
 		m_Shader = nullptr;
 	}
 
+	void Technique::SetLight(Light& light)
+	{
+
+	}
+
 }

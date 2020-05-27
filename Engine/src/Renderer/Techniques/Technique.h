@@ -8,6 +8,7 @@ namespace sixengine {
 
 	class RendererCommand;
 	class TextureArray;
+	struct Light;
 
 	struct ShaderBuffer
 	{
@@ -121,6 +122,7 @@ namespace sixengine {
 
 		virtual void Start(TextureArray* textureArray) = 0;
 		virtual void Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers) = 0;
+		virtual void SetLight(Light& light);
 
 		inline Shader* GetShader() const { return m_Shader; }
 	};
