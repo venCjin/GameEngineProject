@@ -62,6 +62,7 @@ namespace sixengine {
 
 			m_BatchRenderer->SetDepth(new DepthRender(m_Scene.m_ShaderManager->Get("Depth")));
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
+			m_BatchRenderer->AddTechnique(transparent);
 			m_BatchRenderer->AddTechnique(ui);
 
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
@@ -96,7 +97,7 @@ namespace sixengine {
 			GameObject* obj;
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 10.0f, 0.0f);
+			obj->GetComponent<Transform>()->SetWorldPosition(-10.0f, 1.0f, -10.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cube"));
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Transparent"));
 			m_Scene.m_SceneRoot->AddChild(obj);
