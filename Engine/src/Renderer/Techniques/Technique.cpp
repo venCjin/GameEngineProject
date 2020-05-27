@@ -3,8 +3,8 @@
 
 namespace sixengine {
 
-	Technique::Technique(Shader* shader, Camera* camera)
-		: m_Shader(shader), m_Camera(camera)
+	Technique::Technique(Shader* shader)
+		: m_Shader(shader)
 	{
 		m_Shader = shader;
 	}
@@ -12,7 +12,6 @@ namespace sixengine {
 	Technique::~Technique()
 	{
 		m_Shader = nullptr;
-		m_Camera = nullptr;
 	}
 
 }

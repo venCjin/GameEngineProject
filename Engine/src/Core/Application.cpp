@@ -33,6 +33,8 @@ namespace sixengine {
 	{
 		double renderAccumulator = 0.0;
 
+		glfwSetInputMode(m_Window->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 		OnInit();
 		while (m_Running)
 		{

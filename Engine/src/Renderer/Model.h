@@ -63,7 +63,11 @@ namespace sixengine {
 		int m_TotalNumIndices = 0;
 		//void LoadAnimationNodes();
 
+		glm::vec3 m_MinAxis;
+		glm::vec3 m_MaxAxis;
+
 	private:
+		bool firstRNH = false;
 
 		struct BoneInfo
 		{

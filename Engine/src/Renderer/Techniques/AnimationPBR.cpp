@@ -11,8 +11,8 @@
 
 namespace sixengine {
 
-	AnimationPBR::AnimationPBR(Shader* shader, Camera* camera)
-		: Technique(shader, camera), m_Models(102 * sizeof(glm::mat4), 3), m_Layers(100 * sizeof(glm::vec4), 4),
+	AnimationPBR::AnimationPBR(Shader* shader)
+		: Technique(shader), m_Models(102 * sizeof(glm::mat4), 3), m_Layers(100 * sizeof(glm::vec4), 4),
 		m_Bones(100 * sizeof(BonesStruct), 5)
 	{
 		for (int i = 0; i < 100; i++)

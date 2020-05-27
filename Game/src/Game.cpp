@@ -15,6 +15,7 @@
 
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/StaticPBR.h"
+#include "Renderer/Techniques/DepthRender.h"
 #include "Renderer/Techniques/UI.h"
 
 #include "Gameplay/Systems/AnimationSystem.h"
@@ -75,6 +76,7 @@ namespace sixengine {
 			m_BasicShader = m_ShaderManager->AddShader("res/shaders/PBR.glsl");
 			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
 			m_FontShader = m_ShaderManager->AddShader("res/shaders/Font.glsl");
+			m_ShaderManager->AddShader("res/shaders/Depth.glsl");
 
 			GameObject* go = new GameObject(*Application::Get().GetEntityManager());
 			go->AddComponent<Transform>(go);
@@ -90,14 +92,12 @@ namespace sixengine {
 			go->GetComponent<Camera>()->SetOrthogonal((float)Application::Get().GetWindow().GetWidth(), (float)Application::Get().GetWindow().GetHeight());
 
 			Font* font = new Font("res/fonts/DroidSans.ttf");
-			UI* ui = new UI(m_FontShader, go->GetComponent<Camera>().Get());
+			UI* ui = new UI(m_FontShader);
 			ui->AddFont(font);
 
-			StaticPBR* staticM = new StaticPBR(m_BasicShader, Camera::ActiveCamera);
-			AnimationPBR* animatedM = new AnimationPBR(m_BasicShader2, Camera::ActiveCamera);
-
-			m_BatchRenderer->AddTechnique(staticM);
-			m_BatchRenderer->AddTechnique(animatedM);
+			m_BatchRenderer->SetDepth(new DepthRender(m_ShaderManager->Get("Depth")));
+			m_BatchRenderer->AddTechnique(new StaticPBR(m_BasicShader));
+			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
 			m_BatchRenderer->AddTechnique(ui);
 
 			m_TextureArray->AddTexture("res/textures/test/Bricks.jpg");
@@ -179,14 +179,14 @@ namespace sixengine {
 			obj->AddComponent<Text>("Sixengine 0.?", glm::vec3(1.0f, 0.0f, 1.0f), 0.3f);
 			obj->AddComponent<Material>(*m_MaterialManager->Get("FontMaterial"));
 			m_UIRoot->AddChild(obj);
-			
-			for (int i = 0; i < 50; i++)
+
+			for (int i = 0; i < 10; i++)
 			{
-				for (int j = 0; j < 2; j++)
+				for (int j = 0; j < 10; j++)
 				{
 					obj = new GameObject(m_EntityManager);
 					obj->AddComponent<Transform>(obj);
-					obj->GetComponent<Transform>()->SetWorldPosition(2.0f * i, 0.0f, 2.0f * j);
+					obj->GetComponent<Transform>()->SetWorldPosition(2.0f * i + 30.0f, i * 1.0f + j * 0.5f, 2.0f * j);
 					unsigned int rM = rand() % 5;
 					obj->AddComponent<Mesh>(m_ModelManager->GetModel(randomM[rM]));
 
@@ -233,6 +233,7 @@ namespace sixengine {
 
 		virtual void OnRender(float dt) override
 		{
+			m_BatchRenderer->CalculateFrustum();
 			m_SceneRoot->Render();
 			m_UIRoot->Render();
 			m_BatchRenderer->Render();
@@ -245,3 +246,4 @@ sixengine::Application* sixengine::CreateApplication()
 {
 	return new Game("App", 1280, 720);
 }
+

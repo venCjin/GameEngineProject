@@ -13,11 +13,11 @@ out vec4 FragPosLightSpace1;
 
 uniform mat4 lightSpaceMatrix1;
 
-layout(std140, binding = 0) buffer matrixes
+layout(std430, binding = 0) buffer matrixes
 {
     mat4 view;
     mat4 projection;
-    mat4 model[12];
+    mat4 model[10000];
 };
 
 void main()
@@ -75,9 +75,9 @@ in vec4 FragPosLightSpace1;
 
 uniform sampler2D shadowMap1;
 
-layout(std140, binding = 1) buffer textureLayers
+layout(std430, binding = 1) buffer textureLayers
 {
-    vec4 layer[10];
+    vec4 layer[10000];
 };
 
 uniform sampler2DArray textureArray;

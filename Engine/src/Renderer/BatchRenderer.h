@@ -2,6 +2,7 @@
 
 #include <Renderer/TextureArray.h>
 #include <Renderer/ModelManager.h>
+#include <Renderer/Techniques/DepthRender.h>
 #include <Renderer/Techniques/Technique.h>
 #include <Renderer/BufferLockManager.h>
 
@@ -43,6 +44,9 @@ namespace sixengine {
 		FrameAllocator<RendererCommand> m_FrameAllocator;
 		static BatchRenderer* m_BatchRendererInstance;
 
+		DepthRender* m_Depth;
+		DepthFramebuffer m_DepthFramebuffer;
+
 		std::vector<Technique*> m_TechniqueList;
 
 		std::vector<RendererCommand*> m_CommandList;
@@ -51,13 +55,19 @@ namespace sixengine {
 		ModelManager* m_ModelManager;
 		TextureArray* m_TextureArray;
 
-		StorageBuffer m_IDBO;
-		BufferLockManager m_LockManager;
+		ShaderBuffer m_IDBO;
+		glm::vec4 m_FrustumPlanes[6];
 
 	public:
+		void NormalizePlane(glm::vec4& plane);
+		void CalculateFrustum();
+		bool FrustumAABB(glm::vec3 min, glm::vec3 max);
+		bool FrustumAABB(glm::vec3 center, float size);
+
 		void SubmitCommand(GameObject* gameObject, glm::mat4 model);
 		void Render();
 
+		void SetDepth(DepthRender* technique);
 		void AddTechnique(Technique* technique);
 		void Configure();
 

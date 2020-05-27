@@ -6,6 +6,8 @@
 #include <Renderer/Material.h>
 #include <Core/Timer.h>
 
+#include <iomanip>
+
 namespace sixengine {
 
 	BatchRenderer* BatchRenderer::m_BatchRendererInstance = nullptr;
@@ -21,7 +23,7 @@ namespace sixengine {
 	}
 
 	BatchRenderer::BatchRenderer(ModelManager* modelManager, TextureArray* textureArray)
-		: m_ModelManager(modelManager), m_TextureArray(textureArray), m_IDBO(100 * sizeof(DrawElementsCommand), 6), m_LockManager(true)
+		: m_ModelManager(modelManager), m_DepthFramebuffer(2048, 2048), m_TextureArray(textureArray), m_IDBO(20 * sizeof(DrawElementsCommand), 9)
 	{
 	
 	}
@@ -31,35 +33,194 @@ namespace sixengine {
 
 	}
 
+	void BatchRenderer::NormalizePlane(glm::vec4& plane)
+	{
+		float t = std::sqrt(
+			plane.x * plane.x +
+			plane.y * plane.y +
+			plane.z * plane.z);
+
+		plane.x /= t;
+		plane.y /= t;
+		plane.z /= t;
+		plane.w /= t;
+	}
+
+	void BatchRenderer::CalculateFrustum()
+	{
+		glm::mat4 clip = Camera::ActiveCamera->GetProjectionMatrix() * Camera::ActiveCamera->GetViewMatrix();
+		
+		clip = glm::transpose(clip);
+		
+		// Left plane 
+		m_FrustumPlanes[0] = clip[3] + clip[0];
+		// Right plane
+		m_FrustumPlanes[1] = clip[3] - clip[0];
+		// Bottom plane
+		m_FrustumPlanes[2] = clip[3] + clip[1];
+		// Top plane
+		m_FrustumPlanes[3] = clip[3] - clip[1];
+		// Near plane
+		m_FrustumPlanes[4] = clip[3] + clip[2];
+		// Far plane
+		m_FrustumPlanes[5] = clip[3] - clip[2];
+
+		for (int i = 0; i < 6; i++)
+			NormalizePlane(m_FrustumPlanes[i]);
+	}
+
+	bool BatchRenderer::FrustumAABB(glm::vec3 min, glm::vec3 max)
+	{
+		int out;
+		for (int i = 0; i < 6; i++)
+		{
+			out = 0;
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(min.x, min.y, min.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(max.x, min.y, min.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(min.x, max.y, min.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(max.x, max.y, min.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(min.x, min.y, max.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(max.x, min.y, max.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(min.x, max.y, max.z, 1.0f)) < 0.0) ? 1 : 0);
+			out += ((glm::dot(m_FrustumPlanes[i], glm::vec4(max.x, max.y, max.z, 1.0f)) < 0.0) ? 1 : 0);
+			if (out == 8) return false; // outside
+		}
+
+		return true; // inside or intersect
+	}
+
 	void BatchRenderer::SubmitCommand(GameObject* gameObject, glm::mat4 model)
 	{
-		RendererCommand* command = new(m_FrameAllocator.Get(m_CommandList.size())) RendererCommand();
+		bool render = true;
 
-		Transform* t = gameObject->GetComponent<Transform>().Get();
-		//Transform* t = gameObject->GetComponent<Transform>().Get();
-
-		//command->distance = Distance(&m_PlayerCamera->GetPosition(), &t->getWorldPosition());
-		//command->isTranslucent = false;
-		command->gameObject = gameObject;
-
-		command->shader = gameObject->GetComponent<Material>()->GetShader();
+		ComponentHandle<Mesh> mesh;
 		if (gameObject->HasComponent<Mesh>())
-			command->ModelID = gameObject->GetComponent<Mesh>()->GetModel()->m_ID;
+		{
+			mesh = gameObject->GetComponent<Mesh>();
+			glm::mat4 proj = Camera::ActiveCamera->GetProjectionMatrix();
+			glm::mat4 view = Camera::ActiveCamera->GetViewMatrix();
 
-		command->data.textureLayer = gameObject->GetComponent<Material>()->GetTexture();
-		command->data.model = model;
+			glm::vec3 min = mesh->GetModel()->m_MinAxis;
+			glm::vec3 max = mesh->GetModel()->m_MaxAxis;
+			min = model * glm::vec4(min, 1.0f);
+			max = model * glm::vec4(max, 1.0f);
 
-		m_CommandList.push_back(command);
+			render = FrustumAABB(min, max);
+		}
+
+		if (render)
+		{
+			RendererCommand* command = new(m_FrameAllocator.Get(m_CommandList.size())) RendererCommand();
+
+			//command->distance = Distance(&m_PlayerCamera->GetPosition(), &t->getWorldPosition());
+			//command->isTranslucent = false;
+
+			command->gameObject = gameObject;
+
+			command->shader = gameObject->GetComponent<Material>()->GetShader();
+			
+			if (gameObject->HasComponent<Mesh>())
+				command->ModelID = mesh->GetModel()->m_ID;
+
+			command->data.textureLayer = gameObject->GetComponent<Material>()->GetTexture();
+			command->data.model = model;
+
+			m_CommandList.push_back(command);
+		}
 	}
 
 	void BatchRenderer::Render()
 	{
+		LOG_CORE_INFO(m_CommandList.size());
+
+		// Draw depth
+		//***********************************************
+		std::vector<RendererCommand*> depth(m_CommandList);
+
+		std::sort(depth.begin(), depth.end(), SortModels);
+
+		std::vector<glm::mat4> models;
+		bool pass = false;
+		unsigned int lastModelID;
+
+		int index = 0;
+		for (int i = 0; i < depth.size(); i++)
+		{
+			if (depth[i]->ModelID == -1)
+			{
+				index++;
+				continue;
+			}
+			else
+			{
+				lastModelID = depth[i]->ModelID;
+				index = i;
+				break;
+			}
+		}
+
+		if (index < depth.size())
+		{
+			unsigned int modelInstanceCounter = 0;
+			unsigned int allIntstanceCounter = 0;
+			for (int i = index; i < depth.size(); i++)
+			{
+				if (depth[i]->ModelID != lastModelID)
+				{
+					ModelManager::ModelEntry me = m_ModelManager->GetModelEntry(lastModelID);
+					m_RenderCommandList.push_back(
+						{ me.NumIndices, modelInstanceCounter, me.BaseIndex, me.BaseVertex, allIntstanceCounter }
+					);
+
+					lastModelID = depth[i]->ModelID;
+					allIntstanceCounter += modelInstanceCounter;
+					modelInstanceCounter = 0;
+					pass = true;
+				}
+
+				models.push_back(depth[i]->data.model);
+
+				modelInstanceCounter++;
+			}
+
+			ModelManager::ModelEntry me = m_ModelManager->GetModelEntry(lastModelID);
+			m_RenderCommandList.push_back(
+				{ me.NumIndices, modelInstanceCounter, me.BaseIndex, me.BaseVertex, allIntstanceCounter }
+			);
+		}
+
+
+		if (!m_RenderCommandList.empty())
+		{
+			m_Depth->Render(depth, models, std::vector<glm::vec4>());
+
+			m_IDBO.m_LockManager.WaitForLockedRange(m_IDBO.m_Head, m_IDBO.m_Size);
+
+			void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head;
+			memcpy(ptr, m_RenderCommandList.data(), m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]));
+
+			m_DepthFramebuffer.Bind();
+
+			m_ModelManager->Bind();
+			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)m_IDBO.m_Head, m_RenderCommandList.size(), 0);
+			glBindVertexArray(0);
+
+			m_DepthFramebuffer.Unbind();
+
+			m_IDBO.m_LockManager.LockRange(m_IDBO.m_Head, m_IDBO.m_Size);
+			m_IDBO.m_Head = (m_IDBO.m_Head + m_IDBO.m_Size) % (m_IDBO.m_Buffering * m_IDBO.m_Size);
+
+			m_RenderCommandList.clear();
+		}
+
+		// Draw normal
+		//***********************************************
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 		std::vector<std::vector<RendererCommand*>> sortedTechniques;
 		//Sort Commands by techniques
 		sortedTechniques.reserve(m_TechniqueList.size());
-
 
 		for (int i = 0; i < m_TechniqueList.size(); i++)
 		{
@@ -82,7 +243,6 @@ namespace sixengine {
 		}
 
 		// Iterate over techniques
-
 		for (int t = 0; t < sortedTechniques.size(); t++)
 		{
 			std::vector<RendererCommand*>& commandList = sortedTechniques[t];
@@ -94,8 +254,8 @@ namespace sixengine {
 			std::vector<glm::vec4> layers;
 			layers.reserve(commandList.size());
 
-			models.push_back(m_TechniqueList[t]->GetCamera()->GetViewMatrix());
-			models.push_back(m_TechniqueList[t]->GetCamera()->GetProjectionMatrix());
+			models.push_back(Camera::ActiveCamera->GetViewMatrix());
+			models.push_back(Camera::ActiveCamera->GetProjectionMatrix());
 			//Sort Commands by models
 			
 			std::sort(commandList.begin(), commandList.end(), SortModels);
@@ -155,7 +315,7 @@ namespace sixengine {
 
 			if (!m_RenderCommandList.empty())
 			{
-				m_LockManager.WaitForLockedRange(m_IDBO.m_Head, m_IDBO.m_Size);
+				m_IDBO.m_LockManager.WaitForLockedRange(m_IDBO.m_Head, m_IDBO.m_Size);
 
 				void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head;
 				memcpy(ptr, m_RenderCommandList.data(), m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]));
@@ -164,14 +324,19 @@ namespace sixengine {
 				glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)m_IDBO.m_Head, m_RenderCommandList.size(), 0);
 				glBindVertexArray(0);
 
-				m_LockManager.LockRange(m_IDBO.m_Head, m_IDBO.m_Size);
+				m_IDBO.m_LockManager.LockRange(m_IDBO.m_Head, m_IDBO.m_Size);
 				m_IDBO.m_Head = (m_IDBO.m_Head + m_IDBO.m_Size) % (m_IDBO.m_Buffering * m_IDBO.m_Size);
 
 				m_RenderCommandList.clear();
 			}
 		}
-
+		
 		m_CommandList.clear();
+	}
+
+	void BatchRenderer::SetDepth(DepthRender* technique)
+	{
+		m_Depth = technique;
 	}
 
 	void BatchRenderer::AddTechnique(Technique* technique)
@@ -193,13 +358,10 @@ namespace sixengine {
 		glBufferStorage(GL_DRAW_INDIRECT_BUFFER, m_IDBO.m_Buffering * m_IDBO.m_Size, 0, createFlags);
 		m_IDBO.m_Ptr = glMapBufferRange(GL_DRAW_INDIRECT_BUFFER, 0, m_IDBO.m_Buffering * m_IDBO.m_Size, mapFlags);
 
-		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 		glBindVertexArray(0);
 
 		for (auto tech : m_TechniqueList)
 			tech->Start(m_TextureArray);
-
-		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_IDBO.m_ID);
 
 		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
