@@ -34,7 +34,7 @@ namespace sixengine
 				direction = glm::normalize(direction);
 			}
 
-			m_Transform->Translate(direction * dt * 50.0f);
+			m_Transform->Translate(direction * dt * 20.0f);
 		}
 
 		void UpdateRotation(float dt)

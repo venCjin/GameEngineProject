@@ -145,6 +145,8 @@
 0 354.17 0
 1 1 1
 -Model res/models/Props/Ladders/TallLadder.obj
+-Gizmo 0 255 0 Cube 1.333 7.6 0.259
+-BoxCollider 1.333 7.6 0.259 0
 -Material LadderBasic
 +end
 
@@ -217,6 +219,8 @@
 0 0 0
 1 1 1
 -Model res/models/Props/House/House.obj
+-Gizmo 0 255 0 Cube 10.64 3.55 7.1
+-BoxCollider 10.64 3.55 7.1 0
 -Material HouseBasic
 +end
 
@@ -316,6 +320,8 @@
 0 355.93 0
 1 1 1
 -Model res/models/Props/Ladders/SmallLadder.obj
+-Gizmo 0 255 0 Cube 1.333 3.8 0.259
+-BoxCollider 1.333 3.8 0.259 0
 -Material LadderBasic
 +end
 
@@ -397,6 +403,8 @@
 0 0 0
 1 1 1
 -Model res/models/Props/Jerrycan/Jerrycan.obj
+-Gizmo 0 255 0 Cube 0.24 0.76 0.54
+-BoxCollider 0.24 0.76 0.54 0
 -Material JerryCanBasic
 +end
 

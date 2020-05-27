@@ -10,6 +10,10 @@
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/DepthRender.h"
 #include "Renderer/Techniques/UI.h"
+#include "Gameplay/Components/SimplePlayer.h"
+#include <Physics/Components/BoxCollider.h>
+#include "Renderer/PrimitiveUtils.h"
+#include "Renderer/Gizmo.h"
 // hacks end
 
 #include <glad/glad.h>
@@ -96,10 +100,25 @@ m_Scene.m_ModelManager->CreateVAO();
 
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(0.05f, 0.05f, 0.05f);
+			obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
+			obj->GetComponent<Transform>()->SetLocalOrientation(180.0f, 0.0f, 0.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("parasiteZombie"));
 			obj->AddComponent<Animation>();
+			obj->AddComponent<SimplePlayer>();
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+			std::vector<GizmoVertex> vertices;
+			std::vector<unsigned int> indices;
+			PrimitiveUtils::GenerateBox(vertices, indices, 100, 200, 100);
+			VertexArray* vao = new VertexArray();
+			VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
+			vbo->SetLayout({
+				{ VertexDataType::VEC3F, "Position" }
+				});
+			IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
+			vao->AddVertexBuffer(*vbo);
+			vao->AddIndexBuffer(*ibo);
+			obj->AddGizmo(new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(0, 255, 0)));
 
 			m_Scene.m_SceneRoot->AddChild(obj);
 
@@ -141,7 +160,7 @@ m_Scene.m_ModelManager->CreateVAO();
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				//m_Scene.DrawGizmos();
+				m_Scene.DrawGizmos();
 			}
 		}
 
