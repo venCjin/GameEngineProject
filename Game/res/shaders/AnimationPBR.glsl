@@ -193,9 +193,9 @@ vec3 CalcDirLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo)
 	float NdotL = max(dot(N, L), 0.0);
 
 	/// SHADOW MAPPING
-	//float shadow = ShadowCalculation(FragPosLightSpace1, light.position, shadowMap1);
-	//return (1.0 - shadow) * (kD * albedo / PI + specular) * radiance * NdotL; // WITH SHADOWS
-	return (kD * albedo / PI + specular) * radiance * NdotL;
+	float shadow = ShadowCalculation(FragPosLightSpace1, light.position, shadowMap1);
+	return (1.0 - shadow) * (kD * albedo / PI + specular) * radiance * NdotL; // WITH SHADOWS
+	//return (kD * albedo / PI + specular) * radiance * NdotL;
 }
 
 vec3 CalcPointLight(PointLight light, vec3 N, vec3 V, vec3 fragPos, vec3 F0, vec3 albedo)

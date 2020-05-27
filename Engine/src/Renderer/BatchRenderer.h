@@ -45,12 +45,16 @@ namespace sixengine {
 	{
 		LightData m_LightData;
 		glm::vec3 m_DirectionalLightPos;
+
 		DepthFramebuffer m_DepthFramebuffer;
+		glm::mat4 ortho;
 
 		Light(int width = 2048, int height = 2048)
 			: m_DepthFramebuffer(width, height)
 		{
-			m_DirectionalLightPos = glm::vec3(-2.0f, 24.0f, -1.0f);
+
+			ortho = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 1.0f, 50.0f);
+			m_DirectionalLightPos = glm::vec3(-8.0f, 24.0f, -8.0f);
 
 			m_LightData.ao = 0.4f;
 			m_LightData.metallic = 0.4f;

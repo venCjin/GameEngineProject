@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "DepthRender.h"
 
+#include "Renderer/BatchRenderer.h"
+
 namespace sixengine {
 
 
@@ -20,10 +22,15 @@ namespace sixengine {
 
 		m_Models.Update(models.data(), models.size() * sizeof(models[0]));
 
-		glm::mat4 lightProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 1.0f, 50.0f);
-		glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 24.0f, -1.0f),
-										  glm::vec3( 0.0f, 0.0f,  0.0f),
-										  glm::vec3( 0.0f, 1.0f,  0.0f));
+		
+	}
+
+	void DepthRender::SetLight(Light& light)
+	{
+		glm::mat4 lightProjection = light.ortho;
+		glm::mat4 lightView = glm::lookAt(light.m_DirectionalLightPos,
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 

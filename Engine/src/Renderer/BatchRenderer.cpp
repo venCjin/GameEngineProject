@@ -106,7 +106,7 @@ namespace sixengine {
 			min = model * glm::vec4(min, 1.0f);
 			max = model * glm::vec4(max, 1.0f);
 
-			render = FrustumAABB(min, max);
+			//render = FrustumAABB(min, max);
 		}
 
 		if (render)
@@ -324,6 +324,7 @@ namespace sixengine {
 		if (!m_RenderCommandList.empty())
 		{
 			m_Depth->Render(depth, models, std::vector<glm::vec4>());
+			m_Depth->SetLight(*m_DirectionalLight);
 
 			m_IDBO.m_LockManager.WaitForLockedRange(m_IDBO.m_Head, m_IDBO.m_Size);
 
