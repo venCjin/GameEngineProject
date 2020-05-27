@@ -34,13 +34,13 @@ namespace sixengine
 				direction = glm::normalize(direction);
 			}
 
-			m_Transform->Translate(direction * dt * 50.0f);
+			m_Transform->Translate(direction * dt * 20.0f);
 		}
 
 		void UpdateRotation(float dt)
 		{
-			m_FlyingCamera->m_Yaw -= Input::GetMouseDeltaPosX() * dt * 10.0f;
 			m_FlyingCamera->m_Pitch -= Input::GetMouseDeltaPosY() * dt * 10.0f;
+			m_FlyingCamera->m_Yaw -= Input::GetMouseDeltaPosX() * dt * 10.0f;
 
 			m_FlyingCamera->m_Pitch = std::clamp(m_FlyingCamera->m_Pitch, -90.0f, 90.0f);
 

@@ -3,10 +3,12 @@
 
 #include "Renderer/BatchRenderer.h"
 
+#include <glm/glm.hpp>
+
 namespace sixengine {
 
-	UI::UI(Shader* shader, Camera* camera)
-		: Technique(shader, camera), m_Models(2 * sizeof(glm::mat4) + sizeof(glm::vec4), 5)
+	UI::UI(Shader* shader)
+		: Technique(shader)
 	{
 	}
 
@@ -98,17 +100,12 @@ namespace sixengine {
 		m_Shader->Bind();
 		m_Font->Bind(0);
 		m_Shader->SetInt("fontTexture", 0);
-		m_Shader->SetMat4("projection", m_Camera->GetProjectionMatrix());
-		m_Shader->SetMat4("view", m_Camera->GetViewMatrix());
+		m_Shader->SetMat4("projection", glm::ortho(0.f, (float)Application::Get().GetWindow().GetWidth(), 0.f, (float)Application::Get().GetWindow().GetHeight(), 0.01f, 1000.0f));
 	}
 
 	void UI::Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)
 	{
 		m_Shader->Bind();
-
-		//glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 5, m_Models.m_ID, m_Models.m_Head, m_Models.m_Size);
-		//void* ptr = (unsigned char*)m_Models.m_Ptr + m_Models.m_Head;
-		//memcpy(ptr, models.data(), 2 * sizeof(glm::mat4));
 
 		for (auto i : commandList)
 		{
@@ -119,13 +116,9 @@ namespace sixengine {
 				auto text = i->gameObject->GetComponent<Text>();
 				auto t = i->gameObject->GetComponent<Transform>();
 
-				//void* ptr = (unsigned char*)m_Models.m_Ptr + m_Models.m_Head;
-				//memcpy(ptr, &text->color, sizeof(glm::vec4));
-
 				RenderText(text.Get(), t->getWorldPosition());
 			}
 		}
 
-		m_Models.m_Head = (m_Models.m_Head + m_Models.m_Size) % (m_Models.m_Buffering * m_Models.m_Size);
 	}
 }

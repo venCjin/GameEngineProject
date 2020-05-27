@@ -33,6 +33,16 @@
 #include "Gameplay/StateMachine/State.h"
 #include "Gameplay/StateMachine/StateMachineSystem.h"
 
+#define LOAD(COMPONENT)								\
+{													\
+	if (s == #COMPONENT)							\
+	{												\
+		go->AddComponent<COMPONENT>(go);			\
+		go->GetComponent<COMPONENT>()->Load(file);	\
+		continue;									\
+	}												\
+}			
+
 namespace sixengine {
 
 	Scene::Scene(unsigned int width, unsigned int height) : m_UIRoot(nullptr), m_SceneRoot(nullptr)
@@ -95,18 +105,16 @@ namespace sixengine {
 					ss >> s;
 					m_BatchRenderer->AddTechnique(
 						new StaticPBR(
-							m_ShaderManager->AddShader(s),
-							Camera::ActiveCamera)
-						);
+							m_ShaderManager->AddShader(s)
+						));
 				}
 				else if (s == "AnimationPBR")
 				{
 					ss >> s;
 					m_BatchRenderer->AddTechnique(
 						new AnimationPBR(
-							m_ShaderManager->AddShader(s),
-							Camera::ActiveCamera)
-						);
+							m_ShaderManager->AddShader(s)
+							));
 				}
 				else
 				{
@@ -169,8 +177,8 @@ namespace sixengine {
 		}
 		file.close();
 
-		m_TextureArray->CreateTextureArray();
-		m_ModelManager->CreateVAO();
+		//m_TextureArray->CreateTextureArray();
+		//m_ModelManager->CreateVAO();
 
 		return true;
 	}
@@ -189,13 +197,8 @@ namespace sixengine {
 
 	void Scene::Render(bool first)
 	{
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		//m_SceneRoot->Render(cam.GetProjectionMatrix(), cam.GetViewMatrix());
 		m_SceneRoot->Render(first);
-
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		//m_UI->Render(camUI.GetProjectionMatrix(), camUI.GetViewMatrix());
-		//m_UIRoot->Render(first);
+		m_UIRoot->Render(first);
 	}
 
 	void Scene::DrawGizmos()
@@ -226,81 +229,10 @@ namespace sixengine {
 		do {
 			file >> s;
 			if (s == "+end") break;
-			else if (s == "+Transform")
-			{
-				glm::mat4 l(1.0f), w(1.0f);
-				do {
-					file >> s;
-					if (s == "+end") break;
-					else if (s == "+local")
-					{
-						do {
-							file >> s;
-							if (s == "+end") break;
-							else if (s == "-translate")
-							{
-								float x, y, z;
-								file >> x;
-								file >> y;
-								file >> z;
-								l = glm::translate(l, glm::vec3(x, y, z));
-							}
-							else if (s == "-rotate")
-							{
-								float x, y, z, degrees;
-								file >> x;
-								file >> y;
-								file >> z;
-								file >> degrees;
-								l = glm::rotate(l, glm::radians(degrees), glm::vec3(x, y, z));
-							}
-							else if (s == "-scale")
-							{
-								float x, y, z;
-								file >> x;
-								file >> y;
-								file >> z;
-								l = glm::scale(l, glm::vec3(x, y, z));
-							}
-						} while (true);
-					}
-					else if (s == "+world")
-					{
-						do {
-							file >> s;
-							if (s == "+end") break;
-							else if (s == "-translate")
-							{
-								float x, y, z;
-								file >> x;
-								file >> y;
-								file >> z;
-								w = glm::translate(w, glm::vec3(x, y, z));
-							}
-							else if (s == "-rotate")
-							{
-								float x, y, z, degrees;
-								file >> x;
-								file >> y;
-								file >> z;
-								file >> degrees;
-								w = glm::rotate(w, glm::radians(degrees), glm::vec3(x, y, z));
-							}
-							else if (s == "-scale")
-							{
-								float x, y, z;
-								file >> x;
-								file >> y;
-								file >> z;
-								w = glm::scale(w, glm::vec3(x, y, z));
-							}
-						} while (true);
-					}
-				} while (true);
-				go->AddComponent<Transform>(go);
-				go->GetComponent<Transform>()->SetLocalMatrix(l * w);
-			}
-			else if (s == "-Gizmo")
+			
+			LOAD(Transform);
+
+			if (s == "-Gizmo")
 			{
 				float r, g, b;
 				file >> r >> g >> b;

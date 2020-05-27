@@ -245,6 +245,21 @@
 +end
 //========================================
 
+//Barrier
+-AddMaterial BarrierBasic Basic 1 res/models/Props/Barrier/Textures/Barrier_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.35 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0 0 0 
+    -BoxCollider 0 0 0 0
+    -Model res/models/Props/Barrier/Barrier.obj
+    -Material BarrierBasic
++end
+//========================================
+
 //Container
 //Blue
 -AddMaterial BlueContainerBasic Basic 1 res/models/Props/Container/Textures/BlueContainer_Albedo.png

@@ -10,7 +10,7 @@ layout(location = 4) in vec4 aWeights;
 out vec2 TexCoords;
 out int instanceID;
 
-layout(std430, binding = 3) buffer modelInstance
+layout(std140, binding = 3) buffer modelInstance
 {
     mat4 view;
     mat4 projection;
@@ -53,7 +53,7 @@ in flat int instanceID;
 
 uniform sampler2DArray textureArray;
 
-layout(std430, binding = 4) buffer textureLayers
+layout(std140, binding = 4) buffer textureLayers
 {
     vec4 layer[100];
 };

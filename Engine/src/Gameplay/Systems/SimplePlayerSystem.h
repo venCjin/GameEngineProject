@@ -24,7 +24,7 @@ namespace sixengine {
 			if (Input::IsKeyActive(KeyCode::PAGE_DOWN)) { dir.y -= 1.0f; }
 
 			auto pos = m_Transform->getWorldPosition();
-			pos += dir * dt * 25.0f;
+			pos += dir * dt * 5.0f;
 			m_Transform->SetWorldPosition(pos);
 		}
 	};

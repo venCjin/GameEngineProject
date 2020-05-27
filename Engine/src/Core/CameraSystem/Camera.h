@@ -27,6 +27,11 @@ namespace sixengine
 		{
 			m_GameObject = go;
 			m_Transform = m_GameObject->GetComponent<Transform>().Get();
+
+			if (Camera::ActiveCamera == NULL)
+			{
+				Camera::ActiveCamera = this;
+			}
 		}
 
 		void SetPerspective(float aspectRatio)

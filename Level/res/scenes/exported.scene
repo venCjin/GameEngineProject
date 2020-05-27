@@ -1,0 +1,428 @@
+-AddSystem SimplePlayerSystem
+-AddSystem CollisionSystem
+-AddSystem FlyingCameraSystem
+
+-AddShader StaticPBR res/shaders/PBR.glsl
+
+-AddMaterial GroundBasic PBR 1 res/models/Environment/Ground/Textures/Ground_Albedo.png 
+-AddMaterial RocksBasic PBR 1 res/models/Environment/Rocks/Textures/Rocks_Albedo.png 
+-AddMaterial BigBushBasic PBR 1 res/models/Environment/Vegetation/Textures/BigBush_Albedo.png 
+-AddMaterial PalmTreeBasic PBR 1 res/models/Environment/Vegetation/Textures/PalmTree_Albedo.png 
+-AddMaterial AmmoBoxBasic PBR 1 res/models/Props/AmmoBox/Textures/AmmoBox_Albedo.png 
+-AddMaterial RedBarrelBasic PBR 1 res/models/Props/Barrel/Textures/RedBarrel_Albedo.png 
+-AddMaterial BlueBarrelBasic PBR 1 res/models/Props/Barrel/Textures/BlueBarrel_Albedo.png 
+-AddMaterial BarrierBasic PBR 1 res/models/Props/Barrier/Textures/Barrier_Albedo.png 
+-AddMaterial BulletHolesBarrierBasic PBR 1 res/models/Props/Barrier/Textures/BulletHolesBarrier_Albedo.png 
+-AddMaterial BlueContainerBasic PBR 1 res/models/Props/Container/Textures/BlueContainer_Albedo.png 
+-AddMaterial RedContainerBasic PBR 1 res/models/Props/Container/Textures/RedContainer_Albedo.png 
+-AddMaterial GreenContainerBasic PBR 1 res/models/Props/Container/Textures/GreenContainer_Albedo.png 
+-AddMaterial OliveContainerBasic PBR 1 res/models/Props/Container/Textures/OliveContainer_Albedo.png 
+-AddMaterial RedGeneratorBasic PBR 1 res/models/Props/Generator/Textures/RedGenerator_Albedo.png 
+-AddMaterial YellowGeneratorBasic PBR 1 res/models/Props/Generator/Textures/YellowGenerator_Albedo.png 
+-AddMaterial GrenadeBasic PBR 1 res/models/Props/Grenade/Textures/Grenade_Albedo.png 
+-AddMaterial HouseBasic PBR 1 res/models/Props/House/Textures/House_Albedo.png 
+-AddMaterial JerryCanBasic PBR 1 res/models/Props/Jerrycan/Textures/JerryCan_Albedo.png 
+-AddMaterial LadderBasic PBR 1 res/models/Props/Ladders/Textures/Ladder_Albedo.png 
+-AddMaterial LightsBasic PBR 1 res/models/Props/Lights/Textures/Light_Albedo.png 
+-AddMaterial PotsBasic PBR 1 res/models/Props/Pots/Textures/Pots_Albedo.png 
+-AddMaterial PressureTankBasic PBR 1 res/models/Props/PressureTank/Textures/PressureTank_Albedo.png 
+-AddMaterial TiresBasic PBR 1 res/models/Props/Tires/Textures/Tires_Albedo.png 
+-AddMaterial WellBasic PBR 1 res/models/Props/Well/Textures/Well_Albedo.png 
+-AddMaterial WoodenCrateBasic PBR 1 res/models/Props/WoodenCrate/Textures/WoodenCrate_Albedo.png 
+-AddMaterial WoodenCrate2Basic PBR 1 res/models/Props/WoodenCrate/Textures/WoodenCrate2_Albedo.png 
+
++SceneGameObject
+- Transform
+-4.948 1.941 -1.469
+0 0 0
+1.407875 1.407875 1.407875
+-Model res/models/Props/Pots/PotCap.obj
+-Material PotsBasic
++end
+
++SceneGameObject
+- Transform
+-2.347 0.525 -4.993
+0 0 0
+1 1 1
+-Model res/models/Environment/Vegetation/BigBush.obj
+-Material BigBushBasic
++end
+
++SceneGameObject
+- Transform
+-11.86 0.107 11.387
+0 11.27242 0
+1 1 1
+-Model res/models/Props/Tires/TireSingle.obj
+-Material TiresBasic
++end
+
++SceneGameObject
+- Transform
+0 0 0
+0 0 0
+1 1 1
+-Model res/models/Environment/Ground/Ground.obj
+-Material GroundBasic
++end
+
++SceneGameObject
+- Transform
+2.421 0.45 7.886
+0 0 0
+1 1 1
+-Model res/models/Props/Barrel/BarrelDestroyed.obj
+-Material RedBarrelBasic
++end
+
++SceneGameObject
+- Transform
+-4.556 1.177 -0.679
+0 0 0
+1 1 1
+-Model res/models/Props/Pots/PotCap.obj
+-Material PotsBasic
++end
+
++SceneGameObject
+- Transform
+-2.71 0.99 12.22
+0 0 0
+1 1 1
+-Model res/models/Environment/Vegetation/PalmTree2.obj
+-Material PalmTreeBasic
++end
+
++SceneGameObject
+- Transform
+-3.65 0.64 1.26
+0 0 0
+1 1 1
+-Model res/models/Props/Barrel/BarrelDamaged.obj
+-Material BlueBarrelBasic
++end
+
++SceneGameObject
+- Transform
+-6.3 0.49 3.06
+0 0 0
+1 1 1
+-Model res/models/Props/WoodenCrate/WoodenCrate.obj
+-Material WoodenCrate2Basic
++end
+
++SceneGameObject
+- Transform
+-0.19 0.33 8.68
+8.266939 0 0
+1 1 1
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BulletHolesBarrierBasic
++end
+
++SceneGameObject
+- Transform
+-0.74 0.24 -10.4
+0 0 0
+1 1 1
+-Model res/models/Props/Tires/TireSingle.obj
+-Material TiresBasic
++end
+
++SceneGameObject
+- Transform
+0 3.46 -15.06
+0 0 0
+1 1 1
+-Model res/models/Props/House/House2.obj
+-Material HouseBasic
++end
+
++SceneGameObject
+- Transform
+-4.12 3.78 -11.04
+0 354.17 0
+1 1 1
+-Model res/models/Props/Ladders/TallLadder.obj
+-Gizmo 0 255 0 Cube 1.333 7.6 0.259
+-BoxCollider 1.333 7.6 0.259 0
+-Material LadderBasic
++end
+
++SceneGameObject
+- Transform
+-17.81 1.54 9.88
+0 0 0
+1 1 1
+-Model res/models/Props/Container/Container.obj
+-Material RedContainerBasic
++end
+
++SceneGameObject
+- Transform
+-15.47 0.439 -4.26
+0 0 0
+1 1 1
+-Model res/models/Props/Generator/Generator.obj
+-Material YellowGeneratorBasic
++end
+
++SceneGameObject
+- Transform
+-17.7 1.52 4.74
+0 0 0
+1 1 1
+-Model res/models/Props/Container/Container.obj
+-Material GreenContainerBasic
++end
+
++SceneGameObject
+- Transform
+-8.17 0 16.95
+0 0 0
+1 1 1
+-Model res/models/Environment/Rocks/Rock4.obj
+-Material RocksBasic
++end
+
++SceneGameObject
+- Transform
+-4.941 0.915 -1.468
+0 0 0
+1 1 1
+-Model res/models/Props/Pots/Pot5.obj
+-Material PotsBasic
++end
+
++SceneGameObject
+- Transform
+-9 0 15.61
+0 0 0
+1 1 1
+-Model res/models/Environment/Rocks/Rock2.obj
+-Material RocksBasic
++end
+
++SceneGameObject
+- Transform
+-13.45 0.171 0.54
+186.11 3.149997 0
+1 0.9999999 1
+-Model res/models/Props/AmmoBox/AmmoBox.obj
+-Material AmmoBoxBasic
++end
+
++SceneGameObject
+- Transform
+-14.62 1.74 -7.52
+0 0 0
+1 1 1
+-Model res/models/Props/House/House.obj
+-Gizmo 0 255 0 Cube 10.64 3.55 7.1
+-BoxCollider 10.64 3.55 7.1 0
+-Material HouseBasic
++end
+
++SceneGameObject
+- Transform
+-11.91 4.217 -9.09
+0 0 0
+1 1 1
+-Model res/models/Props/PressureTank/PressureTank.obj
+-Material PressureTankBasic
++end
+
++SceneGameObject
+- Transform
+-1.537 0 -6.346
+0 0 0
+1.38 1 2
+-Model res/models/Environment/Vegetation/BigBush.obj
+-Material BigBushBasic
++end
+
++SceneGameObject
+- Transform
+-9.64 0 17.59
+0 0 0
+1 1 1
+-Model res/models/Environment/Rocks/Rock3.obj
+-Material RocksBasic
++end
+
++SceneGameObject
+- Transform
+7.13 2.42 -22.2
+0 0 0
+1 1 1
+-Model res/models/Environment/Vegetation/PalmTree.obj
+-Material PalmTreeBasic
++end
+
++SceneGameObject
+- Transform
+-8.2 0.47 13.48
+0 0 0
+1 1 1
+-Model res/models/Props/Tires/TireWall.obj
+-Material TiresBasic
++end
+
++SceneGameObject
+- Transform
+-5.338 0.594 -4.018
+0 0 0
+1 1 1
+-Model res/models/Props/Pots/Pot3.obj
+-Material PotsBasic
++end
+
++SceneGameObject
+- Transform
+-4.14 0.605 -4.565
+0 0 0
+1 1 1
+-Model res/models/Props/Pots/Pot4.obj
+-Material PotsBasic
++end
+
++SceneGameObject
+- Transform
+-14.044 1.38 14.161
+27.52107 8.035315 5.238728
+1 1 1
+-Model res/models/Props/Container/Container.obj
+-Material OliveContainerBasic
++end
+
++SceneGameObject
+- Transform
+-3.26 0.31 7.61
+295.3194 0 0
+0.9999999 1 0.9999999
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierBasic
++end
+
++SceneGameObject
+- Transform
+6.18 0.451 -17.4
+0 0 0
+1 1 1
+-Model res/models/Props/Generator/Generator.obj
+-Material RedGeneratorBasic
++end
+
++SceneGameObject
+- Transform
+2.779 1.94 -14.83
+0 355.93 0
+1 1 1
+-Model res/models/Props/Ladders/SmallLadder.obj
+-Gizmo 0 255 0 Cube 1.333 3.8 0.259
+-BoxCollider 1.333 3.8 0.259 0
+-Material LadderBasic
++end
+
++SceneGameObject
+- Transform
+-5.386 0.443 -2.532
+0 0 0
+1 1 1
+-Model res/models/Props/Pots/Pot1.obj
+-Material PotsBasic
++end
+
++SceneGameObject
+- Transform
+-7.37 0 15
+0 0 0
+1 1 1
+-Model res/models/Environment/Rocks/Rock5.obj
+-Material RocksBasic
++end
+
++SceneGameObject
+- Transform
+-13.4867 1.075 -3.610215
+250.8005 0 0
+1 1 1
+-Model res/models/Props/Lights/Light.obj
+-Material LightsBasic
++end
+
++SceneGameObject
+- Transform
+-10.34 0 16.28
+0 0 0
+1 1 1
+-Model res/models/Environment/Rocks/Rock1.obj
+-Material RocksBasic
++end
+
++SceneGameObject
+- Transform
+-4.569 0.514 -0.698
+0 0 0
+1 1 1
+-Model res/models/Props/Pots/Pot2.obj
+-Material PotsBasic
++end
+
++SceneGameObject
+- Transform
+-13.335 0.058 0.377
+0 0 0
+1 1 1
+-Model res/models/Props/Grenade/Grenade.obj
+-Material GrenadeBasic
++end
+
++SceneGameObject
+- Transform
+-5.29 0.47 1.95
+0 0 0
+1 1 1
+-Model res/models/Props/WoodenCrate/WoodenCrate.obj
+-Material WoodenCrateBasic
++end
+
++SceneGameObject
+- Transform
+-4.02 0.63 -6.17
+0 0 0
+1 1 1
+-Model res/models/Props/Well/Well.obj
+-Material WellBasic
++end
+
++SceneGameObject
+- Transform
+5.56 0.36 -15.85
+0 0 0
+1 1 1
+-Model res/models/Props/Jerrycan/Jerrycan.obj
+-Gizmo 0 255 0 Cube 0.24 0.76 0.54
+-BoxCollider 0.24 0.76 0.54 0
+-Material JerryCanBasic
++end
+
++SceneGameObject
+- Transform
+-3.19 0.52 6.29
+0 0 0
+1 1 1
+-Model res/models/Props/Barrel/Barrel.obj
+-Material RedBarrelBasic
++end
+
++SceneGameObject
+- Transform
+-17.72 1.5 1.31
+0 0 0
+1 1 1
+-Model res/models/Props/Container/Container.obj
+-Material BlueContainerBasic
++end
+

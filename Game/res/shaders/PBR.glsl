@@ -9,12 +9,15 @@ out vec2 TexCoords;
 out int instanceID;
 out vec3 FragPos;
 out vec3 Normal;
+out vec4 FragPosLightSpace1;
 
-layout(std140, binding = 0) buffer matrixes
+uniform mat4 lightSpaceMatrix1;
+
+layout(std430, binding = 0) buffer matrixes
 {
     mat4 view;
     mat4 projection;
-    mat4 model[12];
+    mat4 model[10000];
 };
 
 void main()
@@ -22,9 +25,11 @@ void main()
     instanceID = gl_BaseInstance + gl_InstanceID;
     TexCoords = aTexCoords;
 
-    gl_Position = projection * view * model[gl_BaseInstance + gl_InstanceID] * vec4(aPos, 1.0);    
-	FragPos = vec3(view * model[gl_BaseInstance + gl_InstanceID] * vec4(aPos, 1.0));	
-	Normal = mat3(transpose(inverse(view * model[gl_BaseInstance + gl_InstanceID]))) * aNormal;
+    gl_Position = projection * view * model[instanceID] * vec4(aPos, 1.0);    
+	FragPos = vec3(view * model[instanceID] * vec4(aPos, 1.0));	
+	Normal = mat3(transpose(inverse(view * model[instanceID]))) * aNormal;
+
+	FragPosLightSpace1 = lightSpaceMatrix1 * vec4(vec3(model[instanceID] * vec4(aPos, 1.0)), 1.0);
 
 }
 
@@ -66,10 +71,13 @@ in vec2 TexCoords;
 in flat int instanceID;
 in vec3 FragPos;
 in vec3 Normal;
+in vec4 FragPosLightSpace1;
 
-layout(std140, binding = 1) buffer textureLayers
+uniform sampler2D shadowMap1;
+
+layout(std430, binding = 1) buffer textureLayers
 {
-    vec4 layer[10];
+    vec4 layer[10000];
 };
 
 uniform sampler2DArray textureArray;
@@ -80,17 +88,9 @@ layout(std140, binding = 2) buffer lightData
 	float metallic;
 	float roughness;
 
-	//vec3 position;	// needed for shadow mapping // should position be calculated in View Space? it's onlt used for shadow mapping
-	//vec3 direction; // direction probably needs to be calculated in View Space - in CPU as well
-	//vec3 color1;
-
 	DirectionalLight dirLight;
 };
 
-// Material parameters
-//uniform float metallic;
-//uniform float roughness;
-//uniform float ao;
 
 // Lights
 //uniform DirectionalLight dirLights[NR_DIRLIGHTS];
@@ -108,9 +108,13 @@ float GeometrySchlickGGX(float NdotV, float roughness);
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness);
 vec3 FresnelSchlick(float cosTheta, vec3 F0);
 
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowMap);
+
 void main()
 {
-	vec3 textureColor = texture(textureArray, vec3(TexCoords, layer[instanceID].x)).rgb;
+	vec4 tex = texture(textureArray, vec3(TexCoords, layer[instanceID].x));
+	if (tex.a < 0.2) discard;
+	vec3 textureColor = tex.rgb;
 
 	vec3 N = normalize(Normal);
 	vec3 V = normalize(-FragPos);	// Calculated in View Space
@@ -168,7 +172,11 @@ vec3 CalcDirLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo)
 
 	// calculating outgoing radiance Lo
 	float NdotL = max(dot(N, L), 0.0);
-	return (kD * albedo / PI + specular) * radiance * NdotL;
+
+	/// SHADOW MAPPING
+	float shadow = ShadowCalculation(FragPosLightSpace1, light.position, shadowMap1);
+	return (1.0 - shadow) * (kD * albedo / PI + specular) * radiance * NdotL; // WITH SHADOWS
+	//return (kD * albedo / PI + specular) * radiance * NdotL;
 }
 
 vec3 CalcPointLight(PointLight light, vec3 N, vec3 V, vec3 fragPos, vec3 F0, vec3 albedo)
@@ -270,4 +278,31 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 vec3 FresnelSchlick(float cosTheta, vec3 F0)
 {
 	return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowMap)
+{
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	projCoords = projCoords * 0.5 + 0.5; 
+	float closestDepth = texture(shadowMap, projCoords.xy).r;   
+	float currentDepth = projCoords.z;  
+	vec3 lightDir = normalize(lightPos - FragPos);
+	float bias = max(0.05 * (1.0 - dot(normalize(Normal), lightDir)), 0.005);
+	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+	float shadow = 0.0;
+
+	if(projCoords.z <= 1.0)
+	{
+		for(int x = -1; x <= 1; ++x)
+		{
+			for(int y = -1; y <= 1; ++y)
+			{
+				float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+				shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;        
+			}    
+		}
+		shadow /= 9.0;
+	}
+
+	return shadow;
 }
