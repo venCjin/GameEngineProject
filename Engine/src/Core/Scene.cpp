@@ -254,12 +254,14 @@ namespace sixengine {
 			{
 				file >> s;
 				go->AddComponent<Mesh>(m_ModelManager->AddModel(s));
+				continue;
 			}
 
 			else if (s == "-Material")
 			{
 				file >> s;
 				go->AddComponent<Material>(*m_MaterialManager->Get(s));
+				continue;
 			}
 			
 			LOAD(Rotation)

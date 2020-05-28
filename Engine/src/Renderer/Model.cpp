@@ -44,21 +44,6 @@ namespace sixengine {
 		}
 	}
 
-	/*void Model::LoadAnimationNodes()
-	{
-		const aiAnimation* animation = m_AnimationsMapping["walk"]->animation;
-
-		for (uint i = 0; i < animation->mNumChannels; i++) {
-			const aiNodeAnim* nodeAnim = animation->mChannels[i];
-
-			if (m_NodeAnimationMapping.find(std::string(nodeAnim->mNodeName.data)) == m_NodeAnimationMapping.end())
-			{
-				m_NodeAnimationMapping[std::string(nodeAnim->mNodeName.data)] = nodeAnim;
-			}			
-		}
-	}*/
-
-
 	bool Model::LoadModel(const std::string& filename)
 	{
 		// Release the previously loaded mesh (if it exists)
@@ -78,17 +63,8 @@ namespace sixengine {
 			ret = InitFromScene(m_Scene, filename);
 		}
 		else {
-			//printf("Error parsing '%s': '%s'\n", filename.c_str(), m_Importer.GetErrorString());
 			LOG_ERROR("Error parsing {0}: {1}", filename.c_str(), m_Importer.GetErrorString());
 		}
-
-		// Make sure the VAO is not changed from the outside
-		//glBindVertexArray(0);
-		if (m_Scene->HasAnimations())
-		{
-			//LoadAnimationNodes();
-		}
-
 
 		return ret;
 	}
@@ -102,8 +78,7 @@ namespace sixengine {
 			m_AnimationsMapping[name] = ae;
 		}
 		else
-			std::cout << "Already exists" << std::endl;
-		
+			std::cout << "Already exists" << std::endl;		
 
 		return false;
 	}
@@ -112,7 +87,6 @@ namespace sixengine {
 	bool Model::InitFromScene(const aiScene* scene, const std::string& filename)
 	{
 		m_Entries.resize(scene->mNumMeshes);
-		//m_Textures.resize(pScene->mNumMaterials);
 
 		uint numVertices = 0;
 		m_TotalNumIndices = 0;
@@ -121,7 +95,7 @@ namespace sixengine {
 
 		// Count the number of vertices and indices
 		for (uint i = 0; i < m_Entries.size(); i++) {
-			m_Entries[i].MaterialIndex = scene->mMeshes[i]->mMaterialIndex;
+			//m_Entries[i].MaterialIndex = scene->mMeshes[i]->mMaterialIndex;
 			m_Entries[i].NumIndices = scene->mMeshes[i]->mNumFaces * verticesPerPrim;
 			m_Entries[i].BaseVertex = numVertices;
 			m_Entries[i].BaseIndex = m_TotalNumIndices;
@@ -140,37 +114,12 @@ namespace sixengine {
 			const aiMesh* mesh = scene->mMeshes[i];
 			InitMesh(i, mesh, vertices, indices);
 		}
-
-		/*if (!InitMaterials(pScene, filename)) {
-			return false;
-		}*/
-
 		
-		/*VAO = new VertexArray();			
-		VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());		
-		IndexBuffer* ebo = new IndexBuffer(&indices[0], indices.size());
-	
-		vbo->SetLayout({
-			{ VertexDataType::VEC3F, "position" },
-			{ VertexDataType::VEC3F, "normal" },
-			{ VertexDataType::VEC2F, "texCoords" },
-			{ VertexDataType::VEC4I, "boneIDs" },
-			{ VertexDataType::VEC4F, "boneWeights" }
-		});
-
-		VAO->AddVertexBuffer(*vbo);
-		VAO->AddIndexBuffer(*ebo);*/
-
-		//glBindVertexArray(0);
-
 		return true;
 	}
 
 	void Model::InitMesh(uint meshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices, std::vector<uint>& indices)
 	{
-		std::vector<Texture> textures;
-
-
 		// Populate the vertex attribute vectors
 		for (uint i = 0; i < mesh->mNumVertices; i++) {
 
@@ -216,24 +165,7 @@ namespace sixengine {
 			indices.push_back(Face.mIndices[0]);
 			indices.push_back(Face.mIndices[1]);
 			indices.push_back(Face.mIndices[2]);
-		}
-		
-		// Materials
-		aiMaterial* material = m_Scene->mMaterials[mesh->mMaterialIndex];
-		std::vector<Texture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-		// 2. specular maps
-		std::vector<Texture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-		// 3. normal maps
-		std::vector<Texture> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-		// 4. height maps
-		std::vector<Texture> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-
-		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-
-		m_Entries[meshIndex].Textures = textures;
+		}	
 	}
 
 
@@ -264,153 +196,6 @@ namespace sixengine {
 		}
 	}
 
-	std::vector<Texture> Model::LoadMaterialTextures(aiMaterial * mat, aiTextureType type, std::string typeName)
-	{
-		std::vector<Texture> textures;
-		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-		{
-			aiString str;
-			mat->GetTexture(type, i, &str);
-			// check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
-			bool skip = false;
-			for (unsigned int j = 0; j < m_TexturesLoaded.size(); j++)
-			{
-				if (std::strcmp(m_TexturesLoaded[j].path.data(), str.C_Str()) == 0)
-				{
-					textures.push_back(m_TexturesLoaded[j]);
-					skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
-					break;
-				}
-			}
-			if (!skip)
-			{   // if texture hasn't been loaded already, load it
-				Texture texture;
-				texture.id = TextureFromFile(str.C_Str(), this->m_Directory);
-				texture.type = typeName;
-				texture.path = str.C_Str();
-				textures.push_back(texture);
-				m_TexturesLoaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
-			}
-		}
-		return textures;
-	}
-
-
-	/*bool Mesh::InitMaterials(const aiScene* pScene, const std::string& filename)
-	{
-		// Extract the directory part from the file name
-		std::string::size_type SlashIndex = filename.find_last_of("/");
-		std::string Dir;
-
-		if (SlashIndex == std::string::npos) {
-			Dir = ".";
-		}
-		else if (SlashIndex == 0) {
-			Dir = "/";
-		}
-		else {
-			Dir = filename.substr(0, SlashIndex);
-		}
-
-		bool Ret = true;
-
-		// Initialize the materials
-		for (uint i = 0; i < pScene->mNumMaterials; i++) {
-			const aiMaterial* pMaterial = pScene->mMaterials[i];
-
-			m_Textures[i] = NULL;
-
-			if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
-				aiString Path;
-
-				if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
-					std::string p(Path.data);
-
-					if (p.substr(0, 2) == ".\\") {
-						p = p.substr(2, p.size() - 2);
-					}
-
-					std::string FullPath = Dir + "/" + p;
-
-					m_Textures[i] = new Texture(GL_TEXTURE_2D, FullPath.c_str());
-
-					if (!m_Textures[i]->Load()) {
-						printf("Error loading texture '%s'\n", FullPath.c_str());
-						delete m_Textures[i];
-						m_Textures[i] = NULL;
-						Ret = false;
-					}
-					else {
-						printf("%d - loaded texture '%s'\n", i, FullPath.c_str());
-					}
-				}
-			}
-		}
-
-		return Ret;
-	}
-	*/
-
-	void Model::Render(Shader* shader)
-	{
-		unsigned int diffuseNr = 1;
-		unsigned int specularNr = 1;
-		unsigned int normalNr = 1;
-		unsigned int heightNr = 1;
-
-
-		VAO->Bind();
-		//glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
-
-		/*glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);*/
-		//glBindVertexArray(m_VAO);
-
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-		for (uint i = 0; i < m_Entries.size(); i++)
-		{
-
-
-			/*const uint MaterialIndex = m_Entries[i].MaterialIndex;
-
-			if (m_Textures[MaterialIndex]) {
-				m_Textures[MaterialIndex]->Bind(COLOR_TEXTURE_UNIT);
-			}*/
-			for (unsigned int j = 0; j < m_Entries[i].Textures.size(); j++)
-			{
-				glActiveTexture(GL_TEXTURE0 + i* m_Entries.size() + j); // active proper texture unit before binding
-				// retrieve texture number (the N in diffuse_textureN)
-				std::string number;
-				std::string name = m_Entries[i].Textures[j].type;
-				if (name == "texture_diffuse")
-					number = std::to_string(diffuseNr++);
-				else if (name == "texture_specular")
-					number = std::to_string(specularNr++); // transfer unsigned int to stream
-				else if (name == "texture_normal")
-					number = std::to_string(normalNr++); // transfer unsigned int to stream
-				else if (name == "texture_height")
-					number = std::to_string(heightNr++); // transfer unsigned int to stream
-
-				// now set the sampler to the correct texture unit
-				glUniform1i(glGetUniformLocation(shader->GetID(), (name + number).c_str()), i* m_Entries.size() + j);
-				// and finally bind the texture
-				glBindTexture(GL_TEXTURE_2D, m_Entries[i].Textures[j].id);
-			}
-			glDrawElementsBaseVertex(GL_TRIANGLES,
-				m_Entries[i].NumIndices,
-				GL_UNSIGNED_INT,
-				(void*)(sizeof(uint) * m_Entries[i].BaseIndex),
-				m_Entries[i].BaseVertex);
-		}
-		//glDrawElements(GL_TRIANGLES, VAO->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, 0);
-
-		VAO->Unbind();
-
-		// Make sure the VAO is not changed from the outside    
-		//glBindVertexArray(0);
-	}
-
-
 	uint Model::FindPosition(float animationTime, const aiNodeAnim* nodeAnim)
 	{
 		for (uint i = 0; i < nodeAnim->mNumPositionKeys - 1; i++) {
@@ -418,8 +203,6 @@ namespace sixengine {
 				return i;
 			}
 		}
-
-		//assert(0);
 
 		return 0;
 	}
@@ -535,19 +318,12 @@ namespace sixengine {
 		glm::mat4 nodeTransformation(glm::transpose(glm::make_mat4(&node->mTransformation.a1)));
 
 
-		const aiNodeAnim* nodeAnim = nullptr;
-
-		/*m_AnimationsMapping[animationName];
-		std::cout << "map" << std::endl;
-		m_AnimationsMapping[animationName]->nodeAnimationMapping[nodeName];
-		std::cout << "map node" << std::endl;*/		
+		const aiNodeAnim* nodeAnim = nullptr;		
 
 		if (m_AnimationsMapping.find(animationName) != m_AnimationsMapping.end())
 		{
 			if (m_AnimationsMapping[animationName]->nodeAnimationMapping.find(nodeName) != m_AnimationsMapping[animationName]->nodeAnimationMapping.end())
 				nodeAnim = m_AnimationsMapping[animationName]->nodeAnimationMapping[nodeName];
-			//else
-				//LOG_ERROR("no elements in node map");
 		}
 		else
 			LOG_ERROR("no elements in animation map");
@@ -623,22 +399,7 @@ namespace sixengine {
 		float blendProgress = ((currentTimer / 1.0f) > 1.0f) ? 1.0f : (currentTimer / 1.0f);
 		for (uint i = 0; i < m_NumBones; i++) {
 			transforms[i] = blendLayer1[i] * blendProgress + blendLayer2[i] * (1.0f - blendProgress);
-		}
-
-		/*for (uint i = 0; i < m_NumBones; i++) {
-			transforms[i] = m_BoneInfo[i].FinalTransformation;
-		}*/
-
-		/*float blendProgress = time / blendLength;
-		if (blendProgress > 1.0f)*/
-			//ReadNodeHierarchy(animationTime, m_AnimationsMapping[currentAnimationName]->scene->mRootNode, glm::mat4(1.0f), currentAnimationName, previousAnimationName/*, 1.0f*/);
-		/*else
-		{
-			ReadNodeHierarchy(animationTime, m_AnimationsMapping[currentAnimationName]->scene->mRootNode, glm::mat4(1.0f), currentAnimationName, blendProgress);
-			ReadNodeHierarchy(animationTime, m_AnimationsMapping[previousAnimationName]->scene->mRootNode, glm::mat4(1.0f), previousAnimationName, 1.0f - blendProgress);
-
-		}*/
-		
+		}	
 	}
 
 	unsigned int TextureFromFile(const char * path, const std::string & directory, bool gamma)
