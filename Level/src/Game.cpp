@@ -22,6 +22,10 @@
 #include <glm/glm.hpp>
 #include <Renderer\Techniques\Transparent.h>
 
+#include <Core/CameraSystem/FlyingCameraSystem.h>
+#include <Core/CameraSystem/OrbitalCameraSystem.h>
+#include <Core/CameraSystem/MixingCameraSystem.h>
+
 namespace sixengine {
 
 	class Game : public Application
@@ -29,6 +33,12 @@ namespace sixengine {
 	private:
 		Scene m_Scene;
 		BatchRenderer* m_BatchRenderer;
+
+		GameObject* orbitalCamA;
+		GameObject* orbitalCamB;
+		GameObject* mixingCam;
+		GameObject* flying;
+
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
@@ -141,6 +151,41 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("parasiteZombie"));
 			obj->AddComponent<Animation>();
 			obj->AddComponent<SimplePlayer>();
+
+			flying = Camera::ActiveCamera->m_GameObject;
+
+			m_SystemManager.AddSystem<OrbitalCameraSystem>();
+			m_SystemManager.AddSystem<MixingCameraSystem>();
+			orbitalCamA = new GameObject(m_EntityManager);
+			orbitalCamA->AddComponent<Transform>(orbitalCamA);
+			orbitalCamA->AddComponent<Camera>(orbitalCamA);
+			orbitalCamA->GetComponent<Camera>()->SetPerspective((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight());
+
+			orbitalCamA->AddComponent<OrbitalCamera>();
+			orbitalCamA->GetComponent<OrbitalCamera>()->m_LookTarget = obj->GetComponent<Transform>().Get();
+			orbitalCamA->GetComponent<OrbitalCamera>()->m_FollowTarget = obj->GetComponent<Transform>().Get();
+			orbitalCamA->GetComponent<OrbitalCamera>()->m_FollowOffset = glm::vec3(0.0f, 5.0f, 10.0f);
+
+			orbitalCamB = new GameObject(m_EntityManager);
+			orbitalCamB->AddComponent<Transform>(orbitalCamB);
+			orbitalCamB->AddComponent<Camera>(orbitalCamB);
+			orbitalCamB->GetComponent<Camera>()->SetPerspective((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight());
+
+			orbitalCamB->AddComponent<OrbitalCamera>();
+			orbitalCamB->GetComponent<OrbitalCamera>()->m_LookTarget = obj->GetComponent<Transform>().Get();
+			orbitalCamB->GetComponent<OrbitalCamera>()->m_FollowTarget = obj->GetComponent<Transform>().Get();
+			orbitalCamB->GetComponent<OrbitalCamera>()->m_FollowOffset = glm::vec3(0.0f, 7.5f, 7.5f);
+
+			mixingCam = new GameObject(m_EntityManager);
+			mixingCam->AddComponent<Transform>(mixingCam);
+			mixingCam->AddComponent<Camera>(mixingCam);
+			mixingCam->GetComponent<Camera>()->SetPerspective((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight());
+
+			mixingCam->AddComponent<MixingCamera>(mixingCam);
+			mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamA->GetComponent<Camera>().Get());
+
+			Camera::ActiveCamera = mixingCam->GetComponent<Camera>().Get();
+
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
 			std::vector<GizmoVertex> vertices;
 			std::vector<unsigned int> indices;
@@ -168,6 +213,27 @@ namespace sixengine {
 
 		virtual void OnUpdate(float dt) override
 		{
+			if (Input::IsKeyPressed(KeyCode::F9))
+			{
+				Application::Get().GetWindow().SwitchCursorVisibility();
+			}
+
+			if (Input::IsKeyPressed(KeyCode::F5))
+			{
+				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamA->GetComponent<Camera>().Get());
+			}
+
+			if (Input::IsKeyPressed(KeyCode::F6))
+			{
+				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamB->GetComponent<Camera>().Get());
+			}
+
+			if (Input::IsKeyPressed(KeyCode::F7))
+			{
+				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(flying->GetComponent<Camera>().Get());
+			}
+
+
 			if (Input::IsKeyPressed(KeyCode::F9))
 			{
 				Application::Get().GetWindow().SwitchCursorVisibility();

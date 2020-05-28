@@ -338,7 +338,24 @@ namespace sixengine {
 			glm::vec3 right = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
 			glm::vec3 upwards = glm::cross(right, forward);
 
+			auto scale = GetLocalScale();
 			m_Local = glm::inverse((glm::lookAt(getWorldPosition(), getWorldPosition() + forward, upwards)));
+			m_Local = glm::scale(m_Local, scale);
+		}
+
+
+		// Rotates the transform so the forward vector points at target's current position.
+		void LookAt(glm::vec3 position)
+		{
+			glm::vec3 forward = position - this->getWorldPosition();
+			forward = glm::normalize(forward);
+
+			glm::vec3 right = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::vec3 upwards = glm::cross(right, forward);
+
+			auto scale = GetLocalScale();
+			m_Local = glm::inverse((glm::lookAt(getWorldPosition(), getWorldPosition() + forward, upwards)));
+			m_Local = glm::scale(m_Local, scale);
 		}
 
 

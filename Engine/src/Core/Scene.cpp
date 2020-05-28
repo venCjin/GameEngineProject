@@ -236,11 +236,11 @@ namespace sixengine {
 			
 			LOAD(Transform);
 
-			LOAD(SpotLight);
+			//LOAD(SpotLight);
 
-			LOAD(DirectionalLight);
+			//LOAD(DirectionalLight);
 
-			LOAD(PointLight);
+			//LOAD(PointLight);
 
 			if (s == "-Gizmo")
 			{

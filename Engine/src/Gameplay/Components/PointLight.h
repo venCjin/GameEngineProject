@@ -5,24 +5,24 @@
 
 namespace sixengine {
 
-	class GameObject;
+	//class GameObject;
 
-	struct PointLight : public ISerializable
-	{
-		glm::vec3 position;
-		glm::vec3 color;
+	//class PointLight : public ISerializable
+	//{
+	//	glm::vec3 position;
+	//	glm::vec3 color;
 
-		PointLight(GameObject* go) {}
+	//	PointLight(GameObject* go) {}
 
-		virtual void Load(std::iostream& stream) override
-		{
-			stream >> position.x >> position.y >> position.z;
-			stream >> color.x >> color.y >> color.z;
-		}
+	//	virtual void Load(std::iostream& stream) override
+	//	{
+	//		stream >> position.x >> position.y >> position.z;
+	//		stream >> color.x >> color.y >> color.z;
+	//	}
 
-		virtual void Save(std::iostream& stream) override
-		{
-			//TODO:
-		}
-	};
+	//	virtual void Save(std::iostream& stream) override
+	//	{
+	//		//TODO:
+	//	}
+	//};
 }
