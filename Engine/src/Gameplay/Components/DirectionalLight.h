@@ -17,8 +17,8 @@ namespace sixengine {
 
 		virtual void Load(std::iostream& stream) override
 		{
-			stream >> position.x >> position.y >> position.z;
-			stream >> direction.x >> direction.y >> direction.z;
+			stream >> position.x >> position.y >> position.z;    //TODO: from Transform
+			stream >> direction.x >> direction.y >> direction.z; //TODO: from Transform
 			stream >> color.x >> color.y >> color.z;
 		}
 
