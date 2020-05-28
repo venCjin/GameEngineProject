@@ -112,7 +112,7 @@ namespace sixengine {
 				"Transparent");
 
 			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
-			m_Scene.m_ModelManager->AddModel("res/models/primitives/cube.obj");
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
 			m_Scene.m_ModelManager->CreateVAO();
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
@@ -122,7 +122,7 @@ namespace sixengine {
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(-10.0f, 1.0f, -10.0f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cube"));
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cylinder"));
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Transparent"));
 			m_Scene.m_SceneRoot->AddChild(obj);
 
