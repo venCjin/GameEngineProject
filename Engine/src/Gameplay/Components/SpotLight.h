@@ -5,7 +5,7 @@
 
 namespace sixengine {
 
-	/*class GameObject;
+	class GameObject;
 
 	struct SpotLight : public ISerializable
 	{
@@ -31,6 +31,6 @@ namespace sixengine {
 		{
 			//TODO:
 		}
-	};*/
+	};
 
 }
