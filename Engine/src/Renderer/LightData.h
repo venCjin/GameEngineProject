@@ -3,20 +3,20 @@
 
 namespace sixengine {
 
-	struct DirectionalLight
+	struct DirectionalLightData
 	{
 		glm::vec4 position;	// needed for shadow mapping
 		glm::vec4 direction;
 		glm::vec4 color;
 	};
 
-	struct PointLight
+	struct PointLightData
 	{
 		glm::vec3 position;
 		glm::vec3 color;
 	};
 
-	struct SpotLight
+	struct SpotLightData
 	{
 		glm::vec3 position;
 		glm::vec3 direction;
@@ -33,6 +33,6 @@ namespace sixengine {
 		float roughness;
 		float a = 0.0f;
 
-		DirectionalLight dirLight;
+		DirectionalLightData dirLight;
 	};
 }

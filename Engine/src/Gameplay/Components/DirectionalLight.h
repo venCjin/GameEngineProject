@@ -5,20 +5,20 @@
 
 namespace sixengine {
 
-	/*class GameObject;
+	class GameObject;
 	
 	struct DirectionalLight : public ISerializable
 	{
-		glm::vec3 position;	// needed for shadow mapping
-		glm::vec3 direction;
+		glm::vec3 position;  //TODO: from Transform; //needed for shadow mapping 
+		glm::vec3 direction; //TODO: from Transform
 		glm::vec3 color;
 
 		DirectionalLight(GameObject* go) {}
 
 		virtual void Load(std::iostream& stream) override
 		{
-			stream >> position.x >> position.y >> position.z;
-			stream >> direction.x >> direction.y >> direction.z;
+			stream >> position.x >> position.y >> position.z;    //TODO: from Transform
+			stream >> direction.x >> direction.y >> direction.z; //TODO: from Transform
 			stream >> color.x >> color.y >> color.z;
 		}
 
@@ -26,6 +26,6 @@ namespace sixengine {
 		{
 			//TODO:
 		}
-	};*/
+	};
 
 }

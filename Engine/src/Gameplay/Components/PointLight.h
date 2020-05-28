@@ -5,18 +5,18 @@
 
 namespace sixengine {
 
-	/*class GameObject;
+	class GameObject;
 
 	struct PointLight : public ISerializable
 	{
-		glm::vec3 position;
+		glm::vec3 position; //TODO: from Transform
 		glm::vec3 color;
 
 		PointLight(GameObject* go) {}
 
 		virtual void Load(std::iostream& stream) override
 		{
-			stream >> position.x >> position.y >> position.z;
+			stream >> position.x >> position.y >> position.z; //TODO: from Transform
 			stream >> color.x >> color.y >> color.z;
 		}
 
@@ -24,5 +24,6 @@ namespace sixengine {
 		{
 			//TODO:
 		}
-	};*/
+	};
+
 }

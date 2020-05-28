@@ -145,6 +145,25 @@ namespace sixengine {
 		return indices;
 	}
 
+	std::vector<GizmoVertex> PrimitiveUtils::generateConeVertices(int sectorCount, float radius, float height)
+	{
+		std::vector<GizmoVertex> vertices;
+		float sectorStep = 2 * glm::pi<float>() / sectorCount;
+
+		__debugbreak(); //TODO: implement
+
+		return vertices;
+	}
+
+	std::vector<unsigned int> PrimitiveUtils::generateConeIndices(int sectorCount)
+	{
+		std::vector<unsigned int> indices;
+		
+		__debugbreak(); //TODO: implemnet
+
+		return indices;
+	}
+
 	std::vector<GizmoVertex> PrimitiveUtils::generateCapsuleVertices(int sectorCount, int stackCount, float radius, float height)
 	{
 		std::vector<GizmoVertex> vertices;
@@ -257,10 +276,10 @@ namespace sixengine {
 
 
 
-	void PrimitiveUtils::GenerateQuad(std::vector<GizmoVertex>& vertices, std::vector<unsigned int>& indieces)
+	void PrimitiveUtils::GenerateQuad(std::vector<GizmoVertex>& vertices, std::vector<unsigned int>& indices)
 	{
 		vertices = PrimitiveUtils::generateQuadVertices();
-		indieces = PrimitiveUtils::generateQuadIndices();
+		indices = PrimitiveUtils::generateQuadIndices();
 	}
 
 	void PrimitiveUtils::GenerateBox(std::vector<GizmoVertex>& vertices, std::vector<unsigned int>& indices, float x, float y, float z)
@@ -273,6 +292,12 @@ namespace sixengine {
 	{
 		vertices = PrimitiveUtils::generateSphereVertices(sectorCount, stackCount, radius);
 		indices = PrimitiveUtils::generateSphereIndices(sectorCount, stackCount);
+	}
+
+	void PrimitiveUtils::GenerateCone(std::vector<GizmoVertex>& vertices, std::vector<unsigned int>& indices, float radius, float height, int sectorCount)
+	{
+		vertices = PrimitiveUtils::generateConeVertices(sectorCount, radius, height);
+		indices = PrimitiveUtils::generateConeIndices(sectorCount);
 	}
 
 	void PrimitiveUtils::GenerateCapsule(std::vector<GizmoVertex>& vertices, std::vector<unsigned int>& indices, float radius, float height, int sectorCount, int stackCount)

@@ -136,13 +136,11 @@ namespace sixengine {
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 690.0f, 0.0f);
-
 			obj->AddComponent<Text>("Sixengine 0.?", glm::vec3(1.0f, 0.0f, 1.0f), 0.3f);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
 			m_Scene.m_UIRoot->AddChild(obj);
 
 			obj = new GameObject(m_EntityManager);
-
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
 			obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
@@ -151,6 +149,20 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("parasiteZombie"));
 			obj->AddComponent<Animation>();
 			obj->AddComponent<SimplePlayer>();
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+			std::vector<GizmoVertex> vertices;
+			std::vector<unsigned int> indices;
+			PrimitiveUtils::GenerateBox(vertices, indices, 100, 200, 100);
+			VertexArray* vao = new VertexArray();
+			VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
+			vbo->SetLayout({
+				{ VertexDataType::VEC3F, "Position" }
+				});
+			IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
+			vao->AddVertexBuffer(*vbo);
+			vao->AddIndexBuffer(*ibo);
+			obj->AddGizmo(new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(0, 255, 0)));
+			m_Scene.m_SceneRoot->AddChild(obj);
 
 			flying = Camera::ActiveCamera->m_GameObject;
 
@@ -186,21 +198,6 @@ namespace sixengine {
 
 			Camera::ActiveCamera = mixingCam->GetComponent<Camera>().Get();
 
-			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
-			std::vector<GizmoVertex> vertices;
-			std::vector<unsigned int> indices;
-			PrimitiveUtils::GenerateBox(vertices, indices, 100, 200, 100);
-			VertexArray* vao = new VertexArray();
-			VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
-			vbo->SetLayout({
-				{ VertexDataType::VEC3F, "Position" }
-				});
-			IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
-			vao->AddVertexBuffer(*vbo);
-			vao->AddIndexBuffer(*ibo);
-			obj->AddGizmo(new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(0, 255, 0)));
-
-			m_Scene.m_SceneRoot->AddChild(obj);
 
 			// HACKS END
 
@@ -231,12 +228,6 @@ namespace sixengine {
 			if (Input::IsKeyPressed(KeyCode::F7))
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(flying->GetComponent<Camera>().Get());
-			}
-
-
-			if (Input::IsKeyPressed(KeyCode::F9))
-			{
-				Application::Get().GetWindow().SwitchCursorVisibility();
 			}
 
 			{
