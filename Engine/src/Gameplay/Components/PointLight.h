@@ -5,7 +5,7 @@
 
 namespace sixengine {
 
-	class GameObject;
+	/*class GameObject;
 
 	struct PointLight : public ISerializable
 	{
@@ -24,5 +24,5 @@ namespace sixengine {
 		{
 			//TODO:
 		}
-	};
+	};*/
 }

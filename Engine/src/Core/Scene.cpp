@@ -236,113 +236,43 @@ namespace sixengine {
 			
 			LOAD(Transform);
 
-			LOAD(SpotLight);
+			/*LOAD(SpotLight);
 
 			LOAD(DirectionalLight);
 
-			LOAD(PointLight);
+			LOAD(PointLight);*/
 
 			if (s == "-Gizmo")
 			{
-				float r, g, b;
-				file >> r >> g >> b;
-
-				std::vector<GizmoVertex> vertices;
-				std::vector<unsigned int> indices;
-				file >> s;
-				if (s == "Quad")
-				{
-					PrimitiveUtils::GenerateQuad(vertices, indices);
-				}
-				else if (s == "Cube")
-				{
-					float x, y, z;
-					file >> x >> y >> z;
-					PrimitiveUtils::GenerateBox(vertices, indices, x, y, z);
-				}
-				else if (s == "Capsule")
-				{
-					PrimitiveUtils::GenerateCapsule(vertices, indices);
-				}
-				else if (s == "Sphere")
-				{
-					float radius;
-					file >> radius;
-					PrimitiveUtils::GenerateSphere(vertices, indices, radius);
-				}
-				else if (s == "Line")
-				{
-					float x, y, z;
-					file >> x >> y >> z;
-					vertices.emplace_back(GizmoVertex{ glm::vec3{ x, y, z } });
-					vertices.emplace_back(GizmoVertex{ glm::vec3{ x, y, z } });
-					file >> x >> y >> z;
-					vertices.emplace_back(GizmoVertex{ glm::vec3{ x, y, z } });
-					indices.push_back(0);
-					indices.push_back(1);
-					indices.push_back(2);
-				}
-				VertexArray* vao = new VertexArray();
-				VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
-				vbo->SetLayout({
-					{ VertexDataType::VEC3F, "Position" }
-				});
-				IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
-				vao->AddVertexBuffer(*vbo);
-				vao->AddIndexBuffer(*ibo);
-
-				go->AddGizmo(new Gizmo(vao, m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(r, g, b)));
+				Gizmo* gizmo = new Gizmo(m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"));
+				gizmo->Load(file);
+				go->AddGizmo(gizmo);
+				continue;
 			}
+
 			else if (s == "-Model")
 			{
 				file >> s;
 				go->AddComponent<Mesh>(m_ModelManager->AddModel(s));
 			}
+
 			else if (s == "-Material")
 			{
 				file >> s;
 				go->AddComponent<Material>(*m_MaterialManager->Get(s));
 			}
-			else if (s == "-Rotation")
-			{
-				float x, y, z, speed;
-				file >> x;
-				file >> y;
-				file >> z;
-				file >> speed;
-				go->AddComponent<Rotation>(glm::vec3(x, y, z), speed);
-			}
-			else if (s == "-Billboard")
-			{
-				go->AddComponent<Billboard>(Camera::ActiveCamera);
-			}
-			else if (s == "-SimplePlayer")
-			{
-				go->AddComponent<SimplePlayer>();
-			}
-			else if (s == "-BoxCollider")
-			{
-				float x, y, z;
-				file >> x;
-				file >> y;
-				file >> z;
+			
+			LOAD(Rotation)
+			
+			LOAD(Billboard);
+			
+			LOAD(SimplePlayer);
+			
+			LOAD(BoxCollider);
+			
+			LOAD(SphereCollider);
 
-				bool isStatic;
-				file >> isStatic;
-
-				go->AddComponent<BoxCollider>(glm::vec3(x, y, z), isStatic);
-			}
-			else if (s == "-SphereCollider")
-			{
-				float radius;
-				file >> radius;
-
-				bool isStatic;
-				file >> isStatic;
-
-				go->AddComponent<SphereCollider>(radius, isStatic);
-			}
-			else LOG_WARN("Not recognized scene component: {0}", s);
+			LOG_WARN("Not recognized scene component: {0}", s);
 		} while (true);
 		return go;
 	}

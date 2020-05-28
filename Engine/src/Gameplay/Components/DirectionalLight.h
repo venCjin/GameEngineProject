@@ -5,7 +5,7 @@
 
 namespace sixengine {
 
-	class GameObject;
+	/*class GameObject;
 	
 	struct DirectionalLight : public ISerializable
 	{
@@ -26,6 +26,6 @@ namespace sixengine {
 		{
 			//TODO:
 		}
-	};
+	};*/
 
 }

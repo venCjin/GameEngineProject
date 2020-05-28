@@ -22,6 +22,20 @@ namespace sixengine {
 			m_radius = radius;
 		}
 
+		SphereCollider(GameObject* go) {}
+		virtual void Load(std::iostream& stream)
+		{
+			float radius;
+			bool isStatic;
+			stream >> radius >> isStatic;
+			m_radius = radius;
+			m_isStatic = isStatic;
+		}
+		virtual void Save(std::iostream& stream)
+		{
+
+		}
+
 		virtual ~SphereCollider()
 		{
 
