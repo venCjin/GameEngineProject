@@ -27,25 +27,31 @@ namespace sixengine {
 		std::vector<GizmoVertex> vertices;
 		std::vector<unsigned int> indices;
 		stream >> s;
-		if (s == "Quad")
-		{
-			PrimitiveUtils::GenerateQuad(vertices, indices);
-		}
-		else if (s == "Cube")
+		if (s == "Cube") // Directional Light
 		{
 			float x, y, z;
 			stream >> x >> y >> z;
 			PrimitiveUtils::GenerateBox(vertices, indices, x, y, z);
 		}
-		else if (s == "Capsule")
-		{
-			PrimitiveUtils::GenerateCapsule(vertices, indices);
-		}
-		else if (s == "Sphere")
+		else if (s == "Sphere") // Point Light
 		{
 			float radius;
 			stream >> radius;
 			PrimitiveUtils::GenerateSphere(vertices, indices, radius);
+		}
+		else if (s == "Cone") // Spot Light
+		{
+			float radius, height;
+			stream >> radius >> height;
+			PrimitiveUtils::GenerateCone(vertices, indices, radius, height);
+		}
+		else if (s == "Capsule")
+		{
+			PrimitiveUtils::GenerateCapsule(vertices, indices);
+		}
+		else if (s == "Quad")
+		{
+			PrimitiveUtils::GenerateQuad(vertices, indices);
 		}
 		else if (s == "Line")
 		{
@@ -63,7 +69,7 @@ namespace sixengine {
 		VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
 		vbo->SetLayout({
 			{ VertexDataType::VEC3F, "Position" }
-			});
+		});
 		IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
 		m_VAO->AddVertexBuffer(*vbo);
 		m_VAO->AddIndexBuffer(*ibo);
