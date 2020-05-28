@@ -15,22 +15,11 @@
 
 #include "Core/Profile.h"
 
-
-//#define SAFE_DELETE(p) if (p) { delete p; p = NULL; }
-
 namespace sixengine {
 
 
 	typedef unsigned int uint;
-#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
-
-	unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
-
-	struct Texture {
-		unsigned int id;
-		std::string type;
-		std::string path;
-	};
+//#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 	class Model
 	{
@@ -61,7 +50,6 @@ namespace sixengine {
 		std::vector<Vertex> vertices;
 		std::vector<uint> indices;
 		int m_TotalNumIndices = 0;
-		//void LoadAnimationNodes();
 
 		glm::vec3 m_MinAxis;
 		glm::vec3 m_MaxAxis;
@@ -86,12 +74,7 @@ namespace sixengine {
 		bool InitFromScene(const aiScene* scene, const std::string& filename);
 		void InitMesh(uint MeshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 		void LoadBones(uint MeshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices);
-		std::vector<Texture> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
-		//bool InitMaterials(const aiScene* pScene, const std::string& Filename);
 		void Clear();
-
-#define INVALID_MATERIAL 0xFFFFFFFF
-
 
 		struct MeshEntry 
 		{
@@ -100,15 +83,11 @@ namespace sixengine {
 				NumIndices = 0;
 				BaseVertex = 0;
 				BaseIndex = 0;
-				MaterialIndex = INVALID_MATERIAL;
 			}
 
 			unsigned int NumIndices;
 			unsigned int BaseVertex;
 			unsigned int BaseIndex;
-			unsigned int MaterialIndex;
-
-			std::vector<Texture> Textures;
 		};
 
 		struct AnimationEntry
@@ -117,7 +96,6 @@ namespace sixengine {
 			{
 				scene = nullptr;
 				animation = nullptr;
-				LOG_ERROR("nullptr CONSTRUCTOR");
 			}
 
 			AnimationEntry(const std::string& filename)
@@ -153,18 +131,14 @@ namespace sixengine {
 		};
 
 		std::vector<MeshEntry> m_Entries;
-		//std::vector<Texture*> m_Textures;
 
 		std::vector<glm::mat4> currentTransforms; // current animation transforms for shader
 
 		std::map<std::string, uint> m_BoneMapping; // maps a bone name to its index
-		//std::map<std::string, const aiNodeAnim* > m_NodeAnimationMapping;
 		std::map<std::string, AnimationEntry*> m_AnimationsMapping;
 		uint m_NumBones;
 		std::vector<BoneInfo> m_BoneInfo;
 		glm::mat4 m_GlobalInverseTransform;
-		std::vector<Texture> m_Textures;
-		std::vector<Texture> m_TexturesLoaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
 		std::string m_Directory;
 
 		const aiScene* m_Scene;
