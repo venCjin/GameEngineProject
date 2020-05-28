@@ -13,7 +13,7 @@ namespace sixengine
 	{
 		void Update(EventManager & eventManager, float dt) override
 		{
-			m_OrbitalCamera->m_FollowOffset = glm::rotate(m_OrbitalCamera->m_FollowOffset, Input::GetMouseDeltaPosX() * dt, glm::vec3(0.0f, 1.0f, 0.0f));
+			m_OrbitalCamera->m_FollowOffset = glm::rotate(m_OrbitalCamera->m_FollowOffset, -Input::GetMouseDeltaPosX() * dt * 0.15f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 			if (m_OrbitalCamera->m_FollowTarget)
 			{

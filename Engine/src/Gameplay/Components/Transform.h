@@ -5,15 +5,14 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "Core/ISerializable.h"
 #include "Gameplay/GameObject.h"
 
 #include <algorithm>
 
-#include <iostream>
-
 namespace sixengine {
 
-	class Transform
+	class Transform : public ISerializable
 	{
 	private:
 		Transform* m_Parent;
@@ -27,7 +26,7 @@ namespace sixengine {
 			
 		}
 
-		void Load(std::iostream& stream)
+		virtual void Load(std::iostream& stream) override
 		{
 			glm::vec3 pos;
 			glm::vec3 orientation;
@@ -40,6 +39,11 @@ namespace sixengine {
 			SetLocalPosition(pos);
 			SetLocalOrientation(orientation);
 			SetLocalScale(scale);
+		}
+
+		virtual void Save(std::iostream& stream) override
+		{
+			//TODO:
 		}
 
 		// Sets the parent of the transform.
@@ -334,7 +338,24 @@ namespace sixengine {
 			glm::vec3 right = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
 			glm::vec3 upwards = glm::cross(right, forward);
 
+			auto scale = GetLocalScale();
 			m_Local = glm::inverse((glm::lookAt(getWorldPosition(), getWorldPosition() + forward, upwards)));
+			m_Local = glm::scale(m_Local, scale);
+		}
+
+
+		// Rotates the transform so the forward vector points at target's current position.
+		void LookAt(glm::vec3 position)
+		{
+			glm::vec3 forward = position - this->getWorldPosition();
+			forward = glm::normalize(forward);
+
+			glm::vec3 right = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::vec3 upwards = glm::cross(right, forward);
+
+			auto scale = GetLocalScale();
+			m_Local = glm::inverse((glm::lookAt(getWorldPosition(), getWorldPosition() + forward, upwards)));
+			m_Local = glm::scale(m_Local, scale);
 		}
 
 
