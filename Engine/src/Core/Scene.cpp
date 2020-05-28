@@ -15,6 +15,10 @@
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/StaticPBR.h"
 
+#include "Gameplay/Components/DirectionalLight.h"
+#include "Gameplay/Components/PointLight.h"
+#include "Gameplay/Components/SpotLight.h"
+
 #include "Physics/Components/Collider.h"
 #include "Physics/Systems/CollisionSystem.h"
 
@@ -35,13 +39,13 @@
 
 #define LOAD(COMPONENT)								\
 {													\
-	if (s == #COMPONENT)							\
+	if (s == "-"#COMPONENT)							\
 	{												\
 		go->AddComponent<COMPONENT>(go);			\
 		go->GetComponent<COMPONENT>()->Load(file);	\
 		continue;									\
 	}												\
-}			
+}
 
 namespace sixengine {
 
@@ -231,6 +235,12 @@ namespace sixengine {
 			if (s == "+end") break;
 			
 			LOAD(Transform);
+
+			LOAD(SpotLight);
+
+			LOAD(DirectionalLight);
+
+			LOAD(PointLight);
 
 			if (s == "-Gizmo")
 			{

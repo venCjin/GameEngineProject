@@ -1,14 +1,31 @@
 #pragma once
 
+#include "Core/ISerializable.h"
 #include <glm/glm.hpp>
 
 namespace sixengine {
 
-	struct DirectionalLight
+	class GameObject;
+	
+	struct DirectionalLight : public ISerializable
 	{
 		glm::vec3 position;	// needed for shadow mapping
 		glm::vec3 direction;
 		glm::vec3 color;
+
+		DirectionalLight(GameObject* go) {}
+
+		virtual void Load(std::iostream& stream) override
+		{
+			stream >> position.x >> position.y >> position.z;
+			stream >> direction.x >> direction.y >> direction.z;
+			stream >> color.x >> color.y >> color.z;
+		}
+
+		virtual void Save(std::iostream& stream) override
+		{
+			//TODO:
+		}
 	};
 
 }
