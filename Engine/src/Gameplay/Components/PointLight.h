@@ -9,8 +9,8 @@ namespace sixengine {
 
 	struct PointLight : public ISerializable
 	{
-		glm::vec3 position;
-		glm::vec3 color;
+		glm::vec3 position; //TODO: from Transform
+		glm::vec3 color;    //TODO: from Transform
 
 		PointLight(GameObject* go) {}
 

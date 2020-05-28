@@ -9,8 +9,8 @@ namespace sixengine {
 	
 	struct DirectionalLight : public ISerializable
 	{
-		glm::vec3 position;	// needed for shadow mapping
-		glm::vec3 direction;
+		glm::vec3 position;  //TODO: from Transform; //needed for shadow mapping 
+		glm::vec3 direction; //TODO: from Transform
 		glm::vec3 color;
 
 		DirectionalLight(GameObject* go) {}

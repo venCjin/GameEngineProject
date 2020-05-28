@@ -9,8 +9,8 @@ namespace sixengine {
 
 	struct SpotLight : public ISerializable
 	{
-		glm::vec3 position;
-		glm::vec3 direction;
+		glm::vec3 position;  //TODO: from Transform
+		glm::vec3 direction; //TODO: from Transform
 		glm::vec3 color;
 
 		// always pass cut off angles as "glm::cos(glm::radians(angle)" ! angle == cutOff || angle == outerCutOff
