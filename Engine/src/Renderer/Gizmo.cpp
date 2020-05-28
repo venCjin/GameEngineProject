@@ -67,7 +67,7 @@ namespace sixengine {
 		IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
 		m_VAO->AddVertexBuffer(*vbo);
 		m_VAO->AddIndexBuffer(*ibo);
-		m_Color = { r, g, g };
+		m_Color = { r, g, b };
 	}
 
 	void Gizmo::Save(std::iostream& stream)
