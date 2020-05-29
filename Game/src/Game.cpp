@@ -59,7 +59,7 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			m_Scene.LoadScene("res/scenes/new.scene");
+			m_Scene.LoadScene("res/scenes/exported.scene");
 
 			// HACKS
 
@@ -250,38 +250,22 @@ namespace sixengine {
 
 		#ifdef DEBUG
 			// IMGUI
-			ImGui::ShowDemoWindow();
-			
-			ImGui::Begin("Scene graph");
-			if (ImGui::TreeNode("Scene Game Objects"))
 			{
-				for (int i = 0; i < 5; i++)
+				PROFILE_SCOPE("ImGui Scene Graph");
+
+				ImGui::Begin("Scene graph");
+				if (ImGui::TreeNode("Scene Game Objects"))
 				{
-					if (ImGui::TreeNode((void*)(intptr_t)i, "Child %d", i))
-					{
-						ImGui::Text("Transform");
-						ImGui::SameLine();
-						if (ImGui::DragFloat3("Position", tr[i].data.data)) {}
-						ImGui::TreePop();
-					}
+					m_Scene.m_SceneRoot->ImGuiWriteSceneTree();
+					ImGui::TreePop();
 				}
-				ImGui::TreePop();
-			}
-			if (ImGui::TreeNode("UI Game Objects"))
-			{
-				for (int i = 0; i < 5; i++)
+				if (ImGui::TreeNode("UI Game Objects"))
 				{
-					if (ImGui::TreeNode((void*)(intptr_t)i, "Child %d", i))
-					{
-						ImGui::Text("Transform");
-						ImGui::SameLine();
-						if (ImGui::DragFloat3("Position", tr[5+i].data.data)) {}
-						ImGui::TreePop();
-					}
+					m_Scene.m_UIRoot->ImGuiWriteUITree();
+					ImGui::TreePop();
 				}
-				ImGui::TreePop();
+				ImGui::End();
 			}
-			ImGui::End();
 			//------
 		#endif // DEBUG
 		}
