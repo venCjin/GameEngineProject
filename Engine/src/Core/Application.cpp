@@ -51,9 +51,9 @@ namespace sixengine {
 
 				m_Timer->Tick();
 				m_Timer->Reset();
-
+			#ifdef DEBUG
 				m_ImGui->BeginFrame();
-
+			#endif //DEBUG
 				if (!m_Minimized)
 				{
 					m_Window->ProcessInput();
@@ -98,9 +98,9 @@ namespace sixengine {
 				*/
 			}
 		}
-
+	#ifdef DEBUG
 		m_ImGui->Shutdown();
-
+	#endif //DEBUG
 		OnShutdown();
 	}
 
