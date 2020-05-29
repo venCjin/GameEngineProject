@@ -2,7 +2,6 @@
 #include <EntryPoint.h>
 
 #include "Core/Scene.h"
-
 #include "Renderer/BatchRenderer.h"
 
 // hacks
@@ -10,21 +9,22 @@
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/DepthRender.h"
 #include "Renderer/Techniques/UI.h"
+#include <Renderer/Techniques/Transparent.h>
 #include "Gameplay/Components/SimplePlayer.h"
 #include <Physics/Components/BoxCollider.h>
 #include "Renderer/PrimitiveUtils.h"
 #include "Renderer/Gizmo.h"
+
+#include <Core/CameraSystem/FlyingCameraSystem.h>
+#include <Core/CameraSystem/OrbitalCameraSystem.h>
+#include <Core/CameraSystem/MixingCameraSystem.h>
 // hacks end
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include <Renderer\Techniques\Transparent.h>
 
-#include <Core/CameraSystem/FlyingCameraSystem.h>
-#include <Core/CameraSystem/OrbitalCameraSystem.h>
-#include <Core/CameraSystem/MixingCameraSystem.h>
 
 namespace sixengine {
 
@@ -38,21 +38,28 @@ namespace sixengine {
 		GameObject* orbitalCamB;
 		GameObject* mixingCam;
 		GameObject* flying;
-
+	#ifdef DEBUG
+		std::array<glm::vec3, 10> tr;
+	#endif //DEBUG
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
 			: Application(title, width, height), m_Scene(width, height)
-			{
-				m_BatchRenderer = BatchRenderer::Instance();
-			}
+		{
+			m_BatchRenderer = BatchRenderer::Instance();
+#ifdef DEBUG
+			tr.fill(glm::vec3(0.0f));
+#endif // DEBUG
+
+		}
 
 		~Game()
-		{}
+		{
+		}
 
 		virtual void OnInit() override
 		{
-			m_Scene.LoadScene("res/scenes/exported.scene");
+			m_Scene.LoadScene("res/scenes/new.scene");
 
 			// HACKS
 
@@ -210,6 +217,12 @@ namespace sixengine {
 
 		virtual void OnUpdate(float dt) override
 		{
+			if (Input::IsKeyPressed(KeyCode::DEL))
+			{
+				WindowCloseEvent e;
+				Application::Get().OnEvent(e);
+			}
+
 			if (Input::IsKeyPressed(KeyCode::F9))
 			{
 				Application::Get().GetWindow().SwitchCursorVisibility();
@@ -234,12 +247,50 @@ namespace sixengine {
 				//PROFILE_SCOPE("ECS")
 				m_SystemManager.UpdateAll(dt);
 			}
+
+		#ifdef DEBUG
+			// IMGUI
+			ImGui::ShowDemoWindow();
+			
+			ImGui::Begin("Scene graph");
+			if (ImGui::TreeNode("Scene Game Objects"))
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					if (ImGui::TreeNode((void*)(intptr_t)i, "Child %d", i))
+					{
+						ImGui::Text("Transform");
+						ImGui::SameLine();
+						if (ImGui::DragFloat3("Position", tr[i].data.data)) {}
+						ImGui::TreePop();
+					}
+				}
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("UI Game Objects"))
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					if (ImGui::TreeNode((void*)(intptr_t)i, "Child %d", i))
+					{
+						ImGui::Text("Transform");
+						ImGui::SameLine();
+						if (ImGui::DragFloat3("Position", tr[5+i].data.data)) {}
+						ImGui::TreePop();
+					}
+				}
+				ImGui::TreePop();
+			}
+			ImGui::End();
+			//------
+		#endif // DEBUG
 		}
 
 		virtual void OnRender(float dt) override
 		{
 			//PROFILE_SCOPE("ON RENDER")
 			m_BatchRenderer->CalculateFrustum();
+
 			{
 				//PROFILE_SCOPE("SUBMIT COMMANDS")
 				m_Scene.Render();

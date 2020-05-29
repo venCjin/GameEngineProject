@@ -1,5 +1,5 @@
 
--AddShader StaticPBR res/shaders/Basic.glsl
+-AddShader StaticPBR res/shaders/PBR.glsl
 
 
 

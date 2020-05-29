@@ -8,3 +8,6 @@ bin-int/
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
+
+# ImGui config
+**/imgui.ini

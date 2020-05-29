@@ -8,6 +8,9 @@
 #include <Core/Input.h>
 #include <ECS/ECS.h>
 
+#include "ImGui/ImGuiLayer.h"
+#include "imgui.h"
+
 namespace sixengine {
 
 	class Application : public EntityComponentSystem
@@ -18,6 +21,9 @@ namespace sixengine {
 		bool m_Running = true, m_Minimized = false;
 		Timer* m_Timer;
 		Input* m_Input;
+	#ifdef DEBUG
+		ImGuiLayer* m_ImGui;
+	#endif // DEBUG
 
 	public:
 		Application(std::string = "Six Engine", unsigned int width = 1280, unsigned int height = 720);
@@ -35,6 +41,9 @@ namespace sixengine {
 		inline Window& GetWindow() { return *m_Window; }
 		inline Timer& GetTimer() { return *m_Timer; }
 		inline Input& GetInput() { return *m_Input; }
+	#ifdef DEBUG
+		inline ImGuiLayer& GetImGuiLayer() { return *m_ImGui; }
+	#endif // DEBUG
 		
 		static inline Application& Get() { return *s_Instance; }
 
