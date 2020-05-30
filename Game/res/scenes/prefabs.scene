@@ -1,0 +1,574 @@
+
+-AddShader StaticPBR res/shaders/PBR.glsl
+
+
+
+//PRIMITIVES
+//========================================
+
+//CUBE
+-AddMaterial BrickBasic Basic 1 res/textures/test/Bricks.jpg
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.5 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 1.0 1.0 1.0
+    -BoxCollider 1.0 1.0 1.0 0
+    -Model res/models/Primitives/Cube.obj
+    -Material BrickBasic
++end
+
+//SPHERE
+-AddMaterial BrickBasic Basic 1 res/textures/test/Bricks.jpg
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.5 0.0
+        +end
+    +end
+    -Gizmo 255 0 0 Sphere 0.5
+    -SphereCollider 0.5 0
+    -Model res/models/Primitives/Sphere.obj
+    -Material BrickBasic
++end
+
+//========================================
+
+
+
+//========================================
+//ENVIROMENT
+//========================================
+
+//GROUND
+//========================================
+-AddMaterial GroundBasic Basic 1 res/models/Environment/Ground/Textures/Ground_Albedo.png
++SceneGameObject
+    +Transform
+    +end
+    -BoxCollider 1000.0 0.001 1000.0 1
+    -Model res/models/Environment/Ground/Ground.obj
+    -Material GroundBasic
++end
+//========================================
+
+//VEGETATION
+//========================================
+//BIG_BUSH
+-AddMaterial BigBushBasic Basic 1 res/models/Environment/Vegetation/Textures/BigBush_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.55 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.6 1.1 0.6
+    -BoxCollider 0.6 1.1 0.6 0
+    -Model res/models/Environment/Vegetation/BigBush.obj
+    -Material BigBushBasic
++end
+
+//PALM_TREE
+-AddMaterial PalmTreeBasic Basic 1 res/models/Environment/Vegetation/Textures/PalmTree_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 2.5 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.5 5.0 0.5
+    -BoxCollider 0.5 5.0 0.5 0
+    -Model res/models/Environment/Vegetation/PalmTree.obj
+    -Material PalmTreeBasic
++end
+
+//PALM_TREE_2
+-AddMaterial PalmTreeBasic Basic 1 res/models/Environment/Vegetation/Textures/PalmTree_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 1.0 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.5 2.0 0.5
+    -BoxCollider 0.5 2.0 0.5 0
+    -Model res/models/Environment/Vegetation/PalmTree2.obj
+    -Material PalmTreeBasic
++end
+//========================================
+
+//ROCKS
+//========================================
+//ROCK_1
+-AddMaterial RocksBasic Basic 1 res/models/Environment/Rocks/Textures/Rocks_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.6 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 2.8 2.6 3.4
+    -BoxCollider 2.8 2.6 3.4 0
+    -Model res/models/Environment/Rocks/Rock1.obj
+    -Material RocksBasic
++end
+
+//ROCK_2
+-AddMaterial RocksBasic Basic 1 res/models/Environment/Rocks/Textures/Rocks_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.5 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 1.2 1.0 1.2
+    -BoxCollider 1.2 1.0 1.2 0
+    -Model res/models/Environment/Rocks/Rock2.obj
+    -Material RocksBasic
++end
+
+//ROCK_3
+-AddMaterial RocksBasic Basic 1 res/models/Environment/Rocks/Textures/Rocks_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.5 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 1.2 1.0 1.5
+    -BoxCollider 1.2 1.0 1.5 0
+    -Model res/models/Environment/Rocks/Rock3.obj
+    -Material RocksBasic
++end
+
+//ROCK_4
+-AddMaterial RocksBasic Basic 1 res/models/Environment/Rocks/Textures/Rocks_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.74 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 1.2 1.5 1.0
+    -BoxCollider 1.2 1.5 1.0 0
+    -Model res/models/Environment/Rocks/Rock4.obj
+    -Material RocksBasic
++end
+
+//ROCK_5
+-AddMaterial RocksBasic Basic 1 res/models/Environment/Rocks/Textures/Rocks_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.64 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 1.4 1.3 1.4
+    -BoxCollider 1.4 1.3 1.4 0
+    -Model res/models/Environment/Rocks/Rock5.obj
+    -Material RocksBasic
++end
+//========================================
+
+//========================================
+//========================================
+
+
+
+
+//========================================
+//PROPS
+//========================================
+
+//AMMO_BOX
+-AddMaterial AmmoBoxBasic Basic 1 res/models/Props/AmmoBox/Textures/AmmoBox_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.175 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.24 0.35 0.56
+    -BoxCollider 0.24 0.35 0.56 0
+    -Model res/models/Props/AmmoBox/AmmoBox.obj
+    -Material AmmoBoxBasic
++end
+//========================================
+
+//BARREL
+//RED
+-AddMaterial RedBarrelBasic Basic 1 res/models/Props/Barrel/Textures/RedBarrel_Albedo.png
+//BLUE
+//-AddMaterial BlueBarrelBasic Basic 1 res/models/Props/Barrel/Textures/BlueBarrel_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.55 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.76 1.1 0.76
+    -BoxCollider 0.76 1.1 0.76 0
+    -Model res/models/Props/Barrel/Barrel.obj
+    -Material RedBarrelBasic
++end
+//========================================
+
+//BARREL_DAMAGED
+-AddMaterial BlueBarrelBasic Basic 1 res/models/Props/Barrel/Textures/BlueBarrel_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.55 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.76 1.1 0.76
+    -BoxCollider 0.76 1.1 0.76 0
+    -Model res/models/Props/Barrel/BarrelDamaged.obj
+    -Material BlueBarrelBasic
++end
+//========================================
+
+//BARREL_DESTROYED
+-AddMaterial BlueBarrelBasic Basic 1 res/models/Props/Barrel/Textures/BlueBarrel_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.35 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.76 0.7 0.76
+    -BoxCollider 0.76 0.7 0.76 0
+    -Model res/models/Props/Barrel/BarrelDestroyed.obj
+    -Material BlueBarrelBasic
++end
+//========================================
+
+//Barrier
+-AddMaterial BarrierBasic Basic 1 res/models/Props/Barrier/Textures/Barrier_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.35 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0 0 0 
+    -BoxCollider 0 0 0 0
+    -Model res/models/Props/Barrier/Barrier.obj
+    -Material BarrierBasic
++end
+//========================================
+
+//Container
+//Blue
+-AddMaterial BlueContainerBasic Basic 1 res/models/Props/Container/Textures/BlueContainer_Albedo.png
+//Green
+//-AddMaterial GreenContainerBasic Basic 1 res/models/Props/Container/Textures/GreenContainer_Albedo.png
+//Olive
+//-AddMaterial OliveContainerBasic Basic 1 res/models/Props/Container/Textures/OliveContainer_Albedo.png
+//Red
+//-AddMaterial RedContainerBasic Basic 1 res/models/Props/Container/Textures/RedContainer_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 1.55 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 6.6 3.1 3.1
+    -BoxCollider 6.6 3.1 3.1 0
+    -Model res/models/Props/Container/Container.obj
+    -Material BlueContainerBasic
++end
+//========================================
+
+//Generator
+//Red
+-AddMaterial RedGeneratorBasic Basic 1 res/models/Props/Generator/Textures/RedGenerator_Albedo.png
+//Blue
+//-AddMaterial YellowGenoratorBasic Basic 1 res/models/Props/Generator/Textures/YellowGenorator_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.475 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.95 0.95 1.5
+    -BoxCollider 0.95 0.95 1.5 0
+    -Model res/models/Props/Generator/Generator.obj
+    -Material RedGeneratorBasic
++end
+//========================================
+
+//Grenade
+-AddMaterial GrenadeBasic Basic 1 res/models/Props/Grenade/Textures/Grenade_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.07 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.075 0.14 0.075
+    -BoxCollider 0.075 0.14 0.075 0
+    -Model res/models/Props/Grenade/Grenade.obj
+    -Material GrenadeBasic
++end
+//========================================
+
+//Hause
+-AddMaterial HouseBasic Basic 1 res/models/Props/House/Textures/House_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 1.775 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 10.64 3.55 7.1
+    -BoxCollider 10.64 3.55 7.1 0
+    -Model res/models/Props/House/House.obj
+    -Material HouseBasic
++end
+//========================================
+
+//Jerrycan
+-AddMaterial JerrycanBasic Basic 1 res/models/Props/Jerrycan/Textures/Jerrycan_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.38 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.24 0.76 0.54
+    -BoxCollider 0.24 0.76 0.54 0
+    -Model res/models/Props/Jerrycan/Jerrycan.obj
+    -Material JerrycanBasic
++end
+//========================================
+
+//Light
+-AddMaterial LightBasic Basic 1 res/models/Props/Lights/Textures/Light_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 1.1 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.2 2.2 0.2
+    -BoxCollider 0.2 2.2 0.2 0
+    -Model res/models/Props/Lights/Light.obj
+    -Material LightBasic
++end
+//========================================
+
+//POTS
+
+//Pot1
+-AddMaterial PotsBasic Basic 1 res/models/Props/Pots/Textures/Pots_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.465 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.83 0.93 0.83
+    -BoxCollider 0.83 0.93 0.83 0
+    -Model res/models/Props/Pots/Pot1.obj
+    -Material PotsBasic
++end
+//========================================
+
+//Pot2
+-AddMaterial PotsBasic Basic 1 res/models/Props/Pots/Textures/Pots_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.465 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.8 1.176 0.8
+    -BoxCollider 0.8 1.176 0.8 0
+    -Model res/models/Props/Pots/Pot2.obj
+    -Material PotsBasic
++end
+//========================================
+
+//Pot3
+-AddMaterial PotsBasic Basic 1 res/models/Props/Pots/Textures/Pots_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.465 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.83 1.225 0.83
+    -BoxCollider 0.83 1.225 0.83 0
+    -Model res/models/Props/Pots/Pot3.obj
+    -Material PotsBasic
++end
+//========================================
+
+//Pot4
+-AddMaterial PotsBasic Basic 1 res/models/Props/Pots/Textures/Pots_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.615 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.83 1.23 0.83
+    -BoxCollider 0.83 1.23 0.83 0
+    -Model res/models/Props/Pots/Pot4.obj
+    -Material PotsBasic
++end
+//========================================
+
+//Pot5
+-AddMaterial PotsBasic Basic 1 res/models/Props/Pots/Textures/Pots_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.92 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.83 1.84 0.83
+    -BoxCollider 0.83 1.84 0.83 0
+    -Model res/models/Props/Pots/Pot5.obj
+    -Material PotsBasic
++end
+//========================================
+
+//PotCap
+-AddMaterial PotsBasic Basic 1 res/models/Props/Pots/Textures/Pots_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.077 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 0.35 0.154 0.35
+    -BoxCollider 0.35 0.154 0.35 0
+    -Model res/models/Props/Pots/PotCap.obj
+    -Material PotsBasic
++end
+//========================================
+
+//========================================
+
+
+//LADDERS
+
+//SmallLadder
+-AddMaterial LadderBasic Basic 1 res/models/Props/Ladders/Textures/Ladder_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 1.9 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 1.333 3.8 0.259
+    -BoxCollider 1.333 3.8 0.259 0
+    -Model res/models/Props/Ladders/SmallLadder.obj
+    -Material LadderBasic
++end
+//========================================
+
+//TallLadder
+-AddMaterial LadderBasic Basic 1 res/models/Props/Ladders/Textures/Ladder_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 3.8 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 1.333 7.6 0.259
+    -BoxCollider 1.333 7.6 0.259 0
+    -Model res/models/Props/Ladders/TallLadder.obj
+    -Material LadderBasic
++end
+//========================================
+
+//========================================
+
+//PressureTank
+-AddMaterial PressureTankBasic Basic 1 res/models/Props/PressureTank/Textures/PressureTank_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.725 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 3.077 1.45 1.322
+    -BoxCollider 3.077 1.45 1.322 0
+    -Model res/models/Props/PressureTank/PressureTank.obj
+    -Material PressureTankBasic
++end
+//========================================
+
+//TIRES
+
+//TireSingle
+-AddMaterial TiresBasic Basic 1 res/models/Props/Tires/Textures/Tires_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.255 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 1.0 0.51 1.0
+    -BoxCollider 1.0 0.51 1.0 0
+    -Model res/models/Props/Tires/TireSingle.obj
+    -Material TiresBasic
++end
+//========================================
+
+//TireWall
+-AddMaterial TiresBasic Basic 1 res/models/Props/Tires/Textures/Tires_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.51 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 3.0 1.02 1.0
+    -BoxCollider 3.0 1.02 1.0 0
+    -Model res/models/Props/Tires/TireWall.obj
+    -Material TiresBasic
++end
+//========================================
+
+//========================================
+
+//Well
+-AddMaterial WellBasic Basic 1 res/models/Props/Well/Textures/Well_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.48 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 3.2 0.96 3.0
+    -BoxCollider 3.2 0.96 3.0 0
+    -Model res/models/Props/Well/Well.obj
+    -Material WellBasic
++end
+//========================================
+
+//WoodenCrate
+-AddMaterial WoodenCrateBasic Basic 1 res/models/Props/WoodenCrate/Textures/WoodenCrate_Albedo.png
+//Second_Texture
+//-AddMaterial WoodenCrateBasic Basic 1 res/models/Props/WoodenCrate/Textures/WoodenCrate2_Albedo.png
++SceneGameObject
+    +Transform
+        +world
+            -translate 0.0 0.5 0.0
+        +end
+    +end
+    -Gizmo 0 255 0 Cube 1.0 1.0 1.0
+    -BoxCollider 1.0 1.0 1.0 0
+    -Model res/models/Props/WoodenCrate/WoodenCrate.obj
+    -Material WoodenCrateBasic
++end
+//========================================
+
+//========================================
+//========================================

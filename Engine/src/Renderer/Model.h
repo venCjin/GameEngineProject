@@ -14,12 +14,10 @@
 #include <map>
 
 #include "Core/Profile.h"
-
 namespace sixengine {
 
 
 	typedef unsigned int uint;
-//#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
 	class Model
 	{
@@ -32,8 +30,6 @@ namespace sixengine {
 
 		bool LoadModel(const std::string& filename);
 		bool LoadAnimation(const std::string& filename, std::string name);
-
-		void Render(Shader* shader);
 
 		uint NumBones() const
 		{
@@ -72,7 +68,7 @@ namespace sixengine {
 		uint FindPosition(float animationTime, const aiNodeAnim* nodeAnim);
 		void ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform, std::string animationName, std::vector<glm::mat4>& transforms);
 		bool InitFromScene(const aiScene* scene, const std::string& filename);
-		void InitMesh(uint MeshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
+		void InitMesh(uint MeshIndex, const aiMesh* mesh/*, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices*/);
 		void LoadBones(uint MeshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices);
 		void Clear();
 

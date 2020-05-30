@@ -76,6 +76,14 @@ namespace sixengine {
 		void AddGizmo(Gizmo* gizmo);
 
 		std::vector<GameObject*> GetChildren();
+	#ifdef DEBUG
+		void ImGuiWriteSceneTree();
+		void ImGuiWriteSceneTreeNode();
+
+		void ImGuiWriteUITree();
+		void ImGuiWriteUITreeNode();
+	#endif // DEBUG
+
 	};
 
 }

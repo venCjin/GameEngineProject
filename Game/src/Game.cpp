@@ -2,83 +2,77 @@
 #include <EntryPoint.h>
 
 #include "Core/Scene.h"
+#include "Renderer/BatchRenderer.h"
+
+// hacks
+#include "Gameplay/Systems/AnimationSystem.h"
+#include "Renderer/Techniques/AnimationPBR.h"
+#include "Renderer/Techniques/DepthRender.h"
+#include "Renderer/Techniques/UI.h"
+#include <Renderer/Techniques/Transparent.h>
+#include "Gameplay/Components/SimplePlayer.h"
+#include <Physics/Components/BoxCollider.h>
+#include "Renderer/PrimitiveUtils.h"
+#include "Renderer/Gizmo.h"
+
+#include <Core/CameraSystem/FlyingCameraSystem.h>
+#include <Core/CameraSystem/OrbitalCameraSystem.h>
+#include <Core/CameraSystem/MixingCameraSystem.h>
+// hacks end
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
 
-#include "Renderer/BatchRenderer.h"
-#include "Renderer/ModelManager.h"
-#include "Renderer/MaterialManager.h"
-#include "Renderer/TextureArray.h"
-
-#include "Renderer/Techniques/AnimationPBR.h"
-#include "Renderer/Techniques/StaticPBR.h"
-#include "Renderer/Techniques/DepthRender.h"
-#include "Renderer/Techniques/UI.h"
-
-#include "Gameplay/Systems/AnimationSystem.h"
-#include <Core\CameraSystem\FlyingCameraSystem.h>
-
-#define SCENE_FILE 0
 
 namespace sixengine {
 
 	class Game : public Application
 	{
 	private:
-		#if SCENE_FILE
 		Scene m_Scene;
-		#else
-		GameObject *m_SceneRoot, *m_UIRoot;
-		Shader *m_BasicShader, *m_BasicShader2, *m_FontShader;
-
-		ShaderManager* m_ShaderManager;
-		ModelManager* m_ModelManager;
-		TextureArray* m_TextureArray;
-		MaterialManager* m_MaterialManager;
-		#endif
 		BatchRenderer* m_BatchRenderer;
+
+		GameObject* orbitalCamA;
+		GameObject* orbitalCamB;
+		GameObject* mixingCam;
+		GameObject* flying;
+	#ifdef DEBUG
+		std::array<glm::vec3, 10> tr;
+	#endif //DEBUG
 
 	public:
 		Game(std::string title, unsigned int width, unsigned int height)
-			: Application(title, width, height)
-			#if SCENE_FILE
-			, m_Scene(width, height)
+			: Application(title, width, height), m_Scene(width, height)
 		{
-			#else
-		{
-			m_TextureArray = new TextureArray(2048, 2048);
-			m_MaterialManager = new MaterialManager();
-			m_ModelManager = new ModelManager();
-			m_ShaderManager = new ShaderManager();
-
-			BatchRenderer::Initialize(m_ModelManager, m_TextureArray);
-			#endif
 			m_BatchRenderer = BatchRenderer::Instance();
+#ifdef DEBUG
+			tr.fill(glm::vec3(0.0f));
+#endif // DEBUG
+
 		}
-		
+
 		~Game()
-		{}
+		{
+		}
 
 		virtual void OnInit() override
 		{
-			#if SCENE_FILE
-			m_Scene.LoadScene("res/scenes/br.scene");
-			#else
-			
+			m_Scene.LoadScene("res/scenes/exported.scene");
+
+			// HACKS
+
+			m_BatchRenderer->SetLight(new Light());
+
 			m_SystemManager.AddSystem<AnimationSystem>();
-			m_SystemManager.AddSystem<FlyingCameraSystem>();
 
-			/// SETUP ASSETS
-			/// =========================================================
-			m_BasicShader = m_ShaderManager->AddShader("res/shaders/PBR.glsl");
-			m_BasicShader2 = m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
-			m_FontShader = m_ShaderManager->AddShader("res/shaders/Font.glsl");
-			m_ShaderManager->AddShader("res/shaders/Depth.glsl");
-			m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
-
+			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
+			Shader* m_FontShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Font.glsl");
+			Shader* m_TransparentShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Transparent.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
+			
+			m_Scene.m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
 			Skybox* skybox = new Skybox(
 				{
 					"res/textures/skybox/right.jpg",
@@ -89,181 +83,222 @@ namespace sixengine {
 					"res/textures/skybox/back.jpg"
 				}
 			);
+			m_BatchRenderer->SetSkybox(new SkyboxRender(m_Scene.m_ShaderManager->Get("Skybox"), skybox));
 
-			GameObject* go = new GameObject(*Application::Get().GetEntityManager());
-			go->AddComponent<Transform>(go);
-			go->AddComponent<Camera>(go);
-			go->GetComponent<Camera>()->SetPerspective((float)Application::Get().GetWindow().GetWidth()/ (float)Application::Get().GetWindow().GetHeight());
-			go->AddComponent<FlyingCamera>();
-
-			Camera::ActiveCamera = go->GetComponent<Camera>().Get();
-
-			go = new GameObject(*Application::Get().GetEntityManager());
-			go->AddComponent<Transform>(go);
-			go->AddComponent<Camera>(go);
-			go->GetComponent<Camera>()->SetOrthogonal((float)Application::Get().GetWindow().GetWidth(), (float)Application::Get().GetWindow().GetHeight());
 
 			Font* font = new Font("res/fonts/DroidSans.ttf");
 			UI* ui = new UI(m_FontShader);
+			TransparentTechnique* transparent = new TransparentTechnique(m_TransparentShader);
 			ui->AddFont(font);
 
-
-			m_BatchRenderer->SetDepth(new DepthRender(m_ShaderManager->Get("Depth")));
-			m_BatchRenderer->SetSkybox(new SkyboxRender(m_ShaderManager->Get("Skybox"), skybox));
-
-			m_BatchRenderer->AddTechnique(new StaticPBR(m_BasicShader));
+			m_BatchRenderer->SetDepth(new DepthRender(m_Scene.m_ShaderManager->Get("Depth")));
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
+			m_BatchRenderer->AddTechnique(transparent);
 			m_BatchRenderer->AddTechnique(ui);
 
-			m_TextureArray->AddTexture("res/textures/test/Bricks.jpg");
-			m_TextureArray->AddTexture("res/textures/test/Wood1.jpg");
-			m_TextureArray->AddTexture("res/textures/test/Wood2.jpg");
-			m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
-			m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_normal.png");
-			m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_specular.png");
-			m_TextureArray->CreateTextureArray();
-
-			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("Font"),
+			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
+			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_normal.png");
+			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_specular.png");
+			m_Scene.m_TextureArray->AddTexture("res/textures/test/Bricks.jpg");
+			m_Scene.m_TextureArray->CreateTextureArray();
+			m_Scene.m_MaterialManager->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("Font"),
 				glm::vec4(0),
 				"FontMaterial");
 
-			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("PBR"),
-				glm::vec4(m_TextureArray->GetTexture("Bricks")),
-				"BrickBasic1");
-
-			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("PBR"),
-				glm::vec4(m_TextureArray->GetTexture("Wood1")),
-				"Wood1Basic1"); 
-
-			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("PBR"),
-				glm::vec4(m_TextureArray->GetTexture("Wood2")),
-				"Wood2Basic1");
-
-			m_MaterialManager->CreateMaterial(
-				m_ShaderManager->Get("AnimationPBR"),
-				glm::vec4(m_TextureArray->GetTexture("parasiteZombie_diffuse"), 
-					m_TextureArray->GetTexture("parasiteZombie_normal"), 
-					m_TextureArray->GetTexture("parasiteZombie_specular"), 0.0f),
+			m_Scene.m_MaterialManager->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("AnimationPBR"),
+				glm::vec4(m_Scene.m_TextureArray->GetTexture("parasiteZombie_diffuse"),
+					m_Scene.m_TextureArray->GetTexture("parasiteZombie_normal"),
+					m_Scene.m_TextureArray->GetTexture("parasiteZombie_specular"), 0.0f),
 				"parasiteZombie");
 
-			m_ModelManager->AddModel("res/models/primitives/cube.obj");
-			m_ModelManager->AddModel("res/models/primitives/sphere.obj");
-			m_ModelManager->AddModel("res/models/primitives/cone.obj");
-			m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
-			m_ModelManager->AddModel("res/models/primitives/teapot.obj");
-			m_ModelManager->AddModel("res/models/par/par.dae");
-			m_ModelManager->CreateVAO();
+			m_Scene.m_MaterialManager->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("Transparent"),
+				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks")),
+				"Transparent");
 
-			m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
-			m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
-			m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
-				
-			// SETUP SCENE
-			std::map<unsigned int, std::string> randomM;
-			randomM[0] = "cube";
-			randomM[1] = "sphere";
-			randomM[2] = "cone";
-			randomM[3] = "cylinder";
-			randomM[4] = "teapot";
+			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
+			m_Scene.m_ModelManager->CreateVAO();
+			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
+			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
+			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
 
-			std::map<unsigned int, std::string> randomT;
-			randomT[0] = "BrickBasic1";
-			randomT[1] = "Wood1Basic1";
-			randomT[2] = "Wood2Basic1";
-
-			m_SceneRoot = new GameObject(m_EntityManager);
-			m_UIRoot = new GameObject(m_EntityManager);
-			srand(NULL);
-			
 			GameObject* obj;
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(-10.0f, 1.0f, -10.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cylinder"));
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Transparent"));
+			m_Scene.m_SceneRoot->AddChild(obj);
+
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0f, 10.0f, 0.0f);
 			obj->AddComponent<Text>("Testowy tekst, do testowania.", glm::vec3(0.0f, 1.0f, 1.0f), 1.0f);
-			obj->AddComponent<Material>(*m_MaterialManager->Get("FontMaterial"));
-			m_UIRoot->AddChild(obj);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
+			m_Scene.m_UIRoot->AddChild(obj);
 
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 690.0f, 0.0f);
-
 			obj->AddComponent<Text>("Sixengine 0.?", glm::vec3(1.0f, 0.0f, 1.0f), 0.3f);
-			obj->AddComponent<Material>(*m_MaterialManager->Get("FontMaterial"));
-			m_UIRoot->AddChild(obj);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
+			m_Scene.m_UIRoot->AddChild(obj);
 
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(0.0, -1.0f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(100.0f, 1.0f, 100.0f);
-			obj->AddComponent<Mesh>(m_ModelManager->GetModel(randomM[0]));
-			obj->AddComponent<Material>(*m_MaterialManager->Get("Wood2Basic1"));
-			m_SceneRoot->AddChild(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
+			//obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
+			obj->GetComponent<Transform>()->SetLocalOrientation(180.0f, 0.0f, 0.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cylinder"));
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Transparent"));
+			obj->AddComponent<Animation>();
+			obj->AddComponent<SimplePlayer>();
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+			std::vector<GizmoVertex> vertices;
+			std::vector<unsigned int> indices;
+			PrimitiveUtils::GenerateBox(vertices, indices, 100, 200, 100);
+			VertexArray* vao = new VertexArray();
+			VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
+			vbo->SetLayout({
+				{ VertexDataType::VEC3F, "Position" }
+				});
+			IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
+			vao->AddVertexBuffer(*vbo);
+			vao->AddIndexBuffer(*ibo);
+			obj->AddGizmo(new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(0, 255, 0)));
+			m_Scene.m_SceneRoot->AddChild(obj);
 
-			for (int i = 0; i < 10; i++)
-			{
-				for (int j = 0; j < 10; j++)
-				{
-					obj = new GameObject(m_EntityManager);
-					obj->AddComponent<Transform>(obj);
-					obj->GetComponent<Transform>()->SetWorldPosition(2.0f * i + 10.0f, i * 1.0f + j * 0.5f, 2.0f * j);
-					unsigned int rM = rand() % 5;
-					obj->AddComponent<Mesh>(m_ModelManager->GetModel(randomM[rM]));
+			flying = Camera::ActiveCamera->m_GameObject;
 
-					unsigned int rT = rand() % 3;
-					obj->AddComponent<Material>(*m_MaterialManager->Get(randomT[rT]));
+			m_SystemManager.AddSystem<OrbitalCameraSystem>();
+			m_SystemManager.AddSystem<MixingCameraSystem>();
+			orbitalCamA = new GameObject(m_EntityManager);
+			orbitalCamA->AddComponent<Transform>(orbitalCamA);
+			orbitalCamA->AddComponent<Camera>(orbitalCamA);
+			orbitalCamA->GetComponent<Camera>()->SetPerspective((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight());
 
-					m_SceneRoot->AddChild(obj);
-				}
-			}
+			orbitalCamA->AddComponent<OrbitalCamera>();
+			orbitalCamA->GetComponent<OrbitalCamera>()->m_LookTarget = obj->GetComponent<Transform>().Get();
+			orbitalCamA->GetComponent<OrbitalCamera>()->m_FollowTarget = obj->GetComponent<Transform>().Get();
+			orbitalCamA->GetComponent<OrbitalCamera>()->m_FollowOffset = glm::vec3(0.0f, 5.0f, 10.0f);
 
-			for (int i = 0; i < 3; i++)
-			{
-				for (int j = 0; j < 3; j++)
-				{
-					obj = new GameObject(m_EntityManager);
+			orbitalCamB = new GameObject(m_EntityManager);
+			orbitalCamB->AddComponent<Transform>(orbitalCamB);
+			orbitalCamB->AddComponent<Camera>(orbitalCamB);
+			orbitalCamB->GetComponent<Camera>()->SetPerspective((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight());
 
-					obj->AddComponent<Transform>(obj);
-					obj->GetComponent<Transform>()->SetWorldPosition(8.0f * i - 20.0f, 0.0f, 8.0f * j);
-					obj->GetComponent<Transform>()->SetLocalScale(0.05f, 0.05f, 0.05f);
-					obj->AddComponent<Mesh>(m_ModelManager->GetModel("par"));
-					obj->AddComponent<Material>(*m_MaterialManager->Get("parasiteZombie"));
-					obj->AddComponent<Animation>();					
+			orbitalCamB->AddComponent<OrbitalCamera>();
+			orbitalCamB->GetComponent<OrbitalCamera>()->m_LookTarget = obj->GetComponent<Transform>().Get();
+			orbitalCamB->GetComponent<OrbitalCamera>()->m_FollowTarget = obj->GetComponent<Transform>().Get();
+			orbitalCamB->GetComponent<OrbitalCamera>()->m_FollowOffset = glm::vec3(0.0f, 7.5f, 7.5f);
 
-					m_SceneRoot->AddChild(obj);
-				}
-			}
+			mixingCam = new GameObject(m_EntityManager);
+			mixingCam->AddComponent<Transform>(mixingCam);
+			mixingCam->AddComponent<Camera>(mixingCam);
+			mixingCam->GetComponent<Camera>()->SetPerspective((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight());
 
-			m_BatchRenderer->SetLight(new Light());
+			mixingCam->AddComponent<MixingCamera>(mixingCam);
+			mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamA->GetComponent<Camera>().Get());
 
-			#endif
+			Camera::ActiveCamera = mixingCam->GetComponent<Camera>().Get();
+
+			// HACKS END
 
 			m_BatchRenderer->Configure();
 
-			#if SCENE_FILE
 			m_Scene.Render(true);
-			#else
-			m_SceneRoot->Render(true);
-			m_UIRoot->Render(true);
-			#endif
+			
 			m_BatchRenderer->Render();
 		}
 
 		virtual void OnUpdate(float dt) override
 		{
-			m_SystemManager.UpdateAll(dt);
+			if (Input::IsKeyPressed(KeyCode::DEL))
+			{
+				WindowCloseEvent e;
+				Application::Get().OnEvent(e);
+			}
+
+			if (Input::IsKeyPressed(KeyCode::F9))
+			{
+				Application::Get().GetWindow().SwitchCursorVisibility();
+			}
+
+			if (Input::IsKeyPressed(KeyCode::F5))
+			{
+				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamA->GetComponent<Camera>().Get());
+				Shader * shader = m_Scene.m_MaterialManager->Get("Transparent")->GetShader();
+				shader->Bind();
+				shader->SetInt("OnSurface", 1);
+				shader->Unbind();
+
+			}
+
+			if (Input::IsKeyPressed(KeyCode::F6))
+			{
+				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamB->GetComponent<Camera>().Get());
+				Shader* shader = m_Scene.m_MaterialManager->Get("Transparent")->GetShader();
+				shader->Bind();
+				shader->SetInt("OnSurface", 0);
+				shader->Unbind();
+			}
+
+			if (Input::IsKeyPressed(KeyCode::F7))
+			{
+				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(flying->GetComponent<Camera>().Get());
+			}
+
+			{
+				//PROFILE_SCOPE("ECS")
+				m_SystemManager.UpdateAll(dt);
+			}
+
+		#ifdef DEBUG
+			// IMGUI
+			{
+				PROFILE_SCOPE("ImGui Scene Graph");
+
+				ImGui::Begin("Scene graph");
+				if (ImGui::TreeNode("Scene Game Objects"))
+				{
+					m_Scene.m_SceneRoot->ImGuiWriteSceneTree();
+					ImGui::TreePop();
+				}
+				if (ImGui::TreeNode("UI Game Objects"))
+				{
+					m_Scene.m_UIRoot->ImGuiWriteUITree();
+					ImGui::TreePop();
+				}
+				ImGui::End();
+			}
+			//------
+		#endif // DEBUG
 		}
 
 		virtual void OnRender(float dt) override
 		{
+			//PROFILE_SCOPE("ON RENDER")
 			m_BatchRenderer->CalculateFrustum();
-			m_SceneRoot->Render();
-			m_UIRoot->Render();
-			m_BatchRenderer->Render();
+
+			{
+				//PROFILE_SCOPE("SUBMIT COMMANDS")
+				m_Scene.Render();
+			}
+
+			{
+				//PROFILE_SCOPE("RENDER")
+				m_BatchRenderer->Render();
+			}
+
+			{
+				//PROFILE_SCOPE("DRAW GIZMOS")
+				m_Scene.DrawGizmos();
+			}
 		}
+
 	};
 
 }
@@ -272,4 +307,3 @@ sixengine::Application* sixengine::CreateApplication()
 {
 	return new Game("App", 1280, 720);
 }
-

@@ -3,11 +3,11 @@
 #include <glad/glad.h> 
 #include "stb_image.h"
 
-#define POSITION_LOCATION    0
+/*#define POSITION_LOCATION    0
 #define TEX_COORD_LOCATION   1
 #define NORMAL_LOCATION      2
 #define BONE_ID_LOCATION     3
-#define BONE_WEIGHT_LOCATION 4
+#define BONE_WEIGHT_LOCATION 4*/
 
 namespace sixengine {
 
@@ -54,7 +54,8 @@ namespace sixengine {
 		m_Scene = m_Importer.ReadFile(filename.c_str(), aiProcess_Triangulate |
 			aiProcess_GenSmoothNormals |
 			aiProcess_FlipUVs |
-			aiProcess_JoinIdenticalVertices);
+			aiProcess_JoinIdenticalVertices | 
+			aiProcess_CalcTangentSpace);
 		if (m_Scene) {
 			m_GlobalInverseTransform = glm::transpose(glm::make_mat4(&m_Scene->mRootNode->mTransformation.a1));
 			m_GlobalInverseTransform = glm::inverse(m_GlobalInverseTransform);
@@ -112,13 +113,13 @@ namespace sixengine {
 		// Initialize the meshes in the scene one by one
 		for (uint i = 0; i < m_Entries.size(); i++) {
 			const aiMesh* mesh = scene->mMeshes[i];
-			InitMesh(i, mesh, vertices, indices);
+			InitMesh(i, mesh/*, vertices, indices*/);
 		}
 		
 		return true;
 	}
 
-	void Model::InitMesh(uint meshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices, std::vector<uint>& indices)
+	void Model::InitMesh(uint meshIndex, const aiMesh* mesh/*, std::vector<Vertex>& vertices, std::vector<uint>& indices*/)
 	{
 		// Populate the vertex attribute vectors
 		for (uint i = 0; i < mesh->mNumVertices; i++) {
@@ -145,6 +146,18 @@ namespace sixengine {
 			else
 				vector = glm::vec3(0.0f);
 			vertex.Normal = vector;
+
+			if (mesh->mTangents)
+				vector = { mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z };
+			else
+				vector = glm::vec3(0.0f);
+			vertex.Tangent = vector;
+
+			if (mesh->mBitangents)
+				vector = { mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z };
+			else
+				vector = glm::vec3(0.0f);
+			vertex.Bitangent = vector;
 
 			// TexCoords
 			if (mesh->mTextureCoords[0])
@@ -396,53 +409,14 @@ namespace sixengine {
 		for (uint i = 0; i < m_NumBones; i++)
 			blendLayer2[i] = transforms[i];
 
+		glm::mat4 transformation;
+		
+
 		float blendProgress = ((currentTimer / 1.0f) > 1.0f) ? 1.0f : (currentTimer / 1.0f);
 		for (uint i = 0; i < m_NumBones; i++) {
+			
 			transforms[i] = blendLayer1[i] * blendProgress + blendLayer2[i] * (1.0f - blendProgress);
 		}	
 	}
-
-	unsigned int TextureFromFile(const char * path, const std::string & directory, bool gamma)
-	{
-		std::string filename = std::string(path);
-		//std::string fn2 = filename.substr(filename.find_last_of('/'), filename.length());
-
-		filename = directory + "/" + filename;//directory + fn2;
-		//LOG_INFO(filename);
-
-		unsigned int textureID;
-		glGenTextures(1, &textureID);
-
-		int width, height, nrComponents;
-		unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
-		if (data)
-		{
-			GLenum format;
-			if (nrComponents == 1)
-				format = GL_RED;
-			else if (nrComponents == 3)
-				format = GL_RGB;
-			else if (nrComponents == 4)
-				format = GL_RGBA;
-
-			glBindTexture(GL_TEXTURE_2D, textureID);
-			glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-			glGenerateMipmap(GL_TEXTURE_2D);
-
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-			stbi_image_free(data);
-		}
-		else
-		{
-			std::string message("Texture failed to load at path: " + std::string(path));
-			LOG_WARN(message);
-			stbi_image_free(data);
-		}
-
-		return textureID;
-	}
+	
 }

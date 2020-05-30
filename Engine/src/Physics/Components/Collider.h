@@ -7,7 +7,7 @@ namespace sixengine {
 
 	struct Collider
 	{
-	private:
+	protected:
 		bool m_isStatic = false;
 		
 	public:

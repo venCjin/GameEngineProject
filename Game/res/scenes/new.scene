@@ -1,0 +1,5 @@
+-AddSystem FlyingCameraSystem
+-AddSystem SimplePlayerSystem
+-AddSystem CollisionSystem
+
+

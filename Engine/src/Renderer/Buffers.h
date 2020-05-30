@@ -13,6 +13,9 @@ namespace sixengine {
 		glm::vec3 Normal;
 		glm::vec2 TexCoords;
 
+		glm::vec3 Tangent;
+		glm::vec3 Bitangent;
+
 		uint IDs[NUM_BONES_PER_VERTEX] = { 0 };
 		float Weights[NUM_BONES_PER_VERTEX] = { 0 };
 

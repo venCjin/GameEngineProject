@@ -18,7 +18,9 @@ namespace sixengine {
 
 		m_Timer = Timer::Instance();
 		m_Input = Input::Get();
-
+	#ifdef DEBUG
+		m_ImGui = new ImGuiLayer();
+	#endif // DEBUG
 		m_Window = std::make_unique<Window>(title, width, height);
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		m_Window->SetVSync(false);
@@ -26,7 +28,6 @@ namespace sixengine {
 
 	Application::~Application()
 	{
-
 	}
 
 	void Application::Run()
@@ -36,14 +37,23 @@ namespace sixengine {
 		glfwSetInputMode(m_Window->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		OnInit();
+	#ifdef DEBUG
+		m_ImGui->Init();
+		const int size = 60;
+		int offset = 1;
+		float values[size] = {};
+		char overlay[20];
+	#endif //DEBUG
 		while (m_Running)
 		{
 			{
 				PROFILE_SCOPE("GAME UPDATE\n")
 
-					m_Timer->Tick();
+				m_Timer->Tick();
 				m_Timer->Reset();
-
+			#ifdef DEBUG
+				m_ImGui->BeginFrame();
+			#endif //DEBUG
 				if (!m_Minimized)
 				{
 					m_Window->ProcessInput();
@@ -53,9 +63,26 @@ namespace sixengine {
 					OnUpdate(m_Timer->DeltaTime());
 
 					m_Input->OnPostUpdate();
+				#ifdef DEBUG
+					ImGui::Begin("Frametime");
+					{
+						values[offset++] = m_Timer->DeltaTimeUnscaled()*1000;
+						if (offset == size) offset = 0;
+						sprintf(overlay, "frametime: %4.2f ms", values[offset-1]);
+						ImGui::Text("FPS: %3.1f, fps %4.1f", (float)1 / m_Timer->DeltaTimeUnscaled(), ImGui::GetIO().Framerate);
+						ImGui::PlotLines("", values, size, offset, overlay, 0.0f, 80.0f, ImVec2(0, 80));
+					}
+					ImGui::End();
+				#endif // DEBUG
 				}
 
 				OnRender(m_Timer->DeltaTime());
+			#ifdef DEBUG
+				{
+					PROFILE_SCOPE("IMGUI RENDER")
+					m_ImGui->EndFrame();
+				}
+			#endif //DEBUG
 
 				while (m_Timer->TimeSinceReset() < sixengine::FRAMERATE_60);
 
@@ -68,9 +95,12 @@ namespace sixengine {
 				}
 				else
 					renderAccumulator += m_Timer->DeltaTime();
-	*/
+				*/
 			}
 		}
+	#ifdef DEBUG
+		m_ImGui->Shutdown();
+	#endif //DEBUG
 		OnShutdown();
 	}
 

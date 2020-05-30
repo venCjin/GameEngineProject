@@ -75,4 +75,78 @@ namespace sixengine {
 		return m_Childeren;
 	}
 
+#ifdef DEBUG
+	void GameObject::ImGuiWriteSceneTree()
+	{
+		for each (auto & child in m_Childeren)
+		{
+			child->ImGuiWriteSceneTreeNode();
+		}
+	}
+
+	void GameObject::ImGuiWriteSceneTreeNode()
+	{
+		if (ImGui::TreeNode((void*)(intptr_t)m_Entity.GetID().GetID(), "Child %d", m_Entity.GetID().GetID()))
+		{
+			ImGui::Text("Transform");
+			
+			glm::vec3 pos = GetComponent<Transform>()->GetLocalPosition();
+			if (ImGui::DragFloat3("Position", pos.data.data, 0.1f))
+			{
+				GetComponent<Transform>()->SetLocalPosition(pos);
+			}
+
+			//TODO: rotation is likely to go crazy
+			glm::vec3 rot = GetComponent<Transform>()->GetLocalOrientation();
+			if (ImGui::DragFloat3("Rotation", rot.data.data, 0.1f))
+			{
+				GetComponent<Transform>()->SetLocalOrientation(rot);
+			}
+
+			glm::vec3 scale = GetComponent<Transform>()->GetLocalScale();
+			if (ImGui::DragFloat3("Scale", scale.data.data, 0.1f, 0.001f))
+			{
+				GetComponent<Transform>()->SetLocalScale(scale);
+			}
+
+			ImGui::TreePop();
+		}
+
+		for each (auto& child in m_Childeren)
+		{
+			child->ImGuiWriteSceneTreeNode();
+		}
+	}
+
+	void GameObject::ImGuiWriteUITree()
+	{
+		for each (auto & child in m_Childeren)
+		{
+			child->ImGuiWriteUITreeNode();
+		}
+	}
+
+	void GameObject::ImGuiWriteUITreeNode()
+	{
+		if (ImGui::TreeNode((void*)(intptr_t)m_Entity.GetID().GetID(), "Child %d", m_Entity.GetID().GetID()))
+		{
+			ImGui::Text("Transform");
+
+			glm::vec3 pos = GetComponent<Transform>()->GetLocalPosition();
+			if (ImGui::DragFloat3("Position", pos.data.data))
+			{
+				GetComponent<Transform>()->SetLocalPosition(pos);
+			}
+
+			ImGui::TreePop();
+		}
+
+		for each (auto & child in m_Childeren)
+		{
+			child->ImGuiWriteUITreeNode();
+		}
+	}
+#endif // DEBUG
+
+
 }

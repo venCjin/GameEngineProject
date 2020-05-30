@@ -4,6 +4,8 @@
 
 namespace sixengine {
 
+	class GameObject;
+
 	class ISerializable
 	{
 		virtual void Load(std::iostream& stream) = 0;

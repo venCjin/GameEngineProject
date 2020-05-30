@@ -60,6 +60,8 @@ namespace sixengine {
 			{ VertexDataType::VEC3F, "position" },
 			{ VertexDataType::VEC3F, "normal" },
 			{ VertexDataType::VEC2F, "texCoords" },
+			{ VertexDataType::VEC3F, "tangent" },
+			{ VertexDataType::VEC3F, "bitangent" },
 			{ VertexDataType::VEC4I, "boneIDs" },
 			{ VertexDataType::VEC4F, "boneWeights" }
 		});
