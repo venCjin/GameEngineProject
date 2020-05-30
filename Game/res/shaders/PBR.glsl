@@ -4,12 +4,15 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
+layout (location = 3) in vec3 aTangent;
+layout (location = 4) in vec3 aBitangent;
 
 out vec2 TexCoords;
 out int instanceID;
 out vec3 FragPos;
 out vec3 Normal;
 out vec4 FragPosLightSpace1;
+out mat3 TBN;
 
 uniform mat4 lightSpaceMatrix1;
 
@@ -31,6 +34,15 @@ void main()
 
 	FragPosLightSpace1 = lightSpaceMatrix1 * vec4(vec3(model[instanceID] * vec4(aPos, 1.0)), 1.0);
 
+	// TBN
+	mat3 normalMatrix = mat3(transpose(inverse(view * model[instanceID])));
+	vec3 T = normalize(normalMatrix* aTangent);
+	vec3 N = normalize(normalMatrix* aNormal);
+	vec3 B = normalize(normalMatrix * aBitangent);
+	//T = normalize(T - dot(T, N) * N);
+	//vec3 B = cross(N, T);
+
+	TBN = mat3(T, B, N);
 }
 
 #shader fragment
@@ -72,6 +84,7 @@ in flat int instanceID;
 in vec3 FragPos;
 in vec3 Normal;
 in vec4 FragPosLightSpace1;
+in mat3 TBN;
 
 uniform sampler2D shadowMap1;
 
@@ -108,7 +121,7 @@ float GeometrySchlickGGX(float NdotV, float roughness);
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness);
 vec3 FresnelSchlick(float cosTheta, vec3 F0);
 
-float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowMap);
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowMap, vec3 N);
 
 void main()
 {
@@ -116,7 +129,14 @@ void main()
 	if (tex.a < 0.2) discard;
 	vec3 textureColor = tex.rgb;
 
-	vec3 N = normalize(Normal);
+	vec3 normal = texture(textureArray, vec3(TexCoords, layer[instanceID].y)).rgb;
+	normal = normalize(normal * 2.0 - 1.0);
+	vec3 N = normalize(TBN * normal);
+	
+	// checkin if material normal 
+	if (layer[instanceID].y < 1.0)
+		N = normalize(Normal);
+
 	vec3 V = normalize(-FragPos);	// Calculated in View Space
 	vec3 albedo = pow(textureColor, vec3(2.2));
 
@@ -174,7 +194,7 @@ vec3 CalcDirLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo)
 	float NdotL = max(dot(N, L), 0.0);
 
 	/// SHADOW MAPPING
-	float shadow = ShadowCalculation(FragPosLightSpace1, light.position, shadowMap1);
+	float shadow = ShadowCalculation(FragPosLightSpace1, light.position, shadowMap1, N);
 	return (1.0 - shadow) * (kD * albedo / PI + specular) * radiance * NdotL; // WITH SHADOWS
 	//return (kD * albedo / PI + specular) * radiance * NdotL;
 }
@@ -280,14 +300,14 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0)
 	return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowMap)
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowMap, vec3 N)
 {
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
 	projCoords = projCoords * 0.5 + 0.5; 
 	float closestDepth = texture(shadowMap, projCoords.xy).r;   
 	float currentDepth = projCoords.z;  
 	vec3 lightDir = normalize(lightPos - FragPos);
-	float bias = max(0.05 * (1.0 - dot(normalize(Normal), lightDir)), 0.005);
+	float bias = max(0.05 * (1.0 - dot(N, lightDir)), 0.005);
 	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
 	float shadow = 0.0;
 
