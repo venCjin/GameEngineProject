@@ -146,17 +146,22 @@ void main()
 	vec4 tex = texture(textureArray, vec3(TexCoords, layer[instanceID].x));
 	if (tex.a < 0.2) discard;
 	vec3 textureColor = tex.rgb;
-
 	//vec3 N = normalize(Normal);
 
 
 	vec3 normal = texture(textureArray, vec3(TexCoords, layer[instanceID].y)).rgb;
+	float met = texture(textureArray, vec3(TexCoords, layer[instanceID].z)).r;
+
 	normal = normalize(normal * 2.0 - 1.0);
 	vec3 N = normalize(TBN * normal);
 
-	// checkin if material normal 
+	// checkin if material has normal map
 	if (layer[instanceID].y < 1.0)
 		N = normalize(Normal);
+
+	// checkin if material has metallic map
+	if (layer[instanceID].z < 1.0)
+		met = metallic;
 
 	vec3 V = normalize(-FragPos);	// Calculated in View Space
 	vec3 albedo = pow(textureColor, vec3(2.2));
