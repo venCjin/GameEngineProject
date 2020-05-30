@@ -16,6 +16,13 @@ namespace sixengine
 		//textureArray->Bind(0);
 		m_Shader->SetVec3("color", glm::vec3(1.0f, .6f, .4f));
 		m_Shader->SetFloat("FresnelExponent", 1.f);
+		m_Shader->SetInt("OnSurface", 1);
+		m_Shader->Unbind();
+	}
+
+	void TransparentTechnique::SetOnSurface(bool value) {
+		m_Shader->Bind();
+		m_Shader->SetInt("OnSurface", (int)value);
 		m_Shader->Unbind();
 	}
 	

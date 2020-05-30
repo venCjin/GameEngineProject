@@ -150,10 +150,10 @@ namespace sixengine {
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
+			//obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
 			obj->GetComponent<Transform>()->SetLocalOrientation(180.0f, 0.0f, 0.0f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("parasiteZombie"));
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cylinder"));
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Transparent"));
 			obj->AddComponent<Animation>();
 			obj->AddComponent<SimplePlayer>();
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
@@ -205,7 +205,6 @@ namespace sixengine {
 
 			Camera::ActiveCamera = mixingCam->GetComponent<Camera>().Get();
 
-
 			// HACKS END
 
 			m_BatchRenderer->Configure();
@@ -231,11 +230,20 @@ namespace sixengine {
 			if (Input::IsKeyPressed(KeyCode::F5))
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamA->GetComponent<Camera>().Get());
+				Shader * shader = m_Scene.m_MaterialManager->Get("Transparent")->GetShader();
+				shader->Bind();
+				shader->SetInt("OnSurface", 1);
+				shader->Unbind();
+
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F6))
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamB->GetComponent<Camera>().Get());
+				Shader* shader = m_Scene.m_MaterialManager->Get("Transparent")->GetShader();
+				shader->Bind();
+				shader->SetInt("OnSurface", 0);
+				shader->Unbind();
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F7))

@@ -8,6 +8,7 @@ layout (location = 2) in vec2 aTexCoords;
 out vec3 Normal;
 out vec2 TexCoords;
 out int instanceID;
+out vec4 FragPos;
 
 layout(std430, binding = 0) buffer matrixes
 {
@@ -22,6 +23,7 @@ void main()
     TexCoords = aTexCoords;
     Normal = aNormal;
     vec4 tmp = projection * view * model[gl_BaseInstance + gl_InstanceID] * vec4(aPos, 1.0);
+    FragPos = tmp;
     gl_Position = tmp;
 }
 
@@ -32,6 +34,7 @@ out vec4 FragColor;
 uniform vec3 viewDir;
 in vec3 Normal;
 in vec2 TexCoords;
+in vec4 FragPos;
 in flat int instanceID;
 
 layout(std430, binding = 1) buffer textureLayers
@@ -42,11 +45,15 @@ layout(std430, binding = 1) buffer textureLayers
 uniform sampler2DArray textureArray;
 uniform vec3 color;
 uniform float FresnelExponent;
+uniform int OnSurface;
 void main()
 {
-    
-    gl_FragDepth = .1f;
-    float fresnel = dot (Normal, normalize(-viewDir));
+    float ndc_depth = FragPos.z / FragPos.w;
+    ndc_depth =  0.5 * ndc_depth + 0.5;
+    gl_FragDepth = .1f*(1-OnSurface) + ndc_depth * OnSurface;
+    float fresnel = dot (Normal, -normalize(viewDir));
     fresnel = pow((1 - fresnel), FresnelExponent);
-    FragColor = vec4(color * fresnel, fresnel);// * texture(textureArray, vec3(TexCoords, layer[instanceID].x));
+    vec4 outputcolor = OnSurface * texture(textureArray, vec3(TexCoords, layer[instanceID].x)) + vec4((1-OnSurface) * color * fresnel, fresnel);
+
+    FragColor = outputcolor;// * texture(textureArray, vec3(TexCoords, layer[instanceID].x));
 } 
