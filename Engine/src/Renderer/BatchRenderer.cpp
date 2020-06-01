@@ -6,7 +6,6 @@
 #include <Renderer/Material.h>
 #include <Core/Timer.h>
 
-#include <iomanip>
 
 namespace sixengine {
 
@@ -23,9 +22,13 @@ namespace sixengine {
 	}
 
 	BatchRenderer::BatchRenderer(ModelManager* modelManager, TextureArray* textureArray)
-		: m_ModelManager(modelManager), m_TextureArray(textureArray), m_IDBO(100 * sizeof(DrawElementsCommand), 9)
+		: m_ModelManager(modelManager),
+		m_TextureArray(textureArray),
+		m_IDBO(1000 * sizeof(DrawElementsCommand))
 	{
-		m_Depth = nullptr;
+		m_Offset = 0;
+		m_DepthStatic = nullptr;
+		m_DepthAnimated = nullptr;
 		m_Skybox = nullptr;
 	}
 
@@ -50,9 +53,9 @@ namespace sixengine {
 	void BatchRenderer::CalculateFrustum()
 	{
 		glm::mat4 clip = Camera::ActiveCamera->GetProjectionMatrix() * Camera::ActiveCamera->GetViewMatrix();
-		
+
 		clip = glm::transpose(clip);
-		
+
 		// Left plane 
 		m_FrustumPlanes[0] = clip[3] + clip[0];
 		// Right plane
@@ -98,13 +101,12 @@ namespace sixengine {
 		if (gameObject->HasComponent<Mesh>())
 		{
 			mesh = gameObject->GetComponent<Mesh>();
-			glm::mat4 proj = Camera::ActiveCamera->GetProjectionMatrix();
-			glm::mat4 view = Camera::ActiveCamera->GetViewMatrix();
 
 			glm::vec3 min = mesh->GetModel()->m_MinAxis;
 			glm::vec3 max = mesh->GetModel()->m_MaxAxis;
-			min = model * glm::vec4(min, 1.0f);
-			max = model * glm::vec4(max, 1.0f);
+			glm::mat4 tmpModel = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
+			min = tmpModel * glm::vec4(min, 1.0f);
+			max = tmpModel * glm::vec4(max, 1.0f);
 
 			render = FrustumAABB(min, max);
 		}
@@ -119,7 +121,7 @@ namespace sixengine {
 			command->gameObject = gameObject;
 
 			command->shader = gameObject->GetComponent<Material>()->GetShader();
-			
+
 			if (gameObject->HasComponent<Mesh>())
 				command->ModelID = mesh->GetModel()->m_ID;
 
@@ -132,20 +134,11 @@ namespace sixengine {
 
 	void BatchRenderer::Render()
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		LOG_CORE_INFO(m_CommandList.size());
+		//LOG_CORE_INFO(m_CommandList.size());
 
-		// Draw skybox
-		//***********************************************
-		if (m_Skybox)
-			RenderSkybox();
+		m_IDBO.m_LockManager.WaitForLockedRange(m_IDBO.m_Head, m_IDBO.m_Size);
 
-		// Draw depth
-		//***********************************************
-		if (m_Depth)
-			RenderDepth(m_CommandList);
-
-		// Draw normal
+		// Prepare data
 		//***********************************************
 		std::vector<std::vector<RendererCommand*>> sortedTechniques;
 		//Sort Commands by techniques
@@ -186,7 +179,7 @@ namespace sixengine {
 			models.push_back(Camera::ActiveCamera->GetViewMatrix());
 			models.push_back(Camera::ActiveCamera->GetProjectionMatrix());
 			//Sort Commands by models
-			
+
 			std::sort(commandList.begin(), commandList.end(), SortModels);
 
 			bool pass = false;
@@ -214,7 +207,7 @@ namespace sixengine {
 				unsigned int allIntstanceCounter = 0;
 				for (int i = index; i < commandList.size(); i++)
 				{
-					if (commandList[i]->ModelID != lastModelID)
+					if (commandList[i]->ModelID != lastModelID) 
 					{
 						ModelManager::ModelEntry me = m_ModelManager->GetModelEntry(lastModelID);
 						m_RenderCommandList.push_back(
@@ -238,114 +231,86 @@ namespace sixengine {
 					{ me.NumIndices, modelInstanceCounter, me.BaseIndex, me.BaseVertex, allIntstanceCounter }
 				);
 			}
-			
 
-			m_TechniqueList[t]->Render(commandList, models, layers);
+			m_TechniqueList[t]->StartFrame(commandList, m_RenderCommandList, models, layers);
 			m_TechniqueList[t]->SetLight(*m_DirectionalLight);
 
-			if (!m_RenderCommandList.empty())
-			{
-				m_IDBO.m_LockManager.WaitForLockedRange(m_IDBO.m_Head, m_IDBO.m_Size);
+			m_RenderCommandList.clear();
+		}
 
-				void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head;
-				memcpy(ptr, m_RenderCommandList.data(), m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]));
+		// Draw depth
+		//***********************************************
+
+		m_DirectionalLight->m_DepthFramebuffer.Bind();
+
+		if (m_DepthStatic)
+			RenderDepth(m_DepthStatic, m_TechniqueList[0]);
+
+		if (m_DepthAnimated)
+			RenderDepth(m_DepthAnimated, m_TechniqueList[1]);
+
+		m_DirectionalLight->m_DepthFramebuffer.Unbind();
+
+		// Draw skybox
+		//***********************************************
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		if (m_Skybox)
+			RenderSkybox();
+
+		// Draw normal
+		//***********************************************
+		for (int i = 0; i < sortedTechniques.size(); i++)
+		{
+			m_TechniqueList[i]->Render(sortedTechniques[i]);
+
+			if (!m_TechniqueList[i]->m_DrawCommands.empty())
+			{
+				void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head + m_Offset;
+				memcpy(ptr, m_TechniqueList[i]->m_DrawCommands.data(), m_TechniqueList[i]->m_DrawCommands.size() * sizeof(DrawElementsCommand));
 
 				m_ModelManager->Bind();
-				glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)m_IDBO.m_Head, m_RenderCommandList.size(), 0);
+				glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)(m_IDBO.m_Head + m_Offset), m_TechniqueList[i]->m_DrawCommands.size(), 0);
 				glBindVertexArray(0);
 
-				m_IDBO.m_LockManager.LockRange(m_IDBO.m_Head, m_IDBO.m_Size);
-				m_IDBO.m_Head = (m_IDBO.m_Head + m_IDBO.m_Size) % (m_IDBO.m_Buffering * m_IDBO.m_Size);
-
-				m_RenderCommandList.clear();
+				m_Offset += m_TechniqueList[i]->m_DrawCommands.size() * sizeof(DrawElementsCommand);
+				m_TechniqueList[i]->m_DrawCommands.clear();
 			}
 		}
-		
+
+		for (auto t : m_TechniqueList)
+			t->FinishFrame();
+
+		m_IDBO.m_LockManager.LockRange(m_IDBO.m_Head, m_IDBO.m_Size);
+		m_IDBO.m_Head = (m_IDBO.m_Head + m_IDBO.m_Size) % (m_IDBO.m_Buffering * m_IDBO.m_Size);
+
 		m_CommandList.clear();
+		m_Offset = 0;
 	}
 
-	void BatchRenderer::RenderDepth(std::vector<RendererCommand*>& commandList)
+	void BatchRenderer::RenderDepth(Technique* depth, Technique* technique)
 	{
-		std::vector<RendererCommand*> depth(commandList);
+		technique->Render(m_CommandList);
 
-		std::sort(depth.begin(), depth.end(), SortModels);
-
-		std::vector<glm::mat4> models;
-		bool pass = false;
-		unsigned int lastModelID;
-
-		int index = 0;
-		for (int i = 0; i < depth.size(); i++)
+		if (!technique->m_DrawCommands.empty())
 		{
-			if (depth[i]->ModelID == -1)
-			{
-				index++;
-				continue;
-			}
-			else
-			{
-				lastModelID = depth[i]->ModelID;
-				index = i;
-				break;
-			}
-		}
+			depth->Render(m_CommandList);
+			depth->SetLight(*m_DirectionalLight);
 
-		if (index < depth.size())
-		{
-			unsigned int modelInstanceCounter = 0;
-			unsigned int allIntstanceCounter = 0;
-			for (int i = index; i < depth.size(); i++)
-			{
-				if (depth[i]->ModelID != lastModelID)
-				{
-					ModelManager::ModelEntry me = m_ModelManager->GetModelEntry(lastModelID);
-					m_RenderCommandList.push_back(
-						{ me.NumIndices, modelInstanceCounter, me.BaseIndex, me.BaseVertex, allIntstanceCounter }
-					);
-
-					lastModelID = depth[i]->ModelID;
-					allIntstanceCounter += modelInstanceCounter;
-					modelInstanceCounter = 0;
-					pass = true;
-				}
-
-				models.push_back(depth[i]->data.model);
-
-				modelInstanceCounter++;
-			}
-
-			ModelManager::ModelEntry me = m_ModelManager->GetModelEntry(lastModelID);
-			m_RenderCommandList.push_back(
-				{ me.NumIndices, modelInstanceCounter, me.BaseIndex, me.BaseVertex, allIntstanceCounter }
-			);
-		}
-
-
-		if (!m_RenderCommandList.empty())
-		{
-			m_Depth->Render(depth, models, std::vector<glm::vec4>());
-			m_Depth->SetLight(*m_DirectionalLight);
-
-			m_IDBO.m_LockManager.WaitForLockedRange(m_IDBO.m_Head, m_IDBO.m_Size);
-
-			void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head;
-			memcpy(ptr, m_RenderCommandList.data(), m_RenderCommandList.size() * sizeof(m_RenderCommandList[0]));
-
-			m_DirectionalLight->m_DepthFramebuffer.Bind();
+			void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head + m_Offset;
+			memcpy(ptr, technique->m_DrawCommands.data(), technique->m_DrawCommands.size() * sizeof(DrawElementsCommand));
 
 			m_ModelManager->Bind();
 			glCullFace(GL_FRONT);
 			glPolygonMode(GL_BACK, GL_FILL);
-			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)m_IDBO.m_Head, m_RenderCommandList.size(), 0);
+
+			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)(m_IDBO.m_Head + m_Offset), technique->m_DrawCommands.size(), 0);
+
 			glCullFace(GL_BACK);
 			glBindVertexArray(0);
 
-			m_DirectionalLight->m_DepthFramebuffer.Unbind();
+			m_Offset += technique->m_DrawCommands.size() * sizeof(DrawElementsCommand);
 
-			m_IDBO.m_LockManager.LockRange(m_IDBO.m_Head, m_IDBO.m_Size);
-			m_IDBO.m_Head = (m_IDBO.m_Head + m_IDBO.m_Size) % (m_IDBO.m_Buffering * m_IDBO.m_Size);
-
-			m_RenderCommandList.clear();
 		}
 	}
 
@@ -359,9 +324,14 @@ namespace sixengine {
 		m_Skybox = technique;
 	}
 
-	void BatchRenderer::SetDepth(DepthRender* technique)
+	void BatchRenderer::SetStaticDepth(DepthRender* technique)
 	{
-		m_Depth = technique;
+		m_DepthStatic = technique;
+	}
+
+	void BatchRenderer::SetAnimatedDepth(DepthRender* technique)
+	{
+		m_DepthAnimated = technique;
 	}
 
 	void BatchRenderer::SetLight(Light* light)
@@ -393,8 +363,11 @@ namespace sixengine {
 		for (auto tech : m_TechniqueList)
 			tech->Start(m_TextureArray);
 
-		if (m_Depth)
-			m_Depth->Start(m_TextureArray);
+		if (m_DepthStatic)
+			m_DepthStatic->Start(m_TextureArray);
+
+		if (m_DepthAnimated)
+			m_DepthAnimated->Start(m_TextureArray);
 
 		if (m_Skybox)
 			m_Skybox->Start(m_TextureArray);

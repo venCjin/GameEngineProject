@@ -22,6 +22,7 @@ namespace sixengine {
 
 	public:
 		Transform(GameObject* parent)
+			: m_Parent(nullptr)
 		{
 			
 		}

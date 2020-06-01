@@ -4,9 +4,8 @@
 namespace sixengine {
 
 	Technique::Technique(Shader* shader)
-		: m_Shader(shader)
+		: m_Shader(shader), m_Offset(0), m_Size(0)
 	{
-		m_Shader = shader;
 	}
 
 	Technique::~Technique()
@@ -15,6 +14,11 @@ namespace sixengine {
 	}
 
 	void Technique::SetLight(Light& light)
+	{
+
+	}
+
+	void Technique::FinishFrame()
 	{
 
 	}

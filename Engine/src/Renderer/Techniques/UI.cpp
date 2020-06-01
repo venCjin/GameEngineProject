@@ -14,7 +14,6 @@ namespace sixengine {
 
 	void UI::AddFont(Font* font)
 	{
-		//m_Fonts.emplace(font->GetName(), font);
 		m_Font = font;
 	}
 
@@ -27,12 +26,6 @@ namespace sixengine {
 		std::string text = textR->text;
 
 		float lineLength = 0;
-		/*for (int i = 0; i < text.size(); i++)
-		{
-			Font::Character ch = m_Font->GetChar(text[i]);
-			lineLength += ch.Advance * scale;
-		}
-		lineLength /= 2;*/
 
 		glm::vec2 atlasSize(m_Font->GetAtlasWidth(), m_Font->GetAtlasHeight());
 
@@ -69,14 +62,9 @@ namespace sixengine {
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex2D), vertices.data());
 
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
 		glBindVertexArray(0);
-
-		glDisable(GL_BLEND);
 	}
 
 	void UI::Start(TextureArray* textureArray)
@@ -103,10 +91,16 @@ namespace sixengine {
 		m_Shader->SetMat4("projection", glm::ortho(0.f, (float)Application::Get().GetWindow().GetWidth(), 0.f, (float)Application::Get().GetWindow().GetHeight(), 0.01f, 1000.0f));
 	}
 
-	void UI::Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)
+	void UI::StartFrame(std::vector<RendererCommand*>& commandList, std::vector<DrawElementsCommand> drawCommands, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)
 	{
-		m_Shader->Bind();
+		m_DrawCommands = drawCommands;
 
+		m_Offset = 0;
+		m_Size = 0;
+	}
+
+	void UI::Render(std::vector<RendererCommand*>& commandList)
+	{
 		for (auto i : commandList)
 		{
 			//if (i->gameObject->HasComponent<Image>())
@@ -119,6 +113,5 @@ namespace sixengine {
 				RenderText(text.Get(), t->getWorldPosition());
 			}
 		}
-
 	}
 }
