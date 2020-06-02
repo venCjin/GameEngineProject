@@ -17,13 +17,18 @@ namespace sixengine {
 
 	void ShadowFrustum::Update()
 	{
-		glm::vec3 forwardVector = Camera::ActiveCamera->m_Transform->GetForward(); //m_Center->GetComponent<Transform>()->GetForward(); 
+		//glm::vec3 forwardVector = Camera::ActiveCamera->m_Transform->GetForward(); //m_Center->GetComponent<Transform>()->GetForward(); 
+		glm::vec3 forwardVector = glm::vec3(1.0f, 0.0f, 0.0f);
 
-		glm::vec3 toNear = forwardVector * Camera::ActiveCamera->m_NearPlane;
+		//glm::vec3 toNear = forwardVector * Camera::ActiveCamera->m_NearPlane;
+		glm::vec3 toNear = forwardVector * -m_ShadowDistance;
 		glm::vec3 toFar = forwardVector * m_ShadowDistance;
 
-		glm::vec3 centerNear = toNear + Camera::ActiveCamera->m_Transform->GetWorldPosition(); //m_Center->GetComponent<Transform>()->GetWorldPosition();
-		glm::vec3 centerFar = toFar + Camera::ActiveCamera->m_Transform->GetWorldPosition(); //m_Center->GetComponent<Transform>()->GetWorldPosition();
+		//glm::vec3 centerNear = toNear + Camera::ActiveCamera->m_Transform->GetWorldPosition(); //m_Center->GetComponent<Transform>()->GetWorldPosition();
+		//glm::vec3 centerFar = toFar + Camera::ActiveCamera->m_Transform->GetWorldPosition(); //m_Center->GetComponent<Transform>()->GetWorldPosition();
+
+		glm::vec3 centerNear = toNear + m_Center->GetComponent<Transform>()->GetWorldPosition();
+		glm::vec3 centerFar = toFar + m_Center->GetComponent<Transform>()->GetWorldPosition();
 
 		glm::vec4* points = CalculateFrustumVertices(centerNear, centerFar);
 
@@ -70,8 +75,8 @@ namespace sixengine {
 
 	glm::vec4* ShadowFrustum::CalculateFrustumVertices(glm::vec3& centerNear, glm::vec3& centerFar)
 	{
-		glm::vec3 upVector = Camera::ActiveCamera->m_Transform->GetUpwards(); //m_Center->GetComponent<Transform>()->GetUpwards();
-		glm::vec3 rightVector = Camera::ActiveCamera->m_Transform->GetRight(); //m_Center->GetComponent<Transform>()->GetRight();
+		glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);//Camera::ActiveCamera->m_Transform->GetUpwards(); //m_Center->GetComponent<Transform>()->GetUpwards();
+		glm::vec3 rightVector = glm::vec3(0.0f, 0.0f, 1.0f); //Camera::ActiveCamera->m_Transform->GetRight(); //m_Center->GetComponent<Transform>()->GetRight();
 		glm::vec3 downVector = -upVector;
 		glm::vec3 leftVector = -rightVector;
 
@@ -98,6 +103,10 @@ namespace sixengine {
 		float x = (minX + maxX) / 2.0f;
 		float y = (minY + maxY) / 2.0f;
 		float z = (minZ + maxZ) / 2.0f;
+
+		if (x < 0.001f) x = 0.0f;
+		if (y < 0.001f) y = 0.0f;
+		if (z < 0.001f) z = 0.0f;
 
 		glm::vec4 cen(x, y, z, 1.0f);
 		glm::mat4 invertedLight = glm::inverse(*m_LightView);

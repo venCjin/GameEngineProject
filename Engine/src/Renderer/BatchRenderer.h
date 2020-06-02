@@ -43,8 +43,10 @@ namespace sixengine {
 		glm::mat4 m_LightView;
 		glm::mat4 m_Ortho;
 
+		GameObject* m_Center;
+
 		Light(GameObject* center, int size = 4096)
-			: m_DepthFramebuffer(size), m_Frustum(&m_LightView, center)
+			: m_DepthFramebuffer(size), m_Frustum(&m_LightView, center), m_Center(center)
 		{
 			m_DirectionalLightPos = glm::vec3(-8.0f, 12.0f, -4.0f);
 
@@ -86,7 +88,7 @@ namespace sixengine {
 			yaw = direction.z > 0 ? yaw - 180 : yaw;
 			m_LightView = glm::rotate(m_LightView, yaw, glm::vec3(0, 1, 0));
 
-			m_LightView = glm::translate(m_LightView, center);
+			m_LightView = glm::translate(m_LightView, center);// -m_Center->GetComponent<Transform>()->GetWorldPosition());
 		}
 
 		void UpdateOrthoProjection(float width, float height, float length)

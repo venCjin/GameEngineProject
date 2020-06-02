@@ -110,6 +110,7 @@ layout(std140, binding = 3) buffer lightData
 	DirectionalLight dirLight;
 };
 
+uniform vec3 cameraPos;
 
 // Lights
 //uniform DirectionalLight dirLights[NR_DIRLIGHTS];

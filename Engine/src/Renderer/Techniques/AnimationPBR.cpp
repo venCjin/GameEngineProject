@@ -83,6 +83,8 @@ namespace sixengine {
 	{
 		m_Shader->Bind();
 
+		m_Shader->SetVec3("cameraPos", Camera::ActiveCamera->m_Transform->GetWorldPosition());
+
 		m_Models.Bind();
 		m_Bones.Bind();
 		m_Layers.Bind();

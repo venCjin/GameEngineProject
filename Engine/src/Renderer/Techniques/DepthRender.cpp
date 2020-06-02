@@ -27,7 +27,6 @@ namespace sixengine {
 
 	void DepthRender::SetLight(Light& light)
 	{
-		light.Update();
 		glm::mat4 lightSpaceMatrix = light.m_Ortho * light.m_LightView;
 
 		m_Shader->Bind();

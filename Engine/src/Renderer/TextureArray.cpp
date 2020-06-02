@@ -62,6 +62,8 @@ void sixengine::TextureArray::CreateTextureArray()
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+
+	m_TextureData.clear();
 }
 
 void sixengine::TextureArray::Bind(unsigned int slot) const

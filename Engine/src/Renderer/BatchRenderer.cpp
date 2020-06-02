@@ -238,6 +238,10 @@ namespace sixengine {
 			m_RenderCommandList.clear();
 		}
 
+		// Light shadow box update
+		//***********************************************
+		m_DirectionalLight->Update();
+
 		// Draw depth
 		//***********************************************
 

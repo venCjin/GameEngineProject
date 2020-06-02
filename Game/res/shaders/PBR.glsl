@@ -91,6 +91,7 @@ layout(std140, binding = 2) buffer lightData
 	DirectionalLight dirLight;
 };
 
+uniform vec3 cameraPos;
 
 // Lights
 //uniform DirectionalLight dirLights[NR_DIRLIGHTS];
@@ -146,7 +147,6 @@ void main()
 
 	FragColor = vec4(color, 1.0);
 	//FragColor = vec4(ao, metallic, roughness, 1.0);
-	//FragColor = vec4(dirLight.color, 1.0);
 	
 } 
 
@@ -280,31 +280,17 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0)
 	return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-
-float SampleVarianceShadowMap(sampler2D shadowMap, vec2 coords, float compare)
-{
-	vec2 moments = texture2D(shadowMap, coords.xy).rg;
-	
-	float p = step(compare, moments.x);
-	float variance = max(moments.y - moments.x * moments.x, 0.000002);
-
-	float d = compare - moments.x;
-	float pMax = variance / (variance + d * d);
-
-	return min(max(p, pMax), 1.0);
-}
-
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowMap)
 {
 	float distance = length(fragPosLightSpace.xyz);
-	distance = distance - (55.0 - 10.0);
+	distance = distance - (25.0 - 10.0);
 	distance = distance / 10.0;
 
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
 	projCoords = projCoords * 0.5 + 0.5;
 	float currentDepth = projCoords.z;
 	vec3 lightDir = normalize(lightPos - FragPos);
-	float bias = 0.0f;// max(0.0005 * (1.0 - dot(normalize(Normal), lightDir)), 0.00005);
+	float bias = max(0.0005 * (1.0 - dot(normalize(Normal), lightDir)), 0.00005);
 	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
 
 	float shadow = 0.0;
@@ -320,6 +306,6 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowM
 		}
 		shadow /= 32.0;
 	}
-	//shadow = SampleVarianceShadowMap(shadowMap, projCoords.xy, projCoords.z);
-	return clamp(1.0 - distance, 0.0, 1.0) * shadow; //
+
+	return clamp(1.0 - distance, 0.0, 1.0) * shadow; 
 }
