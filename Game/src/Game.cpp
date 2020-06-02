@@ -55,6 +55,7 @@ namespace sixengine {
 
 		~Game()
 		{
+
 		}
 
 		virtual void OnInit() override
@@ -63,16 +64,16 @@ namespace sixengine {
 
 			// HACKS
 
-			m_BatchRenderer->SetLight(new Light());
-
 			m_SystemManager.AddSystem<AnimationSystem>();
 
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
+			Shader* m_BasicShader = m_Scene.m_ShaderManager->AddShader("res/shaders/PBR.glsl");
 			Shader* m_FontShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Font.glsl");
 			Shader* m_TransparentShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Transparent.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
-			
+			m_Scene.m_ShaderManager->AddShader("res/shaders/DepthAnim.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
+
 			Skybox* skybox = new Skybox(
 				{
 					"res/textures/skybox/right.jpg",
@@ -85,15 +86,16 @@ namespace sixengine {
 			);
 			m_BatchRenderer->SetSkybox(new SkyboxRender(m_Scene.m_ShaderManager->Get("Skybox"), skybox));
 
+			m_BatchRenderer->SetStaticDepth(new DepthRender(m_Scene.m_ShaderManager->Get("Depth")));
+			m_BatchRenderer->SetAnimatedDepth(new DepthRender(m_Scene.m_ShaderManager->Get("DepthAnim")));
+
 
 			Font* font = new Font("res/fonts/DroidSans.ttf");
 			UI* ui = new UI(m_FontShader);
-			TransparentTechnique* transparent = new TransparentTechnique(m_TransparentShader);
 			ui->AddFont(font);
 
-			m_BatchRenderer->SetDepth(new DepthRender(m_Scene.m_ShaderManager->Get("Depth")));
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
-			m_BatchRenderer->AddTechnique(transparent);
+			m_BatchRenderer->AddTechnique(new TransparentTechnique(m_TransparentShader));
 			m_BatchRenderer->AddTechnique(ui);
 
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
@@ -118,8 +120,14 @@ namespace sixengine {
 				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks")),
 				"Transparent");
 
+			m_Scene.m_MaterialManager->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("PBR"),
+				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks")),
+				"PBR");
+
 			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/cube.obj");
 			m_Scene.m_ModelManager->CreateVAO();
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
@@ -171,6 +179,9 @@ namespace sixengine {
 			vao->AddVertexBuffer(*vbo);
 			vao->AddIndexBuffer(*ibo);
 			obj->AddGizmo(new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(0, 255, 0)));
+
+			m_BatchRenderer->SetLight(new Light(obj));
+
 			m_Scene.m_SceneRoot->AddChild(obj);
 
 			flying = Camera::ActiveCamera->m_GameObject;
@@ -250,7 +261,7 @@ namespace sixengine {
 
 			if (Input::IsKeyPressed(KeyCode::F7))
 			{
-				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(flying->GetComponent<Camera>().Get());
+				Camera::ActiveCamera = flying->GetComponent<Camera>().Get();
 			}
 
 			{
@@ -297,7 +308,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				m_Scene.DrawGizmos();
+				//m_Scene.DrawGizmos();
 			}
 		}
 

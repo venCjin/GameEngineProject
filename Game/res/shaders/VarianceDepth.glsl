@@ -26,6 +26,8 @@ void main()
 #shader fragment
 #version 460 core
 
+layout(location = 0) out vec4 diffuseColor;
+
 layout(std430, binding = 1) buffer layers
 {
     vec4 layer[2000];
@@ -34,7 +36,6 @@ layout(std430, binding = 1) buffer layers
 in flat int instanceID;
 in vec2 TexCoords;
 
-out vec4 color;
 
 uniform sampler2DArray textureArray;
 
@@ -46,5 +47,7 @@ void main()
         discard;
     }
 
-    color = vec4(1.0);
+    float depth = gl_FragCoord.z;
+    float moment2 = depth * depth;
+    diffuseColor = vec4(depth, moment2, 0.0, 0.0);
 }
