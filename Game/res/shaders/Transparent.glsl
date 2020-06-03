@@ -45,15 +45,15 @@ layout(std430, binding = 1) buffer textureLayers
 uniform sampler2DArray textureArray;
 uniform vec3 color;
 uniform float FresnelExponent;
-uniform int OnSurface;
+//uniform int OnSurface;
 void main()
 {
     float ndc_depth = FragPos.z / FragPos.w;
     ndc_depth =  0.5 * ndc_depth + 0.5;
-    gl_FragDepth = .1f*(1-OnSurface) + ndc_depth * OnSurface;
+    gl_FragDepth = .1f;//*(1-OnSurface) + ndc_depth * OnSurface;
     float fresnel = dot (Normal, -normalize(viewDir));
     fresnel = pow((1 - fresnel), FresnelExponent);
-    vec4 outputcolor = OnSurface * texture(textureArray, vec3(TexCoords, layer[instanceID].x)) + vec4((1-OnSurface) * color * fresnel, fresnel);
+    vec4 outputcolor = /*OnSurface * texture(textureArray, vec3(TexCoords, layer[instanceID].x)) +*/ vec4(/*(1-OnSurface) */ color * fresnel, fresnel);
 
     FragColor = outputcolor;// * texture(textureArray, vec3(TexCoords, layer[instanceID].x));
 } 

@@ -19,11 +19,14 @@
 #include <Core/CameraSystem/OrbitalCameraSystem.h>
 #include <Core/CameraSystem/MixingCameraSystem.h>
 // hacks end
+#include <Gameplay/Systems/PlayerMaterialManager.h>
+#include <Core/AudioManager.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+
 
 
 namespace sixengine {
@@ -38,6 +41,7 @@ namespace sixengine {
 		GameObject* orbitalCamB;
 		GameObject* mixingCam;
 		GameObject* flying;
+		GameObject* m_Player;
 	#ifdef DEBUG
 		std::array<glm::vec3, 10> tr;
 	#endif //DEBUG
@@ -60,12 +64,14 @@ namespace sixengine {
 		virtual void OnInit() override
 		{
 			m_Scene.LoadScene("res/scenes/exported.scene");
-
+			//ADD_TRACK("res/sounds/ophelia.mp3", "ophelia");
+			//PLAY_TRACK("ophelia");
 			// HACKS
 
 			m_BatchRenderer->SetLight(new Light());
 
 			m_SystemManager.AddSystem<AnimationSystem>();
+			m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
 			Shader* m_FontShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Font.glsl");
@@ -101,19 +107,25 @@ namespace sixengine {
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_specular.png");
 			m_Scene.m_TextureArray->AddTexture("res/textures/test/Bricks.jpg");
 			m_Scene.m_TextureArray->CreateTextureArray();
-			m_Scene.m_MaterialManager->CreateMaterial(
+			MaterialManager::getInstance()->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("Font"),
 				glm::vec4(0),
 				"FontMaterial");
 
-			m_Scene.m_MaterialManager->CreateMaterial(
+
+			MaterialManager::getInstance()->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("PBR"),
+				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks"), 0, 0, 0),
+				"Bricks");
+
+			MaterialManager::getInstance()->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("AnimationPBR"),
 				glm::vec4(m_Scene.m_TextureArray->GetTexture("parasiteZombie_diffuse"),
 					m_Scene.m_TextureArray->GetTexture("parasiteZombie_normal"),
 					m_Scene.m_TextureArray->GetTexture("parasiteZombie_specular"), 0.0f),
 				"parasiteZombie");
 
-			m_Scene.m_MaterialManager->CreateMaterial(
+			MaterialManager::getInstance()->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("Transparent"),
 				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks")),
 				"Transparent");
@@ -130,21 +142,22 @@ namespace sixengine {
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(-10.0f, 1.0f, -10.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cylinder"));
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Transparent"));
+			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
 			m_Scene.m_SceneRoot->AddChild(obj);
+			m_Player = obj;
 
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0f, 10.0f, 0.0f);
 			obj->AddComponent<Text>("Testowy tekst, do testowania.", glm::vec3(0.0f, 1.0f, 1.0f), 1.0f);
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
+			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("FontMaterial"));
 			m_Scene.m_UIRoot->AddChild(obj);
 
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 690.0f, 0.0f);
 			obj->AddComponent<Text>("Sixengine 0.?", glm::vec3(1.0f, 0.0f, 1.0f), 0.3f);
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
+			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("FontMaterial"));
 			m_Scene.m_UIRoot->AddChild(obj);
 
 			obj = new GameObject(m_EntityManager);
@@ -153,12 +166,13 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
 			obj->GetComponent<Transform>()->SetLocalOrientation(180.0f, 0.0f, 0.0f);
 			//obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cylinder"));
-			//obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Transparent"));
+			//obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("parasiteZombie"));
+			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
 			obj->AddComponent<Animation>();
 			obj->AddComponent<SimplePlayer>();
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+
 			std::vector<GizmoVertex> vertices;
 			std::vector<unsigned int> indices;
 			PrimitiveUtils::GenerateBox(vertices, indices, 100, 200, 100);
@@ -232,20 +246,17 @@ namespace sixengine {
 			if (Input::IsKeyPressed(KeyCode::F5))
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamA->GetComponent<Camera>().Get());
-				Shader * shader = m_Scene.m_MaterialManager->Get("Transparent")->GetShader();
-				shader->Bind();
-				shader->SetInt("OnSurface", 1);
-				shader->Unbind();
-
+				//m_Player->GetComponent<Material>()->SetShader(m_Scene.m_ShaderManager->Get("PBR"));
+				m_Player->RemoveComponent<Material>();
+				m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bricks"));
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F6))
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamB->GetComponent<Camera>().Get());
-				Shader* shader = m_Scene.m_MaterialManager->Get("Transparent")->GetShader();
-				shader->Bind();
-				shader->SetInt("OnSurface", 0);
-				shader->Unbind();
+				//m_Player->GetComponent<Material>()->SetShader(m_Scene.m_ShaderManager->Get("Transparent"));
+				m_Player->RemoveComponent<Material>();
+				m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F7))
@@ -261,7 +272,7 @@ namespace sixengine {
 		#ifdef DEBUG
 			// IMGUI
 			{
-				PROFILE_SCOPE("ImGui Scene Graph");
+				//PROFILE_SCOPE("ImGui Scene Graph");
 
 				ImGui::Begin("Scene graph");
 				if (ImGui::TreeNode("Scene Game Objects"))

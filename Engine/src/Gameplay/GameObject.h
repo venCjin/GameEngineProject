@@ -44,7 +44,7 @@ namespace sixengine {
 		template<typename T>
 		void RemoveComponent()
 		{
-			m_Entity.Remove<T>();
+			m_Entity.RemoveComponent<T>();
 		}
 
 		template<typename T>

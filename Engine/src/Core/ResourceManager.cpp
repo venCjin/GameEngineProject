@@ -38,4 +38,6 @@ namespace sixengine {
 	template class ResourceManager<float>;
 	template class ResourceManager<class Shader*>;
 	template class ResourceManager<class Material*>;
+	template class ResourceManager<std::string>;
+
 }

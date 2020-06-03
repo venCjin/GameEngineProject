@@ -3,7 +3,15 @@
 
 namespace sixengine
 {
-
+	MaterialManager* MaterialManager::instance = nullptr;
+	MaterialManager* MaterialManager::getInstance()
+	{
+		if (instance == nullptr)
+		{
+			instance = new MaterialManager();
+		}
+		return instance;
+	}
 	Material* MaterialManager::CreateMaterial(Shader* shader, glm::vec4 textures, std::string materialName)
 	{
 		if (!this->IsResourceInDicktionary(materialName))

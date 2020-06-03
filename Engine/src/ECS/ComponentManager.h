@@ -33,7 +33,7 @@ public:
         return m_Start + offset;
     }
 
-    //virtual void Destroy(size_t n) = 0;
+    virtual void Destroy(size_t n) = 0;
 
 protected:
     char* m_Start;
@@ -48,12 +48,12 @@ public:
     ComponentManager() : PoolAllocator(sizeof(T), N) {}
     ~ComponentManager() {}
 
-    /*void Destroy(size_t n) override 
+    void Destroy(size_t n) override 
     {
         assert(n < m_AllocatedEntities);
         T* obj = static_cast<T*>(Get(n));
         obj->~T();
-    }*/
+    }
 };
 
 
@@ -64,10 +64,10 @@ public:
     FrameAllocator() : PoolAllocator(sizeof(T), N) { m_AllocatedEntities = N; }
     ~FrameAllocator() {}
 
-    /*void Destroy(size_t n) override
+    void Destroy(size_t n) override
     {
         assert(n < m_AllocatedEntities);
         T* obj = static_cast<T*>(Get(n));
         obj->~T();
-    }*/
+    }
 };
