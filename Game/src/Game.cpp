@@ -8,6 +8,7 @@
 #include "Gameplay/Systems/AnimationSystem.h"
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/DepthRender.h"
+#include "Renderer/Techniques/Water.h"
 #include "Renderer/Techniques/UI.h"
 #include <Renderer/Techniques/Transparent.h>
 #include "Gameplay/Components/SimplePlayer.h"
@@ -102,6 +103,9 @@ namespace sixengine {
 
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
 			m_BatchRenderer->AddTechnique(new TransparentTechnique(m_TransparentShader));
+			
+			
+			
 			m_BatchRenderer->AddTechnique(ui);
 
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
@@ -136,6 +140,25 @@ namespace sixengine {
 				m_Scene.m_ShaderManager->Get("PBR"),
 				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks")),
 				"PBR");
+
+			//TODO:*************
+			Shader* m_WaterShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Water.glsl");
+			m_BatchRenderer->AddTechnique(new Water(m_WaterShader));
+
+			MaterialManager::getInstance()->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("Water"),
+				glm::vec4(0),
+				"WaterMaterial");
+
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/plane.obj");
+			GameObject* w;
+			w = new GameObject(m_EntityManager);
+			w->AddComponent<Transform>(w);
+			w->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.5f, 0.0f);
+			w->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("plane"));
+			w->AddComponent<Material>(*MaterialManager::getInstance()->Get("WaterMaterial"));
+			m_Scene.m_SceneRoot->AddChild(w);
+			//TODO:*************
 
 			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
