@@ -40,6 +40,9 @@ namespace sixengine {
 
 		inline std::vector<glm::mat4>& GetCurrentTransforms() { return currentTransforms; }
 
+		inline std::string GetDirectory() { return m_Directory; }
+		inline std::string GetName() { return m_Name; }
+
 		unsigned int m_ID;
 		VertexArray* VAO;
 
@@ -136,6 +139,7 @@ namespace sixengine {
 		std::vector<BoneInfo> m_BoneInfo;
 		glm::mat4 m_GlobalInverseTransform;
 		std::string m_Directory;
+		std::string m_Name;
 
 		const aiScene* m_Scene;
 		Assimp::Importer m_Importer;
