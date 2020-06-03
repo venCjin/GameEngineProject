@@ -56,6 +56,8 @@
 1 1 1
 -Model res/models/Environment/Vegetation/PalmTree2.obj
 -Material PalmTreePBR
+-Gizmo 0 255 0 Cube 0.5 2.0 0.5
+-BoxCollider 0.5 2.0 0.5 0
 +end
 
 +SceneGameObject
@@ -74,6 +76,8 @@
 1 1 1
 -Model res/models/Props/WoodenCrate/WoodenCrate.obj
 -Material WoodenCrate2PBR
+-Gizmo 0 255 0 Cube 1.0 1.0 1.0
+-BoxCollider 1.0 1.0 1.0 0
 +end
 
 +SceneGameObject
@@ -110,6 +114,8 @@
 1 1 1
 -Model res/models/Props/Ladders/TallLadder.obj
 -Material LadderPBR
+-Gizmo 0 255 0 Cube 1.333 7.6 0.259
+-BoxCollider 1.333 7.6 0.259 0
 +end
 
 +SceneGameObject
@@ -281,6 +287,8 @@
 1 1 1
 -Model res/models/Props/Ladders/SmallLadder.obj
 -Material LadderPBR
+-Gizmo 0 255 0 Cube 1.333 3.8 0.259
+-BoxCollider 1.333 3.8 0.259 0
 +end
 
 +SceneGameObject

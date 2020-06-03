@@ -19,7 +19,7 @@
 #include <Core/CameraSystem/OrbitalCameraSystem.h>
 #include <Core/CameraSystem/MixingCameraSystem.h>
 // hacks end
-#include <Gameplay/Systems/PlayerMaterialManager.h>
+//#include <Gameplay/Systems/PlayerMaterialManager.h>
 #include <Core/AudioManager.h>
 
 #include <glad/glad.h>
@@ -70,7 +70,7 @@ namespace sixengine {
 			// HACKS
 
 			m_SystemManager.AddSystem<AnimationSystem>();
-			m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
+			//m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
 			Shader* m_BasicShader = m_Scene.m_ShaderManager->AddShader("res/shaders/PBR.glsl");
@@ -272,7 +272,8 @@ namespace sixengine {
 
 			if (Input::IsKeyPressed(KeyCode::F7))
 			{
-				Camera::ActiveCamera = flying->GetComponent<Camera>().Get();
+				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(flying->GetComponent<Camera>().Get());
+				//Camera::ActiveCamera = flying->GetComponent<Camera>().Get();
 			}
 
 			{
@@ -319,7 +320,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				//m_Scene.DrawGizmos();
+				m_Scene.DrawGizmos();
 			}
 		}
 
