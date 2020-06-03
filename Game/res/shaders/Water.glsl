@@ -1,23 +1,27 @@
 #shader vertex
-#version 400 core
-layout (location = 0) in vec3 aPos;
+#version 460 core
 
-out vec2 texCoords;
+layout(location = 0) in vec3 aPos;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+out vec2 TexCoords;
+
+layout(std140, binding = 0) buffer matrixes
+{
+    mat4 view;
+    mat4 projection;
+    mat4 model[10];
+};
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(aPos.x, aPos.y, aPos.z, 1.0);
-	texCoords = vec2(aPos.x/2.0 + 0.5, aPos.z/2.0 + 0.5);
+    gl_Position = projection * view * model[gl_BaseInstance + gl_InstanceID] * vec4(aPos.x, aPos.y, aPos.z, 1.0);
+	//texCoords = vec2(aPos.x/2.0 + 0.5, aPos.z/2.0 + 0.5);
 }
 
 #shader fragment
-#version 400 core
+#version 460 core
 
-in vec2 texCoords;
+//in vec2 texCoords;
 
 out vec4 FragColor;
 
