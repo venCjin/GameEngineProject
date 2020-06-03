@@ -104,10 +104,6 @@ namespace sixengine {
 		float y = (minY + maxY) / 2.0f;
 		float z = (minZ + maxZ) / 2.0f;
 
-		if (x < 0.001f) x = 0.0f;
-		if (y < 0.001f) y = 0.0f;
-		if (z < 0.001f) z = 0.0f;
-
 		glm::vec4 cen(x, y, z, 1.0f);
 		glm::mat4 invertedLight = glm::inverse(*m_LightView);
 		return invertedLight * cen;
