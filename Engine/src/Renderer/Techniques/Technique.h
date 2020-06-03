@@ -10,6 +10,15 @@ namespace sixengine {
 	class TextureArray;
 	struct Light;
 
+	struct DrawElementsCommand
+	{
+		unsigned int vertexCount;
+		unsigned int instanceCount;
+		unsigned int firstIndex;
+		unsigned int baseVertex;
+		unsigned int baseInstance;
+	};
+
 	struct ShaderBuffer
 	{
 		BufferLockManager m_LockManager;
@@ -31,6 +40,24 @@ namespace sixengine {
 		ShaderBuffer(size_t size, unsigned int buffering = 3)
 			: m_Size(size), m_Head(0), m_Binding(0), m_Buffering(buffering), m_LockManager(true)
 		{
+		}
+
+		void Update(void* address, size_t size, unsigned int offset = 0)
+		{
+			m_LockManager.WaitForLockedRange(m_Head, m_Size);
+			void* ptr = (unsigned char*)m_Ptr + m_Head + offset;
+			memcpy(ptr, address, size);
+		}
+
+		void Bind()
+		{
+			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, m_Binding, m_ID, m_Head, m_Size);
+		}
+
+		void LockAndMovePointer()
+		{
+			m_LockManager.LockRange(m_Head, m_Size);
+			m_Head = (m_Head + m_Size) % (m_Buffering * m_Size);
 		}
 	};
 
@@ -67,17 +94,6 @@ namespace sixengine {
 			m_Ptr = glMapBufferRange(GL_UNIFORM_BUFFER, 0, m_Buffering * m_Size, mapFlags);
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
-
-		void Update(void* address, size_t size)
-		{
-			m_LockManager.WaitForLockedRange(m_Head, m_Size);
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, m_Binding, m_ID, m_Head, m_Size);
-			void* ptr = (unsigned char*)m_Ptr + m_Head;
-			memcpy(ptr, address, size);
-
-			m_LockManager.LockRange(m_Head, m_Size);
-			m_Head = (m_Head + m_Size) % (m_Buffering * m_Size);
-		}
 	};
 
 	struct StorageBuffer : public ShaderBuffer
@@ -98,21 +114,16 @@ namespace sixengine {
 			m_Ptr = glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, m_Buffering * m_Size, mapFlags);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 		}
-
-		void Update(void* address, size_t size)
-		{
-			m_LockManager.WaitForLockedRange(m_Head, m_Size);
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, m_Binding, m_ID, m_Head, m_Size);
-			void* ptr = (unsigned char*)m_Ptr + m_Head;
-			memcpy(ptr, address, size);
-
-			m_LockManager.LockRange(m_Head, m_Size);
-			m_Head = (m_Head + m_Size) % (m_Buffering * m_Size);
-		}
 	};
 
 	class Technique
 	{
+	public:
+		std::vector<DrawElementsCommand> m_DrawCommands;
+
+		unsigned int m_Offset;
+		unsigned int m_Size;
+
 	protected:
 		Shader* m_Shader;
 
@@ -121,8 +132,12 @@ namespace sixengine {
 		virtual ~Technique();
 
 		virtual void Start(TextureArray* textureArray) = 0;
-		virtual void Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers) = 0;
+
+		virtual void StartFrame(std::vector<RendererCommand*>& commandList, std::vector<DrawElementsCommand> drawCommands,
+			std::vector<glm::mat4>& models, std::vector<glm::vec4> layers) = 0;
 		virtual void SetLight(Light& light);
+		virtual void Render(std::vector<RendererCommand*>& commandList) = 0;
+		virtual void FinishFrame();
 
 		inline Shader* GetShader() const { return m_Shader; }
 	};

@@ -16,11 +16,11 @@ out mat3 TBN;
 
 uniform mat4 lightSpaceMatrix1;
 
-layout(std140, binding = 0) buffer matrixes
+layout(std430, binding = 0) buffer matrixes
 {
     mat4 view;
     mat4 projection;
-    mat4 model[12];
+    mat4 model[1000];
 };
 
 void main()
@@ -88,9 +88,9 @@ in mat3 TBN;
 
 uniform sampler2D shadowMap1;
 
-layout(std140, binding = 1) buffer textureLayers
+layout(std430, binding = 1) buffer textureLayers
 {
-    vec4 layer[10];
+    vec4 layer[1000];
 };
 
 uniform sampler2DArray textureArray;
@@ -104,6 +104,7 @@ layout(std140, binding = 2) buffer lightData
 	DirectionalLight dirLight;
 };
 
+uniform vec3 cameraPos;
 
 // Lights
 //uniform DirectionalLight dirLights[NR_DIRLIGHTS];
@@ -172,7 +173,6 @@ void main()
 
 	FragColor = vec4(color, 1.0);
 	//FragColor = vec4(ao, metallic, roughness, 1.0);
-	//FragColor = vec4(dirLight.color, 1.0);
 	
 } 
 
@@ -308,27 +308,30 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0)
 
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowMap, vec3 N)
 {
-    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-	projCoords = projCoords * 0.5 + 0.5; 
-	float closestDepth = texture(shadowMap, projCoords.xy).r;   
-	float currentDepth = projCoords.z;  
-	vec3 lightDir = normalize(lightPos - FragPos);
-	float bias = max(0.05 * (1.0 - dot(N, lightDir)), 0.005);
-	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
-	float shadow = 0.0;
+	float distance = length(fragPosLightSpace.xyz);
+	distance = distance - (25.0 - 10.0);
+	distance = distance / 10.0;
 
-	if(projCoords.z <= 1.0)
+	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	projCoords = projCoords * 0.5 + 0.5;
+	float currentDepth = projCoords.z;
+	vec3 lightDir = normalize(lightPos - FragPos);
+	float bias = max(0.0005 * (1.0 - dot(N, lightDir)), 0.00005);
+	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+
+	float shadow = 0.0;
+	if (projCoords.z <= 1.0)
 	{
-		for(int x = -1; x <= 1; ++x)
+		for (int x = -2; x <= 2; ++x)
 		{
-			for(int y = -1; y <= 1; ++y)
+			for (int y = -2; y <= 2; ++y)
 			{
-				float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-				shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;        
-			}    
+				float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+				shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+			}
 		}
-		shadow /= 9.0;
+		shadow /= 32.0;
 	}
 
-	return shadow;
+	return clamp(1.0 - distance, 0.0, 1.0) * shadow; 
 }

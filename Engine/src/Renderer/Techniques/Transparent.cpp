@@ -3,12 +3,14 @@
 
 namespace sixengine
 {
-	TransparentTechnique::TransparentTechnique(Shader* shader) : Technique(shader),
-		m_Models(40002 * sizeof(glm::mat4), 0), m_Layers(40000 * sizeof(glm::vec4), 1)
+	TransparentTechnique::TransparentTechnique(Shader* shader) 
+		: Technique(shader),
+		m_Models(12 * sizeof(glm::mat4), 0),
+		m_Layers(10 * sizeof(glm::vec4), 1)
 	{
-
+		
 	}
-	
+
 	void TransparentTechnique::Start(TextureArray* textureArray)
 	{
 		m_Shader->Bind();
@@ -25,16 +27,31 @@ namespace sixengine
 		m_Shader->SetInt("OnSurface", (int)value);
 		m_Shader->Unbind();
 	}
-	
-	
-	void TransparentTechnique::Render(std::vector<RendererCommand*>& commandList, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)
+
+	void TransparentTechnique::StartFrame(std::vector<RendererCommand*>& commandList, std::vector<DrawElementsCommand> drawCommands, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)
 	{
-		m_Shader->Bind();
-		glm::vec3 v = Camera::ActiveCamera->m_Transform->GetForward();
-		m_Shader->SetVec3("viewDir", v);
-		LOG_CORE_INFO("{0} {1} {2}", v.x, v.y, v.z);
-		glEnable(GL_BLEND);
+		m_DrawCommands = drawCommands;
+
+		m_Offset = 0;
+		m_Size = 0;
+
 		m_Models.Update(models.data(), models.size() * sizeof(models[0]));
 		m_Layers.Update(layers.data(), layers.size() * sizeof(layers[0]));
+	}
+
+	
+	void TransparentTechnique::Render(std::vector<RendererCommand*>& commandList)
+	{
+		m_Shader->Bind();
+		m_Shader->SetVec3("viewDir", Camera::ActiveCamera->m_Transform->GetForward());
+
+		m_Models.Bind();
+		m_Layers.Bind();
+	}
+
+	void TransparentTechnique::FinishFrame()
+	{
+		m_Models.LockAndMovePointer();
+		m_Layers.LockAndMovePointer();
 	}
 }
