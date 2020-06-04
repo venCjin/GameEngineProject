@@ -331,10 +331,11 @@ namespace sixengine {
 
 	void BatchRenderer::RenderWater(Technique* technique1, Technique* technique2)
 	{
-		glPolygonMode(GL_FRONT, GL_FILL);
+		//glPolygonMode(GL_FRONT, GL_FILL);
 		//TODO:
 		// frame buffer 1 - reflect
 		m_Water->GetFrameBuffers().BindReflectionFramebuffer();
+		glClear(GL_DEPTH_BUFFER_BIT);
 		technique1->Render(m_CommandList);
 		if (!technique1->m_DrawCommands.empty())
 		{
@@ -367,6 +368,7 @@ namespace sixengine {
 
 		// frame buffer 2 - refract
 		m_Water->GetFrameBuffers().BindRefractionFramebuffer();
+		glClear(GL_DEPTH_BUFFER_BIT);
 		technique1->Render(m_CommandList);
 		if (!technique1->m_DrawCommands.empty())
 		{
