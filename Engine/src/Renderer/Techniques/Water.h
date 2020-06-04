@@ -2,9 +2,6 @@
 
 #include "Technique.h"
 
-#include "Renderer/Font.h";
-#include "Gameplay/Components/Text.h"
-
 namespace sixengine {
 
 	struct WaterFrameBuffers

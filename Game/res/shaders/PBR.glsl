@@ -34,23 +34,23 @@ void main()
     instanceID = gl_BaseInstance + gl_InstanceID;
     TexCoords = aTexCoords;
 
-    gl_Position = projection * view * model[instanceID] * vec4(aPos, 1.0);
-
+	mat4 activeView = view;
 	//****water****
 	if (isWater > 0.5)
 	{
-		gl_ClipDistance[0] = dot(model[instanceID] * vec4(aPos, 1.0), plane);
-		gl_Position = projection * waterView * model[instanceID] * vec4(aPos, 1.0);
+		gl_ClipDistance[0] = dot(model[instanceID] * vec4(aPos, 1.0), clipPlane);
+		activeView = waterView;
 	}
 	//****water****
 
-	FragPos = vec3(view * model[instanceID] * vec4(aPos, 1.0));	
-	Normal = mat3(transpose(inverse(view * model[instanceID]))) * aNormal;
+    gl_Position = projection * activeView * model[instanceID] * vec4(aPos, 1.0);
+	FragPos = vec3(activeView * model[instanceID] * vec4(aPos, 1.0));	
+	Normal = mat3(transpose(inverse(activeView * model[instanceID]))) * aNormal;
 
 	FragPosLightSpace1 = lightSpaceMatrix1 * vec4(vec3(model[instanceID] * vec4(aPos, 1.0)), 1.0);
 
 	// TBN
-	mat3 normalMatrix = mat3(transpose(inverse(view * model[instanceID])));
+	mat3 normalMatrix = mat3(transpose(inverse(activeView * model[instanceID])));
 	vec3 T = normalize(normalMatrix* aTangent);
 	vec3 N = normalize(normalMatrix* aNormal);
 	vec3 B = normalize(normalMatrix * aBitangent);
