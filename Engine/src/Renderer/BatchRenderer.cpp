@@ -331,8 +331,10 @@ namespace sixengine {
 
 	void BatchRenderer::RenderWater(Technique* technique1, Technique* technique2)
 	{
+		glPolygonMode(GL_FRONT, GL_FILL);
 		//TODO:
 		// frame buffer 1 - reflect
+		m_Water->GetFrameBuffers().BindReflectionFramebuffer();
 		technique1->Render(m_CommandList);
 		if (!technique1->m_DrawCommands.empty())
 		{
@@ -340,12 +342,9 @@ namespace sixengine {
 			memcpy(ptr, technique1->m_DrawCommands.data(), technique1->m_DrawCommands.size() * sizeof(DrawElementsCommand));
 
 			m_ModelManager->Bind();
-			glCullFace(GL_FRONT);
-			glPolygonMode(GL_BACK, GL_FILL);
 
 			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)(m_IDBO.m_Head + m_Offset), technique1->m_DrawCommands.size(), 0);
 
-			glCullFace(GL_BACK);
 			glBindVertexArray(0);
 
 			m_Offset += technique1->m_DrawCommands.size() * sizeof(DrawElementsCommand);
@@ -358,18 +357,16 @@ namespace sixengine {
 			memcpy(ptr, technique2->m_DrawCommands.data(), technique2->m_DrawCommands.size() * sizeof(DrawElementsCommand));
 
 			m_ModelManager->Bind();
-			glCullFace(GL_FRONT);
-			glPolygonMode(GL_BACK, GL_FILL);
 
 			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)(m_IDBO.m_Head + m_Offset), technique2->m_DrawCommands.size(), 0);
 
-			glCullFace(GL_BACK);
 			glBindVertexArray(0);
 
 			m_Offset += technique2->m_DrawCommands.size() * sizeof(DrawElementsCommand);
 		}		
 
 		// frame buffer 2 - refract
+		m_Water->GetFrameBuffers().BindRefractionFramebuffer();
 		technique1->Render(m_CommandList);
 		if (!technique1->m_DrawCommands.empty())
 		{
@@ -377,12 +374,9 @@ namespace sixengine {
 			memcpy(ptr, technique1->m_DrawCommands.data(), technique1->m_DrawCommands.size() * sizeof(DrawElementsCommand));
 
 			m_ModelManager->Bind();
-			glCullFace(GL_FRONT);
-			glPolygonMode(GL_BACK, GL_FILL);
 
 			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)(m_IDBO.m_Head + m_Offset), technique1->m_DrawCommands.size(), 0);
 
-			glCullFace(GL_BACK);
 			glBindVertexArray(0);
 
 			m_Offset += technique1->m_DrawCommands.size() * sizeof(DrawElementsCommand);
@@ -395,19 +389,15 @@ namespace sixengine {
 			memcpy(ptr, technique2->m_DrawCommands.data(), technique2->m_DrawCommands.size() * sizeof(DrawElementsCommand));
 
 			m_ModelManager->Bind();
-			glCullFace(GL_FRONT);
-			glPolygonMode(GL_BACK, GL_FILL);
 
 			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)(m_IDBO.m_Head + m_Offset), technique2->m_DrawCommands.size(), 0);
 
-			glCullFace(GL_BACK);
 			glBindVertexArray(0);
 
 			m_Offset += technique2->m_DrawCommands.size() * sizeof(DrawElementsCommand);
 		}
-		//TODO:
-		//m_Water->GetShader()->SetInt("reflectTex", id1);
-		//m_Water->GetShader()->SetInt("refractTex", id2);
+
+		m_Water->GetFrameBuffers().Unbind();
 	}
 
 	void BatchRenderer::SetSkybox(SkyboxRender* technique)

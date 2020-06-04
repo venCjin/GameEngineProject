@@ -139,7 +139,7 @@ namespace sixengine {
 		void Water::SetLight(Light& light);
 
 		//moje
-
+		inline WaterFrameBuffers& GetFrameBuffers() { return m_FrameBuffers; }
 	};
 
 }
