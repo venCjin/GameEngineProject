@@ -16,6 +16,12 @@ out mat3 TBN;
 
 uniform mat4 lightSpaceMatrix1;
 
+//****water****
+uniform vec4 clipPlane;
+uniform float isWater;
+uniform mat4 waterView;
+//****water****
+
 layout(std430, binding = 0) buffer matrixes
 {
     mat4 view;
@@ -28,7 +34,16 @@ void main()
     instanceID = gl_BaseInstance + gl_InstanceID;
     TexCoords = aTexCoords;
 
-    gl_Position = projection * view * model[instanceID] * vec4(aPos, 1.0);    
+    gl_Position = projection * view * model[instanceID] * vec4(aPos, 1.0);
+
+	//****water****
+	if (isWater > 0.5)
+	{
+		gl_ClipDistance[0] = dot(model[instanceID] * vec4(aPos, 1.0), plane);
+		gl_Position = projection * waterView * model[instanceID] * vec4(aPos, 1.0);
+	}
+	//****water****
+
 	FragPos = vec3(view * model[instanceID] * vec4(aPos, 1.0));	
 	Normal = mat3(transpose(inverse(view * model[instanceID]))) * aNormal;
 

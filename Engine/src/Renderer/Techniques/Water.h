@@ -126,10 +126,12 @@ namespace sixengine {
 		UniformBuffer m_Models;
 		UniformBuffer m_Layers;
 
+		GameObject* m_Go;
+
 		WaterFrameBuffers m_FrameBuffers;
 
 	public:
-		Water(Shader* shader);
+		Water(Shader* shader, GameObject* go);
 
 		void Start(TextureArray* textureArray) override;
 		void StartFrame(std::vector<RendererCommand*>& commandList, std::vector<DrawElementsCommand> drawCommands,
@@ -140,6 +142,7 @@ namespace sixengine {
 
 		//moje
 		inline WaterFrameBuffers& GetFrameBuffers() { return m_FrameBuffers; }
+		inline GameObject& GetGameObject() { return *m_Go; }
 	};
 
 }

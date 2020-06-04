@@ -334,6 +334,16 @@ namespace sixengine {
 		//glPolygonMode(GL_FRONT, GL_FILL);
 		//TODO:
 		// frame buffer 1 - reflect
+		glEnable(GL_CLIP_DISTANCE0);
+		float distance = 2 * (Camera::ActiveCamera->m_Transform->GetWorldPosition().y - m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y);
+		Camera::ActiveCamera->m_Transform->Translate(0.0f, -distance, 0.0f);
+		glm::vec3 ori = Camera::ActiveCamera->m_Transform->GetLocalOrientation();
+		Camera::ActiveCamera->m_Transform->SetLocalOrientation(ori.x, -ori.y, ori.z);
+
+		technique1->GetShader()->SetVec4("clipPlane", { 0.0f, 1.0f, 0.0f, -m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y });
+		technique1->GetShader()->SetFloat("isWater", 1.0f);
+		technique1->GetShader()->SetMat4("waterView", Camera::ActiveCamera->GetViewMatrix());
+
 		m_Water->GetFrameBuffers().BindReflectionFramebuffer();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		technique1->Render(m_CommandList);
@@ -351,6 +361,10 @@ namespace sixengine {
 			m_Offset += technique1->m_DrawCommands.size() * sizeof(DrawElementsCommand);
 		}
 
+		technique2->GetShader()->SetVec4("clipPlane", { 0.0f, 1.0f, 0.0f, -m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y });
+		technique2->GetShader()->SetFloat("isWater", 1.0f);
+		technique2->GetShader()->SetMat4("waterView", Camera::ActiveCamera->GetViewMatrix());
+
 		technique2->Render(m_CommandList);
 		if (!technique2->m_DrawCommands.empty())
 		{
@@ -367,6 +381,13 @@ namespace sixengine {
 		}		
 
 		// frame buffer 2 - refract
+		Camera::ActiveCamera->m_Transform->Translate(0.0f, distance, 0.0f);
+		Camera::ActiveCamera->m_Transform->SetLocalOrientation(ori.x, ori.y, ori.z);
+
+		technique1->GetShader()->SetVec4("clipPlane", { 0.0f, -1.0f, 0.0f, m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y });
+		technique1->GetShader()->SetFloat("isWater", 1.0f);
+		technique1->GetShader()->SetMat4("waterView", Camera::ActiveCamera->GetViewMatrix());
+
 		m_Water->GetFrameBuffers().BindRefractionFramebuffer();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		technique1->Render(m_CommandList);
@@ -384,6 +405,10 @@ namespace sixengine {
 			m_Offset += technique1->m_DrawCommands.size() * sizeof(DrawElementsCommand);
 		}
 
+		technique2->GetShader()->SetVec4("clipPlane", { 0.0f, -1.0f, 0.0f, m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y });
+		technique2->GetShader()->SetFloat("isWater", 1.0f);
+		technique2->GetShader()->SetMat4("waterView", Camera::ActiveCamera->GetViewMatrix());
+
 		technique2->Render(m_CommandList);
 		if (!technique2->m_DrawCommands.empty())
 		{
@@ -399,6 +424,10 @@ namespace sixengine {
 			m_Offset += technique2->m_DrawCommands.size() * sizeof(DrawElementsCommand);
 		}
 
+
+		technique1->GetShader()->SetFloat("isWater", 0.0f);
+		technique2->GetShader()->SetFloat("isWater", 0.0f);
+		glDisable(GL_CLIP_DISTANCE0);
 		m_Water->GetFrameBuffers().Unbind();
 	}
 

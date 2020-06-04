@@ -143,9 +143,6 @@ namespace sixengine {
 
 			//TODO:*************
 			Shader* m_WaterShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Water.glsl");
-			Water* water = new Water(m_WaterShader);
-			m_BatchRenderer->SetWater(water);
-			m_BatchRenderer->AddTechnique(water);
 			MaterialManager::getInstance()->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("Water"),
 				glm::vec4(0),
@@ -158,6 +155,9 @@ namespace sixengine {
 			w->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("plane"));
 			w->AddComponent<Material>(*MaterialManager::getInstance()->Get("WaterMaterial"));
 			m_Scene.m_SceneRoot->AddChild(w);
+			Water* water = new Water(m_WaterShader, w);
+			m_BatchRenderer->SetWater(water);
+			m_BatchRenderer->AddTechnique(water);
 			//TODO:*************
 
 			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
