@@ -30,6 +30,9 @@ namespace sixengine {
 	void Water::Render(std::vector<RendererCommand*>& commandList)
 	{
 		m_Shader->Bind();
+		m_Shader->SetInt("reflectTex", m_FrameBuffers.GetReflectionTexture());
+		m_Shader->SetInt("refractTex", m_FrameBuffers.GetRefractionTexture());
+		m_Shader->SetInt("refractDepthTex", m_FrameBuffers.GetRefractionDepthTexture());
 
 		m_Models.Bind();
 		//m_Layers.Bind();

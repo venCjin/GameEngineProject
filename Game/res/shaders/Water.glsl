@@ -32,12 +32,13 @@ in vec2 TexCoords;
 
 uniform sampler2D reflectTex;
 uniform sampler2D refractTex;
+uniform sampler2D refractDepthTex;
 
 void main()
 {
     //texture(textureArray, vec3(TexCoords, layer[instanceID].x)) //distortion
     
     //texture(textureArray, vec3(TexCoords, layer[instanceID].y)) //normal
-
-    FragColor =  vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    
+    FragColor = texture(reflectTex, TexCoords) * vec4(0.0f, 0.0f, 1.0f, 1.0f);
 }
