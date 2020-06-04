@@ -14,6 +14,10 @@ namespace sixengine {
 
 	void Water::Start(TextureArray* textureArray)
 	{
+		m_Shader->Bind();
+		m_Shader->SetInt("reflectTex", 0);
+		m_Shader->SetInt("refractTex", 1);
+		m_Shader->SetInt("refractDepthTex", 2);
 	}
 
 	void Water::StartFrame(std::vector<RendererCommand*>& commandList, std::vector<DrawElementsCommand> drawCommands, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)
@@ -30,9 +34,15 @@ namespace sixengine {
 	void Water::Render(std::vector<RendererCommand*>& commandList)
 	{
 		m_Shader->Bind();
-		m_Shader->SetInt("reflectTex", m_FrameBuffers.GetReflectionTexture());
-		m_Shader->SetInt("refractTex", m_FrameBuffers.GetRefractionTexture());
-		m_Shader->SetInt("refractDepthTex", m_FrameBuffers.GetRefractionDepthTexture());
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_FrameBuffers.GetReflectionTexture());
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, m_FrameBuffers.GetRefractionTexture());
+
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, m_FrameBuffers.GetRefractionDepthTexture());
 
 		m_Models.Bind();
 		//m_Layers.Bind();
