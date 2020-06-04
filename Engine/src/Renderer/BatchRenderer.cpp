@@ -169,7 +169,8 @@ namespace sixengine {
 		{
 			std::vector<RendererCommand*>& commandList = sortedTechniques[t];
 
-			if (commandList.empty()) continue;
+			if (commandList.empty()) { m_TechniqueList[t]->SetVisible(false); continue; }
+			else { m_TechniqueList[t]->SetVisible(true); }
 
 			std::vector<glm::mat4> models;
 			models.reserve(commandList.size());
@@ -262,6 +263,11 @@ namespace sixengine {
 		if (m_Skybox)
 			RenderSkybox();
 
+		// Draw water
+		//***********************************************
+		if (m_Water->IsVisible())
+			RenderWater(m_TechniqueList[0], m_TechniqueList[1]);
+
 		// Draw normal
 		//***********************************************
 		for (int i = 0; i < sortedTechniques.size(); i++)
@@ -323,6 +329,87 @@ namespace sixengine {
 		m_Skybox->Render();
 	}
 
+	void BatchRenderer::RenderWater(Technique* technique1, Technique* technique2)
+	{
+		//TODO:
+		// frame buffer 1 - reflect
+		technique1->Render(m_CommandList);
+		if (!technique1->m_DrawCommands.empty())
+		{
+			void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head + m_Offset;
+			memcpy(ptr, technique1->m_DrawCommands.data(), technique1->m_DrawCommands.size() * sizeof(DrawElementsCommand));
+
+			m_ModelManager->Bind();
+			glCullFace(GL_FRONT);
+			glPolygonMode(GL_BACK, GL_FILL);
+
+			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)(m_IDBO.m_Head + m_Offset), technique1->m_DrawCommands.size(), 0);
+
+			glCullFace(GL_BACK);
+			glBindVertexArray(0);
+
+			m_Offset += technique1->m_DrawCommands.size() * sizeof(DrawElementsCommand);
+		}
+
+		technique2->Render(m_CommandList);
+		if (!technique2->m_DrawCommands.empty())
+		{
+			void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head + m_Offset;
+			memcpy(ptr, technique2->m_DrawCommands.data(), technique2->m_DrawCommands.size() * sizeof(DrawElementsCommand));
+
+			m_ModelManager->Bind();
+			glCullFace(GL_FRONT);
+			glPolygonMode(GL_BACK, GL_FILL);
+
+			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)(m_IDBO.m_Head + m_Offset), technique2->m_DrawCommands.size(), 0);
+
+			glCullFace(GL_BACK);
+			glBindVertexArray(0);
+
+			m_Offset += technique2->m_DrawCommands.size() * sizeof(DrawElementsCommand);
+		}		
+
+		// frame buffer 2 - refract
+		technique1->Render(m_CommandList);
+		if (!technique1->m_DrawCommands.empty())
+		{
+			void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head + m_Offset;
+			memcpy(ptr, technique1->m_DrawCommands.data(), technique1->m_DrawCommands.size() * sizeof(DrawElementsCommand));
+
+			m_ModelManager->Bind();
+			glCullFace(GL_FRONT);
+			glPolygonMode(GL_BACK, GL_FILL);
+
+			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)(m_IDBO.m_Head + m_Offset), technique1->m_DrawCommands.size(), 0);
+
+			glCullFace(GL_BACK);
+			glBindVertexArray(0);
+
+			m_Offset += technique1->m_DrawCommands.size() * sizeof(DrawElementsCommand);
+		}
+
+		technique2->Render(m_CommandList);
+		if (!technique2->m_DrawCommands.empty())
+		{
+			void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head + m_Offset;
+			memcpy(ptr, technique2->m_DrawCommands.data(), technique2->m_DrawCommands.size() * sizeof(DrawElementsCommand));
+
+			m_ModelManager->Bind();
+			glCullFace(GL_FRONT);
+			glPolygonMode(GL_BACK, GL_FILL);
+
+			glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)(m_IDBO.m_Head + m_Offset), technique2->m_DrawCommands.size(), 0);
+
+			glCullFace(GL_BACK);
+			glBindVertexArray(0);
+
+			m_Offset += technique2->m_DrawCommands.size() * sizeof(DrawElementsCommand);
+		}
+		//TODO:
+		//m_Water->GetShader()->SetInt("reflectTex", id1);
+		//m_Water->GetShader()->SetInt("refractTex", id2);
+	}
+
 	void BatchRenderer::SetSkybox(SkyboxRender* technique)
 	{
 		m_Skybox = technique;
@@ -336,6 +423,11 @@ namespace sixengine {
 	void BatchRenderer::SetAnimatedDepth(DepthRender* technique)
 	{
 		m_DepthAnimated = technique;
+	}
+
+	void BatchRenderer::SetWater(Water* technique)
+	{
+		m_Water = technique;
 	}
 
 	void BatchRenderer::SetLight(Light* light)

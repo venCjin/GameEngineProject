@@ -23,15 +23,12 @@ namespace sixengine {
 		m_Offset = 0;
 		m_Size = 0;
 
-		LOG_CORE_INFO("m_DrawCommands.empty() : {0}", m_DrawCommands.empty());
-
 		m_Models.Update(models.data(), models.size() * sizeof(models[0]));
 		//m_Layers.Update(layers.data(), layers.size() * sizeof(layers[0]));
 	}
 
 	void Water::Render(std::vector<RendererCommand*>& commandList)
 	{
-		LOG_CORE_INFO("Water::Render");
 		m_Shader->Bind();
 
 		m_Models.Bind();

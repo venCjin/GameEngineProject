@@ -7,7 +7,7 @@
 
 namespace sixengine {
 
-	struct Framebuffer
+	struct WaterFramebuffer
 	{
 	public:
 		const unsigned int m_Size;
@@ -15,7 +15,7 @@ namespace sixengine {
 		unsigned int m_FramebufferID;
 		unsigned int m_TextureID;
 
-		Framebuffer(unsigned int size)
+		WaterFramebuffer(unsigned int size)
 			: m_Size(size)
 		{
 			glGenTextures(1, &m_TextureID);
@@ -38,12 +38,12 @@ namespace sixengine {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 
-		Framebuffer()
+		WaterFramebuffer()
 			: m_Size(4096)
 		{
 			glGenTextures(1, &m_TextureID);
 			glBindTexture(GL_TEXTURE_2D, m_TextureID);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F,
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F,
 				m_Size, m_Size, 0, GL_RGBA, GL_FLOAT, NULL);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

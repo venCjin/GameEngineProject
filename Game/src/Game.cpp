@@ -143,7 +143,9 @@ namespace sixengine {
 
 			//TODO:*************
 			Shader* m_WaterShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Water.glsl");
-			m_BatchRenderer->AddTechnique(new Water(m_WaterShader));
+			Water* water = new Water(m_WaterShader);
+			m_BatchRenderer->SetWater(water);
+			m_BatchRenderer->AddTechnique(water);
 
 			MaterialManager::getInstance()->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("Water"),

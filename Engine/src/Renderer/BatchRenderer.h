@@ -4,6 +4,7 @@
 #include <Renderer/ModelManager.h>
 #include <Renderer/Techniques/SkyboxRender.h>
 #include <Renderer/Techniques/DepthRender.h>
+#include <Renderer/Techniques/Water.h>
 #include <Renderer/Techniques/Technique.h>
 #include <Renderer/BufferLockManager.h>
 #include <Renderer/LightData.h>
@@ -112,6 +113,8 @@ namespace sixengine {
 		DepthRender* m_DepthStatic;
 		DepthRender* m_DepthAnimated;
 
+		Water* m_Water;
+
 		std::vector<Technique*> m_TechniqueList;
 
 		std::vector<RendererCommand*> m_CommandList;
@@ -136,10 +139,12 @@ namespace sixengine {
 		void Render();
 		void RenderDepth(Technique* depth, Technique* technique);
 		void RenderSkybox();
+		void RenderWater(Technique* technique1, Technique* technique2);
 
 		void SetSkybox(SkyboxRender* technique);
 		void SetStaticDepth(DepthRender* technique);
 		void SetAnimatedDepth(DepthRender* technique);
+		void SetWater(Water* technique);
 		void SetLight(Light* light);
 		void AddTechnique(Technique* technique);
 		void Configure();
