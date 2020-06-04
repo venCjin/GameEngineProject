@@ -40,5 +40,5 @@ void main()
     
     //texture(textureArray, vec3(TexCoords, layer[instanceID].y)) //normal
     
-    FragColor = texture(reflectTex, TexCoords) * vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    FragColor = texture(reflectTex, TexCoords) ;//* vec4(0.0f, 0.0f, 1.0f, 1.0f);
 }

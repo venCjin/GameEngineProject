@@ -146,12 +146,10 @@ namespace sixengine {
 			Water* water = new Water(m_WaterShader);
 			m_BatchRenderer->SetWater(water);
 			m_BatchRenderer->AddTechnique(water);
-
 			MaterialManager::getInstance()->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("Water"),
 				glm::vec4(0),
 				"WaterMaterial");
-
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/plane.obj");
 			GameObject* w;
 			w = new GameObject(m_EntityManager);
