@@ -331,28 +331,29 @@ namespace sixengine {
 
 	void BatchRenderer::RenderWater(Technique* technique1, Technique* technique2)
 	{
+		glm::vec4 clipUp(0.0f, 1.0f, 0.0f, -m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y);
+		glm::vec4 clipDown(0.0f, -1.0f, 0.0f, m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y);
+
 		Transform* t = new Transform();
 		Camera* temp = new Camera(t);
 		temp->m_Transform->SetWorld(Camera::ActiveCamera->m_Transform->GetWorldCopy());
 		temp->m_Transform->SetWorldRotation(Camera::ActiveCamera->m_Transform->GetWorldRotation());
 		temp->m_Transform->SetLocalScale(Camera::ActiveCamera->m_Transform->GetLocalScale());
-		//temp->SetPerspective(Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight());
-
-		// frame buffer 1 - reflect
-		//glEnable(GL_CLIP_DISTANCE0);
 		
+		// frame buffer 1 - reflect
+		glEnable(GL_CLIP_DISTANCE0);
 		float distance = 2 * (temp->m_Transform->GetWorldPosition().y - m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y);
 		temp->m_Transform->Translate(0.0f, -distance, 0.0f);
 		//TODO: bug with orientation ori.y works only [-90, 90], pitch going crazy [-180, 180]
-		//glm::vec3 ori = temp->m_Transform->GetWorldOrientation();
-		//temp->m_Transform->SetLocalOrientation(ori.x, -ori.y, ori.z);
+		glm::vec3 ori = temp->m_Transform->GetWorldOrientation();
+		temp->m_Transform->SetLocalOrientation(ori.x, -ori.y, ori.z);
 
 
 		m_Water->GetFrameBuffers().BindReflectionFramebuffer();
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		technique1->Render(m_CommandList);
-		technique1->GetShader()->SetVec4("clipPlane", { 0.0f, 1.0f, 0.0f, -m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y });
+		technique1->GetShader()->SetVec4("clipPlane", clipUp);
 		technique1->GetShader()->SetFloat("isWater", 1.0f);
 		technique1->GetShader()->SetMat4("waterView", temp->GetViewMatrix());
 		if (!technique1->m_DrawCommands.empty())
@@ -370,7 +371,7 @@ namespace sixengine {
 		}
 
 		technique2->Render(m_CommandList);
-		technique2->GetShader()->SetVec4("clipPlane", { 0.0f, 1.0f, 0.0f, -m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y });
+		technique2->GetShader()->SetVec4("clipPlane", clipUp);
 		technique2->GetShader()->SetFloat("isWater", 1.0f);
 		technique2->GetShader()->SetMat4("waterView", temp->GetViewMatrix());
 		if (!technique2->m_DrawCommands.empty())
@@ -392,7 +393,7 @@ namespace sixengine {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		technique1->Render(m_CommandList);
-		technique1->GetShader()->SetVec4("clipPlane", { 0.0f, -1.0f, 0.0f, m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y });
+		technique1->GetShader()->SetVec4("clipPlane", clipDown);
 		technique1->GetShader()->SetFloat("isWater", 1.0f);
 		technique1->GetShader()->SetMat4("waterView", Camera::ActiveCamera->GetViewMatrix());
 		if (!technique1->m_DrawCommands.empty())
@@ -410,7 +411,7 @@ namespace sixengine {
 		}
 
 		technique2->Render(m_CommandList);
-		technique2->GetShader()->SetVec4("clipPlane", { 0.0f, -1.0f, 0.0f, m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y });
+		technique2->GetShader()->SetVec4("clipPlane", clipDown);
 		technique2->GetShader()->SetFloat("isWater", 1.0f);
 		technique2->GetShader()->SetMat4("waterView", Camera::ActiveCamera->GetViewMatrix());
 		if (!technique2->m_DrawCommands.empty())
@@ -432,7 +433,7 @@ namespace sixengine {
 		
 		technique2->GetShader()->Bind();
 		technique2->GetShader()->SetFloat("isWater", 0.0f);
-		//glDisable(GL_CLIP_DISTANCE0);
+		glDisable(GL_CLIP_DISTANCE0);
 		m_Water->GetFrameBuffers().Unbind();
 	}
 
