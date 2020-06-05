@@ -7,6 +7,7 @@ layout (location = 2) in vec2 aTexCoords;
 out vec2 TexCoords;
 out vec4 ClipSpace;
 out int instanceID;
+out vec3 ToCameraVector;
 
 layout(std140, binding = 0) buffer matrixes
 {
@@ -15,14 +16,18 @@ layout(std140, binding = 0) buffer matrixes
     mat4 model[10];
 };
 
-const float tiling = 4.0;
+uniform vec3 cameraPosition;
+
+const float tiling = 8.0;
 
 void main()
 {
     instanceID = gl_BaseInstance + gl_InstanceID;
-    ClipSpace = projection * view * model[instanceID] * vec4(aPos, 1.0);
+    vec4 worldPosition = model[instanceID] * vec4(aPos, 1.0);
+    ClipSpace = projection * view * worldPosition;
     gl_Position = ClipSpace;
     TexCoords = aTexCoords * tiling;
+    ToCameraVector = cameraPosition - worldPosition.xyz;
 }
 
 #shader fragment
@@ -33,6 +38,7 @@ out vec4 FragColor;
 in vec2 TexCoords;
 in vec4 ClipSpace;
 in flat int instanceID;
+in vec3 ToCameraVector;
 
 layout(std140, binding = 1) buffer textureLayers
 {
@@ -72,6 +78,10 @@ void main()
     vec4 reflectColor = texture(reflectTex, reflectTexCoords);
     vec4 refractColor = texture(refractTex, refractTexCoords);
 
-    FragColor = mix(reflectColor, refractColor, 0.5f);//* vec4(0.0f, 0.0f, 1.0f, 1.0f);
-    FragColor = mix(FragColor, vec4(0.0, 0.3, 0.5, 1.0), 0.2);//* vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    vec3 viewVector = normalize(ToCameraVector);
+    float reflectiveFactor = dot(viewVector, vec3(0.0, 1.0, 0.0)); //frsnel
+    reflectiveFactor = pow(reflectiveFactor, 2.0);
+
+    FragColor = mix(reflectColor, refractColor, reflectiveFactor);
+    FragColor = mix(FragColor, vec4(0.0, 0.3, 0.5, 1.0), 0.2);
 }

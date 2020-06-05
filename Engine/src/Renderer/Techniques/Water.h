@@ -13,8 +13,8 @@ namespace sixengine {
 		unsigned int m_ReflectionTextureID;
 		unsigned int m_ReflectionDepthBufferID;
 		
-		const unsigned int m_RefractionWidth = 1280;
-		const unsigned int m_RefractionHeight = 720;
+		const unsigned int m_RefractionWidth = 320;
+		const unsigned int m_RefractionHeight = 180;
 		unsigned int m_RefractionFrameBufferID;
 		unsigned int m_RefractionTextureID;
 		unsigned int m_RefractionDepthTextureID;
@@ -126,7 +126,7 @@ namespace sixengine {
 		GameObject* m_Go;
 
 		WaterFrameBuffers m_FrameBuffers;
-		const float WAVE_SPEED = 0.00006f;
+		const float WAVE_SPEED = 0.00002f;
 		float m_MoveFactor = 0.0f;
 	public:
 		Water(Shader* shader, GameObject* go);

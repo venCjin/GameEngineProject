@@ -45,6 +45,8 @@ namespace sixengine {
 		m_MoveFactor = std::fmod(m_MoveFactor, 1);
 		m_Shader->SetFloat("moveFactor", m_MoveFactor);
 
+		m_Shader->SetVec3("cameraPosition", Camera::ActiveCamera->m_Transform->GetWorldPosition());
+
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, m_FrameBuffers.GetReflectionTexture());
 
