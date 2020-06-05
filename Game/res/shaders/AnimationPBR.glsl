@@ -58,7 +58,7 @@ void main()
 	//****water****
 	if (isWater > 0.5)
 	{
-		gl_ClipDistance[0] = dot(model[instanceID] * PosL, clipPlane);
+		//gl_ClipDistance[0] = dot(model[instanceID] * PosL, clipPlane);
 		activeView = waterView;
 	}
 	//****water****

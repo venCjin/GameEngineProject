@@ -336,17 +336,17 @@ namespace sixengine {
 		temp->m_Transform->SetWorld(Camera::ActiveCamera->m_Transform->GetWorldCopy());
 		temp->m_Transform->SetWorldRotation(Camera::ActiveCamera->m_Transform->GetWorldRotation());
 		temp->m_Transform->SetLocalScale(Camera::ActiveCamera->m_Transform->GetLocalScale());
-		temp->SetPerspective(Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight());
+		//temp->SetPerspective(Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight());
 
 		// frame buffer 1 - reflect
-		glEnable(GL_CLIP_DISTANCE0);
+		//glEnable(GL_CLIP_DISTANCE0);
 		
 		float distance = 2 * (temp->m_Transform->GetWorldPosition().y - m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y);
 		temp->m_Transform->Translate(0.0f, -distance, 0.0f);
-		glm::vec3 ori = temp->m_Transform->GetWorldOrientation();
-		temp->m_Transform->SetLocalOrientation(ori.x, -ori.y, ori.z);
+		//TODO: bug with orientation ori.y works only [-90, 90], pitch going crazy [-180, 180]
+		//glm::vec3 ori = temp->m_Transform->GetWorldOrientation();
+		//temp->m_Transform->SetLocalOrientation(ori.x, -ori.y, ori.z);
 
-		
 
 		m_Water->GetFrameBuffers().BindReflectionFramebuffer();
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -432,7 +432,7 @@ namespace sixengine {
 		
 		technique2->GetShader()->Bind();
 		technique2->GetShader()->SetFloat("isWater", 0.0f);
-		glDisable(GL_CLIP_DISTANCE0);
+		//glDisable(GL_CLIP_DISTANCE0);
 		m_Water->GetFrameBuffers().Unbind();
 	}
 
