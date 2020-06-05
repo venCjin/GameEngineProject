@@ -151,7 +151,7 @@ namespace sixengine {
 			GameObject* w;
 			w = new GameObject(m_EntityManager);
 			w->AddComponent<Transform>(w);
-			w->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.5f, 0.0f);
+			w->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.5f, 0.0f);
 			w->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("plane"));
 			w->AddComponent<Material>(*MaterialManager::getInstance()->Get("WaterMaterial"));
 			m_Scene.m_SceneRoot->AddChild(w);

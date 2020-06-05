@@ -2,9 +2,8 @@
 #version 460 core
 
 layout (location = 0) in vec3 aPos;
-layout (location = 2) in vec2 aTexCoords;
 
-out vec2 TexCoords;
+out vec4 ClipSpace;
 out int instanceID;
 
 layout(std140, binding = 0) buffer matrixes
@@ -17,18 +16,15 @@ layout(std140, binding = 0) buffer matrixes
 void main()
 {
     instanceID = gl_BaseInstance + gl_InstanceID;
-    gl_Position = projection * view * model[instanceID] * vec4(aPos, 1.0);
-
-    //texCoords = vec2(aPos.x/2.0 + 0.5, aPos.z/2.0 + 0.5);
-    TexCoords = aTexCoords;
+    ClipSpace = projection * view * model[instanceID] * vec4(aPos, 1.0);
+    gl_Position = ClipSpace;
 }
 
 #shader fragment
 #version 460 core
 
 out vec4 FragColor;
-
-in vec2 TexCoords;
+in vec4 ClipSpace;
 
 uniform sampler2D reflectTex;
 uniform sampler2D refractTex;
@@ -37,8 +33,14 @@ uniform sampler2D refractDepthTex;
 void main()
 {
     //texture(textureArray, vec3(TexCoords, layer[instanceID].x)) //distortion
-    
     //texture(textureArray, vec3(TexCoords, layer[instanceID].y)) //normal
     
-    FragColor = texture(reflectTex, TexCoords) ;//* vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    vec2 ndc  =(ClipSpace.xy / ClipSpace.w) / 2.0 + 0.5;
+    vec2 reflectTexCoords = vec2(ndc.x, -ndc.y);
+    vec2 refractTexCoords = vec2(ndc.x, ndc.y);
+
+    vec4 reflectColor = texture(reflectTex, reflectTexCoords);
+    vec4 refractColor = texture(refractTex, refractTexCoords);
+
+    FragColor = mix(reflectColor, refractColor, 0.5f);//* vec4(0.0f, 0.0f, 1.0f, 1.0f);
 }
