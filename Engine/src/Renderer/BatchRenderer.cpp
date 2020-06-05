@@ -348,7 +348,6 @@ namespace sixengine {
 		glm::vec3 ori = temp->m_Transform->GetWorldOrientation();
 		temp->m_Transform->SetLocalOrientation(ori.x, -ori.y, ori.z);
 
-
 		m_Water->GetFrameBuffers().BindReflectionFramebuffer();
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
@@ -387,6 +386,7 @@ namespace sixengine {
 
 			m_Offset += technique2->m_DrawCommands.size() * sizeof(DrawElementsCommand);
 		}		
+
 
 		// frame buffer 2 - refract
 		m_Water->GetFrameBuffers().BindRefractionFramebuffer();

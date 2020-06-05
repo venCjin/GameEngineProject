@@ -126,7 +126,8 @@ namespace sixengine {
 		GameObject* m_Go;
 
 		WaterFrameBuffers m_FrameBuffers;
-
+		const float WAVE_SPEED = 0.00006f;
+		float m_MoveFactor = 0.0f;
 	public:
 		Water(Shader* shader, GameObject* go);
 

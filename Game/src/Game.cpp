@@ -103,10 +103,31 @@ namespace sixengine {
 
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
 			m_BatchRenderer->AddTechnique(new TransparentTechnique(m_TransparentShader));
-			
-			
-			
 			m_BatchRenderer->AddTechnique(ui);
+
+			//TODO:*************
+			Shader* m_WaterShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Water.glsl");
+			MaterialManager::getInstance()->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("Water"),
+				glm::vec4(
+					m_Scene.m_TextureArray->AddTexture("res/textures/water/dudv2.png"),
+					m_Scene.m_TextureArray->AddTexture("res/textures/water/normal2.png"),
+					0.0f,
+					0.0f
+					),
+				"WaterMaterial");
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/plane.obj");
+			GameObject* w;
+			w = new GameObject(m_EntityManager);
+			w->AddComponent<Transform>(w);
+			w->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.5f, 0.0f);
+			w->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("plane"));
+			w->AddComponent<Material>(*MaterialManager::getInstance()->Get("WaterMaterial"));
+			m_Scene.m_SceneRoot->AddChild(w);
+			Water* water = new Water(m_WaterShader, w);
+			m_BatchRenderer->SetWater(water);
+			m_BatchRenderer->AddTechnique(water);
+			//TODO:*************
 
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_normal.png");
@@ -140,25 +161,6 @@ namespace sixengine {
 				m_Scene.m_ShaderManager->Get("PBR"),
 				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks")),
 				"PBR");
-
-			//TODO:*************
-			Shader* m_WaterShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Water.glsl");
-			MaterialManager::getInstance()->CreateMaterial(
-				m_Scene.m_ShaderManager->Get("Water"),
-				glm::vec4(0),
-				"WaterMaterial");
-			m_Scene.m_ModelManager->AddModel("res/models/primitives/plane.obj");
-			GameObject* w;
-			w = new GameObject(m_EntityManager);
-			w->AddComponent<Transform>(w);
-			w->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.5f, 0.0f);
-			w->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("plane"));
-			w->AddComponent<Material>(*MaterialManager::getInstance()->Get("WaterMaterial"));
-			m_Scene.m_SceneRoot->AddChild(w);
-			Water* water = new Water(m_WaterShader, w);
-			m_BatchRenderer->SetWater(water);
-			m_BatchRenderer->AddTechnique(water);
-			//TODO:*************
 
 			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj");

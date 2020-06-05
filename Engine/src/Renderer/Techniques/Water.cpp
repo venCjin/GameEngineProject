@@ -16,12 +16,13 @@ namespace sixengine {
 	{
 		m_Shader->Bind();
 
-		//textureArray->Bind(0);
-		//m_Shader->SetInt("textureArray", 0);
+		textureArray->Bind(0);
+		m_Shader->SetInt("textureArray", 0);
 
 		m_Shader->SetInt("reflectTex", 1);
 		m_Shader->SetInt("refractTex", 2);
 		m_Shader->SetInt("refractDepthTex", 3);
+
 		m_Shader->Unbind();
 	}
 
@@ -33,12 +34,16 @@ namespace sixengine {
 		m_Size = 0;
 
 		m_Models.Update(models.data(), models.size() * sizeof(models[0]));
-		//m_Layers.Update(layers.data(), layers.size() * sizeof(layers[0]));
+		m_Layers.Update(layers.data(), layers.size() * sizeof(layers[0]));
 	}
 
 	void Water::Render(std::vector<RendererCommand*>& commandList)
 	{
 		m_Shader->Bind();
+
+		m_MoveFactor += WAVE_SPEED * Timer::Instance()->ElapsedTime();
+		m_MoveFactor = std::fmod(m_MoveFactor, 1);
+		m_Shader->SetFloat("moveFactor", m_MoveFactor);
 
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, m_FrameBuffers.GetReflectionTexture());
@@ -50,13 +55,13 @@ namespace sixengine {
 		glBindTexture(GL_TEXTURE_2D, m_FrameBuffers.GetRefractionDepthTexture());
 
 		m_Models.Bind();
-		//m_Layers.Bind();
+		m_Layers.Bind();
 	}
 
 	void Water::FinishFrame()
 	{
 		m_Models.LockAndMovePointer();
-		//m_Layers.LockAndMovePointer();
+		m_Layers.LockAndMovePointer();
 	}
 
 	void Water::SetLight(Light& light)
