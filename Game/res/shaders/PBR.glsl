@@ -12,6 +12,7 @@ out int instanceID;
 out vec3 FragPos;
 out vec3 Normal;
 out vec4 FragPosLightSpace1;
+out vec3 TangentFragPos;
 out mat3 TBN;
 
 uniform mat4 lightSpaceMatrix1;
@@ -43,6 +44,8 @@ void main()
 	//vec3 B = cross(N, T);
 
 	TBN = mat3(T, B, N);
+
+	TangentFragPos = TBN * FragPos;
 }
 
 #shader fragment
@@ -84,6 +87,7 @@ in flat int instanceID;
 in vec3 FragPos;
 in vec3 Normal;
 in vec4 FragPosLightSpace1;
+in vec3 TangentFragPos;
 in mat3 TBN;
 
 uniform sampler2D shadowMap1;
@@ -110,6 +114,8 @@ layout(std140, binding = 2) buffer lightData
 uniform PointLight pointLights[NR_POINTLIGHTS];
 uniform SpotLight spotLights[NR_SPOTLIGHTS];
 
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, float heightScale);
+
 // Light Types Functions
 vec3 CalcDirLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo);
 vec3 CalcPointLight(PointLight light, vec3 N, vec3 V, vec3 fragPos, vec3 F0, vec3 albedo);
@@ -125,12 +131,26 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowM
 
 void main()
 {
-	vec4 tex = texture(textureArray, vec3(TexCoords, layer[instanceID].x));
-	if (tex.a < 0.2) discard;
+	vec3 tangentV = normalize(-TangentFragPos);
+	vec2 texCoords = TexCoords;
+	
+	texCoords = ParallaxMapping(TexCoords, tangentV, 0.1);
+	if(texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 0.0)
+		discard;	
+
+	// checkin if material has height map
+	if (layer[instanceID].w < 1.0)
+		texCoords = TexCoords;
+	
+	vec4 tex = texture(textureArray, vec3(texCoords, layer[instanceID].x));
+
+	if (tex.a < 0.2)
+		discard;
+
 	vec3 textureColor = tex.rgb;
 
-	vec3 normal = texture(textureArray, vec3(TexCoords, layer[instanceID].y)).rgb;
-	float met = texture(textureArray, vec3(TexCoords, layer[instanceID].z)).r;
+	vec3 normal = texture(textureArray, vec3(texCoords, layer[instanceID].y)).rgb;
+	float met = texture(textureArray, vec3(texCoords, layer[instanceID].z)).r;
 	
 	normal = normalize(normal * 2.0 - 1.0);
 	vec3 N = normalize(TBN * normal);
@@ -143,7 +163,7 @@ void main()
 	if (layer[instanceID].z < 1.0)
 		met = metallic;
 
-	vec3 V = normalize(-FragPos);	// Calculated in View Space
+	vec3 V = normalize(-FragPos);	// View vector calculated in View Space
 	vec3 albedo = pow(textureColor, vec3(2.2));
 
 	vec3 F0 = vec3(0.04);
@@ -175,6 +195,13 @@ void main()
 	//FragColor = vec4(dirLight.color, 1.0);
 	
 } 
+
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, float heightScale)
+{
+	float height = texture(textureArray, vec3(texCoords, layer[instanceID].w)).r;
+	return texCoords - viewDir.xy * (height * heightScale);
+}
+
 
 vec3 CalcDirLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo)
 {

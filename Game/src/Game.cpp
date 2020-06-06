@@ -7,6 +7,7 @@
 // hacks
 #include "Gameplay/Systems/AnimationSystem.h"
 #include "Renderer/Techniques/AnimationPBR.h"
+#include "Renderer/Techniques/StaticPBR.h"
 #include "Renderer/Techniques/DepthRender.h"
 #include "Renderer/Techniques/UI.h"
 #include <Renderer/Techniques/Transparent.h>
@@ -70,6 +71,7 @@ namespace sixengine {
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
 			Shader* m_FontShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Font.glsl");
 			Shader* m_TransparentShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Transparent.glsl");
+			Shader* m_PBRShader = m_Scene.m_ShaderManager->AddShader("res/shaders/PBR.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
 			
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
@@ -94,12 +96,19 @@ namespace sixengine {
 			m_BatchRenderer->SetDepth(new DepthRender(m_Scene.m_ShaderManager->Get("Depth")));
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
 			m_BatchRenderer->AddTechnique(transparent);
+			m_BatchRenderer->AddTechnique(new StaticPBR(m_PBRShader));
 			m_BatchRenderer->AddTechnique(ui);
 
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_normal.png");
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_specular.png");
 			m_Scene.m_TextureArray->AddTexture("res/textures/test/Bricks.jpg");
+
+			m_Scene.m_TextureArray->AddTexture("res/textures/parallax/bricks.jpg");
+			m_Scene.m_TextureArray->AddTexture("res/textures/parallax/bricks_normal.jpg");
+			m_Scene.m_TextureArray->AddTexture("res/textures/parallax/bricks_height.jpg");
+
+
 			m_Scene.m_TextureArray->CreateTextureArray();
 			m_Scene.m_MaterialManager->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("Font"),
@@ -114,12 +123,22 @@ namespace sixengine {
 				"parasiteZombie");
 
 			m_Scene.m_MaterialManager->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("PBR"),
+				glm::vec4(
+					m_Scene.m_TextureArray->GetTexture("bricks"),
+					m_Scene.m_TextureArray->GetTexture("bricks_normal"),
+					0.0f, 
+					m_Scene.m_TextureArray->GetTexture("bricks_height")),
+				"bricksParallax");
+
+			m_Scene.m_MaterialManager->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("Transparent"),
 				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks")),
 				"Transparent");
 
 			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/plane.obj");
 			m_Scene.m_ModelManager->CreateVAO();
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
@@ -150,12 +169,14 @@ namespace sixengine {
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
+			//obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
 			obj->GetComponent<Transform>()->SetLocalOrientation(180.0f, 0.0f, 0.0f);
 			//obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cylinder"));
 			//obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Transparent"));
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("parasiteZombie"));
+			//obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
+			//obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("parasiteZombie"));
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("plane"));
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("bricksParallax"));
 			obj->AddComponent<Animation>();
 			obj->AddComponent<SimplePlayer>();
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
