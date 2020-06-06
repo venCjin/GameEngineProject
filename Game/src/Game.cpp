@@ -116,13 +116,13 @@ namespace sixengine {
 					0.0f
 					),
 				"WaterMaterial");
-			m_Scene.m_ModelManager->AddModel("res/models/primitives/plane.obj");
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/circleplane.obj");
 			GameObject* w;
 			w = new GameObject(m_EntityManager);
 			w->AddComponent<Transform>(w);
-			w->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.5f, 0.0f);
-			w->GetComponent<Transform>()->SetLocalScale(3.0f, 3.0f, 3.0f);
-			w->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("plane"));
+			w->GetComponent<Transform>()->SetWorldPosition(-4.0f, 0.8f, -6.2f);
+			//w->GetComponent<Transform>()->SetLocalScale(10.0, 1.0, 10.0);
+			w->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("circleplane"));
 			w->AddComponent<Material>(*MaterialManager::getInstance()->Get("WaterMaterial"));
 			m_Scene.m_SceneRoot->AddChild(w);
 			Water* water = new Water(m_WaterShader, w);

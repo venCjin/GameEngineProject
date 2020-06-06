@@ -13,8 +13,8 @@ namespace sixengine {
 		unsigned int m_ReflectionTextureID;
 		unsigned int m_ReflectionDepthBufferID;
 		
-		const unsigned int m_RefractionWidth = 320;
-		const unsigned int m_RefractionHeight = 180;
+		const unsigned int m_RefractionWidth = Application::Get().GetWindow().GetHeight();
+		const unsigned int m_RefractionHeight = Application::Get().GetWindow().GetWidth();
 		unsigned int m_RefractionFrameBufferID;
 		unsigned int m_RefractionTextureID;
 		unsigned int m_RefractionDepthTextureID;
@@ -32,8 +32,6 @@ namespace sixengine {
 
 		void Unbind()
 		{
-			//glDrawBuffer(GL_NONE);
-			//glReadBuffer(GL_NONE);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glViewport(0, 0, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		}
@@ -63,29 +61,19 @@ namespace sixengine {
 
 		void CreateFrameBuffer(unsigned int& frameBuffer) {
 			glGenFramebuffers(1, &frameBuffer);
-			//generate name for frame buffer
 			glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-			//create the framebuffer
 			glDrawBuffer(GL_COLOR_ATTACHMENT0);
-			//indicate that we will always render to color attachment 0
 		}
 
 		void CreateTextureAttachment(unsigned int& textureID, unsigned int width, unsigned int height)
 		{
 			glGenTextures(1, &textureID);
 			glBindTexture(GL_TEXTURE_2D, textureID);
-			//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-			//float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-			//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
-			//glDrawBuffer(GL_NONE);
-			//glReadBuffer(GL_NONE);
 		}
 		
 		void CreateDepthBufferAttachment(unsigned int& depthbufferID, unsigned int width, unsigned int height)
@@ -111,9 +99,6 @@ namespace sixengine {
 			glBindTexture(GL_TEXTURE_2D, 0); //To make sure the texture isn't bound
 			glViewport(0, 0, width, height);
 			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-			// //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-			// //glClear(GL_COLOR_BUFFER_BIT);
-			//glClear(GL_DEPTH_BUFFER_BIT);
 		}
 	};
 

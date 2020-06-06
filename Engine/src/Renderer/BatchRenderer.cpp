@@ -331,8 +331,8 @@ namespace sixengine {
 
 	void BatchRenderer::RenderWater(Technique* technique1, Technique* technique2)
 	{
-		glm::vec4 clipUp(0.0f, 1.0f, 0.0f, -m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y);
-		glm::vec4 clipDown(0.0f, -1.0f, 0.0f, m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y);
+		glm::vec4 clipUp(0.0f, 1.0f, 0.0f, -m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y + 0.1f);
+		glm::vec4 clipDown(0.0f, -1.0f, 0.0f, m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y + 0.1f);
 
 		Transform* t = new Transform();
 		Camera* temp = new Camera(t);
@@ -348,6 +348,7 @@ namespace sixengine {
 		//TODO: bug with orientation ori.y works only [-90, 90], pitch going crazy [-180, 180]
 		glm::vec3 ori = temp->m_Transform->GetWorldOrientation();
 		temp->m_Transform->SetLocalOrientation(ori.x, -ori.y, ori.z);
+		//TODO: ^^^^^^^^^
 
 		m_Water->GetFrameBuffers().BindReflectionFramebuffer();
 		glClear(GL_COLOR_BUFFER_BIT);
