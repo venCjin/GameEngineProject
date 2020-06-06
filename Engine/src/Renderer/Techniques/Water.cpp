@@ -68,6 +68,12 @@ namespace sixengine {
 
 	void Water::SetLight(Light& light)
 	{
+		m_Shader->Bind();
+
+		m_Shader->SetVec3("lightPosition", light.m_LightData.dirLight.position);
+		m_Shader->SetVec3("lightColor", light.m_LightData.dirLight.color);
+
+		m_Shader->Unbind();
 	}
 
 }
