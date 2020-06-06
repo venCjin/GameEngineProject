@@ -345,10 +345,11 @@ namespace sixengine {
 		float distance = 2 * (temp->m_Transform->GetWorldPosition().y - m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y);
 		temp->m_Transform->Translate(0.0f, -distance, 0.0f);
 		
-		//TODO: bug with orientation ori.y works only [-90, 90], pitch going crazy [-180, 180]
 		glm::vec3 ori = temp->m_Transform->GetWorldOrientation();
-		temp->m_Transform->SetLocalOrientation(ori.x, -ori.y, ori.z);
-		//TODO: ^^^^^^^^^
+		if( abs(glm::dot(glm::vec3(0.0f, 0.0f, -1.0f), ori)) < 10.0f )
+			temp->m_Transform->SetLocalOrientation(ori.x, -ori.y, ori.z);
+		else
+			temp->m_Transform->SetLocalOrientation(-ori.x, ori.y, -ori.z);
 
 		m_Water->GetFrameBuffers().BindReflectionFramebuffer();
 		glClear(GL_COLOR_BUFFER_BIT);
