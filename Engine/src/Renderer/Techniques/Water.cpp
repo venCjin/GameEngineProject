@@ -8,7 +8,8 @@ namespace sixengine {
 	Water::Water(Shader* shader, GameObject* go)
 		: Technique(shader), m_Go(go),
 		m_Models(12 * sizeof(glm::mat4), 0),
-		m_Layers(10 * sizeof(glm::vec4), 1)
+		m_Layers(10 * sizeof(glm::vec4), 1),
+		reflectCamera(new Transform())
 	{
 	}
 

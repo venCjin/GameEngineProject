@@ -333,23 +333,21 @@ namespace sixengine {
 	{
 		glm::vec4 clipUp(0.0f, 1.0f, 0.0f, -m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y + 0.1f);
 		glm::vec4 clipDown(0.0f, -1.0f, 0.0f, m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y + 0.1f);
-
-		Transform* t = new Transform();
-		Camera* temp = new Camera(t);
-		temp->m_Transform->SetWorld(Camera::ActiveCamera->m_Transform->GetWorldCopy());
-		temp->m_Transform->SetWorldRotation(Camera::ActiveCamera->m_Transform->GetWorldRotation());
-		temp->m_Transform->SetLocalScale(Camera::ActiveCamera->m_Transform->GetLocalScale());
-		
-		// frame buffer 1 - reflect
+		Camera temp = m_Water->GetReflectCamera();
+		temp.m_Transform->SetWorld(Camera::ActiveCamera->m_Transform->GetWorldCopy());
+		temp.m_Transform->SetWorldRotation(Camera::ActiveCamera->m_Transform->GetWorldRotation());
+		temp.m_Transform->SetLocalScale(Camera::ActiveCamera->m_Transform->GetLocalScale());
 		glEnable(GL_CLIP_DISTANCE0);
-		float distance = 2 * (temp->m_Transform->GetWorldPosition().y - m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y);
-		temp->m_Transform->Translate(0.0f, -distance, 0.0f);
-		
-		glm::vec3 ori = temp->m_Transform->GetWorldOrientation();
+
+		// frame buffer 1 - reflect
+		float distance = 2 * (temp.m_Transform->GetWorldPosition().y - m_Water->GetGameObject().GetComponent<Transform>()->GetWorldPosition().y);
+		temp.m_Transform->Translate(0.0f, -distance, 0.0f);
+
+		glm::vec3 ori = temp.m_Transform->GetWorldOrientation();
 		if( abs(glm::dot(glm::vec3(0.0f, 0.0f, -1.0f), ori)) < 10.0f )
-			temp->m_Transform->SetLocalOrientation(ori.x, -ori.y, ori.z);
+			temp.m_Transform->SetLocalOrientation(ori.x, -ori.y, ori.z);
 		else
-			temp->m_Transform->SetLocalOrientation(-ori.x, ori.y, -ori.z);
+			temp.m_Transform->SetLocalOrientation(-ori.x, ori.y, -ori.z);
 
 		m_Water->GetFrameBuffers().BindReflectionFramebuffer();
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -357,7 +355,7 @@ namespace sixengine {
 		technique1->Render(m_CommandList);
 		technique1->GetShader()->SetVec4("clipPlane", clipUp);
 		technique1->GetShader()->SetFloat("isWater", 1.0f);
-		technique1->GetShader()->SetMat4("waterView", temp->GetViewMatrix());
+		technique1->GetShader()->SetMat4("waterView", temp.GetViewMatrix());
 		if (!technique1->m_DrawCommands.empty())
 		{
 			void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head + m_Offset;
@@ -375,7 +373,7 @@ namespace sixengine {
 		technique2->Render(m_CommandList);
 		technique2->GetShader()->SetVec4("clipPlane", clipUp);
 		technique2->GetShader()->SetFloat("isWater", 1.0f);
-		technique2->GetShader()->SetMat4("waterView", temp->GetViewMatrix());
+		technique2->GetShader()->SetMat4("waterView", temp.GetViewMatrix());
 		if (!technique2->m_DrawCommands.empty())
 		{
 			void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head + m_Offset;

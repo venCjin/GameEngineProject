@@ -109,6 +109,7 @@ namespace sixengine {
 		UniformBuffer m_Layers;
 
 		GameObject* m_Go;
+		Camera reflectCamera;
 
 		WaterFrameBuffers m_FrameBuffers;
 		const float WAVE_SPEED = 0.00002f;
@@ -126,6 +127,7 @@ namespace sixengine {
 		//moje
 		inline WaterFrameBuffers& GetFrameBuffers() { return m_FrameBuffers; }
 		inline GameObject& GetGameObject() { return *m_Go; }
+		inline Camera& GetReflectCamera() { return reflectCamera; }
 	};
 
 }
