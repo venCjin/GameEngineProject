@@ -68,7 +68,11 @@ namespace sixengine {
 			//ADD_TRACK("res/sounds/ophelia.mp3", "ophelia");
 			//PLAY_TRACK("ophelia");
 			// HACKS
-
+			LOG_CORE_FATAL("AAAAA");
+			LOG_CORE_ERROR("AAAAA");
+			LOG_CORE_INFO("AAAAA");
+			LOG_CORE_TRACE("AAAAA");
+			LOG_CORE_WARN("AAAAA");
 			m_SystemManager.AddSystem<AnimationSystem>();
 			//m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 
@@ -148,9 +152,12 @@ namespace sixengine {
 			GameObject* obj;
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(-10.0f, 1.0f, -10.0f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cylinder"));
+			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.0f, 0.0f);
+			obj->GetComponent<Transform>()->SetLocalScale(0.01f, .01f, .01f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
+			obj->AddComponent<Animation>();
+			//obj->AddComponent<SimplePlayer>();
 			m_Scene.m_SceneRoot->AddChild(obj);
 			m_Player = obj;
 
@@ -259,7 +266,7 @@ namespace sixengine {
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamA->GetComponent<Camera>().Get());
 				//m_Player->GetComponent<Material>()->SetShader(m_Scene.m_ShaderManager->Get("PBR"));
 				m_Player->RemoveComponent<Material>();
-				m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bricks"));
+				m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F6))

@@ -4,27 +4,44 @@
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
+layout(location = 5) in ivec4 aBoneIDs;
+layout(location = 6) in vec4 aWeights;
+
 
 out vec3 Normal;
 out vec2 TexCoords;
 out int instanceID;
-out vec4 FragPos;
+
 
 layout(std140, binding = 0) buffer matrixes
 {
     mat4 view;
     mat4 projection;
-    mat4 model[10];
+    mat4 model[100];
 };
 
+struct BonesStruct
+{
+    mat4 bones[100];
+};
+
+layout(std430, binding = 1) buffer bones
+{
+    BonesStruct gBones[100];
+};
 void main()
 {
     instanceID = gl_BaseInstance + gl_InstanceID;
     TexCoords = aTexCoords;
+
+    mat4 BoneTransform = gBones[instanceID].bones[aBoneIDs[0]] * aWeights[0];
+    BoneTransform += gBones[instanceID].bones[aBoneIDs[1]] * aWeights[1];
+    BoneTransform += gBones[instanceID].bones[aBoneIDs[2]] * aWeights[2];
+    BoneTransform += gBones[instanceID].bones[aBoneIDs[3]] * aWeights[3];
+
+    vec4 PosL = BoneTransform * vec4(aPos, 1.0);
     Normal = aNormal;
-    vec4 tmp = projection * view * model[gl_BaseInstance + gl_InstanceID] * vec4(aPos, 1.0);
-    FragPos = tmp;
-    gl_Position = tmp;
+    gl_Position = projection * view * model[instanceID] * PosL;
 }
 
 #shader fragment
@@ -34,7 +51,7 @@ out vec4 FragColor;
 
 in vec3 Normal;
 in vec2 TexCoords;
-in vec4 FragPos;
+
 in flat int instanceID;
 
 layout(std140, binding = 1) buffer textureLayers
@@ -49,8 +66,7 @@ uniform float FresnelExponent;
 //uniform int OnSurface;
 void main()
 {
-    float ndc_depth = FragPos.z / FragPos.w;
-    ndc_depth =  0.5 * ndc_depth + 0.5;
+
     gl_FragDepth = .1f;//*(1-OnSurface) + ndc_depth * OnSurface;
     float fresnel = dot (Normal, -normalize(viewDir));
     fresnel = pow((1 - fresnel), FresnelExponent);
