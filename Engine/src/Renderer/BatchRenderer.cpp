@@ -285,7 +285,8 @@ namespace sixengine {
 			}
 		}
 
-		m_ParticleRender->Render(m_ParticleList);
+		if (m_ParticleRender)
+			m_ParticleRender->Render(m_ParticleList);
 
 		for (auto t : m_TechniqueList)
 			t->FinishFrame();
