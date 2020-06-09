@@ -6,10 +6,12 @@ namespace sixengine {
 
 	struct SimplePlayer : public ISerializable
 	{
-		SimplePlayer() {}
-        SimplePlayer(GameObject* go) {}
+		SimplePlayer() { gameObject = nullptr; }
+        SimplePlayer(GameObject* go) { gameObject = go; }
         virtual void Load(std::iostream& stream) {}
 		virtual void Save(std::iostream& stream) {}
+	public:
+		GameObject* gameObject;
 	};
 
 }

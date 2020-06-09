@@ -26,6 +26,8 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+#include <Physics\Components\DynamicBody.h>
+#include <Physics/Systems/DynamicBodySystem.h>
 
 
 
@@ -68,11 +70,7 @@ namespace sixengine {
 			//ADD_TRACK("res/sounds/ophelia.mp3", "ophelia");
 			//PLAY_TRACK("ophelia");
 			// HACKS
-			LOG_CORE_FATAL("AAAAA");
-			LOG_CORE_ERROR("AAAAA");
-			LOG_CORE_INFO("AAAAA");
-			LOG_CORE_TRACE("AAAAA");
-			LOG_CORE_WARN("AAAAA");
+
 			m_SystemManager.AddSystem<AnimationSystem>();
 			//m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 
@@ -159,8 +157,7 @@ namespace sixengine {
 			obj->AddComponent<Animation>();
 			//obj->AddComponent<SimplePlayer>();
 			m_Scene.m_SceneRoot->AddChild(obj);
-			m_Player = obj;
-
+			
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0f, 10.0f, 0.0f);
@@ -185,8 +182,11 @@ namespace sixengine {
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
 			obj->AddComponent<Animation>();
-			obj->AddComponent<SimplePlayer>();
+			obj->AddComponent<DynamicBody>();
+			obj->AddComponent<SimplePlayer>(obj);
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+
+			m_Player = obj;
 
 			std::vector<GizmoVertex> vertices;
 			std::vector<unsigned int> indices;
@@ -209,6 +209,7 @@ namespace sixengine {
 
 			m_SystemManager.AddSystem<OrbitalCameraSystem>();
 			m_SystemManager.AddSystem<MixingCameraSystem>();
+			m_SystemManager.AddSystem<DynamicBodySystem>();
 			orbitalCamA = new GameObject(m_EntityManager);
 			orbitalCamA->AddComponent<Transform>(orbitalCamA);
 			orbitalCamA->AddComponent<Camera>(orbitalCamA);
@@ -265,16 +266,16 @@ namespace sixengine {
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamA->GetComponent<Camera>().Get());
 				//m_Player->GetComponent<Material>()->SetShader(m_Scene.m_ShaderManager->Get("PBR"));
-				m_Player->RemoveComponent<Material>();
-				m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
+				//m_Player->RemoveComponent<Material>();
+				//m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F6))
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamB->GetComponent<Camera>().Get());
 				//m_Player->GetComponent<Material>()->SetShader(m_Scene.m_ShaderManager->Get("Transparent"));
-				m_Player->RemoveComponent<Material>();
-				m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
+				//m_Player->RemoveComponent<Material>();
+				//m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F7))

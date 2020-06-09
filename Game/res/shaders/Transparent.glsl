@@ -68,7 +68,7 @@ void main()
 {
 
     gl_FragDepth = .1f;//*(1-OnSurface) + ndc_depth * OnSurface;
-    float fresnel = dot (Normal, -normalize(viewDir));
+    float fresnel = dot (Normal, normalize(viewDir));
     fresnel = pow((1 - fresnel), FresnelExponent);
     vec4 outputcolor = /*OnSurface * texture(textureArray, vec3(TexCoords, layer[instanceID].x)) +*/ vec4(/*(1-OnSurface) */ color * fresnel, fresnel);
 
