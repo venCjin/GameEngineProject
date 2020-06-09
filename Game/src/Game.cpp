@@ -103,7 +103,7 @@ namespace sixengine {
 
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
 			m_BatchRenderer->AddTechnique(new TransparentTechnique(m_TransparentShader));
-			m_BatchRenderer->AddTechnique(ui);
+			
 
 			//TODO:*************
 			Shader* m_WaterShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Water.glsl");
@@ -129,6 +129,8 @@ namespace sixengine {
 			m_BatchRenderer->SetWater(water);
 			m_BatchRenderer->AddTechnique(water);
 			//TODO:*************
+
+			m_BatchRenderer->AddTechnique(ui);
 
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_normal.png");
