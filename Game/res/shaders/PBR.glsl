@@ -10,10 +10,14 @@ layout (location = 4) in vec3 aBitangent;
 out vec2 TexCoords;
 out int instanceID;
 out vec3 FragPos;
+out vec3 FragPos2;
 out vec3 Normal;
 out vec4 FragPosLightSpace1;
 out vec3 TangentFragPos;
+out vec3 TangentFragPos2;
 out mat3 TBN;
+out mat3 TBN2;
+out mat4 view2;
 
 uniform mat4 lightSpaceMatrix1;
 
@@ -29,8 +33,14 @@ void main()
     instanceID = gl_BaseInstance + gl_InstanceID;
     TexCoords = aTexCoords;
 
+	view2 = view;
+
     gl_Position = projection * view * model[instanceID] * vec4(aPos, 1.0);    
 	FragPos = vec3(view * model[instanceID] * vec4(aPos, 1.0));	
+	
+	//S jescze raz frag pos bez view     
+	FragPos2 = vec3(model[instanceID] * vec4(aPos, 1.0));	
+	
 	Normal = mat3(transpose(inverse(view * model[instanceID]))) * aNormal;
 
 	FragPosLightSpace1 = lightSpaceMatrix1 * vec4(vec3(model[instanceID] * vec4(aPos, 1.0)), 1.0);
@@ -45,7 +55,17 @@ void main()
 
 	TBN = mat3(T, B, N);
 
+	// S: druga macierz tbn bez bez view   
+	normalMatrix = mat3(transpose(inverse(view * model[instanceID])));
+	T = normalize(normalMatrix * aTangent);
+	N = normalize(normalMatrix * aNormal);
+	B = normalize(normalMatrix * aBitangent);
+	TBN2 = mat3(T, B, N);
+
+	//
+
 	TangentFragPos = TBN * FragPos;
+	TangentFragPos2 = TBN2 * FragPos2;
 }
 
 #shader fragment
@@ -85,10 +105,14 @@ out vec4 FragColor;
 in vec2 TexCoords;
 in flat int instanceID;
 in vec3 FragPos;
+in vec3 FragPos2;
 in vec3 Normal;
 in vec4 FragPosLightSpace1;
 in vec3 TangentFragPos;
+in vec3 TangentFragPos2;
 in mat3 TBN;
+in mat3 TBN2;
+in mat4 view2;
 
 uniform sampler2D shadowMap1;
 
@@ -132,15 +156,24 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowM
 void main()
 {
 	vec3 tangentV = normalize(-TangentFragPos);
+	vec3 tangentV2 = normalize(-TangentFragPos2);
 	vec2 texCoords = TexCoords;
 	
-	texCoords = ParallaxMapping(TexCoords, tangentV, 0.1);
-	if(texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 0.0)
-		discard;	
-
 	// checkin if material has height map
 	if (layer[instanceID].w < 1.0)
+	{
 		texCoords = TexCoords;
+	}
+	else 
+	{
+		// wywojuemy metode paralaxmapping z innymi argumentami     
+		// (teraz jest w view space) W WORLD SPACE -> viewDir = (frag - camera) * TBN_World    
+		
+		vec3 cam = vec3(view2[3][0], view2[3][1], view2[3][2]);
+		vec3 xxx = normalize(FragPos2 - cam) * TBN2;
+		texCoords = ParallaxMapping(TexCoords, xxx, 0.05f);
+	}
+
 	
 	vec4 tex = texture(textureArray, vec3(texCoords, layer[instanceID].x));
 
@@ -196,6 +229,8 @@ void main()
 	
 } 
 
+// viewDir powinno w worldspace
+// druga macierz tbn ktora nie bierze pod uwage view + fragment ktory tez nie bedzie w view
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, float heightScale)
 {
 	float height = texture(textureArray, vec3(texCoords, layer[instanceID].w)).r;
