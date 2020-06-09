@@ -296,6 +296,8 @@ namespace sixengine {
 
 		m_CommandList.clear();
 		m_Offset = 0;
+
+		m_ParticleList.clear();
 	}
 
 	void BatchRenderer::RenderDepth(Technique* depth, Technique* technique)

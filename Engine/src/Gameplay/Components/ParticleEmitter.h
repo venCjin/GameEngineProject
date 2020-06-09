@@ -13,7 +13,7 @@
 
 namespace sixengine {
 
-	class ParticleEmitter : public ISerializable
+	class ParticleEmitter// : public ISerializable
 	{
 	private:
 		int m_LastUnusedParticle = 0;
@@ -33,7 +33,14 @@ namespace sixengine {
 		float m_SizeAcceleration;
 		ParticleObject m_Particles[MAX_PARTICLE_COUNT];
 
-		Texture m_Texture;
+		Texture* m_Texture;
+
+		ParticleEmitter() { }
+
+		ParticleEmitter(Texture* texture)
+			: m_Texture(texture)
+		{
+		}
 	
 		int FindUnusedParticle()
 		{
@@ -77,7 +84,7 @@ namespace sixengine {
 			for (int i = 0; i < MAX_PARTICLE_COUNT; i++)
 			{
 				if (m_Particles[i].m_Active)
-					transforms[i] = m_Particles[i].GetTransform();
+					transforms.push_back(m_Particles[i].GetTransform());
 			}
 
 			return transforms;

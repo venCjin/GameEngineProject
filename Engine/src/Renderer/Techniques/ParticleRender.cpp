@@ -8,7 +8,7 @@ namespace sixengine {
 	{
 		m_Shader->Bind();
 
-		m_Shader->SetInt("textureName", 0);
+		m_Shader->SetInt("textureName", 2);
 	}
 
 	void ParticleRender::Start(TextureArray* textureArray)
@@ -29,9 +29,9 @@ namespace sixengine {
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 5, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 5, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(3 * sizeof(float)));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
@@ -60,12 +60,15 @@ namespace sixengine {
 		{
 			models = p->GetAllTransforms(); 
 			m_Models.Update(models.data(), MAX_PARTICLE_COUNT * sizeof(glm::mat4), 2 * sizeof(glm::mat4));
+			m_Models.Bind();
 
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, p->m_Texture.m_ID);
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, p->m_Texture->m_ID);
 
-			glDrawArraysInstanced(GL_TRIANGLES, 0, 4, MAX_PARTICLE_COUNT);
+			glDrawArraysInstanced(GL_TRIANGLES, 0, 4, 500);
 		}
+
+		glBindVertexArray(0);
 	}
 
 }

@@ -15,6 +15,7 @@ namespace sixengine {
 		float particlesToInit = 0.0f;
 		float timer = 0.0f;
 
+	public:
 		void Update(EventManager & eventManager, float dt) override
 		{
 			if (timer <= m_ParticleEmitter->m_EmissionDuration)

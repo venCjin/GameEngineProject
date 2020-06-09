@@ -3,9 +3,11 @@
 
 #include "Core/Scene.h"
 #include "Renderer/BatchRenderer.h"
+#include "Renderer/Texture.h"
 
 // hacks
 #include "Gameplay/Systems/AnimationSystem.h"
+#include "Gameplay/Systems/ParticleSystem.h"
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/DepthRender.h"
 #include "Renderer/Techniques/UI.h"
@@ -70,6 +72,7 @@ namespace sixengine {
 			// HACKS
 
 			m_SystemManager.AddSystem<AnimationSystem>();
+			m_SystemManager.AddSystem<ParticleSystem>();
 			//m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
@@ -79,6 +82,9 @@ namespace sixengine {
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/DepthAnim.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/ParticlesShader.glsl");
+
+			Texture* particleTexture = new Texture("res/textures/particle.png");
 
 			Skybox* skybox = new Skybox(
 				{
@@ -95,6 +101,7 @@ namespace sixengine {
 			m_BatchRenderer->SetStaticDepth(new DepthRender(m_Scene.m_ShaderManager->Get("Depth")));
 			m_BatchRenderer->SetAnimatedDepth(new DepthRender(m_Scene.m_ShaderManager->Get("DepthAnim")));
 
+			m_BatchRenderer->SetParticle(new ParticleRender(m_Scene.m_ShaderManager->Get("ParticlesShader")));
 
 			Font* font = new Font("res/fonts/DroidSans.ttf");
 			UI* ui = new UI(m_FontShader);
@@ -177,6 +184,7 @@ namespace sixengine {
 			//obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
+			obj->AddComponent<ParticleEmitter>(particleTexture);
 			obj->AddComponent<Animation>();
 			obj->AddComponent<SimplePlayer>();
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
