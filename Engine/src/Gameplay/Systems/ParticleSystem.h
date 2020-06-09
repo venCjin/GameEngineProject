@@ -18,6 +18,8 @@ namespace sixengine {
 	public:
 		void Update(EventManager & eventManager, float dt) override
 		{
+			return;
+			/*
 			if (timer <= m_ParticleEmitter->m_EmissionDuration)
 			{
 				particlesToInit += m_ParticleEmitter->m_EmissionFrequency * dt;
@@ -40,17 +42,17 @@ namespace sixengine {
 
 			for (int i = 0; i < MAX_PARTICLE_COUNT; i++)
 			{
-				if (m_ParticleEmitter->m_Particles[i].m_Timer <= m_ParticleEmitter->m_ParticleLifeDuration)
+				if (m_ParticleEmitter->m_ParticlesVector[i].m_Timer <= m_ParticleEmitter->m_ParticleLifeDuration)
 				{
-					m_ParticleEmitter->m_Particles[i].m_Timer += dt;
-					m_ParticleEmitter->m_Particles[i].m_TranslationVelocity += m_ParticleEmitter->m_TranslationAcceleration * dt;
-					m_ParticleEmitter->m_Particles[i].UpdateTransform(dt);
+					m_ParticleEmitter->m_ParticlesVector[i].m_Timer += dt;
+					m_ParticleEmitter->m_ParticlesVector[i].m_TranslationVelocity += m_ParticleEmitter->m_TranslationAcceleration * dt;
+					m_ParticleEmitter->m_ParticlesVector[i].UpdateTransform(dt);
 				}
 
 				else
-					m_ParticleEmitter->m_Particles[i].m_Active = false;
+					m_ParticleEmitter->m_ParticlesVector[i].m_Active = false;
 			}
-
+			*/
 			
 		}
 

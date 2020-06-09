@@ -6,7 +6,10 @@ namespace sixengine {
 	{
 	public:
 		ParticleObject() : m_TranslationVelocity(0.0f), m_RotationVelocity(0.0f), m_SizeVelocity(0.0f), m_Active(true), m_Timer(0.0f)
-		{}
+		{
+			LOG_INFO("ParticleObject() ");
+
+		}
 
 		ParticleObject(glm::vec3 tVel, glm::vec3 rVel, glm::vec3 sVel) : m_TranslationVelocity(tVel), m_RotationVelocity(rVel), m_SizeVelocity(sVel), m_Active(true), m_Timer(0.0f)
 		{}

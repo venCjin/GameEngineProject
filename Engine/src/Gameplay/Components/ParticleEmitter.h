@@ -31,22 +31,34 @@ namespace sixengine {
 		float m_TranslationAcceleration;
 		float m_RotationAcceleration;
 		float m_SizeAcceleration;
-		ParticleObject m_Particles[MAX_PARTICLE_COUNT];
+		//ParticleObject m_Particles[MAX_PARTICLE_COUNT];
+		std::vector<ParticleObject*> m_ParticlesVector;
 
 		Texture* m_Texture;
 
-		ParticleEmitter() { }
+		ParticleEmitter() 
+		{
+			//m_ParticlesVector.resize(MAX_PARTICLE_COUNT);
+			for (size_t i = 0; i < MAX_PARTICLE_COUNT; i++)
+			{
+				ParticleObject *po = new ParticleObject();
+				m_ParticlesVector.push_back(po);
+			}
+
+			LOG_INFO(m_ParticlesVector);
+		}
 
 		ParticleEmitter(Texture* texture)
 			: m_Texture(texture)
 		{
+			ParticleEmitter();
 		}
 	
 		int FindUnusedParticle()
 		{
 			for (int i = m_LastUnusedParticle; i < MAX_PARTICLE_COUNT; i++)
 			{
-				if (!m_Particles[i].m_Active)
+				if (!m_ParticlesVector[i]->m_Active)
 				{
 					m_LastUnusedParticle = i;
 					return m_LastUnusedParticle;
@@ -55,7 +67,7 @@ namespace sixengine {
 
 			for (int i = 0; i < m_LastUnusedParticle; i++)
 			{
-				if (!m_Particles[i].m_Active)
+				if (!m_ParticlesVector[i]->m_Active)
 				{
 					m_LastUnusedParticle = i;
 					return m_LastUnusedParticle;
@@ -73,17 +85,19 @@ namespace sixengine {
 			glm::vec3 startRotationVelocity = glm::vec3(0.0f);
 			glm::vec3 startScaleVelocity = glm::vec3(0.0f);
 
-			m_Particles[FindUnusedParticle()] = ParticleObject(startTranslationVelocity, startRotationVelocity, startScaleVelocity);
+			m_ParticlesVector[FindUnusedParticle()] = new ParticleObject(startTranslationVelocity, startRotationVelocity, startScaleVelocity);
 		}
 
 		std::vector<glm::mat4> GetAllTransforms()
 		{
+			LOG_INFO("GetAllTransforms() ");
+
 			std::vector<glm::mat4> transforms;
 			transforms.reserve(MAX_PARTICLE_COUNT);
 
 			for (int i = 0; i < MAX_PARTICLE_COUNT; i++)
 			{
-				if (m_Particles[i].m_Active)
+				if (m_ParticlesVector[i]->m_Active)
 					transforms.push_back(glm::mat4(1.0f));//m_Particles[i].GetTransform());
 			}
 
