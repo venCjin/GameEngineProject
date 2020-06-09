@@ -111,6 +111,9 @@ namespace sixengine {
 			render = FrustumAABB(min, max);
 		}
 
+		if (gameObject->HasComponent<ParticleEmitter>())
+			m_ParticleList.push_back(gameObject->GetComponent<ParticleEmitter>().Get());
+
 		if (render)
 		{
 			RendererCommand* command = new(m_FrameAllocator.Get(m_CommandList.size())) RendererCommand();
@@ -282,6 +285,8 @@ namespace sixengine {
 			}
 		}
 
+		m_ParticleRender->Render(m_ParticleList);
+
 		for (auto t : m_TechniqueList)
 			t->FinishFrame();
 
@@ -321,6 +326,11 @@ namespace sixengine {
 	void BatchRenderer::RenderSkybox()
 	{
 		m_Skybox->Render();
+	}
+
+	void BatchRenderer::SetParticle(ParticleRender* technique)
+	{
+		m_ParticleRender = technique;
 	}
 
 	void BatchRenderer::SetSkybox(SkyboxRender* technique)
@@ -375,6 +385,9 @@ namespace sixengine {
 
 		if (m_Skybox)
 			m_Skybox->Start(m_TextureArray);
+	
+		if (m_ParticleRender)
+			m_ParticleRender->Start(m_TextureArray);
 
 		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 

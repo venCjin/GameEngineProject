@@ -6,7 +6,8 @@
 
 #include "Core/ISerializable.h"
 #include "Gameplay/ParticleObject.h"
-#include "Renderer/TextureArray.h"
+
+#include "Renderer/Texture.h"
 
 #define MAX_PARTICLE_COUNT 500
 
@@ -32,7 +33,7 @@ namespace sixengine {
 		float m_SizeAcceleration;
 		ParticleObject m_Particles[MAX_PARTICLE_COUNT];
 
-		//Texture m_Texture;
+		Texture m_Texture;
 	
 		int FindUnusedParticle()
 		{
