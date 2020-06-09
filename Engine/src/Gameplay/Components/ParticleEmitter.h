@@ -19,18 +19,18 @@ namespace sixengine {
 		int m_LastUnusedParticle = 0;
 
 	public:
-		float m_EmissionDuration;
-		float m_EmissionFrequency; // in Hertz, so number of particles per second
+		float m_EmissionDuration = 2.0f;
+		float m_EmissionFrequency = 10.0f; // in Hertz, so number of particles per second
 		
-		float m_ParticleLifeDuration;
-		bool m_Loop;
+		float m_ParticleLifeDuration = 5.0f;
+		bool m_Loop = true;
 		
-		float m_StartSpeed; 
+		float m_StartSpeed = 0.5f; 
 		// m_StartSize?
 
-		float m_TranslationAcceleration;
-		float m_RotationAcceleration;
-		float m_SizeAcceleration;
+		float m_TranslationAcceleration = 0.0f;
+		float m_RotationAcceleration = 0.0f;
+		float m_SizeAcceleration = 0.0f;
 		ParticleObject m_Particles[MAX_PARTICLE_COUNT];
 
 		Texture* m_Texture;
@@ -84,7 +84,7 @@ namespace sixengine {
 			for (int i = 0; i < MAX_PARTICLE_COUNT; i++)
 			{
 				if (m_Particles[i].m_Active)
-					transforms.push_back(glm::mat4(1.0f));//m_Particles[i].GetTransform());
+					transforms.push_back(m_Particles[i].GetTransform());
 			}
 
 			return transforms;
