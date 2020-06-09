@@ -22,11 +22,13 @@ namespace sixengine {
 		float m_EmissionDuration = 2.0f;
 		float m_EmissionFrequency = 10.0f; // in Hertz, so number of particles per second
 		
-		float m_ParticleLifeDuration = 5.0f;
 		bool m_Loop = true;
+		float m_ParticleLifeDuration = 5.0f;
 		
-		float m_StartSpeed = 0.5f; 
+		float m_StartSpeed = 2.0f; 
 		// m_StartSize?
+
+		float m_MaxDirectionAngle = 30.0f;
 
 		float m_TranslationAcceleration = 0.0f;
 		float m_RotationAcceleration = 0.0f;
@@ -34,14 +36,18 @@ namespace sixengine {
 		ParticleObject m_Particles[MAX_PARTICLE_COUNT];
 
 		Texture* m_Texture;
+		ParticleEmitter() {};
 
-		ParticleEmitter() { }
+		ParticleEmitter(float emissionDuration, float emissionFreq, bool loop, float particleLifeDuration, float startSpeed, float maxAngle, Texture* texture) 
+			: m_EmissionDuration(emissionDuration), m_EmissionFrequency(emissionFreq), m_Loop(loop), m_ParticleLifeDuration(particleLifeDuration), m_StartSpeed(startSpeed), m_MaxDirectionAngle(maxAngle), m_Texture(texture)
+		{ }
 
 		ParticleEmitter(Texture* texture)
 			: m_Texture(texture)
 		{
 		}
 	
+
 		int FindUnusedParticle()
 		{
 			for (int i = m_LastUnusedParticle; i < MAX_PARTICLE_COUNT; i++)
@@ -67,8 +73,15 @@ namespace sixengine {
 
 		void SpawnParticle()
 		{
-			glm::vec3 direction = glm::vec3(0.0f, 1.0f, 0.0f);
+			//glm::mat4 rotation = glm::mat4(1.0f);
+			//rotation *= glm::yawPitchRoll(45.0f, 0.0f, 89.0f);
 
+			float random = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
+			glm::quat q = glm::quat(glm::vec3(glm::radians(m_MaxDirectionAngle * random), glm::radians(360.0f * random), glm::radians(0.0f)));
+			glm::vec3 direction = glm::vec3(0.0f, 1.0f, 0.0f);			
+			direction = glm::normalize(q * direction);
+			
 			glm::vec3 startTranslationVelocity = direction * m_StartSpeed;
 			glm::vec3 startRotationVelocity = glm::vec3(0.0f);
 			glm::vec3 startScaleVelocity = glm::vec3(0.0f);
