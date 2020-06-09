@@ -171,7 +171,7 @@ void main()
 		
 		vec3 cam = vec3(view2[3][0], view2[3][1], view2[3][2]);
 		vec3 xxx = normalize(FragPos2 - cam) * TBN2;
-		texCoords = ParallaxMapping(TexCoords, xxx, 0.05f);
+		texCoords = ParallaxMapping(TexCoords, xxx, 0.1f);
 	}
 
 	
@@ -234,8 +234,9 @@ void main()
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, float heightScale)
 {
 	float height = texture(textureArray, vec3(texCoords, layer[instanceID].w)).r;
-	return texCoords - viewDir.xy * (height * heightScale);
+	return texCoords - viewDir.xy / viewDir.z * (height * heightScale);
 }
+
 
 
 vec3 CalcDirLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo)
