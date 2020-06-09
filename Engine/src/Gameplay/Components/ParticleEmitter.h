@@ -84,7 +84,7 @@ namespace sixengine {
 			for (int i = 0; i < MAX_PARTICLE_COUNT; i++)
 			{
 				if (m_Particles[i].m_Active)
-					transforms.push_back(m_Particles[i].GetTransform());
+					transforms.push_back(glm::mat4(1.0f));//m_Particles[i].GetTransform());
 			}
 
 			return transforms;

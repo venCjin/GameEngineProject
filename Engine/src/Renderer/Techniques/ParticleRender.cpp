@@ -14,10 +14,18 @@ namespace sixengine {
 	void ParticleRender::Start(TextureArray* textureArray)
 	{
         float vertices[] = { 
-			 0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   // top right
+			// Left bottom triangle
+		-0.5f,  0.5f, 0.0f,   0.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f,   1.0f, 0.0f,
+		// Right top triangle
+		 0.5f, -0.5f, 0.0f,   1.0f, 0.0f,
+		 0.5f,  0.5f, 0.0f,   1.0f, 1.0f,
+		-0.5f,  0.5f, 0.0f,   0.0f, 1.0f
+			 /*0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   // top right
 			 0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   // bottom right
 			-0.5f, -0.5f, 0.0f,   0.0f, 0.0f,   // bottom left
-			-0.5f,  0.5f, 0.0f,   0.0f, 1.0f    // top left 
+			-0.5f,  0.5f, 0.0f,   0.0f, 1.0f    // top left */
         };
 
         glGenVertexArrays(1, &m_VAO);
@@ -59,13 +67,13 @@ namespace sixengine {
 		for (auto p : particleEmitters)
 		{
 			models = p->GetAllTransforms(); 
-			m_Models.Update(models.data(), MAX_PARTICLE_COUNT * sizeof(glm::mat4), 2 * sizeof(glm::mat4));
+			m_Models.Update(models.data(), models.size() * sizeof(glm::mat4), 2 * sizeof(glm::mat4));
 			m_Models.Bind();
 
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, p->m_Texture->m_ID);
 
-			glDrawArraysInstanced(GL_TRIANGLES, 0, 4, 500);
+			glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 500);
 		}
 
 		glBindVertexArray(0);

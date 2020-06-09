@@ -8,7 +8,7 @@ namespace sixengine {
 	class ParticleRender : public Technique
 	{
 	private:
-		UniformBuffer m_Models;
+		StorageBuffer m_Models;
 
 		unsigned int m_VAO;
 		unsigned int m_VBO;
