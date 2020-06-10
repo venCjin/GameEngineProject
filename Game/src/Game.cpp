@@ -325,7 +325,7 @@ namespace sixengine {
 			if (Input::IsKeyPressed(KeyCode::P))
 			{
 				m_BatchRenderer->SetBlur(true);
-				shakeTimer = 2.1f;
+				shakeTimer = 0.1f;
 			}
 
 			{
