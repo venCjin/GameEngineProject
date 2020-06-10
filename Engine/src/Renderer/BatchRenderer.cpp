@@ -24,12 +24,45 @@ namespace sixengine {
 	BatchRenderer::BatchRenderer(ModelManager* modelManager, TextureArray* textureArray)
 		: m_ModelManager(modelManager),
 		m_TextureArray(textureArray),
-		m_IDBO(1000 * sizeof(DrawElementsCommand))
+		m_IDBO(1000 * sizeof(DrawElementsCommand)),
+		m_Default(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight(),
+			GL_TEXTURE_2D, GL_LINEAR, GL_RGBA16F, GL_RGBA, false, GL_COLOR_ATTACHMENT0, true),
+		m_PostProcess(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight(),
+			GL_TEXTURE_2D, GL_LINEAR, GL_RGBA16F, GL_RGBA, false, GL_COLOR_ATTACHMENT0, false)
 	{
 		m_Offset = 0;
 		m_DepthStatic = nullptr;
 		m_DepthAnimated = nullptr;
-		m_Skybox = nullptr;
+		m_Skybox = nullptr; 
+		
+		unsigned int VBO;
+		float vertices[] = {
+			// pos        // tex
+			-1.0f, -1.0f, 0.0f, 0.0f,
+			 1.0f,  1.0f, 1.0f, 1.0f,
+			-1.0f,  1.0f, 0.0f, 1.0f,
+
+			-1.0f, -1.0f, 0.0f, 0.0f,
+			 1.0f, -1.0f, 1.0f, 0.0f,
+			 1.0f,  1.0f, 1.0f, 1.0f
+		};
+
+		glGenVertexArrays(1, &this->m_QuadVAO);
+		glBindVertexArray(this->m_QuadVAO);
+
+		glGenBuffers(1, &VBO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
 	}
 
 	BatchRenderer::~BatchRenderer()
@@ -258,6 +291,8 @@ namespace sixengine {
 
 		// Draw skybox
 		//***********************************************
+		if (m_Blur)
+			m_Default.BindTarget();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if (m_Skybox)
@@ -268,10 +303,34 @@ namespace sixengine {
 		if (m_Water->IsVisible())
 			RenderWater(m_TechniqueList[0], m_TechniqueList[1]);
 
+		if (m_Blur)
+			m_Default.BindTarget();
+
 		// Draw normal
 		//***********************************************
-		for (int i = 0; i < sortedTechniques.size(); i++)
+		for (int i = 0; i < sortedTechniques.size() - 1; i++)
 		{
+			m_TechniqueList[i]->Render(sortedTechniques[i]);
+
+			if (!m_TechniqueList[i]->m_DrawCommands.empty())
+			{
+				void* ptr = (unsigned char*)m_IDBO.m_Ptr + m_IDBO.m_Head + m_Offset;
+				memcpy(ptr, m_TechniqueList[i]->m_DrawCommands.data(), m_TechniqueList[i]->m_DrawCommands.size() * sizeof(DrawElementsCommand));
+
+				m_ModelManager->Bind();
+				glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (void*)(m_IDBO.m_Head + m_Offset), m_TechniqueList[i]->m_DrawCommands.size(), 0);
+				glBindVertexArray(0);
+
+				m_Offset += m_TechniqueList[i]->m_DrawCommands.size() * sizeof(DrawElementsCommand);
+				m_TechniqueList[i]->m_DrawCommands.clear();
+			}
+		}
+
+		if (m_Blur)
+			ApplyBlur();
+
+		{
+			int i = m_TechniqueList.size() - 1;
 			m_TechniqueList[i]->Render(sortedTechniques[i]);
 
 			if (!m_TechniqueList[i]->m_DrawCommands.empty())
@@ -322,6 +381,23 @@ namespace sixengine {
 			m_Offset += technique->m_DrawCommands.size() * sizeof(DrawElementsCommand);
 
 		}
+	}
+
+
+	void BatchRenderer::ApplyBlur()
+	{
+		RenderTarget::BindDefaultTarget();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		m_BlurShader->Bind();
+		m_BlurShader->SetFloat("time", Timer::Instance()->ElapsedTime());
+
+		glActiveTexture(GL_TEXTURE2);
+		m_Default.BindTexture();
+
+		RenderQuad();
+
+		m_BlurShader->Unbind();
 	}
 
 	void BatchRenderer::RenderSkybox()
@@ -438,6 +514,22 @@ namespace sixengine {
 		m_Water->GetFrameBuffers().Unbind();
 	}
 
+	void BatchRenderer::RenderQuad()
+	{
+		glBindVertexArray(m_QuadVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+
+	void BatchRenderer::SetBlurShader(Shader* blur)
+	{
+		m_BlurShader = blur;
+	}
+
+	void BatchRenderer::SetBlur(bool blur)
+	{
+		m_Blur = blur;
+	}
+
 	void BatchRenderer::SetSkybox(SkyboxRender* technique)
 	{
 		m_Skybox = technique;
@@ -505,6 +597,32 @@ namespace sixengine {
 
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
+
+		m_BlurShader->Bind();
+		m_BlurShader->SetInt("image", 2);
+
+		float offset = 1.0f / 300.0f;
+		float offsets[9][2] = {
+			{ -offset,  offset  },  // top-left
+			{  0.0f,    offset  },  // top-center
+			{  offset,  offset  },  // top-right
+			{ -offset,  0.0f    },  // center-left
+			{  0.0f,    0.0f    },  // center-center
+			{  offset,  0.0f    },  // center - right
+			{ -offset, -offset  },  // bottom-left
+			{  0.0f,   -offset  },  // bottom-center
+			{  offset, -offset  }   // bottom-right    
+		};
+		glUniform2fv(glGetUniformLocation(m_BlurShader->GetID(), "offsets"), 9, (float*)offsets);
+
+		float blur_kernel[9] = {
+			1.0f / 16.0f, 2.0f / 16.0f, 1.0f / 16.0f,
+			2.0f / 16.0f, 4.0f / 16.0f, 2.0f / 16.0f,
+			1.0f / 16.0f, 2.0f / 16.0f, 1.0f / 16.0f
+		};
+		glUniform1fv(glGetUniformLocation(m_BlurShader->GetID(), "blur_kernel"), 9, blur_kernel);
+
+		m_BlurShader->Unbind();
 	}
 
 	void BatchRenderer::Initialize(ModelManager* modelManager, TextureArray* textureArray)

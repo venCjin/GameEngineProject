@@ -9,6 +9,7 @@
 #include <Renderer/BufferLockManager.h>
 #include <Renderer/LightData.h>
 #include <Renderer/ShadowFrustum.h>
+#include <Renderer/RenderTarget.h>
 
 #include <Gameplay/GameObject.h>
 
@@ -130,6 +131,14 @@ namespace sixengine {
 
 		Light* m_DirectionalLight;
 
+		RenderTarget m_Default;
+		RenderTarget m_PostProcess;
+
+		Shader* m_BlurShader;
+		bool m_Blur = false;
+
+		unsigned int m_QuadVAO;
+
 	public:
 		void NormalizePlane(glm::vec4& plane);
 		void CalculateFrustum();
@@ -140,6 +149,11 @@ namespace sixengine {
 		void RenderDepth(Technique* depth, Technique* technique);
 		void RenderSkybox();
 		void RenderWater(Technique* technique1, Technique* technique2);
+		void RenderQuad();
+
+		void SetBlurShader(Shader* blur);
+		void SetBlur(bool blur);
+		void ApplyBlur();
 
 		void SetSkybox(SkyboxRender* technique);
 		void SetStaticDepth(DepthRender* technique);

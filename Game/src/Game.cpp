@@ -45,6 +45,8 @@ namespace sixengine {
 		GameObject* mixingCam;
 		GameObject* flying;
 		GameObject* m_Player;
+
+		float shakeTimer;
 	#ifdef DEBUG
 		std::array<glm::vec3, 10> tr;
 	#endif //DEBUG
@@ -82,6 +84,9 @@ namespace sixengine {
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/DepthAnim.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/PostProcessing.glsl");
+
+			m_BatchRenderer->SetBlurShader(m_Scene.m_ShaderManager->Get("PostProcessing"));
 
 			Skybox* skybox = new Skybox(
 				{
@@ -279,6 +284,11 @@ namespace sixengine {
 
 		virtual void OnUpdate(float dt) override
 		{
+			if (shakeTimer > 0)
+				shakeTimer -= dt;
+			else
+				m_BatchRenderer->SetBlur(false);
+
 			if (Input::IsKeyPressed(KeyCode::DEL))
 			{
 				WindowCloseEvent e;
@@ -310,6 +320,12 @@ namespace sixengine {
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(flying->GetComponent<Camera>().Get());
 				//Camera::ActiveCamera = flying->GetComponent<Camera>().Get();
+			}
+
+			if (Input::IsKeyPressed(KeyCode::P))
+			{
+				m_BatchRenderer->SetBlur(true);
+				shakeTimer = 2.1f;
 			}
 
 			{
@@ -356,7 +372,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				m_Scene.DrawGizmos();
+				//m_Scene.DrawGizmos();
 			}
 		}
 
