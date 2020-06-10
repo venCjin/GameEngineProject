@@ -323,10 +323,6 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0)
 
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowMap, vec3 N)
 {
-	float distance = length(fragPosLightSpace.xyz);
-	distance = distance - (25.0 - 10.0);
-	distance = distance / 10.0;
-
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
 	projCoords = projCoords * 0.5 + 0.5;
 	float currentDepth = projCoords.z;
@@ -348,5 +344,5 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowM
 		shadow /= 32.0;
 	}
 
-	return clamp(1.0 - distance, 0.0, 1.0) * shadow; 
+	return shadow; 
 }
