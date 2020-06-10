@@ -8,6 +8,7 @@
 #include "Gameplay/Systems/AnimationSystem.h"
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/DepthRender.h"
+#include "Renderer/Techniques/Water.h"
 #include "Renderer/Techniques/UI.h"
 #include <Renderer/Techniques/Transparent.h>
 #include "Gameplay/Components/SimplePlayer.h"
@@ -104,6 +105,33 @@ namespace sixengine {
 
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
 			m_BatchRenderer->AddTechnique(new TransparentTechnique(m_TransparentShader));
+			
+
+			//TODO:*************
+			Shader* m_WaterShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Water.glsl");
+			MaterialManager::getInstance()->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("Water"),
+				glm::vec4(
+					m_Scene.m_TextureArray->AddTexture("res/textures/water/dudv2.png"),
+					m_Scene.m_TextureArray->AddTexture("res/textures/water/normal2.png"),
+					0.0f,
+					0.0f
+					),
+				"WaterMaterial");
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/circleplane.obj");
+			GameObject* w;
+			w = new GameObject(m_EntityManager);
+			w->AddComponent<Transform>(w);
+			w->GetComponent<Transform>()->SetWorldPosition(-4.0f, 0.8f, -6.2f);
+			//w->GetComponent<Transform>()->SetLocalScale(10.0, 1.0, 10.0);
+			w->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("circleplane"));
+			w->AddComponent<Material>(*MaterialManager::getInstance()->Get("WaterMaterial"));
+			m_Scene.m_SceneRoot->AddChild(w);
+			Water* water = new Water(m_WaterShader, w);
+			m_BatchRenderer->SetWater(water);
+			m_BatchRenderer->AddTechnique(water);
+			//TODO:*************
+
 			m_BatchRenderer->AddTechnique(ui);
 
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");

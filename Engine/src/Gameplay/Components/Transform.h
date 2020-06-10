@@ -21,11 +21,13 @@ namespace sixengine {
 		glm::mat4 m_Local = glm::mat4(1.0f);
 
 	public:
+		Transform()
+			: m_Parent(nullptr) 
+		{}
+
 		Transform(GameObject* parent)
 			: m_Parent(nullptr)
-		{
-			
-		}
+		{}
 
 		virtual void Load(std::iostream& stream) override
 		{
@@ -402,6 +404,11 @@ namespace sixengine {
 		}
 
 		const glm::mat4& GetWorld()
+		{
+			return m_Local;
+		}
+
+		glm::mat4 GetWorldCopy()
 		{
 			return m_Local;
 		}
