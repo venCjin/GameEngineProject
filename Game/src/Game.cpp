@@ -8,6 +8,7 @@
 #include "Gameplay/Systems/AnimationSystem.h"
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/DepthRender.h"
+#include "Renderer/Techniques/Water.h"
 #include "Renderer/Techniques/UI.h"
 #include <Renderer/Techniques/Transparent.h>
 #include "Gameplay/Components/SimplePlayer.h"
@@ -44,6 +45,8 @@ namespace sixengine {
 		GameObject* mixingCam;
 		GameObject* flying;
 		GameObject* m_Player;
+
+		float shakeTimer;
 	#ifdef DEBUG
 		std::array<glm::vec3, 10> tr;
 	#endif //DEBUG
@@ -81,6 +84,9 @@ namespace sixengine {
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/DepthAnim.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/PostProcessing.glsl");
+
+			m_BatchRenderer->SetBlurShader(m_Scene.m_ShaderManager->Get("PostProcessing"));
 
 			Skybox* skybox = new Skybox(
 				{
@@ -104,6 +110,33 @@ namespace sixengine {
 
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
 			m_BatchRenderer->AddTechnique(new TransparentTechnique(m_TransparentShader));
+			
+
+			//TODO:*************
+			Shader* m_WaterShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Water.glsl");
+			MaterialManager::getInstance()->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("Water"),
+				glm::vec4(
+					m_Scene.m_TextureArray->AddTexture("res/textures/water/dudv2.png"),
+					m_Scene.m_TextureArray->AddTexture("res/textures/water/normal2.png"),
+					0.0f,
+					0.0f
+					),
+				"WaterMaterial");
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/circleplane.obj");
+			GameObject* w;
+			w = new GameObject(m_EntityManager);
+			w->AddComponent<Transform>(w);
+			w->GetComponent<Transform>()->SetWorldPosition(-4.0f, 0.8f, -6.2f);
+			//w->GetComponent<Transform>()->SetLocalScale(10.0, 1.0, 10.0);
+			w->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("circleplane"));
+			w->AddComponent<Material>(*MaterialManager::getInstance()->Get("WaterMaterial"));
+			m_Scene.m_SceneRoot->AddChild(w);
+			Water* water = new Water(m_WaterShader, w);
+			m_BatchRenderer->SetWater(water);
+			m_BatchRenderer->AddTechnique(water);
+			//TODO:*************
+
 			m_BatchRenderer->AddTechnique(ui);
 
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
@@ -251,6 +284,11 @@ namespace sixengine {
 
 		virtual void OnUpdate(float dt) override
 		{
+			if (shakeTimer > 0)
+				shakeTimer -= dt;
+			else
+				m_BatchRenderer->SetBlur(false);
+
 			if (Input::IsKeyPressed(KeyCode::DEL))
 			{
 				WindowCloseEvent e;
@@ -282,6 +320,12 @@ namespace sixengine {
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(flying->GetComponent<Camera>().Get());
 				//Camera::ActiveCamera = flying->GetComponent<Camera>().Get();
+			}
+
+			if (Input::IsKeyPressed(KeyCode::P))
+			{
+				m_BatchRenderer->SetBlur(true);
+				shakeTimer = 0.1f;
 			}
 
 			{
@@ -328,7 +372,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				m_Scene.DrawGizmos();
+				//m_Scene.DrawGizmos();
 			}
 		}
 

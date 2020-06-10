@@ -61,6 +61,7 @@ namespace sixengine {
 			m_GlobalInverseTransform = glm::inverse(m_GlobalInverseTransform);
 			
 			m_Directory = filename.substr(0, filename.find_last_of('/'));
+			m_Name = filename.substr(filename.find_last_of('/'));
 			ret = InitFromScene(m_Scene, filename);
 		}
 		else {

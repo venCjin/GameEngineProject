@@ -19,6 +19,12 @@ out vec3 FragPos_PM;
 
 uniform mat4 lightSpaceMatrix1;
 
+//****water****
+uniform vec4 clipPlane;
+uniform float isWater;
+uniform mat4 waterView;
+//****water****
+
 layout(std430, binding = 0) buffer matrixes
 {
     mat4 view;
@@ -31,15 +37,23 @@ void main()
     instanceID = gl_BaseInstance + gl_InstanceID;
     TexCoords = aTexCoords;
 
-    gl_Position = projection * view * model[instanceID] * vec4(aPos, 1.0);    
-	FragPos = vec3(view * model[instanceID] * vec4(aPos, 1.0));	
-	FragPos_PM = vec3(model[instanceID] * vec4(aPos, 1.0));	
-	Normal = mat3(transpose(inverse(view * model[instanceID]))) * aNormal;
+	mat4 activeView = view;
+	//****water****
+	if (isWater > 0.5)
+	{
+		gl_ClipDistance[0] = dot(model[instanceID] * vec4(aPos, 1.0), clipPlane);
+		activeView = waterView;
+	}
+	//****water****
+
+    gl_Position = projection * activeView * model[instanceID] * vec4(aPos, 1.0);
+	FragPos = vec3(activeView * model[instanceID] * vec4(aPos, 1.0));	
+	Normal = mat3(transpose(inverse(activeView * model[instanceID]))) * aNormal;
 
 	FragPosLightSpace1 = lightSpaceMatrix1 * vec4(vec3(model[instanceID] * vec4(aPos, 1.0)), 1.0);
 
 	// TBN
-	mat3 normalMatrix = mat3(transpose(inverse(view * model[instanceID])));
+	mat3 normalMatrix = mat3(transpose(inverse(activeView * model[instanceID])));
 	vec3 T = normalize(normalMatrix* aTangent);
 	vec3 N = normalize(normalMatrix* aNormal);
 	vec3 B = normalize(normalMatrix * aBitangent);
@@ -337,10 +351,6 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0)
 
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowMap, vec3 N)
 {
-	float distance = length(fragPosLightSpace.xyz);
-	distance = distance - (25.0 - 10.0);
-	distance = distance / 10.0;
-
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
 	projCoords = projCoords * 0.5 + 0.5;
 	float currentDepth = projCoords.z;
@@ -362,7 +372,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightPos, sampler2D shadowM
 		shadow /= 32.0;
 	}
 
-	return clamp(1.0 - distance, 0.0, 1.0) * shadow; 
+	return shadow; 
 }
 
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, float heightScale)
