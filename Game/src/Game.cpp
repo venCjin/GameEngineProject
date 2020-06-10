@@ -29,8 +29,6 @@
 
 #include <glm/glm.hpp>
 
-
-
 namespace sixengine {
 
 	class Game : public Application
@@ -84,7 +82,7 @@ namespace sixengine {
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/ParticlesShader.glsl");
 
-			Texture* particleTexture = new Texture("res/textures/particle.png");
+			Texture* particleTexture = new Texture("res/textures/particles/star.png");
 
 			Skybox* skybox = new Skybox(
 				{
@@ -160,6 +158,12 @@ namespace sixengine {
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
 			m_Scene.m_SceneRoot->AddChild(obj);
 			m_Player = obj;
+			
+			/*obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(10.0f, -10.0f, 0.0f);
+			obj->AddComponent<ParticleEmitter>(particleTexture);
+			m_Scene.m_SceneRoot->AddChild(obj);*/
 
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);

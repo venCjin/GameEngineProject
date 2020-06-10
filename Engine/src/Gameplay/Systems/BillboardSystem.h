@@ -26,6 +26,7 @@ namespace sixengine {
 
 		void Update(EventManager& eventManager, float dt) override
 		{
+			LOG_INFO(m_Billboard->m_Camera == nullptr);
 			glm::mat4 viewMatrix = m_Billboard->m_Camera->GetViewMatrix();
 
 			glm::mat4 matrix(1.0f);

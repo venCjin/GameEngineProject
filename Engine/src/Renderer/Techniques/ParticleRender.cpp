@@ -15,17 +15,14 @@ namespace sixengine {
 	{
         float vertices[] = { 
 			// Left bottom triangle
-		-0.5f,  0.5f, 0.0f,   0.0f, 1.0f,
-		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f,   1.0f, 0.0f,
+		-0.25f,  0.25f, 0.0f,   0.0f, 1.0f,
+		-0.25f, -0.25f, 0.0f,   0.0f, 0.0f,
+		 0.25f, -0.25f, 0.0f,   1.0f, 0.0f,
 		// Right top triangle
-		 0.5f, -0.5f, 0.0f,   1.0f, 0.0f,
-		 0.5f,  0.5f, 0.0f,   1.0f, 1.0f,
-		-0.5f,  0.5f, 0.0f,   0.0f, 1.0f
-			 /*0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   // top right
-			 0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   // bottom right
-			-0.5f, -0.5f, 0.0f,   0.0f, 0.0f,   // bottom left
-			-0.5f,  0.5f, 0.0f,   0.0f, 1.0f    // top left */
+		 0.25f, -0.25f, 0.0f,   1.0f, 0.0f,
+		 0.25f,  0.25f, 0.0f,   1.0f, 1.0f,
+		-0.25f,  0.25f, 0.0f,   0.0f, 1.0f
+			 
         };
 
         glGenVertexArrays(1, &m_VAO);

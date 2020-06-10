@@ -4,7 +4,7 @@
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec2 aTexCoords;
 
-layout(std430, binding = 0) buffer matrixes
+layout(std430, binding = 0) buffer matrices
 {
     mat4 proj;
     mat4 view;
@@ -24,11 +24,16 @@ void main()
 
 in vec2 TexCoords;
 
-out vec4 color;
+out vec4 FragColor;
 
 uniform sampler2D textureName;
 
 void main()
 {
-    color = texture(textureName, TexCoords);
+    vec4 texColor = texture(textureName, TexCoords);
+
+	//if(texColor.a < 0.1)
+       // discard;
+
+    FragColor = texColor;
 }

@@ -18,7 +18,9 @@ namespace sixengine {
 	public:
 		void Update(EventManager & eventManager, float dt) override
 		{
-			if (timer <= m_ParticleEmitter->m_EmissionDuration)
+
+			// SPAWN PARTICLES
+			if (m_ParticleEmitter->m_Started && timer <= m_ParticleEmitter->m_EmissionDuration)
 			{
 				particlesToInit += m_ParticleEmitter->m_EmissionFrequency * dt;
 
@@ -38,13 +40,16 @@ namespace sixengine {
 
 			timer += dt;
 
+
+			// UPDATE PARTICLES
 			for (int i = 0; i < MAX_PARTICLE_COUNT; i++)
 			{
 				if (m_ParticleEmitter->m_Particles[i].m_Timer <= m_ParticleEmitter->m_ParticleLifeDuration)
 				{
 					m_ParticleEmitter->m_Particles[i].m_Timer += dt;
 					m_ParticleEmitter->m_Particles[i].m_TranslationVelocity += m_ParticleEmitter->m_TranslationAcceleration * dt;
-					m_ParticleEmitter->m_Particles[i].UpdateTransform(dt);
+
+					m_ParticleEmitter->m_Particles[i].UpdateTransform(dt, Camera::ActiveCamera->GetViewMatrix());
 				}
 
 				else
