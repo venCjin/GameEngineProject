@@ -128,7 +128,7 @@ namespace sixengine {
 
 	void BatchRenderer::SubmitCommand(GameObject* gameObject, glm::mat4 model)
 	{
-		bool render = true;
+		bool render = false;
 
 		ComponentHandle<Mesh> mesh;
 		if (gameObject->HasComponent<Mesh>())
