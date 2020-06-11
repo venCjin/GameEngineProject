@@ -26,17 +26,15 @@ namespace sixengine {
 		// transform.position += m_TranslationVelocity * dt
 	}
 
-	glm::mat4 ParticleObject::GetTransform()
+	
+
+	ParticleData ParticleObject::GetParticleData()
 	{
-		/*glm::mat4 translation = glm::mat4(1.0f);
-		translation = glm::translate(translation, m_Position);
+		ParticleData pd;
+		pd.transformMatrix = m_Transform.GetModelMatrix();
+		pd.color = m_Color;
 
-		glm::mat4 rotation = glm::mat4(1.0f);
-		glm::mat4 scale = glm::mat4(1.0f);*/
-
-		//return translation * rotation * scale;
-
-		return m_Transform.GetModelMatrix();
+		return pd;
 	}
 
 }

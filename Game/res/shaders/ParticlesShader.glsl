@@ -4,25 +4,38 @@
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec2 aTexCoords;
 
+struct ParticleData
+{
+	mat4 model;
+	vec4 color;
+};
+
 layout(std430, binding = 0) buffer matrices
 {
     mat4 proj;
     mat4 view;
-    mat4 model[500];
+};
+
+layout(std430, binding = 1) buffer particle_data
+{
+    ParticleData particleData[500];
 };
 
 out vec2 TexCoords;
+out vec4 ParticleColor;
 
 void main()
 {
     TexCoords = aTexCoords;
-    gl_Position = proj * view * model[gl_InstanceID] * vec4(aPos, 1.0);
+	ParticleColor = particleData[gl_InstanceID].color;
+    gl_Position = proj * view * particleData[gl_InstanceID].model * vec4(aPos, 1.0);
 }
 
 #shader fragment
 #version 460 core
 
 in vec2 TexCoords;
+in vec4 ParticleColor;
 
 out vec4 FragColor;
 
@@ -35,5 +48,5 @@ void main()
 	//if(texColor.a < 0.1)
        // discard;
 
-    FragColor = texColor;
+    FragColor = texColor * ParticleColor;
 }

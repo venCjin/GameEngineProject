@@ -7,6 +7,12 @@
 
 namespace sixengine {
 
+	struct ParticleData
+	{
+		glm::mat4 transformMatrix;
+		glm::vec4 color;
+	};
+
 	class ParticleObject
 	{
 	public:		
@@ -28,9 +34,7 @@ namespace sixengine {
 
 		float m_Timer;
 
-		//glm::vec3 m_Position;
-		//glm::vec3 rotation;
-		//glm::vec3 scale;
+		glm::vec4 m_Color = glm::vec4(1.0f, 0.0f, 0.0f, 0.5f);
 
 		Transform m_Transform;
 
@@ -40,7 +44,7 @@ namespace sixengine {
 		// Texture
 
 		void UpdateTransform(float dt, const glm::mat4& viewMatrix);
-		glm::mat4 GetTransform();
+		ParticleData GetParticleData();
 	};
 }
 

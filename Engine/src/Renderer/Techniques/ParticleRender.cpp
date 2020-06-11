@@ -4,7 +4,7 @@
 namespace sixengine {
 
 	ParticleRender::ParticleRender(Shader* shader)
-		: Technique(shader), m_Models(502 * sizeof(glm::mat4), 0, 1)
+		: Technique(shader), m_Models(2 * sizeof(glm::mat4), 0, 1), m_ParticleData(500 * sizeof(ParticleData), 1, 1)
 	{
 		m_Shader->Bind();
 
@@ -53,19 +53,22 @@ namespace sixengine {
 	void ParticleRender::Render(std::vector<ParticleEmitter*> particleEmitters)
 	{
 		std::vector<glm::mat4> models;
+		std::vector<ParticleData> particleData;
+
 		models.push_back(Camera::ActiveCamera->GetProjectionMatrix());
 		models.push_back(Camera::ActiveCamera->GetViewMatrix());
 
 		m_Models.Update(models.data(), 2 * sizeof(glm::mat4));
+		m_Models.Bind();
 
 		m_Shader->Bind();
 		glBindVertexArray(m_VAO);
 
 		for (auto p : particleEmitters)
 		{
-			models = p->GetAllTransforms(); 
-			m_Models.Update(models.data(), models.size() * sizeof(glm::mat4), 2 * sizeof(glm::mat4));
-			m_Models.Bind();
+			particleData = p->GetAllParticleData();
+			m_ParticleData.Update(particleData.data(), particleData.size() * sizeof(ParticleData), 0);
+			m_ParticleData.Bind();
 
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, p->m_Texture->m_ID);

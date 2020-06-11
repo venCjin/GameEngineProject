@@ -119,30 +119,30 @@ namespace sixengine {
 
 
 
-		std::vector<glm::mat4> GetAllTransforms()
+		std::vector<ParticleData> GetAllParticleData()
 		{
-			std::vector<glm::mat4> transforms;
+			std::vector<ParticleData> particleDataVector;
 		
-			transforms.resize(MAX_PARTICLE_COUNT);
+			particleDataVector.resize(MAX_PARTICLE_COUNT);
 
 			for (int i = 0; i < MAX_PARTICLE_COUNT; i++)
 			{
 				if (m_Particles[i].m_Active)
-					transforms[i] = m_Particles[i].GetTransform();
+					particleDataVector[i] = m_Particles[i].GetParticleData();
 			}
 
-			std::sort(transforms.begin(), transforms.end(),
-				[](const glm::mat4& a, const glm::mat4& b) -> bool
+			std::sort(particleDataVector.begin(), particleDataVector.end(),
+				[](const ParticleData& a, const ParticleData& b) -> bool
 				{
-					glm::vec3 posA(a[3]);
-					glm::vec3 posB(b[3]);
+					glm::vec3 posA(a.transformMatrix[3]);
+					glm::vec3 posB(b.transformMatrix[3]);
 
 					glm::vec3 cameraPosition = Camera::ActiveCamera->m_Transform->GetWorldPosition();
 
 					return glm::length(cameraPosition - posA) > glm::length(cameraPosition - posB);
 				});
 
-			return transforms;
+			return particleDataVector;
 		}
 
 

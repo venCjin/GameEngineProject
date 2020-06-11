@@ -9,6 +9,7 @@ namespace sixengine {
 	{
 	private:
 		StorageBuffer m_Models;
+		StorageBuffer m_ParticleData;
 
 		unsigned int m_VAO;
 		unsigned int m_VBO;
