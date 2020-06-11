@@ -20,14 +20,14 @@
 #include <Core/CameraSystem/OrbitalCameraSystem.h>
 #include <Core/CameraSystem/MixingCameraSystem.h>
 // hacks end
-//#include <Gameplay/Systems/PlayerMaterialManager.h>
+
 #include <Core/AudioManager.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include <Physics\Components\DynamicBody.h>
+#include <Physics/Components/DynamicBody.h>
 #include <Physics/Systems/DynamicBodySystem.h>
 
 
@@ -44,7 +44,6 @@ namespace sixengine {
 		GameObject* orbitalCamB;
 		GameObject* mixingCam;
 		GameObject* flying;
-		GameObject* m_Player;
 
 		float shakeTimer;
 	#ifdef DEBUG
@@ -69,13 +68,14 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			m_Scene.LoadScene("res/scenes/exported.scene");
-			//ADD_TRACK("res/sounds/ophelia.mp3", "ophelia");
-			//PLAY_TRACK("ophelia");
-			// HACKS
+			
+			m_Scene.LoadScene("res/scenes/new.scene");
+/*
+			ADD_TRACK("res/sounds/ophelia.mp3", "ophelia");
+			PLAY_TRACK("ophelia");
 
+			// HACKS
 			m_SystemManager.AddSystem<AnimationSystem>();
-			//m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
 			Shader* m_BasicShader = m_Scene.m_ShaderManager->AddShader("res/shaders/PBR.glsl");
@@ -143,7 +143,8 @@ namespace sixengine {
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_normal.png");
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_specular.png");
 			m_Scene.m_TextureArray->AddTexture("res/textures/test/Bricks.jpg");
-			m_Scene.m_TextureArray->CreateTextureArray();
+			
+
 			MaterialManager::getInstance()->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("Font"),
 				glm::vec4(0),
@@ -173,24 +174,12 @@ namespace sixengine {
 				"PBR");
 
 			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
-			m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
-			m_Scene.m_ModelManager->AddModel("res/models/primitives/cube.obj");
-			m_Scene.m_ModelManager->CreateVAO();
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
 
 			GameObject* obj;
-			obj = new GameObject(m_EntityManager);
-			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.0f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(0.01f, .01f, .01f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
-			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
-			obj->AddComponent<Animation>();
-			//obj->AddComponent<SimplePlayer>();
-			m_Scene.m_SceneRoot->AddChild(obj);
-			
+
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0f, 10.0f, 0.0f);
@@ -210,17 +199,12 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
 			obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
 			obj->GetComponent<Transform>()->SetLocalOrientation(180.0f, 0.0f, 0.0f);
-			//obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cylinder"));
-			//obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
 			obj->AddComponent<Animation>();
 			obj->AddComponent<DynamicBody>();
 			obj->AddComponent<SimplePlayer>(obj);
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
-
-			m_Player = obj;
-
 			std::vector<GizmoVertex> vertices;
 			std::vector<unsigned int> indices;
 			PrimitiveUtils::GenerateBox(vertices, indices, 100, 200, 100);
@@ -233,9 +217,6 @@ namespace sixengine {
 			vao->AddVertexBuffer(*vbo);
 			vao->AddIndexBuffer(*ibo);
 			obj->AddGizmo(new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(0, 255, 0)));
-
-			m_BatchRenderer->SetLight(new Light(obj));
-
 			m_Scene.m_SceneRoot->AddChild(obj);
 
 			flying = Camera::ActiveCamera->m_GameObject;
@@ -272,7 +253,17 @@ namespace sixengine {
 			mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamA->GetComponent<Camera>().Get());
 
 			Camera::ActiveCamera = mixingCam->GetComponent<Camera>().Get();
-
+*/
+#define NAV 1
+#if NAV
+			GameObject* obj;
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+#endif
+			m_BatchRenderer->SetLight(new Light(obj));
+			
+			m_Scene.m_TextureArray->CreateTextureArray();
+			m_Scene.m_ModelManager->CreateVAO();
 			// HACKS END
 
 			m_BatchRenderer->Configure();
@@ -303,17 +294,11 @@ namespace sixengine {
 			if (Input::IsKeyPressed(KeyCode::F5))
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamA->GetComponent<Camera>().Get());
-				//m_Player->GetComponent<Material>()->SetShader(m_Scene.m_ShaderManager->Get("PBR"));
-				//m_Player->RemoveComponent<Material>();
-				//m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F6))
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamB->GetComponent<Camera>().Get());
-				//m_Player->GetComponent<Material>()->SetShader(m_Scene.m_ShaderManager->Get("Transparent"));
-				//m_Player->RemoveComponent<Material>();
-				//m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F7))

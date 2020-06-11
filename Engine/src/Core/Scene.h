@@ -18,7 +18,7 @@ namespace sixengine {
 		GameObject *m_UIRoot, *m_SceneRoot;
 		ModelManager* m_ModelManager;
 		ShaderManager* m_ShaderManager;
-		MaterialManager * m_MaterialManager;
+		MaterialManager* m_MaterialManager;
 		TextureArray* m_TextureArray;
 		BatchRenderer* m_BatchRenderer;
 	

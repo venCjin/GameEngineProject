@@ -2,4 +2,15 @@
 -AddSystem SimplePlayerSystem
 -AddSystem CollisionSystem
 
+-AddShader StaticPBR res/shaders/PBR.glsl
 
+-AddMaterial GroundPBR PBR 3 res/models/Environment/Ground/Textures/Ground_Albedo.png res/models/Environment/Ground/Textures/Ground_Normal.png res/models/Environment/Ground/Textures/Ground_Metallic.png
+
++SceneGameObject
+-Transform
+0 0 -0.1
+0 0 0
+1 1 1
+-Model res/models/Environment/Ground/Ground.obj
+-Material GroundPBR
++end
