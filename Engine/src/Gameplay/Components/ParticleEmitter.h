@@ -117,17 +117,6 @@ namespace sixengine {
 			m_Particles[FindUnusedParticle()] = ParticleObject(startTranslationVelocity, startRotationVelocity, startScaleVelocity);
 		}
 
-		bool SortTransforms(glm::mat4 a, glm::mat4 b)
-		{
-			glm::vec3 posA(a[3]);
-			glm::vec3 posB(b[3]);
-
-			glm::vec3 cameraPosition = Camera::ActiveCamera->m_Transform->GetWorldPosition();
-
-			return glm::length(cameraPosition - posA) > glm::length(cameraPosition - posB);
-		}
-
-		bool myfunction(int i, int j) { return (i < j); }
 
 
 		std::vector<glm::mat4> GetAllTransforms()
@@ -142,11 +131,16 @@ namespace sixengine {
 					transforms[i] = m_Particles[i].GetTransform();
 			}
 
-			//int myints[] = { 32,71,12,45,26,80,53,33 };
-			//std::vector<int> myvector(myints, myints + 8);
+			std::sort(transforms.begin(), transforms.end(),
+				[](const glm::mat4& a, const glm::mat4& b) -> bool
+				{
+					glm::vec3 posA(a[3]);
+					glm::vec3 posB(b[3]);
 
-			//std::sort(transforms.begin(), transforms.end(), SortTransforms);
-			//std::sort(myvector.begin()+4, myvector.end(), myfunction);
+					glm::vec3 cameraPosition = Camera::ActiveCamera->m_Transform->GetWorldPosition();
+
+					return glm::length(cameraPosition - posA) > glm::length(cameraPosition - posB);
+				});
 
 			return transforms;
 		}
