@@ -23,6 +23,13 @@ namespace sixengine {
 	{
 	public:
 
+		struct BoneInfo
+		{
+			glm::mat4 BoneOffset = glm::mat4(0.0f);
+			glm::mat4 FinalTransformation = glm::mat4(0.0f);
+			std::string Name;
+		};
+
 		Model();
 		Model(const std::string& filename, unsigned ID);
 
@@ -52,15 +59,11 @@ namespace sixengine {
 
 		glm::vec3 m_MinAxis;
 		glm::vec3 m_MaxAxis;
+		std::vector<BoneInfo> m_BoneInfo;
+		bool m_FreeBones = false;
 
 	private:
-		bool firstRNH = false;
-
-		struct BoneInfo
-		{
-			glm::mat4 BoneOffset = glm::mat4(0.0f);
-			glm::mat4 FinalTransformation = glm::mat4(0.0f);;
-		};
+		bool firstRNH = false;	
 
 		void CalcInterpolatedScaling(aiVector3D& out, float animationTime, const aiNodeAnim* nodeAnim);
 		void CalcInterpolatedRotation(aiQuaternion& out, float animationTime, const aiNodeAnim* nodeAnim);
@@ -136,7 +139,6 @@ namespace sixengine {
 		std::map<std::string, uint> m_BoneMapping; // maps a bone name to its index
 		std::map<std::string, AnimationEntry*> m_AnimationsMapping;
 		uint m_NumBones;
-		std::vector<BoneInfo> m_BoneInfo;
 		glm::mat4 m_GlobalInverseTransform;
 		std::string m_Directory;
 		std::string m_Name;

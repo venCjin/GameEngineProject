@@ -156,6 +156,11 @@ namespace sixengine {
 				m_Scene.m_ShaderManager->Get("PBR"),
 				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks"), 0, 0, 0),
 				"Bricks");
+			
+			MaterialManager::getInstance()->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("AnimationPBR"),
+				glm::vec4(0, 0, 0, 0),
+				"Test");
 
 			MaterialManager::getInstance()->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("AnimationPBR"),
@@ -177,21 +182,23 @@ namespace sixengine {
 			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/cube.obj");
+			m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolopendra_test.fbx");
 			m_Scene.m_ModelManager->CreateVAO();
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
 
-			GameObject* obj;
-			obj = new GameObject(m_EntityManager);
+			GameObject* obj;			
+
+			/*obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.0f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(0.01f, .01f, .01f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
-			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
-			obj->AddComponent<Animation>();
-			//obj->AddComponent<SimplePlayer>();
-			m_Scene.m_SceneRoot->AddChild(obj);
+			obj->GetComponent<Transform>()->SetLocalScale(1.01f, 1.01f, 1.01f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolopendra_test"));
+			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Test"));
+			m_Scene.m_SceneRoot->AddChild(obj);*/
+			//obj->AddComponent<Animation>();
+		
 			
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
@@ -207,8 +214,6 @@ namespace sixengine {
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("FontMaterial"));
 			m_Scene.m_UIRoot->AddChild(obj);
 
-
-
 			GameObject* airText = new GameObject(m_EntityManager);
 			airText->AddComponent<Transform>(obj);
 			airText->GetComponent<Transform>()->SetWorldPosition(5.0, 660.0f, 0.0f);
@@ -219,20 +224,20 @@ namespace sixengine {
 
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
-			obj->GetComponent<Transform>()->SetLocalOrientation(180.0f, 0.0f, 0.0f);
-			//obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cylinder"));
-			//obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
-			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
+			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.0f, 0.0f);
+			obj->GetComponent<Transform>()->SetLocalScale(1.01f, 1.01f, 1.01f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolopendra_test"));
+			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Test"));
 			obj->AddComponent<Animation>();
 			obj->AddComponent<DynamicBody>();
 			obj->AddComponent<SimplePlayer>(obj);
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
 			m_SystemManager.AddSystem<AirTextSystem>();
 			airText->GetComponent<AirText>()->player = obj->GetComponent<SimplePlayer>().Get();
+			//m_Scene.m_SceneRoot->AddChild(obj);
+			m_Scene.m_SceneRoot->AddChild(obj);
 
+			
 
 			std::vector<GizmoVertex> vertices;
 			std::vector<unsigned int> indices;

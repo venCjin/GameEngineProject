@@ -25,12 +25,14 @@ namespace sixengine {
 		float airLosingRate = 5.0f;
 		void Update(EventManager & eventManager, float dt) override
 		{
+			UpdateModelBones();
+
 			glm::vec3 dir = glm::vec3();
 			DynamicBody* _db = m_SimplePlayer->gameObject->GetComponent<DynamicBody>().Get();
 			_db->m_Drag = 4;
 			glm::vec3 cameraDir = -glm::normalize(glm::vec3(Camera::ActiveCamera->m_Transform->GetForward().x, 0.0f, Camera::ActiveCamera->m_Transform->GetForward().z));
 			
-			if (Input::IsKeyActive(KeyCode::DOWN)) { _db->m_Velocity += cameraDir * speed; }
+			if (Input::IsKeyActive(KeyCode::DOWN)) { _db->m_Velocity += cameraDir * speed; LOG_INFO("DOWN"); }
 			if (Input::IsKeyActive(KeyCode::UP)) { _db->m_Velocity -= cameraDir * speed; }
 			cameraDir = glm::rotateY(cameraDir, glm::radians(90.0f));
 			if (Input::IsKeyActive(KeyCode::RIGHT)) { _db->m_Velocity += cameraDir * speed; }
@@ -85,6 +87,17 @@ namespace sixengine {
 			{
 				m_Transform->LookAt(m_Transform->GetWorldPosition() + (originalPos - finalDir));
 			}*/
+		}
+
+		void UpdateModelBones()
+		{
+			for (int i = 0; i < m_SimplePlayer->model->m_BoneInfo.size(); ++i)
+			{
+				m_SimplePlayer->model->m_BoneInfo[i].FinalTransformation = m_SimplePlayer->m_Bones[i].m_Bone.GetLocalMatrix();
+				//std::cout << model->m_BoneInfo[i].Name << std::endl;
+				//m_Bones.push_back(Bone(model->m_BoneInfo[i].BoneOffset));
+
+			}
 		}
 	};
 }

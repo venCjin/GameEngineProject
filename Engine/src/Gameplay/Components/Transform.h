@@ -29,6 +29,11 @@ namespace sixengine {
 			: m_Parent(nullptr)
 		{}
 
+		Transform(glm::mat4 transformMatrix)
+		{
+			m_Local = transformMatrix;
+		}
+
 		virtual void Load(std::iostream& stream) override
 		{
 			glm::vec3 pos;

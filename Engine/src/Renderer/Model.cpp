@@ -3,12 +3,6 @@
 #include <glad/glad.h> 
 #include "stb_image.h"
 
-/*#define POSITION_LOCATION    0
-#define TEX_COORD_LOCATION   1
-#define NORMAL_LOCATION      2
-#define BONE_ID_LOCATION     3
-#define BONE_WEIGHT_LOCATION 4*/
-
 namespace sixengine {
 
 	Model::Model()
@@ -196,6 +190,8 @@ namespace sixengine {
 				BoneInfo bi;
 				m_BoneInfo.push_back(bi);
 				m_BoneInfo[boneIndex].BoneOffset = glm::transpose(glm::make_mat4(&mesh->mBones[i]->mOffsetMatrix.a1));
+				m_BoneInfo[boneIndex].Name = mesh->mBones[i]->mName.C_Str();
+				//LOG_INFO(m_BoneInfo[boneIndex].Name);
 				m_BoneMapping[boneName] = boneIndex;
 			}
 			else {
@@ -385,6 +381,19 @@ namespace sixengine {
 	{
 		if (!m_Scene->HasAnimations() || m_AnimationsMapping.size() == 0)
 			return;
+
+		if (m_FreeBones)
+		{
+			transforms.clear();
+			transforms.resize(m_NumBones);
+
+			for (uint i = 0; i < m_NumBones; i++) {
+
+				transforms[i] = m_BoneInfo[i].FinalTransformation;
+			}
+
+			return;
+		}
 
 		float currentTicksPerSecond = (float)(m_AnimationsMapping[currentAnimationName]->animation->mTicksPerSecond != 0 ? m_AnimationsMapping[currentAnimationName]->animation->mTicksPerSecond : 25.0f);
 		float currentTimeInTicks = currentTimer * currentTicksPerSecond;
