@@ -12,6 +12,7 @@ namespace sixengine {
 		virtual void Save(std::iostream& stream) {}
 	public:
 		GameObject* gameObject;
+		float air = 100;
 	};
 
 }

@@ -4,6 +4,7 @@
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
+
 layout(location = 5) in ivec4 aBoneIDs;
 layout(location = 6) in vec4 aWeights;
 
@@ -54,10 +55,7 @@ in vec2 TexCoords;
 
 in flat int instanceID;
 
-layout(std140, binding = 1) buffer textureLayers
-{
-    vec4 layer[10];
-};
+
 
 uniform sampler2DArray textureArray;
 uniform vec3 color;
@@ -66,11 +64,9 @@ uniform float FresnelExponent;
 //uniform int OnSurface;
 void main()
 {
-
-    gl_FragDepth = .1f;//*(1-OnSurface) + ndc_depth * OnSurface;
+    gl_FragDepth = .1f;
     float fresnel = dot (Normal, normalize(viewDir));
     fresnel = pow((1 - fresnel), FresnelExponent);
-    vec4 outputcolor = /*OnSurface * texture(textureArray, vec3(TexCoords, layer[instanceID].x)) +*/ vec4(/*(1-OnSurface) */ color * fresnel, fresnel);
-
-    FragColor = outputcolor;// * texture(textureArray, vec3(TexCoords, layer[instanceID].x));
+    vec4 outputcolor =  vec4( color * fresnel, fresnel);
+    FragColor = outputcolor;
 } 

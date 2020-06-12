@@ -29,6 +29,8 @@
 #include <glm/glm.hpp>
 #include <Physics\Components\DynamicBody.h>
 #include <Physics/Systems/DynamicBodySystem.h>
+#include <Gameplay\Components\AirText.h>
+#include <Gameplay\Systems\AirTextSystem.h>
 
 
 
@@ -205,6 +207,16 @@ namespace sixengine {
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("FontMaterial"));
 			m_Scene.m_UIRoot->AddChild(obj);
 
+
+
+			GameObject* airText = new GameObject(m_EntityManager);
+			airText->AddComponent<Transform>(obj);
+			airText->GetComponent<Transform>()->SetWorldPosition(5.0, 660.0f, 0.0f);
+			airText->AddComponent<Text>("Air: ", glm::vec3(1.0f, 0.0f, 1.0f), 0.3f);
+			airText->AddComponent<Material>(*MaterialManager::getInstance()->Get("FontMaterial"));
+			airText->AddComponent<AirText>();
+			m_Scene.m_UIRoot->AddChild(airText);
+
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
@@ -218,8 +230,9 @@ namespace sixengine {
 			obj->AddComponent<DynamicBody>();
 			obj->AddComponent<SimplePlayer>(obj);
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+			m_SystemManager.AddSystem<AirTextSystem>();
+			airText->GetComponent<AirText>()->player = obj->GetComponent<SimplePlayer>().Get();
 
-			m_Player = obj;
 
 			std::vector<GizmoVertex> vertices;
 			std::vector<unsigned int> indices;
@@ -243,6 +256,7 @@ namespace sixengine {
 			m_SystemManager.AddSystem<OrbitalCameraSystem>();
 			m_SystemManager.AddSystem<MixingCameraSystem>();
 			m_SystemManager.AddSystem<DynamicBodySystem>();
+			
 			orbitalCamA = new GameObject(m_EntityManager);
 			orbitalCamA->AddComponent<Transform>(orbitalCamA);
 			orbitalCamA->AddComponent<Camera>(orbitalCamA);

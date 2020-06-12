@@ -19,6 +19,10 @@ namespace sixengine {
 		bool m_OnSurface = true;
 		float speed = .25f;
 		float maxSpeed = 1.0f;
+		float playerHeight = 2.0f;
+		float health = 100.0f;
+		//float air = 100.0f;
+		float airLosingRate = 5.0f;
 		void Update(EventManager & eventManager, float dt) override
 		{
 			glm::vec3 dir = glm::vec3();
@@ -48,12 +52,25 @@ namespace sixengine {
 				if (m_OnSurface)
 				{
 					m_Material->SetShader(MaterialManager::getInstance()->Get("parasiteZombie")->GetShader());
+					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, -playerHeight, 0.0f));
+
 				}
 				else
 				{
 					m_Material->SetShader(MaterialManager::getInstance()->Get("Transparent")->GetShader());
+					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, +playerHeight, 0.0f));
 				}
 			}
+
+			if (m_OnSurface) 
+			{
+				m_SimplePlayer->air += Timer::Instance()->DeltaTime()*airLosingRate;
+			}
+			else
+			{
+				m_SimplePlayer->air -= Timer::Instance()->DeltaTime()*airLosingRate;
+			}
+			m_SimplePlayer->air = glm::clamp<float>(m_SimplePlayer->air, 0.0f, 100.0f);
 
 			/*auto originalPos = m_Transform->GetWorldPosition();
 
