@@ -44,6 +44,8 @@ namespace sixengine {
 
 		m_Shader->SetVec3("cameraPos", Camera::ActiveCamera->m_Transform->GetWorldPosition());
 
+		m_Shader->SetBool("useParallaxMapping", !Input::IsKeyActive(KeyCode::F3));
+
 		m_Models.Bind();
 		m_Layers.Bind();
 		m_Lights.Bind();

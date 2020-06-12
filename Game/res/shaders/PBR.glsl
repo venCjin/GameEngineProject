@@ -203,8 +203,6 @@ void main()
 		//Lo += CalcPointLight(pointLights[i], N, V, FragPos, F0, albedo);
 	//for (int i = 0; i < NR_SPOTLIGHTS; i++)
 		//Lo += CalcSpotLight(spotLights[i], N, V, FragPos, F0, albedo);
-
-	// should we multiply specular by kS? According to the formula - yes, according to the learnopengl code - no (he says that we already multiplied BRDF by kS (F), but it's not correct according to the formula)
 	
 	vec3 ambient = vec3(0.03) * albedo * ao;
 	vec3 color = ambient + Lo;
@@ -379,42 +377,30 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, float heightScale)
 {
     const float minLayers = 8;
     const float maxLayers = 64;
-    float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDir)));  
+    float layerCount = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDir)));  
     
-	// calculate the size of each layer
-    float layerDepth = 1.0 / numLayers;
-    
-	// depth of current layer
+    float layerDepth = 1.0 / layerCount;
     float currentLayerDepth = 0.0;
 	
-    // the amount to shift the texture coordinates per layer (from vector P)
-    vec2 P = viewDir.xy / viewDir.z * heightScale; 
-    vec2 deltaTexCoords = P / numLayers;
+    vec2 offset = viewDir.xy / viewDir.z * heightScale; 
+    offset /= layerCount;
 
-	// get initial values
     vec2  currentTexCoords     = texCoords;
     float currentDepthMapValue = texture(textureArray, vec3(currentTexCoords, layer[instanceID].w)).r;
 
 	while(currentLayerDepth < currentDepthMapValue)
     {
-        // shift texture coordinates along direction of P
-        currentTexCoords -= deltaTexCoords;
-        // get depthmap value at current texture coordinates
+        currentTexCoords -= offset;
         currentDepthMapValue = texture(textureArray, vec3(currentTexCoords, layer[instanceID].w)).r;
-        // get depth of next layer
         currentLayerDepth += layerDepth;  
     }
 
-	// get texture coordinates before collision (reverse operations)
-    vec2 prevTexCoords = currentTexCoords + deltaTexCoords;
+    vec2 nextTexCoords = currentTexCoords + offset;
 
-    // get depth after and before collision for linear interpolation
-    float afterDepth  = currentDepthMapValue - currentLayerDepth;
-    float beforeDepth = texture(textureArray, vec3(prevTexCoords, layer[instanceID].w)).r - currentLayerDepth + layerDepth;
+    float nextDepth  = currentDepthMapValue - currentLayerDepth;
+    float previousDepth = texture(textureArray, vec3(nextTexCoords, layer[instanceID].w)).r - currentLayerDepth + layerDepth;
  
-    // interpolation of texture coordinates
-    float weight = afterDepth / (afterDepth - beforeDepth);
-    vec2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
+    float multiplier = nextDepth / (nextDepth - previousDepth);
 
-	return finalTexCoords;
+	return nextTexCoords * multiplier + currentTexCoords * (1.0 - multiplier);
 }
