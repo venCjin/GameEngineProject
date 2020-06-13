@@ -2,11 +2,24 @@
 
 #include <pch.h>
 #include "NavMesh.h"
+#include "DebugDraw.h"
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace sixengine {
 
 	NavMesh::NavMesh()
 	{
+	}
+
+	void NavMesh::Init(const char* path)
+	{
+		dtFreeNavMesh(m_navMesh);
+		m_navMesh = Load(path);
+		m_navQuery = dtAllocNavMeshQuery();
+		m_navQuery->init(m_navMesh, 2048);
+		LOG_CORE_INFO("NavMesh::Init() : LOADED SUCCESFULLY");
 	}
 
 	dtNavMesh* NavMesh::Load(const char* path)
@@ -79,4 +92,15 @@ namespace sixengine {
 		return mesh;
 	}
 
+#ifdef DEBUG
+	void NavMesh::drawMesh()
+	{
+
+	}
+
+	void NavMesh::drawAgent(const glm::vec3 pos)
+	{
+		
+	}
+#endif // DEBUG
 }

@@ -22,6 +22,7 @@
 // hacks end
 
 #include <Core/AudioManager.h>
+#include "Gameplay/NavMesh.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -39,6 +40,8 @@ namespace sixengine {
 	private:
 		Scene m_Scene;
 		BatchRenderer* m_BatchRenderer;
+
+		NavMesh m_NavMesh;
 
 		GameObject* orbitalCamA;
 		GameObject* orbitalCamB;
@@ -68,7 +71,7 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			
+			m_NavMesh.Init("res/scenes/new.nav");
 			m_Scene.LoadScene("res/scenes/new.scene");
 /*
 			ADD_TRACK("res/sounds/ophelia.mp3", "ophelia");

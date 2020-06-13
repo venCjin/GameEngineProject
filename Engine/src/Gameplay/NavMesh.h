@@ -25,14 +25,16 @@ namespace sixengine {
 	class NavMesh
 	{
 	private:
-		class dtNavMesh* m_navMesh;
-		class dtNavMeshQuery* m_navQuery;
+		class dtNavMesh* m_navMesh = nullptr;
+		class dtNavMeshQuery* m_navQuery = nullptr;
 
-		float m_agentHeight;
-		float m_agentRadius;
-		float m_agentMaxClimb;
+		float m_agentHeight = 2.0f;
+		float m_agentRadius = 1.0f;
+		float m_agentMaxClimb = 0.5f;
 	public:
 		NavMesh();
+
+		void Init(const char* path);
 
 		dtNavMesh* Load(const char* path);
 
@@ -43,11 +45,8 @@ namespace sixengine {
 		float getAgentClimb() { return m_agentMaxClimb; }
 
 	#ifdef DEBUG
-		//void ImGuiWriteSceneTree();
-		//void ImGuiWriteSceneTreeNode();
-
-		//void ImGuiWriteUITree();
-		//void ImGuiWriteUITreeNode();
+		void drawMesh();
+		void drawAgent(const glm::vec3 pos);
 	#endif // DEBUG
 
 	};
