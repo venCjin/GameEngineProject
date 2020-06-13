@@ -17,12 +17,17 @@ namespace sixengine {
 	{
 	public:		
 
+
 		ParticleObject() : m_TranslationVelocity(0.0f), m_RotationVelocity(0.0f), m_SizeVelocity(0.0f), m_Active(true), m_Timer(0.0f)
-		{}
+		{
+			m_Transform.SetLocalOrientation(glm::vec3(0.0f, -90.0f, 0.0f));
+		}
 
 		ParticleObject(glm::vec3 tVel, glm::vec3 rVel, glm::vec3 sVel) 
 			: m_TranslationVelocity(tVel), m_RotationVelocity(rVel), m_SizeVelocity(sVel), m_Active(true), m_Timer(0.0f)
-		{}
+		{
+			m_Transform.SetLocalOrientation(glm::vec3(0.0f, -90.0f, 0.0f));
+		}
 
 		~ParticleObject();
 
@@ -34,7 +39,7 @@ namespace sixengine {
 
 		float m_Timer;
 
-		glm::vec4 m_Color = glm::vec4(1.0f, 0.0f, 0.0f, 0.5f);
+		glm::vec4 m_Color = glm::vec4(1.0f, 1.0f, 01.0f, 1.0f);
 
 		Transform m_Transform;
 

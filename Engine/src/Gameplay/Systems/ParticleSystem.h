@@ -46,7 +46,12 @@ namespace sixengine {
 			{
 				if (m_ParticleEmitter->m_Particles[i].m_Timer <= m_ParticleEmitter->m_ParticleLifeDuration)
 				{
-					m_ParticleEmitter->m_Particles[i].m_Timer += dt;
+					if (m_ParticleEmitter->m_Particles[i].m_Timer > m_ParticleEmitter->m_ParticleLifeDuration * 0.9f)
+					{
+						float a = (m_ParticleEmitter->m_Particles[i].m_Timer - m_ParticleEmitter->m_ParticleLifeDuration * 0.9f) / (m_ParticleEmitter->m_ParticleLifeDuration * 0.1f);
+						m_ParticleEmitter->m_Particles[i].m_Color.a = 1 - a;
+						LOG_INFO(a);
+					}
 					m_ParticleEmitter->m_Particles[i].m_TranslationVelocity += m_ParticleEmitter->m_TranslationAcceleration * dt;
 
 					m_ParticleEmitter->m_Particles[i].UpdateTransform(dt, Camera::ActiveCamera->GetViewMatrix());

@@ -12,7 +12,8 @@ namespace sixengine {
 
 	void ParticleObject::UpdateTransform(float dt, const glm::mat4& viewMatrix)
 	{
-		//m_Position += m_TranslationVelocity * dt;
+		m_Timer += dt;
+
 		m_Transform.Translate(m_TranslationVelocity * dt);
 
 		glm::mat4 matrix(1.0f);
@@ -23,7 +24,7 @@ namespace sixengine {
 
 		m_Transform.SetWorld(matrix);
 
-		// transform.position += m_TranslationVelocity * dt
+
 	}
 
 	

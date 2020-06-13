@@ -104,11 +104,17 @@ namespace sixengine {
 			float randomY = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 			float randomZ = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
-			//std::cout << "random: " << rand() << " "<< rand() << std::endl;
+			glm::quat q = glm::quat(glm::vec3(glm::radians(m_MaxDirectionAngle), glm::radians(0.0f), glm::radians(0.0f)));
+			glm::vec3 direction = glm::vec3(0.0f, 1.0f, 0.0f);
+			direction = glm::normalize(q * direction);
 
-			//glm::quat q = glm::quat(glm::vec3(glm::radians(360.0f * random), glm::radians(360.0f * random), 0.0f));
-			glm::vec3 direction = glm::vec3(randomX * 2.0f - 1.0f, randomY * 2.0f - 1.0f, randomZ * 2.0f - 1.0f);
-			//direction = glm::normalize(q * direction);
+			//std::cout << "direction.x: " << direction.x << " direction.y: "<< direction.y << " direction.z: " << direction.z << std::endl;
+			if (m_MaxDirectionAngle > 359.0f)
+				direction = glm::vec3(randomX * 2.0f - 1.0f, randomY * 2.0f - 1.0f, randomZ * 2.0f - 1.0f);
+			else
+				direction = glm::vec3(direction.z * (randomX * 2.0f - 1.0f), 1.0f, direction.z * (randomZ * 2.0f - 1.0f));
+
+			direction = glm::normalize(direction);
 			
 			glm::vec3 startTranslationVelocity = direction * m_StartSpeed;
 			glm::vec3 startRotationVelocity = glm::vec3(0.0f);
