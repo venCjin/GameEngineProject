@@ -16,7 +16,7 @@ namespace sixengine {
 
 	SYSTEM(SimplePlayerSystem, Transform, SimplePlayer, Material)
 	{
-		bool m_OnSurface = true;
+		//bool m_OnSurface = true;
 		float speed = .25f;
 		float maxSpeed = 1.0f;
 		float playerHeight = 2.0f;
@@ -48,8 +48,8 @@ namespace sixengine {
 			//LOG_CORE_INFO("Dot {0}", glm::dot(_db->m_Velocity, _db->m_Velocity));
 			if (Input::IsKeyPressed(KeyCode::SPACE))
 			{
-				m_OnSurface = !m_OnSurface;
-				if (m_OnSurface)
+				m_SimplePlayer->m_OnSurface = !m_SimplePlayer->m_OnSurface;
+				if (m_SimplePlayer->m_OnSurface)
 				{
 					m_Material->SetShader(MaterialManager::getInstance()->Get("parasiteZombie")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, -playerHeight, 0.0f));
@@ -62,7 +62,7 @@ namespace sixengine {
 				}
 			}
 
-			if (m_OnSurface) 
+			if (m_SimplePlayer->m_OnSurface)
 			{
 				m_SimplePlayer->air += Timer::Instance()->DeltaTime()*airLosingRate;
 			}

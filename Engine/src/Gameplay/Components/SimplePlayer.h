@@ -13,6 +13,7 @@ namespace sixengine {
 	public:
 		GameObject* gameObject;
 		float air = 100;
+		bool m_OnSurface = true;
 	};
 
 }
