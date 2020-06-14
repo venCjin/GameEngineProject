@@ -12,6 +12,8 @@
 #include "imgui.h"
 
 namespace sixengine {
+	/// If you want to measure performace with MSI Afterburner and RivaTunerStatisticServer
+	//#define AFTERBURNER 0
 
 	class Application : public EntityComponentSystem
 	{
@@ -21,7 +23,7 @@ namespace sixengine {
 		bool m_Running = true, m_Minimized = false;
 		Timer* m_Timer;
 		Input* m_Input;
-	#ifdef DEBUG
+	#if defined(DEBUG) || defined(AFTERBURNER)
 		ImGuiLayer* m_ImGui;
 	#endif // DEBUG
 
@@ -41,7 +43,7 @@ namespace sixengine {
 		inline Window& GetWindow() { return *m_Window; }
 		inline Timer& GetTimer() { return *m_Timer; }
 		inline Input& GetInput() { return *m_Input; }
-	#ifdef DEBUG
+	#if defined(DEBUG) || defined(AFTERBURNER)
 		inline ImGuiLayer& GetImGuiLayer() { return *m_ImGui; }
 	#endif // DEBUG
 		

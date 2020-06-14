@@ -4,7 +4,7 @@
 
 namespace sixengine {
 
-	struct Mesh
+	struct Mesh : public ISerializable
 	{
 		Model* m_Model;
 
@@ -14,6 +14,15 @@ namespace sixengine {
 		}
 
 		inline Model* GetModel() const { return m_Model; }
+
+		virtual void Load(std::iostream& stream)
+		{
+		}
+		virtual void Save(std::iostream& stream)
+		{
+			std::string lineToSave = "-Model " + m_Model->GetDirectory() + "/" + m_Model->GetName();
+			//TODO: Animations save
+		}
 	};
 
 }

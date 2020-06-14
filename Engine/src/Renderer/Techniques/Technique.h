@@ -126,6 +126,7 @@ namespace sixengine {
 
 	protected:
 		Shader* m_Shader;
+		bool m_Visible;
 
 	public:
 		Technique(Shader* shader);
@@ -140,6 +141,8 @@ namespace sixengine {
 		virtual void FinishFrame();
 
 		inline Shader* GetShader() const { return m_Shader; }
+		void SetVisible(bool value) { m_Visible = value; }
+		inline bool IsVisible() { return m_Visible; }
 	};
 
 }

@@ -4,7 +4,7 @@
 
 -AddShader StaticPBR res/shaders/PBR.glsl
 
--AddMaterial GroundPBR PBR 3 res/models/Environment/Ground/Textures/Ground_Albedo.png res/models/Environment/Ground/Textures/Ground_Normal.png res/models/Environment/Ground/Textures/Ground_Metallic.png 
+-AddMaterial GroundPBR PBR 3 res/models/Environment/Ground/Textures/Ground_Albedo.png res/models/Environment/Ground/Textures/Ground_Normal.png res/models/Environment/Ground/Textures/Ground_Metallic.png
 -AddMaterial RocksPBR PBR 3 res/models/Environment/Rocks/Textures/Rocks_Albedo.png res/models/Environment/Rocks/Textures/Rocks_Normal.png res/models/Environment/Rocks/Textures/Rocks_Metallic.png 
 -AddMaterial BigBushPBR PBR 1 res/models/Environment/Vegetation/Textures/BigBush_Albedo.png 
 -AddMaterial PalmTreePBR PBR 2 res/models/Environment/Vegetation/Textures/PalmTree_Albedo.png res/models/Environment/Vegetation/Textures/PalmTree_Normal.png 
@@ -20,7 +20,7 @@
 -AddMaterial RedGeneratorPBR PBR 3 res/models/Props/Generator/Textures/RedGenerator_Albedo.png res/models/Props/Generator/Textures/Generator_Normal.png res/models/Props/Generator/Textures/Generator_Metallic.png 
 -AddMaterial YellowGeneratorPBR PBR 3 res/models/Props/Generator/Textures/YellowGenerator_Albedo.png res/models/Props/Generator/Textures/Generator_Normal.png res/models/Props/Generator/Textures/Generator_Metallic.png 
 -AddMaterial GrenadePBR PBR 3 res/models/Props/Grenade/Textures/Grenade_Albedo.png res/models/Props/Grenade/Textures/Grenade_Normal.png res/models/Props/Grenade/Textures/Grenade_Metallic.png 
--AddMaterial HousePBR PBR 3 res/models/Props/House/Textures/House_Albedo.png res/models/Props/House/Textures/House_Normal.png res/models/Props/House/Textures/House_Metallic.png 
+-AddMaterial HousePBR PBR 3 res/models/Props/House/Textures/House_Albedo.png res/models/Props/House/Textures/House_Normal.png res/models/Props/House/Textures/House_Metallic.png
 -AddMaterial JerryCanPBR PBR 3 res/models/Props/Jerrycan/Textures/JerryCan_Albedo.png res/models/Props/Jerrycan/Textures/JerryCan_Normal.png res/models/Props/Jerrycan/Textures/JerryCan_Metallic.png 
 -AddMaterial LadderPBR PBR 3 res/models/Props/Ladders/Textures/Ladder_Albedo.png res/models/Props/Ladders/Textures/Ladder_Normal.png res/models/Props/Ladders/Textures/Ladder_Metallic.png 
 -AddMaterial LightsPBR PBR 3 res/models/Props/Lights/Textures/Light_Albedo.png res/models/Props/Lights/Textures/Light_Normal.png res/models/Props/Lights/Textures/Light_Metallic.png 
@@ -30,6 +30,16 @@
 -AddMaterial WellPBR PBR 3 res/models/Props/Well/Textures/Well_Albedo.png res/models/Props/Well/Textures/Well_Normal.png res/models/Props/Well/Textures/Well_Metallic.png 
 -AddMaterial WoodenCratePBR PBR 2 res/models/Props/WoodenCrate/Textures/WoodenCrate_Albedo.png res/models/Props/WoodenCrate/Textures/WoodenCrate_Normal.png 
 -AddMaterial WoodenCrate2PBR PBR 2 res/models/Props/WoodenCrate/Textures/WoodenCrate2_Albedo.png res/models/Props/WoodenCrate/Textures/WoodenCrate2_Normal.png 
+-AddMaterial RockParallax PBR 4 res/textures/parallax/Rock_Albedo.jpg res/textures/parallax/Rock_Normal.jpg res/textures/parallax/Rock_Metalic.jpg res/textures/parallax/Rock_Height.jpg
+
++SceneGameObject
+-Transform
+-3.0 0.05 -6.25
+0 0 0
+2.5 2.5 2.5
+-Model res/models/primitives/plane.obj
+-Material RockParallax
++end
 
 +SceneGameObject
 -Transform

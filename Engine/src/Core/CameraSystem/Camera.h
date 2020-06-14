@@ -23,6 +23,11 @@ namespace sixengine
 		float m_FarPlane = 1000.0f;
 
 	public:
+		Camera(Transform* t)
+		{
+			m_Transform = t;
+		}
+
 		Camera(GameObject* go)
 		{
 			m_GameObject = go;

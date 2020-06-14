@@ -3,13 +3,12 @@
 
 #include "Core/Scene.h"
 #include "Renderer/BatchRenderer.h"
-#include "Renderer/Texture.h"
 
 // hacks
 #include "Gameplay/Systems/AnimationSystem.h"
-#include "Gameplay/Systems/ParticleSystem.h"
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/DepthRender.h"
+#include "Renderer/Techniques/Water.h"
 #include "Renderer/Techniques/UI.h"
 #include <Renderer/Techniques/Transparent.h>
 #include "Gameplay/Components/SimplePlayer.h"
@@ -28,6 +27,12 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+#include <Physics\Components\DynamicBody.h>
+#include <Physics/Systems/DynamicBodySystem.h>
+#include <Gameplay\Components\AirText.h>
+#include <Gameplay\Systems\AirTextSystem.h>
+
+
 
 namespace sixengine {
 
@@ -42,6 +47,8 @@ namespace sixengine {
 		GameObject* mixingCam;
 		GameObject* flying;
 		GameObject* m_Player;
+
+		float shakeTimer;
 	#ifdef DEBUG
 		std::array<glm::vec3, 10> tr;
 	#endif //DEBUG
@@ -70,7 +77,6 @@ namespace sixengine {
 			// HACKS
 
 			m_SystemManager.AddSystem<AnimationSystem>();
-			m_SystemManager.AddSystem<ParticleSystem>();
 			//m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
@@ -80,9 +86,9 @@ namespace sixengine {
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/DepthAnim.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
-			m_Scene.m_ShaderManager->AddShader("res/shaders/ParticlesShader.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/PostProcessing.glsl");
 
-			Texture* particleTexture = new Texture("res/textures/particles/star.png");
+			m_BatchRenderer->SetBlurShader(m_Scene.m_ShaderManager->Get("PostProcessing"));
 
 			Skybox* skybox = new Skybox(
 				{
@@ -99,7 +105,6 @@ namespace sixengine {
 			m_BatchRenderer->SetStaticDepth(new DepthRender(m_Scene.m_ShaderManager->Get("Depth")));
 			m_BatchRenderer->SetAnimatedDepth(new DepthRender(m_Scene.m_ShaderManager->Get("DepthAnim")));
 
-			m_BatchRenderer->SetParticle(new ParticleRender(m_Scene.m_ShaderManager->Get("ParticlesShader")));
 
 			Font* font = new Font("res/fonts/DroidSans.ttf");
 			UI* ui = new UI(m_FontShader);
@@ -107,6 +112,33 @@ namespace sixengine {
 
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_BasicShader2));
 			m_BatchRenderer->AddTechnique(new TransparentTechnique(m_TransparentShader));
+			
+
+			//TODO:*************
+			Shader* m_WaterShader = m_Scene.m_ShaderManager->AddShader("res/shaders/Water.glsl");
+			MaterialManager::getInstance()->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("Water"),
+				glm::vec4(
+					m_Scene.m_TextureArray->AddTexture("res/textures/water/dudv2.png"),
+					m_Scene.m_TextureArray->AddTexture("res/textures/water/normal2.png"),
+					0.0f,
+					0.0f
+					),
+				"WaterMaterial");
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/circleplane.obj");
+			GameObject* w;
+			w = new GameObject(m_EntityManager);
+			w->AddComponent<Transform>(w);
+			w->GetComponent<Transform>()->SetWorldPosition(-4.0f, 0.8f, -6.2f);
+			//w->GetComponent<Transform>()->SetLocalScale(10.0, 1.0, 10.0);
+			w->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("circleplane"));
+			w->AddComponent<Material>(*MaterialManager::getInstance()->Get("WaterMaterial"));
+			m_Scene.m_SceneRoot->AddChild(w);
+			Water* water = new Water(m_WaterShader, w);
+			m_BatchRenderer->SetWater(water);
+			m_BatchRenderer->AddTechnique(water);
+			//TODO:*************
+
 			m_BatchRenderer->AddTechnique(ui);
 
 			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
@@ -153,18 +185,14 @@ namespace sixengine {
 			GameObject* obj;
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(-10.0f, 1.0f, -10.0f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cylinder"));
+			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.0f, 0.0f);
+			obj->GetComponent<Transform>()->SetLocalScale(0.01f, .01f, .01f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
+			obj->AddComponent<Animation>();
+			//obj->AddComponent<SimplePlayer>();
 			m_Scene.m_SceneRoot->AddChild(obj);
-			m_Player = obj;
 			
-			/*obj = new GameObject(m_EntityManager);
-			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(10.0f, -10.0f, 0.0f);
-			obj->AddComponent<ParticleEmitter>(particleTexture);
-			m_Scene.m_SceneRoot->AddChild(obj);*/
-
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0f, 10.0f, 0.0f);
@@ -179,6 +207,16 @@ namespace sixengine {
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("FontMaterial"));
 			m_Scene.m_UIRoot->AddChild(obj);
 
+
+
+			GameObject* airText = new GameObject(m_EntityManager);
+			airText->AddComponent<Transform>(obj);
+			airText->GetComponent<Transform>()->SetWorldPosition(5.0, 660.0f, 0.0f);
+			airText->AddComponent<Text>("Air: ", glm::vec3(1.0f, 0.0f, 1.0f), 0.3f);
+			airText->AddComponent<Material>(*MaterialManager::getInstance()->Get("FontMaterial"));
+			airText->AddComponent<AirText>();
+			m_Scene.m_UIRoot->AddChild(airText);
+
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
@@ -188,10 +226,13 @@ namespace sixengine {
 			//obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
-			obj->AddComponent<ParticleEmitter>(particleTexture);
 			obj->AddComponent<Animation>();
-			obj->AddComponent<SimplePlayer>();
+			obj->AddComponent<DynamicBody>();
+			obj->AddComponent<SimplePlayer>(obj);
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+			m_SystemManager.AddSystem<AirTextSystem>();
+			airText->GetComponent<AirText>()->player = obj->GetComponent<SimplePlayer>().Get();
+
 
 			std::vector<GizmoVertex> vertices;
 			std::vector<unsigned int> indices;
@@ -214,6 +255,8 @@ namespace sixengine {
 
 			m_SystemManager.AddSystem<OrbitalCameraSystem>();
 			m_SystemManager.AddSystem<MixingCameraSystem>();
+			m_SystemManager.AddSystem<DynamicBodySystem>();
+			
 			orbitalCamA = new GameObject(m_EntityManager);
 			orbitalCamA->AddComponent<Transform>(orbitalCamA);
 			orbitalCamA->AddComponent<Camera>(orbitalCamA);
@@ -255,6 +298,11 @@ namespace sixengine {
 
 		virtual void OnUpdate(float dt) override
 		{
+			if (shakeTimer > 0)
+				shakeTimer -= dt;
+			else
+				m_BatchRenderer->SetBlur(false);
+
 			if (Input::IsKeyPressed(KeyCode::DEL))
 			{
 				WindowCloseEvent e;
@@ -270,22 +318,28 @@ namespace sixengine {
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamA->GetComponent<Camera>().Get());
 				//m_Player->GetComponent<Material>()->SetShader(m_Scene.m_ShaderManager->Get("PBR"));
-				m_Player->RemoveComponent<Material>();
-				m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bricks"));
+				//m_Player->RemoveComponent<Material>();
+				//m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F6))
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamB->GetComponent<Camera>().Get());
 				//m_Player->GetComponent<Material>()->SetShader(m_Scene.m_ShaderManager->Get("Transparent"));
-				m_Player->RemoveComponent<Material>();
-				m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
+				//m_Player->RemoveComponent<Material>();
+				//m_Player->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F7))
 			{
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(flying->GetComponent<Camera>().Get());
 				//Camera::ActiveCamera = flying->GetComponent<Camera>().Get();
+			}
+
+			if (Input::IsKeyPressed(KeyCode::P))
+			{
+				m_BatchRenderer->SetBlur(true);
+				shakeTimer = 0.1f;
 			}
 
 			{
@@ -332,7 +386,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				m_Scene.DrawGizmos();
+				//m_Scene.DrawGizmos();
 			}
 		}
 

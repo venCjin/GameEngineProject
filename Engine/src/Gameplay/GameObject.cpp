@@ -98,13 +98,13 @@ namespace sixengine {
 
 			//TODO: rotation is likely to go crazy
 			glm::vec3 rot = GetComponent<Transform>()->GetLocalOrientation();
-			if (ImGui::DragFloat3("Rotation", rot.data.data, 0.1f))
+			if (ImGui::DragFloat3("Rotation", rot.data.data, 1.0f))
 			{
 				GetComponent<Transform>()->SetLocalOrientation(rot);
 			}
 
 			glm::vec3 scale = GetComponent<Transform>()->GetLocalScale();
-			if (ImGui::DragFloat3("Scale", scale.data.data, 0.1f, 0.001f))
+			if (ImGui::DragFloat3("Scale", scale.data.data, 0.1f, 0.001f, 100.0f))
 			{
 				GetComponent<Transform>()->SetLocalScale(scale);
 			}

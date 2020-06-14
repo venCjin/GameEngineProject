@@ -37,7 +37,7 @@ namespace sixengine {
 		glfwSetInputMode(m_Window->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		OnInit();
-	#ifdef DEBUG
+	#if defined(DEBUG) || defined(AFTERBURNER)
 		m_ImGui->Init();
 		const int size = 60;
 		int offset = 1;
@@ -46,12 +46,12 @@ namespace sixengine {
 	#endif //DEBUG
 		while (m_Running)
 		{
-			{
+			
 				PROFILE_SCOPE("GAME UPDATE\n")
 
 				m_Timer->Tick();
 				m_Timer->Reset();
-			#ifdef DEBUG
+			#if defined(DEBUG) || defined(AFTERBURNER)
 				m_ImGui->BeginFrame();
 			#endif //DEBUG
 				if (!m_Minimized)
@@ -77,9 +77,9 @@ namespace sixengine {
 				}
 
 				OnRender(m_Timer->DeltaTime());
-			#ifdef DEBUG
+			#if defined(DEBUG) || defined(AFTERBURNER)
 				{
-					PROFILE_SCOPE("IMGUI RENDER")
+					//PROFILE_SCOPE("IMGUI RENDER")
 					m_ImGui->EndFrame();
 				}
 			#endif //DEBUG
@@ -96,9 +96,9 @@ namespace sixengine {
 				else
 					renderAccumulator += m_Timer->DeltaTime();
 				*/
-			}
+			
 		}
-	#ifdef DEBUG
+	#if defined(DEBUG) || defined(AFTERBURNER)
 		m_ImGui->Shutdown();
 	#endif //DEBUG
 		OnShutdown();
