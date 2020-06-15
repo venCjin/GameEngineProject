@@ -34,6 +34,7 @@ namespace sixengine {
 		m_DepthStatic = nullptr;
 		m_DepthAnimated = nullptr;
 		m_Skybox = nullptr; 
+		m_ParticleRender = nullptr;
 		
 		unsigned int VBO;
 		float vertices[] = {
