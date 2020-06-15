@@ -34,6 +34,7 @@ namespace sixengine {
 		m_DepthStatic = nullptr;
 		m_DepthAnimated = nullptr;
 		m_Skybox = nullptr; 
+		m_ParticleRender = nullptr;
 		
 		unsigned int VBO;
 		float vertices[] = {
@@ -147,6 +148,9 @@ namespace sixengine {
 		{
 			render = true;
 		}
+
+		if (gameObject->HasComponent<ParticleEmitter>())
+			m_ParticleList.push_back(gameObject->GetComponent<ParticleEmitter>().Get());
 
 		if (render)
 		{
@@ -351,6 +355,9 @@ namespace sixengine {
 			}
 		}
 
+		if (m_ParticleRender)
+			m_ParticleRender->Render(m_ParticleList);
+
 		for (auto t : m_TechniqueList)
 			t->FinishFrame();
 
@@ -359,6 +366,8 @@ namespace sixengine {
 
 		m_CommandList.clear();
 		m_Offset = 0;
+
+		m_ParticleList.clear();
 	}
 
 	void BatchRenderer::RenderDepth(Technique* depth, Technique* technique)
@@ -407,6 +416,11 @@ namespace sixengine {
 	void BatchRenderer::RenderSkybox()
 	{
 		m_Skybox->Render();
+	}
+
+	void BatchRenderer::SetParticle(ParticleRender* technique)
+	{
+		m_ParticleRender = technique;
 	}
 
 	void BatchRenderer::RenderWater(Technique* technique1, Technique* technique2)
@@ -591,6 +605,9 @@ namespace sixengine {
 
 		if (m_Skybox)
 			m_Skybox->Start(m_TextureArray);
+	
+		if (m_ParticleRender)
+			m_ParticleRender->Start(m_TextureArray);
 
 		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
