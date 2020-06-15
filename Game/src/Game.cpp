@@ -190,8 +190,9 @@ namespace sixengine {
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
 			obj->AddComponent<Animation>();
-			//obj->AddComponent<SimplePlayer>();
 			m_Scene.m_SceneRoot->AddChild(obj);
+
+			//obj->AddComponent<SimplePlayer>();
 			
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
@@ -228,8 +229,8 @@ namespace sixengine {
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
 			obj->AddComponent<Animation>();
 			obj->AddComponent<DynamicBody>();
-			obj->AddComponent<SimplePlayer>(obj);
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+			obj->AddComponent<SimplePlayer>(obj);
 			m_SystemManager.AddSystem<AirTextSystem>();
 			airText->GetComponent<AirText>()->player = obj->GetComponent<SimplePlayer>().Get();
 
@@ -386,7 +387,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				//m_Scene.DrawGizmos();
+				m_Scene.DrawGizmos();
 			}
 		}
 

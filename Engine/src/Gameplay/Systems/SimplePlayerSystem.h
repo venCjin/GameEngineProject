@@ -3,6 +3,7 @@
 #include <ECS/SystemManager.h>
 
 #include <Gameplay/Components/Transform.h>
+#include <Gameplay/Components/SimplePlayer.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -11,8 +12,21 @@
 
 #include "Core/CameraSystem/Camera.h"
 #include <Physics\Components\DynamicBody.h>
+#include <Renderer/Material.h>
+#include <Renderer/MaterialManager.h>
 
 namespace sixengine {
+
+	struct OnTestEvent2 : BaseEvent
+	{
+	public:
+		glm::vec3 pos;
+		float radius;
+		Entity* collisionEntity = nullptr;
+
+		OnTestEvent2(Entity entity, glm::vec3 pos, float radius)
+			: BaseEvent(entity), pos(pos), radius(radius) {}
+	};
 
 	SYSTEM(SimplePlayerSystem, Transform, SimplePlayer, Material)
 	{
@@ -25,13 +39,28 @@ namespace sixengine {
 		float airLosingRate = 5.0f;
 		void Update(EventManager & eventManager, float dt) override
 		{
+			//LOG_INFO(m_SimplePlayer->collider->IsStatic());
 			glm::vec3 dir = glm::vec3();
-			DynamicBody* _db = m_SimplePlayer->gameObject->GetComponent<DynamicBody>().Get();
+			DynamicBody* _db = m_SimplePlayer->gameObject->GetComponent<DynamicBody>().Get();	
 			_db->m_Drag = 4;
 			glm::vec3 cameraDir = -glm::normalize(glm::vec3(Camera::ActiveCamera->m_Transform->GetForward().x, 0.0f, Camera::ActiveCamera->m_Transform->GetForward().z));
 			
-			if (Input::IsKeyActive(KeyCode::DOWN)) { _db->m_Velocity += cameraDir * speed; }
-			if (Input::IsKeyActive(KeyCode::UP)) { _db->m_Velocity -= cameraDir * speed; }
+
+
+			if (Input::IsKeyActive(KeyCode::DOWN)) 
+			{ 
+				_db->m_Velocity += cameraDir * speed; 
+				
+				
+
+			}
+			if (Input::IsKeyActive(KeyCode::UP)) { 
+				_db->m_Velocity -= cameraDir * speed; 
+				OnTestEvent2 event(entity, m_SimplePlayer->transform->GetWorldPosition() + m_SimplePlayer->transform->GetForward() * 1.0f, 1.0f);
+				eventManager.Emit(event);
+				if (event.collisionEntity != nullptr)
+					LOG_ERROR("HIT COLLIDER");
+			}
 			cameraDir = glm::rotateY(cameraDir, glm::radians(90.0f));
 			if (Input::IsKeyActive(KeyCode::RIGHT)) { _db->m_Velocity += cameraDir * speed; }
 			if (Input::IsKeyActive(KeyCode::LEFT)) { _db->m_Velocity -= cameraDir * speed; }
