@@ -3,7 +3,6 @@
 #include <ECS/SystemManager.h>
 
 #include <Gameplay/Components/Transform.h>
-#include <Gameplay/Components/SimplePlayer.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -12,21 +11,10 @@
 
 #include "Core/CameraSystem/Camera.h"
 #include <Physics\Components\DynamicBody.h>
-#include <Renderer/Material.h>
-#include <Renderer/MaterialManager.h>
+#include <Physics/Systems/CollisionSystem.h>
 
 namespace sixengine {
-
-	struct OnTestEvent2 : BaseEvent
-	{
-	public:
-		glm::vec3 pos;
-		float radius;
-		Entity* collisionEntity = nullptr;
-
-		OnTestEvent2(Entity entity, glm::vec3 pos, float radius)
-			: BaseEvent(entity), pos(pos), radius(radius) {}
-	};
+	
 
 	SYSTEM(SimplePlayerSystem, Transform, SimplePlayer, Material)
 	{
@@ -46,6 +34,16 @@ namespace sixengine {
 			glm::vec3 cameraDir = -glm::normalize(glm::vec3(Camera::ActiveCamera->m_Transform->GetForward().x, 0.0f, Camera::ActiveCamera->m_Transform->GetForward().z));
 			
 
+			glm::vec3 f = m_SimplePlayer->transform->GetForward();
+			LOG_WARN("Forward: {0} {1} {2}", f.x, f.y, f.z);
+
+			if (Input::IsMouseButtonActive(0))
+			{
+				LOG_INFO("___MOUSE");
+				Entity* a = CollisionSystem::CheckSphere(m_SimplePlayer->transform->GetWorldPosition() + m_SimplePlayer->transform->GetForward() * 1.0f, 1.0f);
+				if (a != nullptr)
+					LOG_ERROR("HIT COLLIDER");
+			}
 
 			if (Input::IsKeyActive(KeyCode::DOWN)) 
 			{ 
@@ -56,10 +54,8 @@ namespace sixengine {
 			}
 			if (Input::IsKeyActive(KeyCode::UP)) { 
 				_db->m_Velocity -= cameraDir * speed; 
-				OnTestEvent2 event(entity, m_SimplePlayer->transform->GetWorldPosition() + m_SimplePlayer->transform->GetForward() * 1.0f, 1.0f);
-				eventManager.Emit(event);
-				if (event.collisionEntity != nullptr)
-					LOG_ERROR("HIT COLLIDER");
+
+				
 			}
 			cameraDir = glm::rotateY(cameraDir, glm::radians(90.0f));
 			if (Input::IsKeyActive(KeyCode::RIGHT)) { _db->m_Velocity += cameraDir * speed; }

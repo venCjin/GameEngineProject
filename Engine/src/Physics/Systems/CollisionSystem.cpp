@@ -295,11 +295,6 @@ void sixengine::CollisionSystem::HandleCollision(Entity collider, Collision coll
 	t->SetWorld(world);
 }
 
-void sixengine::CollisionSystem::OnStart(EventManager & eventManager)
-{
-	eventManager.AddListener<OnTestEvent2>(&CollisionSystem::handler, this);
-}
-
 void sixengine::CollisionSystem::UpdateAll(EventManager& eventManager, float dt)
 {
 	UpdateBoxesWithBoxes();
