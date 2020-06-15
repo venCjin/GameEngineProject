@@ -93,7 +93,7 @@ namespace sixengine {
 	}
 
 #ifdef DEBUG
-	void NavMesh::drawMesh()
+	void NavMesh::drawNavMesh()
 	{
 
 	}

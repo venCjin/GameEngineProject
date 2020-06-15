@@ -11,27 +11,30 @@
 #include "Renderer/Techniques/Water.h"
 #include "Renderer/Techniques/UI.h"
 #include <Renderer/Techniques/Transparent.h>
+
 #include "Gameplay/Components/SimplePlayer.h"
 #include <Physics/Components/BoxCollider.h>
+#include <Physics/Components/DynamicBody.h>
+#include <Physics/Systems/DynamicBodySystem.h>
+
 #include "Renderer/PrimitiveUtils.h"
 #include "Renderer/Gizmo.h"
 
 #include <Core/CameraSystem/FlyingCameraSystem.h>
 #include <Core/CameraSystem/OrbitalCameraSystem.h>
 #include <Core/CameraSystem/MixingCameraSystem.h>
-// hacks end
+
+#include <Gameplay/NavMesh.h>
+#include <Gameplay/Components/NavAgent.h>
+#include <Gameplay/Systems/NavAgentSystem.h>
 
 #include <Core/AudioManager.h>
-#include "Gameplay/NavMesh.h"
+// hacks end
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include <Physics/Components/DynamicBody.h>
-#include <Physics/Systems/DynamicBodySystem.h>
-
-
 
 namespace sixengine {
 
@@ -259,9 +262,35 @@ namespace sixengine {
 */
 #define NAV 1
 #if NAV
+			m_SystemManager.AddSystem<NavAgentSystem>();
+			m_SystemManager.AddSystem<DynamicBodySystem>();
+			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
+			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_diffuse.png");
+			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_normal.png");
+			m_Scene.m_TextureArray->AddTexture("res/models/par/textures/parasiteZombie_specular.png");
+			MaterialManager::getInstance()->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("PBR"),
+				glm::vec4(m_Scene.m_TextureArray->GetTexture("parasiteZombie_diffuse"),
+					m_Scene.m_TextureArray->GetTexture("parasiteZombie_normal"),
+					m_Scene.m_TextureArray->GetTexture("parasiteZombie_specular"),
+					0.0f),
+				"parasiteZombie");
+
 			GameObject* obj;
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
+			obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
+			obj->GetComponent<Transform>()->SetLocalOrientation(180.0f, 0.0f, 0.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
+			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
+			//obj->AddComponent<Animation>();
+			obj->AddComponent<DynamicBody>();
+			obj->AddComponent<NavAgent>();
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+
+			m_Scene.m_SceneRoot->AddChild(obj);
+			
 #endif
 			m_BatchRenderer->SetLight(new Light(obj));
 			

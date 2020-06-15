@@ -45,7 +45,7 @@ namespace sixengine {
 		float getAgentClimb() { return m_agentMaxClimb; }
 
 	#ifdef DEBUG
-		void drawMesh();
+		void drawNavMesh();
 		void drawAgent(const glm::vec3 pos);
 	#endif // DEBUG
 

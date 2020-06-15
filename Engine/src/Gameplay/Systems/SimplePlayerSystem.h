@@ -10,7 +10,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 #include "Core/CameraSystem/Camera.h"
-#include <Physics\Components\DynamicBody.h>
+#include <Physics/Components/DynamicBody.h>
 
 namespace sixengine {
 
