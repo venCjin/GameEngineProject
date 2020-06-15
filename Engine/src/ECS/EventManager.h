@@ -35,14 +35,14 @@ EventFamily::EFamily EventF<T>::GetFamily()
 class BaseEvent
 {
 public:
-	Entity::ID m_Id;
+	Entity m_Entity;
 
 public:
 	virtual ~BaseEvent() {}
 
 protected:
-	BaseEvent(Entity::ID id)
-		: m_Id(id) {}
+	BaseEvent(Entity entity)
+		: m_Entity(entity) {}
 };
 
 //////////////////
