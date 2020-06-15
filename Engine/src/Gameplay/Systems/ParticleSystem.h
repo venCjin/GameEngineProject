@@ -18,7 +18,7 @@ namespace sixengine {
 	public:
 		void Update(EventManager & eventManager, float dt) override
 		{
-
+			LOG_INFO("PARTICLE UPDATE");
 			// SPAWN PARTICLES
 			if (m_ParticleEmitter->m_Started && timer <= m_ParticleEmitter->m_EmissionDuration)
 			{

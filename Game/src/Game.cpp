@@ -3,9 +3,11 @@
 
 #include "Core/Scene.h"
 #include "Renderer/BatchRenderer.h"
+#include "Renderer/Texture.h"
 
 // hacks
 #include "Gameplay/Systems/AnimationSystem.h"
+#include "Gameplay/Systems/ParticleSystem.h"
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/DepthRender.h"
 #include "Renderer/Techniques/Water.h"
@@ -77,6 +79,8 @@ namespace sixengine {
 			// HACKS
 
 			m_SystemManager.AddSystem<AnimationSystem>();
+			m_SystemManager.AddSystem<ParticleSystem>();
+
 			//m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
@@ -86,9 +90,13 @@ namespace sixengine {
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/DepthAnim.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/ParticlesShader.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/PostProcessing.glsl");
 
 			m_BatchRenderer->SetBlurShader(m_Scene.m_ShaderManager->Get("PostProcessing"));
+
+			Texture* particleTexture = new Texture("res/textures/particles/star.png");
+
 
 			Skybox* skybox = new Skybox(
 				{
@@ -228,6 +236,7 @@ namespace sixengine {
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
 			obj->AddComponent<Animation>();
 			obj->AddComponent<DynamicBody>();
+			obj->AddComponent<ParticleEmitter>(particleTexture);
 			obj->AddComponent<SimplePlayer>(obj);
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
 			m_SystemManager.AddSystem<AirTextSystem>();
