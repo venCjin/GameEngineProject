@@ -143,6 +143,10 @@ namespace sixengine {
 
 			render = FrustumAABB(min, max);
 		}
+		else if (gameObject->HasComponent<Text>())
+		{
+			render = true;
+		}
 
 		if (render)
 		{

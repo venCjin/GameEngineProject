@@ -7,6 +7,9 @@
 #include <Physics/Components/BoxCollider.h>
 #include <Physics/Components/SphereCollider.h>
 
+#include <Physics/Components/DynamicBody.h>
+#include <Physics/Components/StaticBody.h>
+
 namespace sixengine {
 
 	class CollisionSystem : public BaseSystem
@@ -39,5 +42,8 @@ namespace sixengine {
 
 		void UpdateAll(EventManager& eventManager, float dt) override final;
 		void Update(EventManager& eventManager, float dt) override {}
+
+		static Entity* CheckSphere(glm::vec3 center, float radius);
+		static std::vector<Entity*> CheckSphereAll(glm::vec3 center, float radius);
 	};
 }
