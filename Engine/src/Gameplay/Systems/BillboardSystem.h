@@ -27,7 +27,9 @@ namespace sixengine {
 
 		void Update(EventManager& eventManager, float dt) override
 		{
+
 			glm::mat4 viewMatrix = Camera::ActiveCamera->GetViewMatrix();
+
 
 			glm::mat4 matrix(1.0f);
 			//matrix = glm::translate(matrix, m_Transform->getWorldPosition());

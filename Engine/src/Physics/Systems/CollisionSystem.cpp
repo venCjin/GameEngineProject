@@ -3,6 +3,9 @@
 #include "Core/Profile.h"
 #include "Physics/Collision.h"
 
+#include "Gameplay/Components/Transform.h"
+#include <algorithm>
+
 void sixengine::CollisionSystem::BoxWithBox(Entity entityA, Entity entityB)
 {
 	auto boxA = entityA.Component<BoxCollider>();
@@ -59,14 +62,14 @@ void sixengine::CollisionSystem::BoxWithBox(Entity entityA, Entity entityB)
 		float portionA = 0.5f;
 		float portionB = 0.5f;
 
-		if (boxA->isStatic() || boxB->isStatic())
+		if (boxA->IsStatic() || boxB->IsStatic())
 		{
-			if (boxA->isStatic() == false && boxB->isStatic())
+			if (boxA->IsStatic() == false && boxB->IsStatic())
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (boxA->isStatic() && boxB->isStatic() == false)
+			else if (boxA->IsStatic() && boxB->IsStatic() == false)
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;
@@ -106,14 +109,14 @@ void sixengine::CollisionSystem::SphereWithSphere(Entity entityA, Entity entityB
 		float portionA = 0.5f;
 		float portionB = 0.5f;
 
-		if (circleA->isStatic() || circleB->isStatic())
+		if (circleA->IsStatic() || circleB->IsStatic())
 		{
-			if (circleA->isStatic() == false && circleB->isStatic())
+			if (circleA->IsStatic() == false && circleB->IsStatic())
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (circleA->isStatic() && circleB->isStatic() == false)
+			else if (circleA->IsStatic() && circleB->IsStatic() == false)
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;
@@ -152,7 +155,7 @@ void sixengine::CollisionSystem::BoxWithCircle(Entity entityBox, Entity entityCi
 	glm::vec3 closestPoint;
 	closestPoint.x = std::clamp(cirsclePos.x, boxPos.x - box->m_Size.x * 0.5f, boxPos.x + box->m_Size.x * 0.5f);
 	closestPoint.y = std::clamp(cirsclePos.y, boxPos.y - box->m_Size.y * 0.5f, boxPos.y + box->m_Size.y * 0.5f);
-	closestPoint.z = std::clamp(cirsclePos.z, boxPos.z - box->m_Size.y * 0.5f, boxPos.z + box->m_Size.y * 0.5f);
+	closestPoint.z = std::clamp(cirsclePos.z, boxPos.z - box->m_Size.z * 0.5f, boxPos.z + box->m_Size.z * 0.5f);
 
 	if (glm::length(cirsclePos - closestPoint) < sphere->m_radius)
 	{
@@ -198,19 +201,19 @@ void sixengine::CollisionSystem::BoxWithCircle(Entity entityBox, Entity entityCi
 		float portionA = 0.5f;
 		float portionB = 0.5f;
 
-		if (box->isStatic() || sphere->isStatic())
+		if (box->IsStatic() || sphere->IsStatic())
 		{
-			if (box->isStatic() && sphere->isStatic())
+			if (box->IsStatic() && sphere->IsStatic())
 			{
 				portionA = 0.0f;
 				portionB = 0.0f;
 			}
-			else if (box->isStatic() == false && sphere->isStatic())
+			else if (box->IsStatic() == false && sphere->IsStatic())
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (box->isStatic() && sphere->isStatic() == false)
+			else if (box->IsStatic() && sphere->IsStatic() == false)
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;
@@ -290,11 +293,109 @@ void sixengine::CollisionSystem::HandleCollision(Entity collider, Collision coll
 	world = glm::translate(world, collision.offset);
 
 	t->SetWorld(world);
+
+	m_EventManager->Emit<OnCollision>(OnCollision(collider, collision));
 }
 
 void sixengine::CollisionSystem::UpdateAll(EventManager& eventManager, float dt)
 {
+	m_EventManager = &eventManager;
+
 	UpdateBoxesWithBoxes();
 	UpdateSpheresWithSpheres();
 	UpdateBoxesWithSpheres();
+}
+
+Entity* sixengine::CollisionSystem::CheckSphere(glm::vec3 center, float radius)
+{
+	{
+		auto spheres = Application::Get().GetEntityManager()->EntitiesWithComponents<SphereCollider>();
+
+		for (int i = 0; i < spheres.size(); i++)
+		{
+			auto other = spheres[i].Component<SphereCollider>();
+			auto otherPos = spheres[i].Component<Transform>()->GetWorldPosition();
+
+
+			if (glm::length(center - otherPos) < radius + other->m_radius)
+			{
+				float portionA = 0.5f;
+				float portionB = 0.5f;
+
+				LOG_ERROR("SYSTEM HIT COLLIDER");
+				return &spheres[i];
+
+			}
+		}
+	}
+
+	{
+		auto boxes = Application::Get().GetEntityManager()->EntitiesWithComponents<BoxCollider>();
+
+		for (int i = 0; i < boxes.size(); i++)
+		{
+
+			auto box = boxes[i].Component<BoxCollider>();
+			glm::vec3 relativeCenter = boxes[i].Component<Transform>()->InverseTransformPoint(center);
+
+			glm::vec3 closestPoint;
+			closestPoint.x = std::clamp(relativeCenter.x, -box->m_Size.x * 0.5f, box->m_Size.x * 0.5f);
+			closestPoint.y = std::clamp(relativeCenter.y, -box->m_Size.y * 0.5f, box->m_Size.y * 0.5f);
+			closestPoint.z = std::clamp(relativeCenter.z, -box->m_Size.z * 0.5f, box->m_Size.z * 0.5f);
+
+			if (glm::length(relativeCenter - closestPoint) < radius)
+			{
+				LOG_ERROR("SYSTEM HIT COLLIDER");
+				return &boxes[i];
+			}
+		}
+	}
+
+	return NULL;	
+}
+
+std::vector<Entity*> sixengine::CollisionSystem::CheckSphereAll(glm::vec3 center, float radius)
+{
+	std::vector<Entity*> result;
+
+	{
+		auto spheres = Application::Get().GetEntityManager()->EntitiesWithComponents<SphereCollider>();
+
+		for (int i = 0; i < spheres.size(); i++)
+		{
+			auto other = spheres[i].Component<SphereCollider>();
+			auto otherPos = spheres[i].Component<Transform>()->GetWorldPosition();
+
+
+			if (glm::length(center - otherPos) < radius + other->m_radius)
+			{
+				float portionA = 0.5f;
+				float portionB = 0.5f;
+
+				result.push_back(&spheres[i]);
+			}
+		}
+	}
+
+	{
+		auto boxes = Application::Get().GetEntityManager()->EntitiesWithComponents<BoxCollider>();
+
+		for (int i = 0; i < boxes.size(); i++)
+		{
+			auto box = boxes[i].Component<BoxCollider>();
+			glm::vec3 relativeCenter = boxes[i].Component<Transform>()->InverseTransformPoint(center);
+
+			glm::vec3 closestPoint;
+			closestPoint.x = std::clamp(relativeCenter.x, -box->m_Size.x * 0.5f, box->m_Size.x * 0.5f);
+			closestPoint.y = std::clamp(relativeCenter.y, -box->m_Size.y * 0.5f, box->m_Size.y * 0.5f);
+			closestPoint.z = std::clamp(relativeCenter.z, -box->m_Size.z * 0.5f, box->m_Size.z * 0.5f);
+
+			if (glm::length(relativeCenter - closestPoint) < radius)
+			{
+				result.push_back(&boxes[i]);
+			}
+		}
+	}
+
+	return result;
 }
