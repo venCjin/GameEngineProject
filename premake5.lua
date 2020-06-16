@@ -27,12 +27,19 @@ IncludeDir["stb_image"] = "Engine/dependencies/stb_image"
 IncludeDir["assimp"] = "Engine/dependencies/assimp/include"
 IncludeDir["irrKlang"] = "Engine/dependencies/irrKlang/include"
 IncludeDir["freetype2"] = "Engine/dependencies/freetype2/include"
+IncludeDir["recast"] = "Engine/dependencies/recastnavigation/Recast/Include"
+IncludeDir["detour"] = "Engine/dependencies/recastnavigation/Detour/Include"
+IncludeDir["detour_tile_cache"] = "Engine/dependencies/recastnavigation/DetourTileCache/Include"
+IncludeDir["recast_detour_debug"] = "Engine/dependencies/recastnavigation/DebugUtils/Include"
 
 group "Dependencies"
 	include "Engine/dependencies/Glad"
 	include "Engine/dependencies/GLFW"
 	include "Engine/dependencies/imgui"
+group ""
 
+group "recast_navigation"
+	include "Engine/dependencies/recastnavigation"
 group ""
 
 project "Engine"
@@ -74,6 +81,10 @@ project "Engine"
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.irrKlang}",
 		"%{IncludeDir.freetype2}",
+		"%{IncludeDir.recast}",
+		"%{IncludeDir.detour}",
+		"%{IncludeDir.detour_tile_cache}",
+		"%{IncludeDir.recast_detour_debug}",
 	}
 
 	links 
@@ -81,6 +92,10 @@ project "Engine"
 		"Glad",
 		"GLFW",
 		"ImGui",
+		"Recast",
+		"Detour",
+		"DetourTileCache",
+		"DebugUtils",
 		"opengl32.lib",
 		"Engine/dependencies/assimp/lib/assimp-vc142-mt.lib",
 		"Engine/dependencies/irrKlang/lib/irrKlang.lib",
@@ -142,6 +157,10 @@ project "Game"
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.irrKlang}",
 		"%{IncludeDir.freetype2}",
+		"%{IncludeDir.recast}",
+		"%{IncludeDir.detour}",
+		"%{IncludeDir.detour_tile_cache}",
+		"%{IncludeDir.recast_detour_debug}",
 	}
 
 	links

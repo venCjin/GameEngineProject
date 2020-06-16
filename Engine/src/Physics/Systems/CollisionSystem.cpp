@@ -124,14 +124,14 @@ int TestOBBOBB(OBB& a, OBB& b, glm::vec3& offset)
 {
 	float ra, rb;
 	glm::mat3 R, absR;
-	// Compute rotation matrix expressing b in a’s coordinate frame
+	// Compute rotation matrix expressing b in aï¿½s coordinate frame
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
 			R[i][j] = glm::dot(a.u[i], b.u[j]);
 
 	// Compute translation vector t
 	glm::vec3 t = b.c - a.c;
-	// Bring translation into a’s coordinate frame
+	// Bring translation into aï¿½s coordinate frame
 	t = glm::vec3(glm::dot(t, a.u[0]), glm::dot(t, a.u[1]), glm::dot(t, a.u[2]));
 
 	// Compute common subexpressions. Add in an epsilon term to
@@ -391,14 +391,14 @@ void sixengine::CollisionSystem::BoxWithBox(Entity entityA, Entity entityB)
 		float portionA = 0.5f;
 		float portionB = 0.5f;
 
-		if (boxA->isStatic() || boxB->isStatic())
+		if (boxA->IsStatic() || boxB->IsStatic())
 		{
-			if (boxA->isStatic() == false && boxB->isStatic())
+			if (boxA->IsStatic() == false && boxB->IsStatic())
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (boxA->isStatic() && boxB->isStatic() == false)
+			else if (boxA->IsStatic() && boxB->IsStatic() == false)
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;
@@ -438,14 +438,14 @@ void sixengine::CollisionSystem::SphereWithSphere(Entity entityA, Entity entityB
 		float portionA = 0.5f;
 		float portionB = 0.5f;
 
-		if (circleA->isStatic() || circleB->isStatic())
+		if (circleA->IsStatic() || circleB->IsStatic())
 		{
-			if (circleA->isStatic() == false && circleB->isStatic())
+			if (circleA->IsStatic() == false && circleB->IsStatic())
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (circleA->isStatic() && circleB->isStatic() == false)
+			else if (circleA->IsStatic() && circleB->IsStatic() == false)
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;
@@ -530,19 +530,19 @@ void sixengine::CollisionSystem::BoxWithCircle(Entity entityBox, Entity entityCi
 		float portionA = 0.5f;
 		float portionB = 0.5f;
 
-		if (box->isStatic() || sphere->isStatic())
+		if (box->IsStatic() || sphere->IsStatic())
 		{
-			if (box->isStatic() && sphere->isStatic())
+			if (box->IsStatic() && sphere->IsStatic())
 			{
 				portionA = 0.0f;
 				portionB = 0.0f;
 			}
-			else if (box->isStatic() == false && sphere->isStatic())
+			else if (box->IsStatic() == false && sphere->IsStatic())
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (box->isStatic() && sphere->isStatic() == false)
+			else if (box->IsStatic() && sphere->IsStatic() == false)
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;
@@ -622,10 +622,14 @@ void sixengine::CollisionSystem::HandleCollision(Entity collider, Collision coll
 	world = glm::translate(world, collision.offset);
 
 	t->SetWorld(world);
+
+	m_EventManager->Emit<OnCollision>(OnCollision(collider, collision));
 }
 
 void sixengine::CollisionSystem::UpdateAll(EventManager& eventManager, float dt)
 {
+	m_EventManager = &eventManager;
+
 	UpdateBoxesWithBoxes();
 	UpdateSpheresWithSpheres();
 	UpdateBoxesWithSpheres();
@@ -647,7 +651,9 @@ Entity* sixengine::CollisionSystem::CheckSphere(glm::vec3 center, float radius)
 				float portionA = 0.5f;
 				float portionB = 0.5f;
 
+				LOG_ERROR("SYSTEM HIT COLLIDER");
 				return &spheres[i];
+
 			}
 		}
 	}
@@ -657,6 +663,7 @@ Entity* sixengine::CollisionSystem::CheckSphere(glm::vec3 center, float radius)
 
 		for (int i = 0; i < boxes.size(); i++)
 		{
+
 			auto box = boxes[i].Component<BoxCollider>();
 			glm::vec3 relativeCenter = boxes[i].Component<Transform>()->InverseTransformPoint(center);
 
@@ -667,6 +674,7 @@ Entity* sixengine::CollisionSystem::CheckSphere(glm::vec3 center, float radius)
 
 			if (glm::length(relativeCenter - closestPoint) < radius)
 			{
+				LOG_ERROR("SYSTEM HIT COLLIDER");
 				return &boxes[i];
 			}
 		}

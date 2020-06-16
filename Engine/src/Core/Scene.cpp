@@ -58,6 +58,12 @@ namespace sixengine {
 		BatchRenderer::Initialize(m_ModelManager, m_TextureArray);
 		m_BatchRenderer = BatchRenderer::Instance();
 
+		m_SceneRoot = new GameObject(*Application::Get().GetEntityManager());
+		m_SceneRoot->AddComponent<Transform>(m_SceneRoot);
+
+		m_UIRoot = new GameObject(*Application::Get().GetEntityManager());
+		m_UIRoot->AddComponent<Transform>(m_UIRoot);
+
 		GameObject* go = new GameObject(*Application::Get().GetEntityManager());
 		go->AddComponent<Transform>(go);
 		go->AddComponent<Camera>(go);
@@ -86,13 +92,6 @@ namespace sixengine {
 		EntityManager* en = Application::Get().GetEntityManager();
 		//EventManager* ev = Application::Get().GetEventManager();
 		SystemManager* sys = Application::Get().GetSystemManager();
-
-		m_SceneRoot = new GameObject(*en);
-		m_SceneRoot->AddComponent<Transform>(m_SceneRoot);
-
-		m_UIRoot = new GameObject(*en);
-		m_UIRoot->AddComponent<Transform>(m_UIRoot);
-
 
 		std::string line, s;
 		std::getline(file, line);

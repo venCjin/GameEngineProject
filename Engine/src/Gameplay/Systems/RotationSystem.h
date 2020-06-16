@@ -16,8 +16,8 @@ namespace sixengine {
 	public:
 		bool a;
 
-		OnTestEvent(Entity::ID id, bool a)
-			: BaseEvent(id), a(a) {}
+		OnTestEvent(Entity entity, bool a)
+			: BaseEvent(entity), a(a) {}
 	};
 
 	SYSTEM(RotationSystem, Transform, Rotation)
@@ -28,7 +28,7 @@ namespace sixengine {
 
 			if (m_Rotation->speed > 3)
 			{
-				eventManager.Emit(OnTestEvent(entity.GetID(), true));
+				eventManager.Emit(OnTestEvent(entity, true));
 			}
 		}
     };

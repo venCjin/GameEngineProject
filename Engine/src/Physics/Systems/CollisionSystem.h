@@ -10,13 +10,25 @@
 #include <Physics/Components/DynamicBody.h>
 #include <Physics/Components/StaticBody.h>
 
+#include "Physics/Collision.h"
+
 namespace sixengine {
+
+	struct OnCollision : BaseEvent
+	{
+	public:
+		Collision collision;
+
+		OnCollision(Entity entity, Collision collision)
+			: BaseEvent(entity), collision(collision) {}
+	};
 
 	class CollisionSystem : public BaseSystem
 	{
-	private: 
+	private:
 		std::vector<Entity> m_BoxEntities;
 		std::vector<Entity> m_SphereEntities;
+		EventManager* m_EventManager;
 
 	protected: 
 		Entity entity; 
@@ -39,7 +51,7 @@ namespace sixengine {
 		void UpdateBoxesWithSpheres();
 
 		void HandleCollision(Entity collider, class Collision collision);
-
+		
 		void UpdateAll(EventManager& eventManager, float dt) override final;
 		void Update(EventManager& eventManager, float dt) override {}
 

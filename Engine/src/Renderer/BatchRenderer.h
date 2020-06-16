@@ -4,6 +4,7 @@
 #include <Renderer/ModelManager.h>
 #include <Renderer/Techniques/SkyboxRender.h>
 #include <Renderer/Techniques/DepthRender.h>
+#include <Renderer/Techniques/ParticleRender.h>
 #include <Renderer/Techniques/Water.h>
 #include <Renderer/Techniques/Technique.h>
 #include <Renderer/BufferLockManager.h>
@@ -12,6 +13,7 @@
 #include <Renderer/RenderTarget.h>
 
 #include <Gameplay/GameObject.h>
+#include <Gameplay/Components/ParticleEmitter.h>
 
 #include <ECS/ComponentManager.h>
 
@@ -114,9 +116,12 @@ namespace sixengine {
 		DepthRender* m_DepthStatic;
 		DepthRender* m_DepthAnimated;
 
+		ParticleRender* m_ParticleRender;
 		Water* m_Water;
 
 		std::vector<Technique*> m_TechniqueList;
+
+		std::vector<ParticleEmitter*> m_ParticleList;
 
 		std::vector<RendererCommand*> m_CommandList;
 		std::vector<DrawElementsCommand> m_RenderCommandList;
@@ -155,6 +160,7 @@ namespace sixengine {
 		void SetBlur(bool blur);
 		void ApplyBlur();
 
+		void SetParticle(ParticleRender* technique);
 		void SetSkybox(SkyboxRender* technique);
 		void SetStaticDepth(DepthRender* technique);
 		void SetAnimatedDepth(DepthRender* technique);

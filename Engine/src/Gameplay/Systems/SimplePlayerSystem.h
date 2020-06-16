@@ -3,6 +3,7 @@
 #include <ECS/SystemManager.h>
 
 #include <Gameplay/Components/Transform.h>
+#include <Gameplay/Components/Collectable.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -10,9 +11,11 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 #include "Core/CameraSystem/Camera.h"
-#include <Physics\Components\DynamicBody.h>
+#include <Physics/Systems/CollisionSystem.h>
+#include <Physics/Components/DynamicBody.h>
 
 namespace sixengine {
+	
 
 	SYSTEM(SimplePlayerSystem, Transform, SimplePlayer, Material)
 	{
@@ -23,15 +26,63 @@ namespace sixengine {
 		float health = 100.0f;
 		//float air = 100.0f;
 		float airLosingRate = 5.0f;
+
+		void OnCollisionHandle(BaseEvent & e)
+		{
+			OnCollision& collisionEvent = dynamic_cast<OnCollision&>(e);
+
+			if (collisionEvent.m_Entity.HasComponent<SimplePlayer>() &&
+				collisionEvent.collision.other.HasComponent<Collectable>())
+			{
+				collisionEvent.collision.other.RemoveComponent<BoxCollider>();
+				collisionEvent.collision.other.RemoveComponent<Mesh>();
+				//collisionEvent.collision.other.Destroy();
+
+				//do something
+			}
+		}
+
+	public:
+		void OnStart(EventManager & eventManager) override
+		{
+			eventManager.AddListener<OnCollision>(&SimplePlayerSystem::OnCollisionHandle, this);
+		}
+
 		void Update(EventManager & eventManager, float dt) override
 		{
+			//LOG_INFO(m_SimplePlayer->collider->IsStatic());
 			glm::vec3 dir = glm::vec3();
-			DynamicBody* _db = m_SimplePlayer->gameObject->GetComponent<DynamicBody>().Get();
+			DynamicBody* _db = m_SimplePlayer->gameObject->GetComponent<DynamicBody>().Get();	
 			_db->m_Drag = 4;
 			glm::vec3 cameraDir = -glm::normalize(glm::vec3(Camera::ActiveCamera->m_Transform->GetForward().x, 0.0f, Camera::ActiveCamera->m_Transform->GetForward().z));
 			
-			if (Input::IsKeyActive(KeyCode::DOWN)) { _db->m_Velocity += cameraDir * speed; }
-			if (Input::IsKeyActive(KeyCode::UP)) { _db->m_Velocity -= cameraDir * speed; }
+
+			glm::vec3 f = m_SimplePlayer->transform->GetForward();
+			LOG_WARN("Forward: {0} {1} {2}", f.x, f.y, f.z);
+
+			if (Input::IsMouseButtonActive(0))
+			{
+				LOG_INFO("___MOUSE");
+				glm::mat4 model = glm::mat4(1.0f);
+				model = glm::translate(model, m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f));
+				Application::attack->model = model;
+				Entity* a = CollisionSystem::CheckSphere(m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f), 1.0f);
+				if (a != nullptr)
+					LOG_ERROR("HIT COLLIDER");
+			}
+
+			if (Input::IsKeyActive(KeyCode::DOWN)) 
+			{ 
+				_db->m_Velocity += cameraDir * speed; 
+				
+				
+
+			}
+			if (Input::IsKeyActive(KeyCode::UP)) { 
+				_db->m_Velocity -= cameraDir * speed; 
+
+				
+			}
 			cameraDir = glm::rotateY(cameraDir, glm::radians(90.0f));
 			if (Input::IsKeyActive(KeyCode::RIGHT)) { _db->m_Velocity += cameraDir * speed; }
 			if (Input::IsKeyActive(KeyCode::LEFT)) { _db->m_Velocity -= cameraDir * speed; }

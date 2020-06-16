@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "Gameplay/GameObject.h"
 #include "Gameplay/Components/Transform.h"
+#include "Gameplay/Components/NavAgent.h"
 #include "Renderer/Material.h"
 #include "Renderer/Model.h"
 #include "Renderer/Renderer.h"
@@ -108,6 +109,16 @@ namespace sixengine {
 			{
 				GetComponent<Transform>()->SetLocalScale(scale);
 			}
+
+			///
+			
+			if (HasComponent<NavAgent>())
+			{
+				ImGui::InputFloat3("Nav agent destination", GetComponent<NavAgent>()->m_LastPlayerKnownPosition.data.data);
+				ImGui::Checkbox("move", &GetComponent<NavAgent>()->m_ProcedeMoving);
+			}
+
+			///
 
 			ImGui::TreePop();
 		}

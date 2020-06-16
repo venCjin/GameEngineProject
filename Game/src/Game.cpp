@@ -3,9 +3,11 @@
 
 #include "Core/Scene.h"
 #include "Renderer/BatchRenderer.h"
+#include "Renderer/Texture.h"
 
 // hacks
 #include "Gameplay/Systems/AnimationSystem.h"
+#include "Gameplay/Systems/ParticleSystem.h"
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/DepthRender.h"
 #include "Renderer/Techniques/Water.h"
@@ -20,7 +22,7 @@
 #include <Core/CameraSystem/OrbitalCameraSystem.h>
 #include <Core/CameraSystem/MixingCameraSystem.h>
 // hacks end
-//#include <Gameplay/Systems/PlayerMaterialManager.h>
+
 #include <Core/AudioManager.h>
 
 #include <glad/glad.h>
@@ -32,8 +34,10 @@
 #include <Gameplay\Components\AirText.h>
 #include <Gameplay\Systems\AirTextSystem.h>
 
-
-
+#include <Gameplay/Components/Collectable.h>
+#include <Gameplay\Components\Billboard.h>
+#include <Gameplay/Systems/BillboardSystem.h>
+#include <Renderer/Techniques/StaticPBR.h>
 namespace sixengine {
 
 	class Game : public Application
@@ -42,12 +46,14 @@ namespace sixengine {
 		Scene m_Scene;
 		BatchRenderer* m_BatchRenderer;
 
+
 		GameObject* orbitalCamA;
 		GameObject* orbitalCamB;
 		GameObject* mixingCam;
 		GameObject* flying;
 		GameObject* m_Player;
-
+		GameObject* m_Billboard;
+		float m_BarFill;
 		float shakeTimer;
 	#ifdef DEBUG
 		std::array<glm::vec3, 10> tr;
@@ -61,6 +67,7 @@ namespace sixengine {
 #ifdef DEBUG
 			tr.fill(glm::vec3(0.0f));
 #endif // DEBUG
+			
 
 		}
 
@@ -76,7 +83,27 @@ namespace sixengine {
 			//PLAY_TRACK("ophelia");
 			// HACKS
 
+			//////SHITT!!!11
+			std::vector<GizmoVertex> vertices;
+			std::vector<unsigned int> indices;
+			PrimitiveUtils::GenerateSphere(vertices, indices, 1.0f);
+			VertexArray* vao = new VertexArray();
+			VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
+			vbo->SetLayout({
+				{ VertexDataType::VEC3F, "Position" }
+				});
+			IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
+			vao->AddVertexBuffer(*vbo);
+			vao->AddIndexBuffer(*ibo);
+			Application::attack = new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(255, 0, 0));
+			//////SHIT!!!!
+			m_Scene.m_TextureArray->AddTexture("res/textures/ui/question_sign2.png");
+
+
 			m_SystemManager.AddSystem<AnimationSystem>();
+			m_SystemManager.AddSystem<ParticleSystem>();
+			m_SystemManager.AddSystem<BillboardSystem>();
+
 			//m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
@@ -86,9 +113,13 @@ namespace sixengine {
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/DepthAnim.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/ParticlesShader.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/PostProcessing.glsl");
 
 			m_BatchRenderer->SetBlurShader(m_Scene.m_ShaderManager->Get("PostProcessing"));
+
+			Texture* particleTexture = new Texture("res/textures/particles/star.png");
+
 
 			Skybox* skybox = new Skybox(
 				{
@@ -105,6 +136,7 @@ namespace sixengine {
 			m_BatchRenderer->SetStaticDepth(new DepthRender(m_Scene.m_ShaderManager->Get("Depth")));
 			m_BatchRenderer->SetAnimatedDepth(new DepthRender(m_Scene.m_ShaderManager->Get("DepthAnim")));
 
+			m_BatchRenderer->SetParticle(new ParticleRender(m_Scene.m_ShaderManager->Get("ParticlesShader")));
 
 			Font* font = new Font("res/fonts/DroidSans.ttf");
 			UI* ui = new UI(m_FontShader);
@@ -126,6 +158,16 @@ namespace sixengine {
 					),
 				"WaterMaterial");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/circleplane.obj");
+
+			Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Bar.glsl");
+			MaterialManager::getInstance()->CreateMaterial(
+				bar,
+				glm::vec4(m_Scene.m_TextureArray->GetTexture("question_sign2"), 0.0f, 0.0f, 0.0f),
+				"Bar");
+
+			m_Scene.m_BatchRenderer->AddTechnique(new StaticPBR(bar));
+
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/billboard.obj");
 			GameObject* w;
 			w = new GameObject(m_EntityManager);
 			w->AddComponent<Transform>(w);
@@ -182,17 +224,16 @@ namespace sixengine {
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
 
-			GameObject* obj;
+			GameObject* obj;		
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.0f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(0.01f, .01f, .01f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
-			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
-			obj->AddComponent<Animation>();
-			//obj->AddComponent<SimplePlayer>();
+			obj->GetComponent<Transform>()->SetWorldPosition(10.0, 1.0f, 10.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
+			obj->AddComponent<Collectable>();
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			m_Scene.m_SceneRoot->AddChild(obj);
-			
+
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0f, 10.0f, 0.0f);
@@ -206,7 +247,6 @@ namespace sixengine {
 			obj->AddComponent<Text>("Sixengine 0.?", glm::vec3(1.0f, 0.0f, 1.0f), 0.3f);
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("FontMaterial"));
 			m_Scene.m_UIRoot->AddChild(obj);
-
 
 
 			GameObject* airText = new GameObject(m_EntityManager);
@@ -228,21 +268,22 @@ namespace sixengine {
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("parasiteZombie"));
 			obj->AddComponent<Animation>();
 			obj->AddComponent<DynamicBody>();
-			obj->AddComponent<SimplePlayer>(obj);
+			obj->AddComponent<ParticleEmitter>(particleTexture);
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+			obj->AddComponent<SimplePlayer>(obj);
 			m_SystemManager.AddSystem<AirTextSystem>();
 			airText->GetComponent<AirText>()->player = obj->GetComponent<SimplePlayer>().Get();
 
 
-			std::vector<GizmoVertex> vertices;
-			std::vector<unsigned int> indices;
+			/*std::vector<GizmoVertex> vertices;
+			std::vector<unsigned int> indices;*/
 			PrimitiveUtils::GenerateBox(vertices, indices, 100, 200, 100);
-			VertexArray* vao = new VertexArray();
-			VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
+			/*VertexArray**/ vao = new VertexArray();
+			/*VertexBuffer**/ vbo = new VertexBuffer(&vertices[0], vertices.size());
 			vbo->SetLayout({
 				{ VertexDataType::VEC3F, "Position" }
 				});
-			IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
+			/*IndexBuffer**/ ibo = new IndexBuffer(&indices[0], indices.size());
 			vao->AddVertexBuffer(*vbo);
 			vao->AddIndexBuffer(*ibo);
 			obj->AddGizmo(new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(0, 255, 0)));
@@ -287,6 +328,19 @@ namespace sixengine {
 
 			Camera::ActiveCamera = mixingCam->GetComponent<Camera>().Get();
 
+			bar->Bind();
+			bar->SetFloat("barFill", m_BarFill);
+			bar->SetVec3("barOrientation", glm::vec3(.0f, 1.0f, 0.0f));
+			bar->Unbind();
+			m_Billboard = new GameObject(m_EntityManager);
+			m_Billboard->AddComponent<Transform>(m_Billboard);
+			m_Billboard->GetComponent<Transform>()->SetWorldPosition(0.0f, 2.0f, 0.0f);
+			m_Billboard->GetComponent<Transform>()->SetLocalScale(1.0f, 1.0f, 1.0f);
+			m_Billboard->GetComponent<Transform>()->SetLocalOrientation(0.0f, 90.0f, 90.0f);
+			m_Billboard->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("billboard"));
+			m_Billboard->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bar"));
+			m_Billboard->AddComponent<Billboard>(m_Billboard);
+			m_Scene.m_SceneRoot->AddChild(m_Billboard);
 			// HACKS END
 
 			m_BatchRenderer->Configure();
@@ -302,7 +356,16 @@ namespace sixengine {
 				shakeTimer -= dt;
 			else
 				m_BatchRenderer->SetBlur(false);
-
+			m_BarFill = m_Billboard->GetComponent<Transform>()->GetLocalScale().y - .01f;
+			m_BarFill = glm::clamp(m_BarFill, 0.0f, 1.0f);
+			if (m_BarFill == .0f) m_BarFill = 1.00001f;
+			MaterialManager::getInstance()->Get("Bar")->GetShader()->Bind();
+			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetFloat("barFill", m_BarFill);
+			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("barOrientation", glm::vec3(1.0f, .0f, 0.0f));
+			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("color", glm::vec3(1.0f, .0f, 0.0f));
+			MaterialManager::getInstance()->Get("Bar")->GetShader()->Unbind();
+			m_Billboard->GetComponent<Transform>()->SetLocalScale(1.0f, m_BarFill, 1.0f);
+			LOG_CORE_INFO("{0} {1} {2} {3}", m_Billboard->GetComponent<Transform>()->GetLocalScale().x, m_Billboard->GetComponent<Transform>()->GetLocalScale().y, m_Billboard->GetComponent<Transform>()->GetLocalScale().z, m_BarFill);
 			if (Input::IsKeyPressed(KeyCode::DEL))
 			{
 				WindowCloseEvent e;
@@ -386,7 +449,10 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				//m_Scene.DrawGizmos();
+				m_Scene.DrawGizmos();
+
+				glCullFace(GL_FRONT);
+				attack->Draw(attack->model);
 			}
 		}
 

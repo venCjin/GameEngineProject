@@ -89,7 +89,9 @@ void sixengine::SkyboxRender::Render()
 
     glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
     glDrawArrays(GL_TRIANGLES, 0, 36);
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
