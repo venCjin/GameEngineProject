@@ -39,7 +39,7 @@ namespace sixengine {
 		void UpdateBoxesWithSpheres();
 
 		void HandleCollision(Entity collider, class Collision collision);
-
+		
 		void UpdateAll(EventManager& eventManager, float dt) override final;
 		void Update(EventManager& eventManager, float dt) override {}
 

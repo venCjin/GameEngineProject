@@ -22,7 +22,7 @@ namespace sixengine {
 			{ 
 				ChangeAnimation("walk");
 			}
-			else if (Input::IsKeyActive(KeyCode::LEFT_CONTROL))
+			else if (Input::IsMouseButtonActive(0))
 			{
 				ChangeAnimation("punch");
 			}

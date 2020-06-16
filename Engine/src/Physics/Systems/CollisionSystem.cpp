@@ -5,6 +5,7 @@
 
 #include "Gameplay/Components/Transform.h"
 #include <algorithm>
+
 void sixengine::CollisionSystem::BoxWithBox(Entity entityA, Entity entityB)
 {
 	auto boxA = entityA.Component<BoxCollider>();
@@ -61,14 +62,14 @@ void sixengine::CollisionSystem::BoxWithBox(Entity entityA, Entity entityB)
 		float portionA = 0.5f;
 		float portionB = 0.5f;
 
-		if (boxA->isStatic() || boxB->isStatic())
+		if (boxA->IsStatic() || boxB->IsStatic())
 		{
-			if (boxA->isStatic() == false && boxB->isStatic())
+			if (boxA->IsStatic() == false && boxB->IsStatic())
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (boxA->isStatic() && boxB->isStatic() == false)
+			else if (boxA->IsStatic() && boxB->IsStatic() == false)
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;
@@ -108,14 +109,14 @@ void sixengine::CollisionSystem::SphereWithSphere(Entity entityA, Entity entityB
 		float portionA = 0.5f;
 		float portionB = 0.5f;
 
-		if (circleA->isStatic() || circleB->isStatic())
+		if (circleA->IsStatic() || circleB->IsStatic())
 		{
-			if (circleA->isStatic() == false && circleB->isStatic())
+			if (circleA->IsStatic() == false && circleB->IsStatic())
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (circleA->isStatic() && circleB->isStatic() == false)
+			else if (circleA->IsStatic() && circleB->IsStatic() == false)
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;
@@ -200,19 +201,19 @@ void sixengine::CollisionSystem::BoxWithCircle(Entity entityBox, Entity entityCi
 		float portionA = 0.5f;
 		float portionB = 0.5f;
 
-		if (box->isStatic() || sphere->isStatic())
+		if (box->IsStatic() || sphere->IsStatic())
 		{
-			if (box->isStatic() && sphere->isStatic())
+			if (box->IsStatic() && sphere->IsStatic())
 			{
 				portionA = 0.0f;
 				portionB = 0.0f;
 			}
-			else if (box->isStatic() == false && sphere->isStatic())
+			else if (box->IsStatic() == false && sphere->IsStatic())
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (box->isStatic() && sphere->isStatic() == false)
+			else if (box->IsStatic() && sphere->IsStatic() == false)
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;
@@ -317,7 +318,9 @@ Entity* sixengine::CollisionSystem::CheckSphere(glm::vec3 center, float radius)
 				float portionA = 0.5f;
 				float portionB = 0.5f;
 
+				LOG_ERROR("SYSTEM HIT COLLIDER");
 				return &spheres[i];
+
 			}
 		}
 	}
@@ -327,6 +330,7 @@ Entity* sixengine::CollisionSystem::CheckSphere(glm::vec3 center, float radius)
 
 		for (int i = 0; i < boxes.size(); i++)
 		{
+
 			auto box = boxes[i].Component<BoxCollider>();
 			glm::vec3 relativeCenter = boxes[i].Component<Transform>()->InverseTransformPoint(center);
 
@@ -337,6 +341,7 @@ Entity* sixengine::CollisionSystem::CheckSphere(glm::vec3 center, float radius)
 
 			if (glm::length(relativeCenter - closestPoint) < radius)
 			{
+				LOG_ERROR("SYSTEM HIT COLLIDER");
 				return &boxes[i];
 			}
 		}

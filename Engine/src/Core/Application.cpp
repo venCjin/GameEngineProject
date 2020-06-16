@@ -12,6 +12,8 @@ namespace sixengine {
 
 	Application* Application::s_Instance = nullptr;
 
+	Gizmo* Application::attack = nullptr;
+
 	Application::Application(std::string title, unsigned int width, unsigned int height)
 	{
 		s_Instance = this;

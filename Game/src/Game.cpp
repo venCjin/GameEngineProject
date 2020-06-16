@@ -44,6 +44,7 @@ namespace sixengine {
 		Scene m_Scene;
 		BatchRenderer* m_BatchRenderer;
 
+
 		GameObject* orbitalCamA;
 		GameObject* orbitalCamB;
 		GameObject* mixingCam;
@@ -63,6 +64,7 @@ namespace sixengine {
 #ifdef DEBUG
 			tr.fill(glm::vec3(0.0f));
 #endif // DEBUG
+			
 
 		}
 
@@ -77,6 +79,22 @@ namespace sixengine {
 			//ADD_TRACK("res/sounds/ophelia.mp3", "ophelia");
 			//PLAY_TRACK("ophelia");
 			// HACKS
+
+			//////SHITT!!!11
+			std::vector<GizmoVertex> vertices;
+			std::vector<unsigned int> indices;
+			PrimitiveUtils::GenerateSphere(vertices, indices, 1.0f);
+			VertexArray* vao = new VertexArray();
+			VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
+			vbo->SetLayout({
+				{ VertexDataType::VEC3F, "Position" }
+				});
+			IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
+			vao->AddVertexBuffer(*vbo);
+			vao->AddIndexBuffer(*ibo);
+			Application::attack = new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(255, 0, 0));
+			//////SHIT!!!!
+
 
 			m_SystemManager.AddSystem<AnimationSystem>();
 			m_SystemManager.AddSystem<ParticleSystem>();
@@ -191,17 +209,7 @@ namespace sixengine {
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
 
-			GameObject* obj;
-			obj = new GameObject(m_EntityManager);
-			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.0f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(0.01f, .01f, .01f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
-			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Transparent"));
-			obj->AddComponent<Animation>();
-			//obj->AddComponent<SimplePlayer>();
-			m_Scene.m_SceneRoot->AddChild(obj);
-			
+			GameObject* obj;			
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0f, 10.0f, 0.0f);
@@ -237,21 +245,21 @@ namespace sixengine {
 			obj->AddComponent<Animation>();
 			obj->AddComponent<DynamicBody>();
 			obj->AddComponent<ParticleEmitter>(particleTexture);
-			obj->AddComponent<SimplePlayer>(obj);
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+			obj->AddComponent<SimplePlayer>(obj);
 			m_SystemManager.AddSystem<AirTextSystem>();
 			airText->GetComponent<AirText>()->player = obj->GetComponent<SimplePlayer>().Get();
 
 
-			std::vector<GizmoVertex> vertices;
-			std::vector<unsigned int> indices;
+			/*std::vector<GizmoVertex> vertices;
+			std::vector<unsigned int> indices;*/
 			PrimitiveUtils::GenerateBox(vertices, indices, 100, 200, 100);
-			VertexArray* vao = new VertexArray();
-			VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
+			/*VertexArray**/ vao = new VertexArray();
+			/*VertexBuffer**/ vbo = new VertexBuffer(&vertices[0], vertices.size());
 			vbo->SetLayout({
 				{ VertexDataType::VEC3F, "Position" }
 				});
-			IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
+			/*IndexBuffer**/ ibo = new IndexBuffer(&indices[0], indices.size());
 			vao->AddVertexBuffer(*vbo);
 			vao->AddIndexBuffer(*ibo);
 			obj->AddGizmo(new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(0, 255, 0)));
@@ -395,7 +403,10 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				//m_Scene.DrawGizmos();
+				m_Scene.DrawGizmos();
+
+				glCullFace(GL_FRONT);
+				attack->Draw(attack->model);
 			}
 		}
 
