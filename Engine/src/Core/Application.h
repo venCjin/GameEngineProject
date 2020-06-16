@@ -11,6 +11,9 @@
 #include "ImGui/ImGuiLayer.h"
 #include "imgui.h"
 
+#include "Renderer/PrimitiveUtils.h"
+#include "Renderer/Gizmo.h"
+
 namespace sixengine {
 	/// If you want to measure performace with MSI Afterburner and RivaTunerStatisticServer
 	//#define AFTERBURNER 0
@@ -28,6 +31,9 @@ namespace sixengine {
 	#endif // DEBUG
 
 	public:
+		static Gizmo* attack;
+
+	//public:
 		Application(std::string = "Six Engine", unsigned int width = 1280, unsigned int height = 720);
 		virtual ~Application();
 

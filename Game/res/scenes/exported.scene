@@ -30,16 +30,6 @@
 -AddMaterial WellPBR PBR 3 res/models/Props/Well/Textures/Well_Albedo.png res/models/Props/Well/Textures/Well_Normal.png res/models/Props/Well/Textures/Well_Metallic.png 
 -AddMaterial WoodenCratePBR PBR 2 res/models/Props/WoodenCrate/Textures/WoodenCrate_Albedo.png res/models/Props/WoodenCrate/Textures/WoodenCrate_Normal.png 
 -AddMaterial WoodenCrate2PBR PBR 2 res/models/Props/WoodenCrate/Textures/WoodenCrate2_Albedo.png res/models/Props/WoodenCrate/Textures/WoodenCrate2_Normal.png 
--AddMaterial RockParallax PBR 4 res/textures/parallax/Rock_Albedo.jpg res/textures/parallax/Rock_Normal.jpg res/textures/parallax/Rock_Metalic.jpg res/textures/parallax/Rock_Height.jpg
-
-+SceneGameObject
--Transform
--3.0 0.05 -6.25
-0 0 0
-2.5 2.5 2.5
--Model res/models/primitives/plane.obj
--Material RockParallax
-+end
 
 +SceneGameObject
 -Transform
