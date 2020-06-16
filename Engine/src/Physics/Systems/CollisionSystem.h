@@ -46,4 +46,6 @@ namespace sixengine {
 		static Entity* CheckSphere(glm::vec3 center, float radius);
 		static std::vector<Entity*> CheckSphereAll(glm::vec3 center, float radius);
 	};
+	
+	static int RayCast(glm::vec3 p, glm::vec3 d);
 }
