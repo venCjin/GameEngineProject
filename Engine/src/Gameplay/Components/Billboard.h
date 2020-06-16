@@ -7,11 +7,11 @@ namespace sixengine {
 
 	struct Billboard : public ISerializable
 	{
-		Camera* m_Camera;
+		//WCamera* m_Camera;
 
 		Billboard(GameObject* go)
 		{
-			m_Camera = Camera::ActiveCamera;
+			//m_Camera = Camera::ActiveCamera;
 		}
 
         virtual void Load(std::iostream& stream)
