@@ -35,7 +35,9 @@
 #include <Gameplay\Systems\AirTextSystem.h>
 
 #include <Gameplay/Components/Collectable.h>
-
+#include <Gameplay\Components\Billboard.h>
+#include <Gameplay/Systems/BillboardSystem.h>
+#include <Renderer/Techniques/StaticPBR.h>
 namespace sixengine {
 
 	class Game : public Application
@@ -50,7 +52,8 @@ namespace sixengine {
 		GameObject* mixingCam;
 		GameObject* flying;
 		GameObject* m_Player;
-
+		GameObject* m_Billboard;
+		float m_BarFill;
 		float shakeTimer;
 	#ifdef DEBUG
 		std::array<glm::vec3, 10> tr;
@@ -94,10 +97,12 @@ namespace sixengine {
 			vao->AddIndexBuffer(*ibo);
 			Application::attack = new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(255, 0, 0));
 			//////SHIT!!!!
+			m_Scene.m_TextureArray->AddTexture("res/textures/ui/question_sign2.png");
 
 
 			m_SystemManager.AddSystem<AnimationSystem>();
 			m_SystemManager.AddSystem<ParticleSystem>();
+			m_SystemManager.AddSystem<BillboardSystem>();
 
 			//m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 
@@ -153,6 +158,16 @@ namespace sixengine {
 					),
 				"WaterMaterial");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/circleplane.obj");
+
+			Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Bar.glsl");
+			MaterialManager::getInstance()->CreateMaterial(
+				bar,
+				glm::vec4(m_Scene.m_TextureArray->GetTexture("question_sign2"), 0.0f, 0.0f, 0.0f),
+				"Bar");
+
+			m_Scene.m_BatchRenderer->AddTechnique(new StaticPBR(bar));
+
+			m_Scene.m_ModelManager->AddModel("res/models/primitives/billboard.obj");
 			GameObject* w;
 			w = new GameObject(m_EntityManager);
 			w->AddComponent<Transform>(w);
@@ -313,6 +328,19 @@ namespace sixengine {
 
 			Camera::ActiveCamera = mixingCam->GetComponent<Camera>().Get();
 
+			bar->Bind();
+			bar->SetFloat("barFill", m_BarFill);
+			bar->SetVec3("barOrientation", glm::vec3(.0f, 1.0f, 0.0f));
+			bar->Unbind();
+			m_Billboard = new GameObject(m_EntityManager);
+			m_Billboard->AddComponent<Transform>(m_Billboard);
+			m_Billboard->GetComponent<Transform>()->SetWorldPosition(0.0f, 2.0f, 0.0f);
+			m_Billboard->GetComponent<Transform>()->SetLocalScale(1.0f, 1.0f, 1.0f);
+			m_Billboard->GetComponent<Transform>()->SetLocalOrientation(0.0f, 90.0f, 90.0f);
+			m_Billboard->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("billboard"));
+			m_Billboard->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bar"));
+			m_Billboard->AddComponent<Billboard>(m_Billboard);
+			m_Scene.m_SceneRoot->AddChild(m_Billboard);
 			// HACKS END
 
 			m_BatchRenderer->Configure();
@@ -328,7 +356,16 @@ namespace sixengine {
 				shakeTimer -= dt;
 			else
 				m_BatchRenderer->SetBlur(false);
-
+			m_BarFill = m_Billboard->GetComponent<Transform>()->GetLocalScale().y - .01f;
+			m_BarFill = glm::clamp(m_BarFill, 0.0f, 1.0f);
+			if (m_BarFill == .0f) m_BarFill = 1.00001f;
+			MaterialManager::getInstance()->Get("Bar")->GetShader()->Bind();
+			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetFloat("barFill", m_BarFill);
+			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("barOrientation", glm::vec3(1.0f, .0f, 0.0f));
+			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("color", glm::vec3(1.0f, .0f, 0.0f));
+			MaterialManager::getInstance()->Get("Bar")->GetShader()->Unbind();
+			m_Billboard->GetComponent<Transform>()->SetLocalScale(1.0f, m_BarFill, 1.0f);
+			LOG_CORE_INFO("{0} {1} {2} {3}", m_Billboard->GetComponent<Transform>()->GetLocalScale().x, m_Billboard->GetComponent<Transform>()->GetLocalScale().y, m_Billboard->GetComponent<Transform>()->GetLocalScale().z, m_BarFill);
 			if (Input::IsKeyPressed(KeyCode::DEL))
 			{
 				WindowCloseEvent e;
