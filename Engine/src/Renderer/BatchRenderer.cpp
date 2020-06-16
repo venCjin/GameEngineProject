@@ -35,6 +35,8 @@ namespace sixengine {
 		m_DepthAnimated = nullptr;
 		m_Skybox = nullptr; 
 		m_ParticleRender = nullptr;
+		m_Water = nullptr;
+		m_BlurShader = nullptr;
 		
 		unsigned int VBO;
 		float vertices[] = {
@@ -308,7 +310,7 @@ namespace sixengine {
 
 		// Draw water
 		//***********************************************
-		if (m_Water->IsVisible())
+		if (m_Water && m_Water->IsVisible())
 			RenderWater(m_TechniqueList[0], m_TechniqueList[1]);
 
 		if (m_Blur)
@@ -619,31 +621,34 @@ namespace sixengine {
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
-		m_BlurShader->Bind();
-		m_BlurShader->SetInt("image", 2);
+		if (m_BlurShader)
+		{
+			m_BlurShader->Bind();
+			m_BlurShader->SetInt("image", 2);
 
-		float offset = 1.0f / 300.0f;
-		float offsets[9][2] = {
-			{ -offset,  offset  },  // top-left
-			{  0.0f,    offset  },  // top-center
-			{  offset,  offset  },  // top-right
-			{ -offset,  0.0f    },  // center-left
-			{  0.0f,    0.0f    },  // center-center
-			{  offset,  0.0f    },  // center - right
-			{ -offset, -offset  },  // bottom-left
-			{  0.0f,   -offset  },  // bottom-center
-			{  offset, -offset  }   // bottom-right    
-		};
-		glUniform2fv(glGetUniformLocation(m_BlurShader->GetID(), "offsets"), 9, (float*)offsets);
+			float offset = 1.0f / 300.0f;
+			float offsets[9][2] = {
+				{ -offset,  offset  },  // top-left
+				{  0.0f,    offset  },  // top-center
+				{  offset,  offset  },  // top-right
+				{ -offset,  0.0f    },  // center-left
+				{  0.0f,    0.0f    },  // center-center
+				{  offset,  0.0f    },  // center - right
+				{ -offset, -offset  },  // bottom-left
+				{  0.0f,   -offset  },  // bottom-center
+				{  offset, -offset  }   // bottom-right    
+			};
+			glUniform2fv(glGetUniformLocation(m_BlurShader->GetID(), "offsets"), 9, (float*)offsets);
 
-		float blur_kernel[9] = {
-			1.0f / 16.0f, 2.0f / 16.0f, 1.0f / 16.0f,
-			2.0f / 16.0f, 4.0f / 16.0f, 2.0f / 16.0f,
-			1.0f / 16.0f, 2.0f / 16.0f, 1.0f / 16.0f
-		};
-		glUniform1fv(glGetUniformLocation(m_BlurShader->GetID(), "blur_kernel"), 9, blur_kernel);
+			float blur_kernel[9] = {
+				1.0f / 16.0f, 2.0f / 16.0f, 1.0f / 16.0f,
+				2.0f / 16.0f, 4.0f / 16.0f, 2.0f / 16.0f,
+				1.0f / 16.0f, 2.0f / 16.0f, 1.0f / 16.0f
+			};
+			glUniform1fv(glGetUniformLocation(m_BlurShader->GetID(), "blur_kernel"), 9, blur_kernel);
 
-		m_BlurShader->Unbind();
+			m_BlurShader->Unbind();
+		}
 	}
 
 	void BatchRenderer::Initialize(ModelManager* modelManager, TextureArray* textureArray)
