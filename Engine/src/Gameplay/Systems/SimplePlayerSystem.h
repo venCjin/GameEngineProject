@@ -3,6 +3,7 @@
 #include <ECS/SystemManager.h>
 
 #include <Gameplay/Components/Transform.h>
+#include <Gameplay/Components/Collectable.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -25,6 +26,28 @@ namespace sixengine {
 		float health = 100.0f;
 		//float air = 100.0f;
 		float airLosingRate = 5.0f;
+
+		void OnCollisionHandle(BaseEvent & e)
+		{
+			OnCollision& collisionEvent = dynamic_cast<OnCollision&>(e);
+
+			if (collisionEvent.m_Entity.HasComponent<SimplePlayer>() &&
+				collisionEvent.collision.other.HasComponent<Collectable>())
+			{
+				collisionEvent.collision.other.RemoveComponent<BoxCollider>();
+				collisionEvent.collision.other.RemoveComponent<Mesh>();
+				//collisionEvent.collision.other.Destroy();
+
+				//do something
+			}
+		}
+
+	public:
+		void OnStart(EventManager & eventManager) override
+		{
+			eventManager.AddListener<OnCollision>(&SimplePlayerSystem::OnCollisionHandle, this);
+		}
+
 		void Update(EventManager & eventManager, float dt) override
 		{
 			//LOG_INFO(m_SimplePlayer->collider->IsStatic());

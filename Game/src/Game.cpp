@@ -34,7 +34,7 @@
 #include <Gameplay\Components\AirText.h>
 #include <Gameplay\Systems\AirTextSystem.h>
 
-
+#include <Gameplay/Components/Collectable.h>
 
 namespace sixengine {
 
@@ -209,7 +209,16 @@ namespace sixengine {
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
 
-			GameObject* obj;			
+			GameObject* obj;		
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(10.0, 1.0f, 10.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
+			obj->AddComponent<Collectable>();
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
+			m_Scene.m_SceneRoot->AddChild(obj);
+
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0f, 10.0f, 0.0f);
