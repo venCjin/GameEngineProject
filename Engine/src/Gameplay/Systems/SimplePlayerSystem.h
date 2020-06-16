@@ -41,9 +41,9 @@ namespace sixengine {
 			{
 				LOG_INFO("___MOUSE");
 				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::translate(model, m_SimplePlayer->transform->GetWorldPosition() + m_SimplePlayer->transform->GetForward());
+				model = glm::translate(model, m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f));
 				Application::attack->model = model;
-				Entity* a = CollisionSystem::CheckSphere(m_SimplePlayer->transform->GetWorldPosition() + m_SimplePlayer->transform->GetForward() * 1.0f, 1.0f);
+				Entity* a = CollisionSystem::CheckSphere(m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f), 1.0f);
 				if (a != nullptr)
 					LOG_ERROR("HIT COLLIDER");
 			}
