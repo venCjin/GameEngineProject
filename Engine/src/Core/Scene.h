@@ -9,6 +9,8 @@
 #include "Renderer/TextureArray.h"
 #include "Renderer/Techniques/Technique.h"
 
+#define SCENE_ENDS_IN_GAME_CPP 1
+
 namespace sixengine {
 
 	class Scene
@@ -28,8 +30,28 @@ namespace sixengine {
 		bool SaveScene(const char* filePath);
 		void Render(bool first = false);
 		void DrawGizmos();
+		template <typename Component>
+		GameObject* GetFirstGameObjectWithComponent();
+		template <typename Component>
+		std::vector<GameObject*> GetGameObjectsWithComponent();
 	private:
 		GameObject* ReadGameObject(std::fstream& file, EntityManager& en);
 	};
+
+	template<typename Component>
+	GameObject* Scene::GetFirstGameObjectWithComponent()
+	{
+		GameObject* result;
+		m_SceneRoot->GetFirstChildWithComponent<Component>(result);
+		return result;
+	}
+
+	template <typename Component>
+	std::vector<GameObject*> Scene::GetGameObjectsWithComponent()
+	{
+		std::vector<GameObject*> result;
+		m_SceneRoot->GetChildrenWithComponent<Component>(result);
+		return result;
+	}
 
 }

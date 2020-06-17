@@ -3,6 +3,7 @@
 #include <ECS/SystemManager.h>
 
 #include <Gameplay/Components/Transform.h>
+#include <Gameplay/Components/SimplePlayer.h>
 #include <Gameplay/Components/Collectable.h>
 
 #include <glm/glm.hpp>
@@ -10,7 +11,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
-#include "Core/CameraSystem/Camera.h"
+#include <Core/CameraSystem/Camera.h>
 #include <Physics/Systems/CollisionSystem.h>
 #include <Physics/Components/DynamicBody.h>
 
@@ -58,11 +59,11 @@ namespace sixengine {
 			
 
 			glm::vec3 f = m_SimplePlayer->transform->GetForward();
-			LOG_WARN("Forward: {0} {1} {2}", f.x, f.y, f.z);
+			//LOG_WARN("Forward: {0} {1} {2}", f.x, f.y, f.z);
 
 			if (Input::IsMouseButtonActive(0))
 			{
-				LOG_INFO("___MOUSE");
+				//LOG_INFO("___MOUSE");
 				glm::mat4 model = glm::mat4(1.0f);
 				model = glm::translate(model, m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f));
 				Application::attack->model = model;
@@ -95,7 +96,7 @@ namespace sixengine {
 			}
 			//LOG_CORE_INFO("Speed {0}", speed);
 			//LOG_CORE_INFO("CAmera position {0} {1} {2}", Camera::ActiveCamera->m_Transform->GetWorldPosition().x, Camera::ActiveCamera->m_Transform->GetWorldPosition().y, Camera::ActiveCamera->m_Transform->GetWorldPosition().z);
-			LOG_CORE_INFO("CAmera direction {0} {1} {2}", cameraDir.x, cameraDir.y, cameraDir.z);
+			//LOG_CORE_INFO("CAmera direction {0} {1} {2}", cameraDir.x, cameraDir.y, cameraDir.z);
 			//LOG_CORE_INFO("Dot {0}", glm::dot(_db->m_Velocity, _db->m_Velocity));
 			if (Input::IsKeyPressed(KeyCode::SPACE))
 			{
@@ -108,7 +109,7 @@ namespace sixengine {
 				}
 				else
 				{
-					m_Material->SetShader(MaterialManager::getInstance()->Get("Transparent")->GetShader());
+					m_Material->SetShader(MaterialManager::getInstance()->Get("TransparentMaterial")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, +playerHeight, 0.0f));
 				}
 			}

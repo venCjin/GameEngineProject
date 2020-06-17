@@ -176,6 +176,8 @@ namespace sixengine {
 		BatchRenderer(ModelManager* modelManager, TextureArray* textureArray);
 		~BatchRenderer();
 		float Distance(glm::vec3* x, glm::vec3* y);
+
+		friend class Scene;
 	};
 
 }
