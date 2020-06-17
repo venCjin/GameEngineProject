@@ -32,6 +32,16 @@ bool sixengine::Enemy::CanSeePlayer()
 		return false;
 	}
 
+	glm::vec3 a = GetPlayer().Component<Transform>()->GetWorldPosition();
+	glm::vec3 b = m_GameObject->GetComponent<Transform>()->GetWorldPosition();
+
+	float distanceToPlayer = glm::length(a - b);
+
+	if (distanceToPlayer > 10.0f)
+	{
+		return false;
+	}
+
 	auto player = GetPlayer();
 
 	auto forward = m_GameObject->GetComponent<Transform>()->GetForward();
@@ -104,7 +114,7 @@ bool sixengine::Enemy::CanSeeUndergroundMovement()
 
 bool sixengine::Enemy::HasDetectedPlayer()
 {
-	if (Timer::Instance()->ElapsedTime() - m_LastDetectionUpdateTime >= 0.5f * Timer::Instance()->DeltaTime())
+	if (Timer::Instance()->ElapsedTime() - m_LastDetectionUpdateTime >= 0.9f * Timer::Instance()->DeltaTime())
 	{
 		if (m_GameObject->GetComponent<StateMachine>()->IsCurrentlyInState(typeid(IdleState*)) || m_GameObject->GetComponent<StateMachine>()->IsCurrentlyInState(typeid(PatrolState*)))
 		{

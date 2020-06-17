@@ -37,7 +37,7 @@
 
 +SceneGameObject
 -Transform
--6.3 0.49 3.06
+-6.3 100.49 3.06
 0 0 0
 1 1 1
 -Model res/models/Props/WoodenCrate/WoodenCrate.obj
@@ -49,7 +49,7 @@
 
 +SceneGameObject
 -Transform
--5.29 0.47 1.95
+-5.29 100.47 1.95
 0 0 0
 1 1 1
 -Model res/models/Props/WoodenCrate/WoodenCrate.obj
@@ -58,100 +58,217 @@
 
 +SceneGameObject
 -Transform
-3 0 11
+-28 0.89 -16.42
+270 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+-28 0.89 -23.69
+270 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+-28 0.89 -9.280001
+270 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+-28 0.89 -1.87
+270 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+-28 0.89 5.27
+270 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+-28 0.89 12.54
+270 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+-28 0.89 19.68
+270 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+22.55 0.81 1.39
+270 0 0
+2 2 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+6.34 0.81 -7.45
 0 0 0
-1 1 1
--Model res/models/exported/Cube.obj
--Material Simplest
+2 2 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
 +end
 
 +SceneGameObject
 -Transform
-5 0 -19
-90.00002 0 0
-1 1 1
--Model res/models/exported/Cube(15).obj
--Material Simplest
-+end
-
-+SceneGameObject
--Transform
--13.6 0 -24
+-2.45 0.81 5.13
 0 0 0
-1 1 1
--Model res/models/exported/Cube(6).obj
--Material Simplest
+2 2 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
 +end
 
 +SceneGameObject
 -Transform
--4.8 0 -20
+-10.23 0.89 18.09998
+180.0002 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+11.46 0.89 18.09994
+180.0002 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+-3.09 0.89 18.09997
+180.0002 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+-17.5 0.89 18.1
+180.0002 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+4.320002 0.89 18.09995
+180.0002 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+18.73001 0.89 18.09992
+180.0002 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+-24.64 0.89 18.10002
+180.0002 0 0
+2 2.5 2
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+15.46 1.5 11.66
 0 0 0
-1 1 1
--Model res/models/exported/Cube(3).obj
--Material Simplest
+2.0431 2.0431 2.0431
+-Model res/models/Props/PressureTank/PressureTank.obj
+-Material PressureTankPBR
 +end
 
 +SceneGameObject
 -Transform
--3 0 -6.2
-90.00002 0 0
-1 1 1
--Model res/models/exported/Cube(8).obj
--Material Simplest
-+end
-
-+SceneGameObject
--Transform
-34 0 1
+15.46 1.5 15.39
 0 0 0
-1 1 1
--Model res/models/exported/Cube(7).obj
--Material Simplest
+2.0431 2.0431 2.0431
+-Model res/models/Props/PressureTank/PressureTank.obj
+-Material PressureTankPBR
++end
+
++SceneGameObject
+-Transform
+-14.69 3.497927 -14.59
+180 0 -4.439619E-05
+1.7878 1.7878 1.7878
+-Model res/models/Props/House/House.obj
+-Material HousePBR
++end
+
++SceneGameObject
+-Transform
+-14.11 2.05 3.54
+66.49151 0 0
+1.3714 1.3714 1.3714
+-Model res/models/Props/Container/Container.obj
+-Material BlueContainerPBR
++end
+
++SceneGameObject
+-Transform
+14.53 2.26 -13.69
+0 0 0
+1.3714 1.3714 1.3714
+-Model res/models/Props/Container/Container.obj
+-Material OliveContainerPBR
++end
+
++SceneGameObject
+-Transform
+14.53 2.26 -17.6
+0 0 0
+1.3714 1.3714 1.3714
+-Model res/models/Props/Container/Container.obj
+-Material BlueContainerPBR
 +end
 
 +SceneGameObject
 -Transform
 35 0 20
 0 0 0
-1 1 1
+1.4 1 1
 -Material Simplest
 -Model res/models/exported/Cube.obj
-+end
-
-+SceneGameObject
--Transform
-19 0 11
-0 0 0
-1 1 1
--Model res/models/exported/Cube(1).obj
--Material Simplest
-+end
-
-+SceneGameObject
--Transform
--23.71 0 0.4799995
-156.8485 0 0
-1 1 1
--Model res/models/exported/Cube(9).obj
--Material Simplest
-+end
-
-+SceneGameObject
--Transform
-19 0 -18.64
-0 0 0
-1 1 0.49971
--Model res/models/exported/Cube(2).obj
--Material Simplest
-+end
-
-+SceneGameObject
--Transform
--13.43 0 -16.7
-0 0 0
-1 1 3.1851
--Model res/models/exported/Cube(10).obj
--Material Simplest
 +end
 

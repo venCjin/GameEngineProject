@@ -303,7 +303,7 @@ namespace sixengine {
 
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
+			obj->GetComponent<Transform>()->SetWorldPosition(-35.0f, 0.0f, 0.0f);
 			obj->GetComponent<Transform>()->SetLocalScale(0.6f, 0.75f, 0.6f);
 			obj->GetComponent<Transform>()->SetLocalOrientation(0.0, 0.0f, 0.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
@@ -349,7 +349,7 @@ namespace sixengine {
 			orbitalCamA->AddComponent<OrbitalCamera>();
 			orbitalCamA->GetComponent<OrbitalCamera>()->m_LookTarget = obj->GetComponent<Transform>().Get();
 			orbitalCamA->GetComponent<OrbitalCamera>()->m_FollowTarget = obj->GetComponent<Transform>().Get();
-			orbitalCamA->GetComponent<OrbitalCamera>()->m_FollowOffset = glm::vec3(0.0f, 4.5f, 10.0f);
+			orbitalCamA->GetComponent<OrbitalCamera>()->m_FollowOffset = glm::vec3(0.0f, 6.0f, 12.0f);
 
 			orbitalCamB = new GameObject(m_EntityManager);
 			orbitalCamB->AddComponent<Transform>(orbitalCamB);
@@ -360,7 +360,7 @@ namespace sixengine {
 			orbitalCamB->AddComponent<OrbitalCamera>();
 			orbitalCamB->GetComponent<OrbitalCamera>()->m_LookTarget = obj->GetComponent<Transform>().Get();
 			orbitalCamB->GetComponent<OrbitalCamera>()->m_FollowTarget = obj->GetComponent<Transform>().Get();
-			orbitalCamB->GetComponent<OrbitalCamera>()->m_FollowOffset = glm::vec3(0.0f, 12.0f, 12.0f);
+			orbitalCamB->GetComponent<OrbitalCamera>()->m_FollowOffset = glm::vec3(0.0f, 14.0f, 14.0f);
 
 			mixingCam = new GameObject(m_EntityManager);
 			mixingCam->AddComponent<Transform>(mixingCam);
@@ -379,8 +379,12 @@ namespace sixengine {
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<EnemiesManager>();
 
-			MakeEnemy(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f));
-			MakeEnemy(glm::vec3(5.0f, 1.0f, 0.0f), glm::vec3(0.0f));
+			MakeEnemy(glm::vec3(17.30613f, 1.0f, 1.866652f), glm::vec3(220.029f, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-0.9738712, 1.0f, 7.736652f), glm::vec3(229.8f, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-7.743871f, 1.0f, 7.686653), glm::vec3(180, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-3.423871, 1.0f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-9.323872, 1.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));
+
 
 			//bar->Bind();
 			//bar->SetFloat("barFill", m_BarFill);

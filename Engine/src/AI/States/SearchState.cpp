@@ -11,7 +11,7 @@ bool sixengine::SearchState::IsStateReady(StateMachine* stateMachine)
 
 	float distanceToPlayer = glm::length(a - b);
 
-	if (m_Manager->HasAnybodyDetectedPlayer() && distanceToPlayer > 15.0f)
+	if (m_Manager->HasAnybodyDetectedPlayer() && distanceToPlayer > 10.0f && distanceToPlayer < 25.0f)
 	{
 		return true;
 	}

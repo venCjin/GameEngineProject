@@ -25,13 +25,19 @@ bool sixengine::AttackState::IsStateReady(StateMachine* stateMachine)
 
 	float distanceToPlayer = glm::length(a - b);
 
+	if (m_Manager->HasAnybodyDetectedPlayer() && (distanceToPlayer < 10.0f))
+	{
+		m_GameObject->GetComponent<StateMachine>()->ChangeState(this);
+		return true;
+	}
+
 	return (
 		(
 			m_GameObject->GetComponent<StateMachine>()->IsCurrentlyInState(typeid(SearchState*))
 			&& m_Enemy->CanSeeUndergroundMovement()
 			)
 		||
-		(m_Manager->HasAnybodyDetectedPlayer() && (distanceToPlayer < 15.0f))
+		(m_Manager->HasAnybodyDetectedPlayer() && (distanceToPlayer < 10.0f))
 		);
 }
 
@@ -131,7 +137,7 @@ void sixengine::AttackState::RoateTowardsPlayer()
 	
 	auto current = m_GameObject->GetComponent<Transform>()->GetWorldRotation();
 
-	auto final = glm::slerp(current, target, 1.5f * (float)Timer::Instance()->DeltaTime());
+	auto final = glm::slerp(current, target, 4.5f * (float)Timer::Instance()->DeltaTime());
 
 	m_GameObject->GetComponent<Transform>()->SetWorldRotation(final);
 }
