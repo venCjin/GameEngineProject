@@ -1,11 +1,11 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <Physics\Components\BoxCollider.h>
+#include <Physics/Components/BoxCollider.h>
 #include <Gameplay/Components/Transform.h>
-#include "Physics/Collision.h"
-//#include "Physics/Components/BoxCollider.h"
-#include <Physics\Components\DynamicBody.h>
+#include <Physics/Collision.h>
+#include <Physics/Components/BoxCollider.h>
+#include <Physics/Components/DynamicBody.h>
 
 namespace sixengine {
 

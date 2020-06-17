@@ -1,16 +1,511 @@
--AddSystem FlyingCameraSystem
 -AddSystem SimplePlayerSystem
 -AddSystem CollisionSystem
+-AddSystem FlyingCameraSystem
+-AddSystem AnimationSystem
+-AddSystem ParticleSystem
+-AddSystem AirTextSystem
+-AddSystem DynamicBodySystem
+
+-Blur res/shaders/PostProcessing.glsl
+-Skybox res/shaders/Skybox.glsl res/textures/skybox/right.jpg res/textures/skybox/left.jpg res/textures/skybox/top.jpg res/textures/skybox/bottom.jpg res/textures/skybox/front.jpg res/textures/skybox/back.jpg
+-StaticDepth res/shaders/Depth.glsl
+-AnimatedDepth res/shaders/DepthAnim.glsl
+-Particle res/shaders/ParticlesShader.glsl
 
 -AddShader StaticPBR res/shaders/PBR.glsl
+-AddShader AnimationPBR res/shaders/AnimationPBR.glsl
+-AddShader TransparentTechnique res/shaders/Transparent.glsl
+-AddShader Water res/shaders/Water.glsl
+-AddShader UI res/shaders/Font.glsl res/fonts/DroidSans.ttf
 
 -AddMaterial GroundPBR PBR 3 res/models/Environment/Ground/Textures/Ground_Albedo.png res/models/Environment/Ground/Textures/Ground_Normal.png res/models/Environment/Ground/Textures/Ground_Metallic.png
+-AddMaterial RocksPBR PBR 3 res/models/Environment/Rocks/Textures/Rocks_Albedo.png res/models/Environment/Rocks/Textures/Rocks_Normal.png res/models/Environment/Rocks/Textures/Rocks_Metallic.png 
+-AddMaterial BigBushPBR PBR 1 res/models/Environment/Vegetation/Textures/BigBush_Albedo.png 
+-AddMaterial PalmTreePBR PBR 2 res/models/Environment/Vegetation/Textures/PalmTree_Albedo.png res/models/Environment/Vegetation/Textures/PalmTree_Normal.png 
+-AddMaterial AmmoBoxPBR PBR 3 res/models/Props/AmmoBox/Textures/AmmoBox_Albedo.png res/models/Props/AmmoBox/Textures/AmmoBox_Normal.png res/models/Props/AmmoBox/Textures/AmmoBox_Metallic.png 
+-AddMaterial RedBarrelPBR PBR 3 res/models/Props/Barrel/Textures/RedBarrel_Albedo.png res/models/Props/Barrel/Textures/Barrel_Normal.png res/models/Props/Barrel/Textures/Barrel_Metallic.png 
+-AddMaterial BlueBarrelPBR PBR 3 res/models/Props/Barrel/Textures/BlueBarrel_Albedo.png res/models/Props/Barrel/Textures/Barrel_Normal.png res/models/Props/Barrel/Textures/Barrel_Metallic.png 
+-AddMaterial BarrierPBR PBR 3 res/models/Props/Barrier/Textures/Barrier_Albedo.png res/models/Props/Barrier/Textures/Barrier_Normal.png res/models/Props/Barrier/Textures/Barrier_Metallic.png 
+-AddMaterial BulletHolesBarrierPBR PBR 3 res/models/Props/Barrier/Textures/BulletHolesBarrier_Albedo.png res/models/Props/Barrier/Textures/BulletHolesBarrier_Normal.png res/models/Props/Barrier/Textures/Barrier_Metallic.png 
+-AddMaterial BlueContainerPBR PBR 3 res/models/Props/Container/Textures/BlueContainer_Albedo.png res/models/Props/Container/Textures/Container_Normal.png res/models/Props/Container/Textures/Container_Metallic.png 
+-AddMaterial RedContainerPBR PBR 3 res/models/Props/Container/Textures/RedContainer_Albedo.png res/models/Props/Container/Textures/Container_Normal.png res/models/Props/Container/Textures/Container_Metallic.png 
+-AddMaterial GreenContainerPBR PBR 3 res/models/Props/Container/Textures/GreenContainer_Albedo.png res/models/Props/Container/Textures/Container_Normal.png res/models/Props/Container/Textures/Container_Metallic.png 
+-AddMaterial OliveContainerPBR PBR 3 res/models/Props/Container/Textures/OliveContainer_Albedo.png res/models/Props/Container/Textures/Container_Normal.png res/models/Props/Container/Textures/Container_Metallic.png 
+-AddMaterial RedGeneratorPBR PBR 3 res/models/Props/Generator/Textures/RedGenerator_Albedo.png res/models/Props/Generator/Textures/Generator_Normal.png res/models/Props/Generator/Textures/Generator_Metallic.png 
+-AddMaterial YellowGeneratorPBR PBR 3 res/models/Props/Generator/Textures/YellowGenerator_Albedo.png res/models/Props/Generator/Textures/Generator_Normal.png res/models/Props/Generator/Textures/Generator_Metallic.png 
+-AddMaterial GrenadePBR PBR 3 res/models/Props/Grenade/Textures/Grenade_Albedo.png res/models/Props/Grenade/Textures/Grenade_Normal.png res/models/Props/Grenade/Textures/Grenade_Metallic.png 
+-AddMaterial HousePBR PBR 3 res/models/Props/House/Textures/House_Albedo.png res/models/Props/House/Textures/House_Normal.png res/models/Props/House/Textures/House_Metallic.png
+-AddMaterial JerryCanPBR PBR 3 res/models/Props/Jerrycan/Textures/JerryCan_Albedo.png res/models/Props/Jerrycan/Textures/JerryCan_Normal.png res/models/Props/Jerrycan/Textures/JerryCan_Metallic.png 
+-AddMaterial LadderPBR PBR 3 res/models/Props/Ladders/Textures/Ladder_Albedo.png res/models/Props/Ladders/Textures/Ladder_Normal.png res/models/Props/Ladders/Textures/Ladder_Metallic.png 
+-AddMaterial LightsPBR PBR 3 res/models/Props/Lights/Textures/Light_Albedo.png res/models/Props/Lights/Textures/Light_Normal.png res/models/Props/Lights/Textures/Light_Metallic.png 
+-AddMaterial PotsPBR PBR 3 res/models/Props/Pots/Textures/Pots_Albedo.png res/models/Props/Pots/Textures/Pots_Normal.png res/models/Props/Pots/Textures/Pots_Metallic.png 
+-AddMaterial PressureTankPBR PBR 3 res/models/Props/PressureTank/Textures/PressureTank_Albedo.png res/models/Props/PressureTank/Textures/PressureTank_Normal.png res/models/Props/PressureTank/Textures/PressureTank_Metallic.png 
+-AddMaterial TiresPBR PBR 3 res/models/Props/Tires/Textures/Tires_Albedo.png res/models/Props/Tires/Textures/Tires_Normal.png res/models/Props/Tires/Textures/Tires_Metallic.png 
+-AddMaterial WellPBR PBR 3 res/models/Props/Well/Textures/Well_Albedo.png res/models/Props/Well/Textures/Well_Normal.png res/models/Props/Well/Textures/Well_Metallic.png 
+-AddMaterial WoodenCratePBR PBR 2 res/models/Props/WoodenCrate/Textures/WoodenCrate_Albedo.png res/models/Props/WoodenCrate/Textures/WoodenCrate_Normal.png 
+-AddMaterial WoodenCrate2PBR PBR 2 res/models/Props/WoodenCrate/Textures/WoodenCrate2_Albedo.png res/models/Props/WoodenCrate/Textures/WoodenCrate2_Normal.png 
+
+-AddMaterial parasiteZombie AnimationPBR 3 res/models/par/textures/parasiteZombie_diffuse.png res/models/par/textures/parasiteZombie_normal.png res/models/par/textures/parasiteZombie_specular.png
+-AddMaterial TransparentMaterial Transparent 0
+
+-AddMaterial WaterMaterial Water 2 res/textures/water/dudv2.png res/textures/water/normal2.png
+
+-AddMaterial FontMaterial Font 0
+
+
 
 +SceneGameObject
 -Transform
-0 -1 0
+0 0 0
+180 0 0
+0.01 0.01 0.01
+-Model res/models/par/par.dae
+-Animation par res/models/par/par_idle.dae idle
+-Animation par res/models/par/par_walk.dae walk
+-Animation par res/models/par/par_punch.dae punch
+-Material parasiteZombie
+-DynamicBody
+-ParticleEmitter res/textures/particles/star.png
+-BoxCollider 1 2 1 0
+-Gizmo 0 255 0 Cube 100 200 100
+-SimplePlayer
+-LightMaster
++end
+
++SceneGameObject
+-Transform
+-4 0.8 -6.2
+0 0 0
+1 1 1
+-Model res/models/primitives/circleplane.obj
+-Material WaterMaterial
+-Water
++end
+
+
++SceneGameObject
+-Transform
+2.421 0.45 7.886
+0 0 0
+1 1 1
+-Model res/models/Props/Barrel/BarrelDestroyed.obj
+-Material RedBarrelPBR
++end
+
++SceneGameObject
+-Transform
+-4.556 1.177 -0.679
+0 0 0
+1 1 1
+-Model res/models/Props/Pots/PotCap.obj
+-Material PotsPBR
++end
+
++SceneGameObject
+-Transform
+-2.71 0.99 12.22
+0 0 0
+1 1 1
+-Model res/models/Environment/Vegetation/PalmTree2.obj
+-Material PalmTreePBR
+-Gizmo 0 255 0 Cube 0.5 2.0 0.5
+-BoxCollider 0.5 2.0 0.5 0
++end
+
++SceneGameObject
+-Transform
+-3.65 0.64 1.26
+0 0 0
+1 1 1
+-Model res/models/Props/Barrel/BarrelDamaged.obj
+-Material BlueBarrelPBR
++end
+
++SceneGameObject
+-Transform
+-6.3 0.49 3.06
+0 0 0
+1 1 1
+-Model res/models/Props/WoodenCrate/WoodenCrate.obj
+-Material WoodenCrate2PBR
+-Gizmo 0 255 0 Cube 1.0 1.0 1.0
+-BoxCollider 1.0 1.0 1.0 0
++end
+
++SceneGameObject
+-Transform
+-0.19 0.33 8.68
+8.266939 0 0
+1 1 1
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BulletHolesBarrierPBR
++end
+
++SceneGameObject
+-Transform
+-0.74 0.24 -10.4
+0 0 0
+1 1 1
+-Model res/models/Props/Tires/TireSingle.obj
+-Material TiresPBR
++end
+
++SceneGameObject
+-Transform
+0 3.46 -15.06
+0 0 0
+1 1 1
+-Model res/models/Props/House/House2.obj
+-Material HousePBR
++end
+
++SceneGameObject
+-Transform
+-4.12 3.78 -11.04
+0 354.17 0
+1 1 1
+-Model res/models/Props/Ladders/TallLadder.obj
+-Material LadderPBR
+-Gizmo 0 255 0 Cube 1.333 7.6 0.259
+-BoxCollider 1.333 7.6 0.259 0
++end
+
++SceneGameObject
+-Transform
+-17.81 1.54 9.88
+0 0 0
+1 1 1
+-Model res/models/Props/Container/Container.obj
+-Material RedContainerPBR
++end
+
++SceneGameObject
+-Transform
+-15.47 0.439 -4.26
+0 0 0
+1 1 1
+-Model res/models/Props/Generator/Generator.obj
+-Material YellowGeneratorPBR
++end
+
++SceneGameObject
+-Transform
+-17.7 1.52 4.74
+0 0 0
+1 1 1
+-Model res/models/Props/Container/Container.obj
+-Material GreenContainerPBR
++end
+
++SceneGameObject
+-Transform
+-8.17 0 16.95
+0 0 0
+1 1 1
+-Model res/models/Environment/Rocks/Rock4.obj
+-Material RocksPBR
++end
+
++SceneGameObject
+-Transform
+-4.941 0.915 -1.468
+0 0 0
+1 1 1
+-Model res/models/Props/Pots/Pot5.obj
+-Material PotsPBR
++end
+
++SceneGameObject
+-Transform
+-9 0 15.61
+0 0 0
+1 1 1
+-Model res/models/Environment/Rocks/Rock2.obj
+-Material RocksPBR
++end
+
++SceneGameObject
+-Transform
+-13.45 0.171 0.54
+186.11 3.149997 0
+1 0.9999999 1
+-Model res/models/Props/AmmoBox/AmmoBox.obj
+-Material AmmoBoxPBR
++end
+
++SceneGameObject
+-Transform
+-14.62 1.74 -7.52
+0 0 0
+1 1 1
+-Model res/models/Props/House/House.obj
+-Material HousePBR
++end
+
++SceneGameObject
+-Transform
+-11.91 4.217 -9.09
+0 0 0
+1 1 1
+-Model res/models/Props/PressureTank/PressureTank.obj
+-Material PressureTankPBR
++end
+
++SceneGameObject
+-Transform
+-1.537 0 -6.346
+0 0 0
+1.38 1 2
+-Model res/models/Environment/Vegetation/BigBush.obj
+-Material BigBushPBR
++end
+
++SceneGameObject
+-Transform
+-9.64 0 17.59
+0 0 0
+1 1 1
+-Model res/models/Environment/Rocks/Rock3.obj
+-Material RocksPBR
++end
+
++SceneGameObject
+-Transform
+7.13 2.42 -22.2
+0 0 0
+1 1 1
+-Model res/models/Environment/Vegetation/PalmTree.obj
+-Material PalmTreePBR
++end
+
++SceneGameObject
+-Transform
+-8.2 0.47 13.48
+0 0 0
+1 1 1
+-Model res/models/Props/Tires/TireWall.obj
+-Material TiresPBR
++end
+
++SceneGameObject
+-Transform
+-5.338 0.594 -4.018
+0 0 0
+1 1 1
+-Model res/models/Props/Pots/Pot3.obj
+-Material PotsPBR
++end
+
++SceneGameObject
+-Transform
+-4.14 0.605 -4.565
+0 0 0
+1 1 1
+-Model res/models/Props/Pots/Pot4.obj
+-Material PotsPBR
++end
+
++SceneGameObject
+-Transform
+-14.044 1.38 14.161
+27.52107 8.035315 5.238728
+1 1 1
+-Model res/models/Props/Container/Container.obj
+-Material OliveContainerPBR
++end
+
++SceneGameObject
+-Transform
+-3.26 0.31 7.61
+295.3194 0 0
+0.9999999 1 0.9999999
+-Model res/models/Props/Barrier/Barrier.obj
+-Material BarrierPBR
++end
+
++SceneGameObject
+-Transform
+6.18 0.451 -17.4
+0 0 0
+1 1 1
+-Model res/models/Props/Generator/Generator.obj
+-Material RedGeneratorPBR
++end
+
++SceneGameObject
+-Transform
+2.779 1.94 -14.83
+0 355.93 0
+1 1 1
+-Model res/models/Props/Ladders/SmallLadder.obj
+-Material LadderPBR
+-Gizmo 0 255 0 Cube 1.333 3.8 0.259
+-BoxCollider 1.333 3.8 0.259 0
++end
+
++SceneGameObject
+-Transform
+-5.386 0.443 -2.532
+0 0 0
+1 1 1
+-Model res/models/Props/Pots/Pot1.obj
+-Material PotsPBR
++end
+
++SceneGameObject
+-Transform
+-7.37 0 15
+0 0 0
+1 1 1
+-Model res/models/Environment/Rocks/Rock5.obj
+-Material RocksPBR
++end
+
++SceneGameObject
+-Transform
+-13.4867 1.075 -3.610215
+250.8005 0 0
+1 1 1
+-Model res/models/Props/Lights/Light.obj
+-Material LightsPBR
++end
+
++SceneGameObject
+-Transform
+-10.34 0 16.28
+0 0 0
+1 1 1
+-Model res/models/Environment/Rocks/Rock1.obj
+-Material RocksPBR
++end
+
++SceneGameObject
+-Transform
+-4.569 0.514 -0.698
+0 0 0
+1 1 1
+-Model res/models/Props/Pots/Pot2.obj
+-Material PotsPBR
++end
+
++SceneGameObject
+-Transform
+-13.335 0.058 0.377
+0 0 0
+1 1 1
+-Model res/models/Props/Grenade/Grenade.obj
+-Material GrenadePBR
++end
+
++SceneGameObject
+-Transform
+-5.29 0.47 1.95
+0 0 0
+1 1 1
+-Model res/models/Props/WoodenCrate/WoodenCrate.obj
+-Material WoodenCratePBR
++end
+
++SceneGameObject
+-Transform
+-4.02 0.63 -6.17
+0 0 0
+1 1 1
+-Model res/models/Props/Well/Well.obj
+-Material WellPBR
++end
+
++SceneGameObject
+-Transform
+5.56 0.36 -15.85
+0 0 0
+1 1 1
+-Model res/models/Props/Jerrycan/Jerrycan.obj
+-Material JerryCanPBR
++end
+
++SceneGameObject
+-Transform
+-3.19 0.52 6.29
+0 0 0
+1 1 1
+-Model res/models/Props/Barrel/Barrel.obj
+-Material RedBarrelPBR
++end
+
++SceneGameObject
+-Transform
+-17.72 1.5 1.31
+0 0 0
+1 1 1
+-Model res/models/Props/Container/Container.obj
+-Material BlueContainerPBR
++end
+
++SceneGameObject
+-Transform
+-2.347 0.525 -4.993
+0 0 0
+1 1 1
+-Model res/models/Environment/Vegetation/BigBush.obj
+-Material BigBushPBR
++end
+
++SceneGameObject
+-Transform
+0 0 0
 0 0 0
 1 1 1
 -Model res/models/Environment/Ground/Ground.obj
 -Material GroundPBR
++end
+
++SceneGameObject
+-Transform
+-11.86 0.107 11.387
+0 11.27242 0
+1 1 1
+-Model res/models/Props/Tires/TireSingle.obj
+-Material TiresPBR
++end
+
++SceneGameObject
+-Transform
+-4.948 1.941 -1.469
+0 0 0
+1.407875 1.407875 1.407875
+-Model res/models/Props/Pots/PotCap.obj
+-Material PotsPBR
++end
+
+
+
+
+
++UIGameObject
+-Transform
+5 690 0
+0 0 0
+1 1 1
+-Text 0.3 1 0 1 Sixengine 0.?
+-Material FontMaterial
++end
+
++UIGameObject
+-Transform
+5 660 0
+0 0 0
+1 1 1
+-Text 0.3 1 0 1 Air: 
+-AirText
+-Material FontMaterial
++end
+
++UIGameObject
+-Transform
+5 10 0
+0 0 0
+1 1 1
+-Text 1 0 1 1 Testowy tekst, do testowania.
+-Material FontMaterial
 +end

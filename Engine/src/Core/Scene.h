@@ -9,6 +9,8 @@
 #include "Renderer/TextureArray.h"
 #include "Renderer/Techniques/Technique.h"
 
+#define SCENE_ENDS_IN_GAME_CPP 1
+
 namespace sixengine {
 
 	class Scene
