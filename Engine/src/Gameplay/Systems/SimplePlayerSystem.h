@@ -35,9 +35,9 @@ namespace sixengine {
 			if (collisionEvent.m_Entity.HasComponent<SimplePlayer>() &&
 				collisionEvent.collision.other.HasComponent<Collectable>())
 			{
-				collisionEvent.collision.other.RemoveComponent<BoxCollider>();
-				collisionEvent.collision.other.RemoveComponent<Mesh>();
-				//collisionEvent.collision.other.Destroy();
+				//collisionEvent.collision.other.RemoveComponent<BoxCollider>();
+				//collisionEvent.collision.other.RemoveComponent<Mesh>();
+				collisionEvent.collision.other.Destroy();
 
 				//do something
 			}

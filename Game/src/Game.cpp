@@ -154,25 +154,25 @@ namespace sixengine {
 			//COLLECTABLE
 			// TODO: 2 collectable cause a crash on collision with one of them
 			// TODO: also player and collectable must not be separated with other GO with collider in sceneRoot
-			/*obj = new GameObject(m_EntityManager);
+			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 1.0f, 5.0f);
+			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 0.5f, 5.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
 			obj->AddComponent<Collectable>();
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCratePBR"));
-			m_Scene.m_SceneRoot->AddChild(obj);*/
+			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE
 
 			//COLLECTABLE2
-			/*obj = new GameObject(m_EntityManager);
+			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(10.0, 1.0f, 10.0f);
+			obj->GetComponent<Transform>()->SetWorldPosition(10.0, 0.5f, 10.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
 			obj->AddComponent<Collectable>();
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
-			m_Scene.m_SceneRoot->AddChild(obj);*/
+			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE2
 			
 			

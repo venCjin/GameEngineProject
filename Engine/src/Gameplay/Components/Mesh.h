@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Core/ISerializable.h>
 #include <Renderer/Model.h>
 
 namespace sixengine {
@@ -18,6 +19,7 @@ namespace sixengine {
 		virtual void Load(std::iostream& stream)
 		{
 		}
+
 		virtual void Save(std::iostream& stream)
 		{
 			std::string lineToSave = "-Model " + m_Model->GetDirectory() + "/" + m_Model->GetName();

@@ -3,6 +3,13 @@
 #include <pch.h>
 #include <ECS/EntityManager.h>
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#include <Gameplay/Components/Mesh.h>
+
+#include <Physics/Components/BoxCollider.h>
+#include <Physics/Components/SphereCollider.h>
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 //////////////////
 
 uint64_t ComponentFamily::m_FamilyCounter = 0;
@@ -67,8 +74,18 @@ void EntityManager::DeferredDestroy()
 {
     for (auto i : m_EntityToDestroy)
     {
-        m_EntityComponentMask[i].reset();
-        m_UnusedEntities.push_back(i);
+        Entity entity(this, i);
+        if (entity.HasComponent<sixengine::Mesh>())
+            entity.RemoveComponent<sixengine::Mesh>();
+
+        if (entity.HasComponent<sixengine::BoxCollider>())
+            entity.RemoveComponent<sixengine::BoxCollider>();
+
+        if (entity.HasComponent<sixengine::SphereCollider>())
+            entity.RemoveComponent<sixengine::SphereCollider>();
+
+        //m_EntityComponentMask[i].reset();
+        //m_UnusedEntities.push_back(i);
     }
 
     m_EntityToDestroy.clear();
