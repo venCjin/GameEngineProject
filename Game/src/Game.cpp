@@ -151,7 +151,6 @@ namespace sixengine {
 			m_BatchRenderer->SetLight(new Light(obj));*/
 			//PLAYER
 
-
 			//COLLECTABLE
 			// TODO: 2 collectable cause a crash on collision with one of them
 			// TODO: also player and collectable must not be separated with other GO with collider in sceneRoot
@@ -166,14 +165,14 @@ namespace sixengine {
 			//COLLECTABLE
 
 			//COLLECTABLE2
-			obj = new GameObject(m_EntityManager);
+			/*obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(10.0, 1.0f, 10.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
 			obj->AddComponent<Collectable>();
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
-			m_Scene.m_SceneRoot->AddChild(obj);
+			m_Scene.m_SceneRoot->AddChild(obj);*/
 			//COLLECTABLE2
 			
 			
@@ -242,8 +241,8 @@ namespace sixengine {
 			if (m_BarFill == .0f) m_BarFill = 1.00001f;
 			MaterialManager::getInstance()->Get("Bar")->GetShader()->Bind();
 			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetFloat("barFill", m_BarFill);
-			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("barOrientation", glm::vec3(1.0f, .0f, 0.0f));
-			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("color", glm::vec3(1.0f, .0f, 0.0f));
+			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("barOrientation", glm::vec3(1.0f, 0.0f, 0.0f));
+			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("color", glm::vec3(1.0f, 0.0f, 0.0f));
 			MaterialManager::getInstance()->Get("Bar")->GetShader()->Unbind();
 			m_Billboard->GetComponent<Transform>()->SetLocalScale(1.0f, m_BarFill, 1.0f);
 			LOG_CORE_INFO("{0} {1} {2} {3}", m_Billboard->GetComponent<Transform>()->GetLocalScale().x, m_Billboard->GetComponent<Transform>()->GetLocalScale().y, m_Billboard->GetComponent<Transform>()->GetLocalScale().z, m_BarFill);

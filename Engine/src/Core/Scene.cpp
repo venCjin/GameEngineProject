@@ -385,6 +385,8 @@ namespace sixengine {
 				continue;
 			}
 
+			LOAD(Collectable);
+
 			LOAD(Rotation)
 			
 			LOAD(Billboard);

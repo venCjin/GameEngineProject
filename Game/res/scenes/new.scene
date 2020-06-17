@@ -485,7 +485,16 @@
 -LightMaster
 +end
 
-
++SceneGameObject
+-Transform
+10 1 10
+0 0 0
+1 1 1
+-Model res/models/Props/WoodenCrate/WoodenCrate.obj
+-BoxCollider 1.0 1.0 1.0 0
+-Collectable
+-Material WoodenCrate2PBR
++end
 
 +UIGameObject
 -Transform
