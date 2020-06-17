@@ -107,13 +107,10 @@ namespace sixengine {
 #ifdef DEBUG
 			tr.fill(glm::vec3(0.0f));
 #endif // DEBUG
-
-
 		}
 
 		~Game()
 		{
-
 		}
 
 		virtual void OnInit() override
@@ -164,14 +161,10 @@ namespace sixengine {
 			m_Scene.m_SceneRoot->AddChild(m_Billboard);*/
 			//BAR
 
-			m_Scene.m_TextureArray->AddTexture("res/textures/ui/question_sign2.png");
-
-
 			m_SystemManager.AddSystem<AnimationSystem>();
 			m_SystemManager.AddSystem<ParticleSystem>();
 			m_SystemManager.AddSystem<BillboardSystem>();
 
-			//m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
 			Shader* m_BasicShader = m_Scene.m_ShaderManager->AddShader("res/shaders/PBR.glsl");
@@ -223,15 +216,6 @@ namespace sixengine {
 			//	"WaterMaterial");
 			//m_Scene.m_ModelManager->AddModel("res/models/primitives/circleplane.obj");
 
-			//Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Bar.glsl");
-			//MaterialManager::getInstance()->CreateMaterial(
-			//	bar,
-			//	glm::vec4(m_Scene.m_TextureArray->GetTexture("question_sign2"), 0.0f, 0.0f, 0.0f),
-			//	"Bar");
-
-			//m_Scene.m_BatchRenderer->AddTechnique(new StaticPBR(bar));
-
-			//m_Scene.m_ModelManager->AddModel("res/models/primitives/billboard.obj");
 			//GameObject* w;
 			//w = new GameObject(m_EntityManager);
 			//w->AddComponent<Transform>(w);
@@ -273,20 +257,15 @@ namespace sixengine {
 			MaterialManager::getInstance()->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("Transparent"),
 				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks")),
-				"Transparent");
+				"TransparentMaterial");
 
 			m_Scene.m_MaterialManager->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("PBR"),
-				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks")),
+				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks"), 0, 0, 0),
 				"PBR");
 
-			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/cube.obj");
-			m_Scene.m_ModelManager->CreateVAO();
-			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
-			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
-			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
 
 
 			obj = new GameObject(m_EntityManager);
@@ -390,6 +369,18 @@ namespace sixengine {
 			m_Scene.m_SceneRoot->AddChild(obj);*/
 			//COLLECTABLE2
 			
+			m_SystemManager.AddSystem<StateMachineSystem>();
+			m_SystemManager.AddSystem<NavAgentSystem>();
+
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<EnemiesManager>();
+
+			MakeEnemy(glm::vec3(17.30613f, 1.0f, 1.866652f), glm::vec3(220.029f, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-0.9738712, 1.0f, 7.736652f), glm::vec3(229.8f, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-7.743871f, 1.0f, 7.686653), glm::vec3(180, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-3.423871, 1.0f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-9.323872, 1.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));
+
 		#if SCENE_ENDS_IN_GAME_CPP
 			m_Scene.m_ModelManager->CreateVAO();
 			m_Scene.m_TextureArray->CreateTextureArray();
@@ -442,32 +433,6 @@ namespace sixengine {
 
 			Camera::ActiveCamera = mixingCam->GetComponent<Camera>().Get();
 
-			m_SystemManager.AddSystem<StateMachineSystem>();
-			m_SystemManager.AddSystem<NavAgentSystem>();
-
-			obj = new GameObject(m_EntityManager);
-			obj->AddComponent<EnemiesManager>();
-
-			MakeEnemy(glm::vec3(17.30613f, 1.0f, 1.866652f), glm::vec3(220.029f, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-0.9738712, 1.0f, 7.736652f), glm::vec3(229.8f, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-7.743871f, 1.0f, 7.686653), glm::vec3(180, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-3.423871, 1.0f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-9.323872, 1.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));
-
-
-			//bar->Bind();
-			//bar->SetFloat("barFill", m_BarFill);
-			//bar->SetVec3("barOrientation", glm::vec3(.0f, 1.0f, 0.0f));
-			//bar->Unbind();
-			//m_Billboard = new GameObject(m_EntityManager);
-			//m_Billboard->AddComponent<Transform>(m_Billboard);
-			//m_Billboard->GetComponent<Transform>()->SetWorldPosition(0.0f, 2.0f, 0.0f);
-			//m_Billboard->GetComponent<Transform>()->SetLocalScale(1.0f, 1.0f, 1.0f);
-			//m_Billboard->GetComponent<Transform>()->SetLocalOrientation(0.0f, 90.0f, 90.0f);
-			//m_Billboard->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("billboard"));
-			//m_Billboard->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bar"));
-			//m_Billboard->AddComponent<Billboard>(m_Billboard);
-			//m_Scene.m_SceneRoot->AddChild(m_Billboard);
 			// HACKS END
 
 			m_BatchRenderer->Configure();
@@ -586,6 +551,7 @@ namespace sixengine {
 			}
 		}
 
+		virtual Scene* GetScene() override { return &m_Scene; }
 	};
 
 }

@@ -34,25 +34,26 @@ namespace sixengine {
 		}
 	}
 
-	void GameObject::OnDrawGizmos(bool first)
-	{
-		for (auto child : m_Childeren)
-		{
-			child->OnDrawGizmos(Transform(this), first);
-		}
-	}
-
-	void GameObject::OnDrawGizmos(Transform parentWorld, bool dirty)
+	void GameObject::OnDrawGizmos(bool dirty)
 	{
 		auto transform = GetComponent<Transform>();
-
-		for (auto gizmo : m_Gizmos)
+		float time = Timer::Instance()->GetTime(SECOND);
+		for (auto it = m_Gizmos.begin(); it != m_Gizmos.end(); )
 		{
-			gizmo->Draw(transform->GetModelMatrix());
+			if (time > (*it)->endTime)
+			{
+				m_Gizmos.erase(it);
+				(*it)->~Gizmo();
+			}
+			else
+			{
+				(*it)->Draw(transform->GetModelMatrix());
+				++it;
+			}
 		}
 		for (auto child : m_Childeren)
 		{
-			child->OnDrawGizmos(Transform(this), m_Dirty);
+			child->OnDrawGizmos(m_Dirty);
 		}
 	}
 

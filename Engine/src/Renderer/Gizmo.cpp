@@ -2,19 +2,21 @@
 #include "Gizmo.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <Core/Timer.h>
 
 namespace sixengine {
 
-	Gizmo::Gizmo(VertexArray* vao, Shader* shader, glm::vec3 color, bool enableDraw)
-		: m_VAO(vao), m_Shader(shader), m_Color(color), draw(enableDraw)
+	Gizmo::Gizmo(VertexArray* vao, Shader* shader, glm::vec3 color, bool enableDraw, float timeToLive)
+		: m_VAO(vao), m_Shader(shader), m_Color(color), draw(enableDraw), endTime(Timer::Instance()->GetTime(SECOND) + timeToLive)
 	{
 	}
 
 	Gizmo::~Gizmo()
 	{
+		m_VAO->~VertexArray();
 	}
 
-	Gizmo::Gizmo(Shader* shader) : m_Shader(shader)
+	Gizmo::Gizmo(Shader* shader) : m_Shader(shader), endTime(Timer::Instance()->GetTime(SECOND) + 1000000000.0f)
 	{
 	}
 

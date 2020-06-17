@@ -18,6 +18,8 @@ namespace sixengine {
 	/// If you want to measure performace with MSI Afterburner and RivaTunerStatisticServer
 	//#define AFTERBURNER 0
 
+	class Scene;
+
 	class Application : public EntityComponentSystem
 	{
 	private:
@@ -54,6 +56,8 @@ namespace sixengine {
 	#endif // DEBUG
 		
 		static inline Application& Get() { return *s_Instance; }
+
+		virtual Scene* GetScene() = 0;
 
 	private:
 		bool OnWindowResize(WindowResizeEvent& e);

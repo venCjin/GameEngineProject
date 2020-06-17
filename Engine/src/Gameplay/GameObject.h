@@ -98,8 +98,6 @@ namespace sixengine {
 
 		void OnDrawGizmos(bool first = false);
 
-		void OnDrawGizmos(Transform parentWorld, bool dirty);
-
 		void SetDirty(bool dirty);
 
 		void AddChild(GameObject* child);
