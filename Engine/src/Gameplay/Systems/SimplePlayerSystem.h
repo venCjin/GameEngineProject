@@ -102,14 +102,15 @@ namespace sixengine {
 				m_SimplePlayer->m_OnSurface = !m_SimplePlayer->m_OnSurface;
 				if (m_SimplePlayer->m_OnSurface)
 				{
-					m_Material->SetShader(MaterialManager::getInstance()->Get("parasiteZombie")->GetShader());
+					m_Material->SetShader(MaterialManager::getInstance()->Get("Bricks")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, -playerHeight, 0.0f));
-
+					m_SimplePlayer->MixingCamera->SetTargetCamera(m_SimplePlayer->OnSurfaceCamera);
 				}
 				else
 				{
 					m_Material->SetShader(MaterialManager::getInstance()->Get("Transparent")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, +playerHeight, 0.0f));
+					m_SimplePlayer->MixingCamera->SetTargetCamera(m_SimplePlayer->UnderSurfaceCamera);
 				}
 			}
 

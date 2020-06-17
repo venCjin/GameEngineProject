@@ -7,6 +7,8 @@
 //#include "Physics/Components/BoxCollider.h"
 #include <Physics\Components\DynamicBody.h>
 
+#include "Core/CameraSystem/MixingCamera.h"
+
 namespace sixengine {
 
 	struct SimplePlayer : public ISerializable
@@ -26,6 +28,10 @@ namespace sixengine {
 		BoxCollider* collider;
 		float air = 100;
 		bool m_OnSurface = true;
+
+		Camera* OnSurfaceCamera;
+		Camera* UnderSurfaceCamera;
+		MixingCamera* MixingCamera;
 	};
 
 }

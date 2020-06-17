@@ -34,8 +34,7 @@
 #include "Core/CameraSystem/OrbitalCamera.h"
 #include <Core/CameraSystem/OrbitalCameraSystem.h>
 
-#include "Gameplay/StateMachine/State.h"
-#include "Gameplay/StateMachine/StateMachineSystem.h"
+#include <AI/StateMachineSystem.h>
 
 #define LOAD(COMPONENT)								\
 {													\
