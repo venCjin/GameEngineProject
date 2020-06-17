@@ -111,6 +111,9 @@ namespace sixengine {
 			InitMesh(i, mesh/*, vertices, indices*/);
 		}
 		
+		LoadGlobalPositions(m_Scene->mRootNode, glm::mat4(1.0f));
+		//m_GlobalPositionsLoaded = true;
+
 		return true;
 	}
 
@@ -167,6 +170,8 @@ namespace sixengine {
 		}
 
 		LoadBones(meshIndex, mesh, vertices);
+		
+
 
 		for (uint i = 0; i < mesh->mNumFaces; i++) {
 			const aiFace& Face = mesh->mFaces[i];
@@ -204,6 +209,7 @@ namespace sixengine {
 				vertices[VertexID].AddBoneData(boneIndex, Weight);
 			}
 		}
+		LOG_INFO("BONE LOAD FINISHED. COUNT: {0}", m_BoneMapping.size());
 	}
 
 	uint Model::FindPosition(float animationTime, const aiNodeAnim* nodeAnim)
@@ -299,6 +305,7 @@ namespace sixengine {
 	}
 
 
+	
 	void Model::CalcInterpolatedScaling(aiVector3D& out, float animationTime, const aiNodeAnim* nodeAnim)
 	{
 		if (nodeAnim->mNumScalingKeys == 1) {
@@ -376,24 +383,76 @@ namespace sixengine {
 		}
 	}
 
+	void Model::ReadNodeHierarchyFreeBones(const aiNode* node)
+	{
+		std::string nodeName(node->mName.data);
+
+		if (m_BoneMapping.find(nodeName) != m_BoneMapping.end()) 
+		{
+			uint boneIndex = m_BoneMapping[nodeName];			
+			m_BoneInfo[boneIndex].FinalTransformation = m_GlobalInverseTransform * m_BoneInfo[boneIndex].GlobalTransformation * m_BoneInfo[boneIndex].BoneOffset;
+		}
+
+		for (uint i = 0; i < node->mNumChildren; i++) {
+			ReadNodeHierarchyFreeBones(node->mChildren[i]);
+		}
+	}
+
+	void Model::LoadGlobalPositions(const aiNode* node, const glm::mat4& parentTransform)
+	{
+		LOG_WARN("LoadGlobalPositions size: {0} {1}", m_BoneMapping.size(), m_Name);
+		std::string nodeName(node->mName.data);
+
+		glm::mat4 nodeTransformation(glm::transpose(glm::make_mat4(&node->mTransformation.a1)));
+
+		glm::mat4 globalTransformation = parentTransform * nodeTransformation;
+
+		if (m_BoneMapping.find(nodeName) != m_BoneMapping.end())
+		{
+			LOG_WARN("LoadGlobalPositions BoneMappingFound");
+
+			uint boneIndex = m_BoneMapping[nodeName];
+			m_BoneInfo[boneIndex].GlobalTransformation = globalTransformation;
+
+
+
+			/*Transform m_Bone = Transform(globalTransformation);
+			std::cout << "loadGlobal: Name: " << m_BoneInfo[boneIndex].Name << std::endl;
+			std::cout << "pos: " << m_Bone.GetLocalPosition().x << " " << m_Bone.GetLocalPosition().y << " " << m_Bone.GetLocalPosition().z << std::endl;
+			std::cout << "rot: " << m_Bone.GetLocalOrientation().x << " " << m_Bone.GetLocalOrientation().y << " " << m_Bone.GetLocalOrientation().z << std::endl;
+			*/
+
+		}
+
+		for (uint i = 0; i < node->mNumChildren; i++) {
+			LoadGlobalPositions(node->mChildren[i], globalTransformation);
+		}
+		//return;
+	}
+
 
 	void Model::BoneTransform(float currentTimer, float previousTimer, std::vector<glm::mat4>& transforms, std::string currentAnimationName, std::string previousAnimationName)
 	{
-		if (!m_Scene->HasAnimations() || m_AnimationsMapping.size() == 0)
-			return;
 
 		if (m_FreeBones)
 		{
 			transforms.clear();
 			transforms.resize(m_NumBones);
 
+			ReadNodeHierarchyFreeBones(m_Scene->mRootNode);
+
 			for (uint i = 0; i < m_NumBones; i++) {
 
 				transforms[i] = m_BoneInfo[i].FinalTransformation;
 			}
 
+			//std::cout << "m_FreeBones: " << transforms.size() << std::endl;
+
 			return;
 		}
+		if (!m_Scene->HasAnimations() || m_AnimationsMapping.size() == 0)
+			return;
+		LOG_INFO("m_FreeBones false");
 
 		float currentTicksPerSecond = (float)(m_AnimationsMapping[currentAnimationName]->animation->mTicksPerSecond != 0 ? m_AnimationsMapping[currentAnimationName]->animation->mTicksPerSecond : 25.0f);
 		float currentTimeInTicks = currentTimer * currentTicksPerSecond;

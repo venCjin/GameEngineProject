@@ -5,17 +5,21 @@ namespace sixengine {
 
 	class Bone
 	{
+	private:
+		Transform* m_Parent;
+		bool m_Inited = false;
+		float m_Length;
+
 	public:
-		Bone(); // czy potrzeba ustawiæ transform m_Bone?
+		Bone();
 		Bone(glm::mat4 bone);
 		~Bone();
 
+		void Init(Transform* parent);
+
 		Transform m_Bone;
-		Transform* m_Parent;
 
-		float m_Length;
-
-		void UpdateBone();
+		void UpdateBone(glm::vec3 position);
 	};
 
 }

@@ -161,6 +161,10 @@ namespace sixengine {
 				m_Scene.m_ShaderManager->Get("AnimationPBR"),
 				glm::vec4(0, 0, 0, 0),
 				"Test");
+			MaterialManager::getInstance()->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("PBR"),
+				glm::vec4(0, 0, 0, 0),
+				"TestStatic");
 
 			MaterialManager::getInstance()->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("AnimationPBR"),
@@ -179,14 +183,15 @@ namespace sixengine {
 				glm::vec4(m_Scene.m_TextureArray->GetTexture("Bricks")),
 				"PBR");
 
-			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/cube.obj");
-			m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolopendra_test.fbx");
+			//m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
+		
+			m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo.dae");
 			m_Scene.m_ModelManager->CreateVAO();
-			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
+			/*m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
 			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
-			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
+			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch*/
 
 			GameObject* obj;			
 
@@ -224,17 +229,19 @@ namespace sixengine {
 
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.0f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(1.01f, 1.01f, 1.01f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolopendra_test"));
+			//obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.0f, 0.0f);
+			obj->GetComponent<Transform>()->SetLocalScale(.5f, .5f, .5f);
+			//obj->GetComponent<Transform>()->SetLocalOrientation(0.0f, 90.0f, 0.0f);
+
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolo"));
+			//obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Test"));
 			obj->AddComponent<Animation>();
 			obj->AddComponent<DynamicBody>();
 			obj->AddComponent<SimplePlayer>(obj);
-			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+			obj->AddComponent<BoxCollider>(glm::vec3(1.0, 2.0, 1.0), 0);
 			m_SystemManager.AddSystem<AirTextSystem>();
 			airText->GetComponent<AirText>()->player = obj->GetComponent<SimplePlayer>().Get();
-			//m_Scene.m_SceneRoot->AddChild(obj);
 			m_Scene.m_SceneRoot->AddChild(obj);
 
 			
@@ -391,7 +398,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				//m_Scene.DrawGizmos();
+				m_Scene.DrawGizmos();
 			}
 		}
 

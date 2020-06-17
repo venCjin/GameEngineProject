@@ -29,7 +29,7 @@ namespace sixengine {
 			: m_Parent(nullptr)
 		{}
 
-		Transform(glm::mat4 transformMatrix)
+		Transform(glm::mat4 transformMatrix) : m_Parent(nullptr)
 		{
 			m_Local = transformMatrix;
 		}
@@ -355,15 +355,36 @@ namespace sixengine {
 		// Rotates the transform so the forward vector points at target's current position.
 		void LookAt(glm::vec3 position)
 		{
+			std::cout << "position: " << position.x << " " << position.y << " " << position.z << std::endl;
+			std::cout << "this->getWorldPosition(): " << this->getWorldPosition().x << " " << this->getWorldPosition().y << " " << this->getWorldPosition().z << std::endl;
+
 			glm::vec3 forward = position - this->getWorldPosition();
 			forward = glm::normalize(forward);
+
+			std::cout << "forward: " << forward.x << " " << forward.y << " " << forward.z << std::endl;
 
 			glm::vec3 right = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
 			glm::vec3 upwards = glm::cross(right, forward);
 
+			std::cout << "right: " << right.x << " " << right.y << " " << right.z << std::endl;
+			std::cout << "upwards: " << upwards.x << " " << upwards.y << " " << upwards.z << std::endl;
+
+
 			auto scale = GetLocalScale();
 			m_Local = glm::inverse((glm::lookAt(getWorldPosition(), getWorldPosition() + forward, upwards)));
 			m_Local = glm::scale(m_Local, scale);
+
+			std::cout << "rot: " << this->GetLocalOrientation().x << " " << this->GetLocalOrientation().y << " " << this->GetLocalOrientation().z << std::endl;
+
+		}
+
+
+		void LookAtBone(glm::vec3 position)
+		{
+			glm::vec3 forward = position - this->getWorldPosition();
+			forward = glm::normalize(forward);
+
+			this->SetLocalRotation(glm::quatLookAt(forward, glm::vec3(0.0f, 0.0f, -1.0f)));
 		}
 
 
