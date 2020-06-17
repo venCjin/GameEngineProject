@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Core/ISerializable.h>
 #include <Renderer/Model.h>
 
 namespace sixengine {
