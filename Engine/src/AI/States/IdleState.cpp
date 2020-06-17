@@ -33,6 +33,8 @@ void sixengine::IdleState::OnStateUpdate(StateMachine* stateMachine)
 		
 		m_NacAgent->Stop();
 	}
+
+	m_Enemy->RotateTowardsVelocity();
 }
 
 bool sixengine::IdleState::IsStateFinished()

@@ -10,6 +10,7 @@
 #include <AI/States/IdleState.h>
 #include <AI/States/SearchState.h>
 #include <AI/States/PatrolState.h>
+#include <AI/States/DeathState.h>
 
 sixengine::Enemy::Enemy(GameObject* go)
 {
@@ -103,20 +104,20 @@ bool sixengine::Enemy::CanSeeUndergroundMovement()
 
 bool sixengine::Enemy::HasDetectedPlayer()
 {
-	if (Timer::Instance()->ElapsedTime() - m_LastDetectionUpdateTime >= 0.9f * Timer::Instance()->DeltaTime())
+	if (Timer::Instance()->ElapsedTime() - m_LastDetectionUpdateTime >= 0.5f * Timer::Instance()->DeltaTime())
 	{
 		if (m_GameObject->GetComponent<StateMachine>()->IsCurrentlyInState(typeid(IdleState*)) || m_GameObject->GetComponent<StateMachine>()->IsCurrentlyInState(typeid(PatrolState*)))
 		{
 			if (CanSeePlayer() == true)
 			{
 				float distance = glm::length(m_Transform->GetWorldPosition() - GetPlayer().Component<Transform>()->GetWorldPosition());
-				float speed = 0.1f;
+				float speed = 0.4f;
 
 				m_DetectionLevel += speed * Timer::Instance()->DeltaTime();
 			}
 			else if (Timer::Instance()->DeltaTime() > m_LastCharacterSeenTime + 1.0f)
 			{
-				float speed = 1.0f * m_Parameters.TimeToForget;
+				float speed = 0.1f * m_Parameters.TimeToForget;
 				m_DetectionLevel -= speed * Timer::Instance()->DeltaTime();
 			}
 		}
@@ -189,7 +190,37 @@ float sixengine::Enemy::GetDetectionLevel()
 
 void sixengine::Enemy::ReceiveDamage(float damage)
 {
+	m_Health -= damage;
 
+	if (m_Health <= 0)
+	{
+		m_GameObject->GetComponent<Transform>()->SetWorldPosition(0.0f, -100.0f, 0.0f);
+
+		m_GameObject->AddComponent<DeathState>(m_GameObject);
+		m_GameObject->GetComponent<StateMachine>()->ChangeState(m_GameObject->GetComponent<DeathState>().Get());
+
+		m_GameObject->GetComponent<StateMachine>()->m_States.clear();
+	}
+}
+
+void sixengine::Enemy::RotateTowardsVelocity()
+{
+	auto direction = m_GameObject->GetComponent<DynamicBody>()->m_Velocity;
+	direction.y = 0.0f;
+
+	if (glm::length(direction) < 0.1f)
+	{
+		return;
+	}
+
+	auto target = glm::quatLookAt(direction, glm::vec3(0.0f, 1.0f, 0.0f));
+	target = glm::normalize(target);
+
+	auto current = m_GameObject->GetComponent<Transform>()->GetWorldRotation();
+
+	auto final = glm::slerp(current, target, 2.5f * (float)Timer::Instance()->DeltaTime());
+
+	m_GameObject->GetComponent<Transform>()->SetWorldRotation(final);
 }
 
 Entity sixengine::Enemy::GetPlayer()

@@ -30,6 +30,7 @@ namespace sixengine {
 		void DrawGizmos();
 	private:
 		GameObject* ReadGameObject(std::fstream& file, EntityManager& en);
+		GameObject* ReadEnemy(std::fstream& file, EntityManager& en);
 	};
 
 }

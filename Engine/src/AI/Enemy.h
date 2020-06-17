@@ -27,6 +27,7 @@ namespace sixengine
 		class SimplePlayer* m_SimplePlayer = NULL;
 		class EnemiesManager* m_Manager = NULL;
 
+
 		float m_LastCharacterSeenTime = 0.0f;
 		float m_LastUndergroundMovementSeenTime = -10.0f;
 
@@ -39,6 +40,8 @@ namespace sixengine
 		double m_LastDetectionUpdateTime = 0.0f;;
 
 	public:
+		float m_Health = 100.0f;
+
 		Enemy(GameObject* go);
 		
 		Entity GetPlayer();
@@ -63,6 +66,7 @@ namespace sixengine
 		float GetDetectionLevel();
 
 		void ReceiveDamage(float damage);
+		void RotateTowardsVelocity();
 	};
 }
 

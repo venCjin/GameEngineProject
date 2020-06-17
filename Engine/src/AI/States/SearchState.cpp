@@ -48,6 +48,8 @@ void sixengine::SearchState::OnStateUpdate(StateMachine* stateMachine)
 	}
 
 	m_BehaviourTime += (float)Timer::Instance()->DeltaTime();
+
+	m_Enemy->RotateTowardsVelocity();
 }
 
 bool sixengine::SearchState::IsStateFinished()
