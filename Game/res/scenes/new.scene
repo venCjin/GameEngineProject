@@ -5,6 +5,7 @@
 -AddSystem ParticleSystem
 -AddSystem AirTextSystem
 -AddSystem DynamicBodySystem
+-AddSystem BillboardSystem
 
 -Blur res/shaders/PostProcessing.glsl
 -Skybox res/shaders/Skybox.glsl res/textures/skybox/right.jpg res/textures/skybox/left.jpg res/textures/skybox/top.jpg res/textures/skybox/bottom.jpg res/textures/skybox/front.jpg res/textures/skybox/back.jpg

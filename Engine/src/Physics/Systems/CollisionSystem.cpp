@@ -293,10 +293,14 @@ void sixengine::CollisionSystem::HandleCollision(Entity collider, Collision coll
 	world = glm::translate(world, collision.offset);
 
 	t->SetWorld(world);
+
+	m_EventManager->Emit<OnCollision>(OnCollision(collider, collision));
 }
 
 void sixengine::CollisionSystem::UpdateAll(EventManager& eventManager, float dt)
 {
+	m_EventManager = &eventManager;
+
 	UpdateBoxesWithBoxes();
 	UpdateSpheresWithSpheres();
 	UpdateBoxesWithSpheres();
