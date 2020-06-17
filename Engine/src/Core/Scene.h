@@ -36,6 +36,7 @@ namespace sixengine {
 		std::vector<GameObject*> GetGameObjectsWithComponent();
 	private:
 		GameObject* ReadGameObject(std::fstream& file, EntityManager& en);
+		GameObject* ReadEnemy(std::fstream& file, EntityManager& en);
 	};
 
 	template<typename Component>

@@ -1,0 +1,32 @@
+-AddSystem SimplePlayerSystem
+-AddSystem CollisionSystem
+-AddSystem FlyingCameraSystem
+
+-AddShader StaticPBR res/shaders/PBR.glsl
+
+-AddMaterial WoodenCrate2PBR PBR 2 res/models/Props/WoodenCrate/Textures/WoodenCrate2_Albedo.png res/models/Props/WoodenCrate/Textures/WoodenCrate2_Normal.png 
+
++SceneGameObject
+-Transform
+0.0 0.0 -5.0
+0 0 0
+1 1 1
+-Model res/models/primitives/sphere.obj
+-Material WoodenCrate2PBR
+-SimplePlayer
+-Gizmo 0 255 0 Sphere 0.5
+-DynamicBody
++end
+
++SceneGameObject
+-Transform
+0.0 0 0.0
+0 0 0
+1 1 1
+-Model res/models/Props/WoodenCrate/WoodenCrate.obj
+-Material WoodenCrate2PBR
+-Gizmo 255 0 0 Cube 1.0 1.0 1.0
+-BoxCollider 1.0 1.0 1.0 1
+-StaticBody
++end
+

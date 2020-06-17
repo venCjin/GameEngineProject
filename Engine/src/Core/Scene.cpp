@@ -14,12 +14,9 @@
 #include "Gameplay/Components/PointLight.h"
 #include "Gameplay/Components/SpotLight.h"
 
-#include "Gameplay/StateMachine/StateMachineSystem.h"
-
 #include "Gameplay/Systems/AirTextSystem.h"
 #include "Gameplay/Systems/AnimationSystem.h"
 #include "Gameplay/Systems/BillboardSystem.h"
-#include "Gameplay/Systems/NavAgentSystem.h"
 #include "Gameplay/Systems/ParticleSystem.h"
 #include "Gameplay/Systems/RotationSystem.h"
 #include "Gameplay/Systems/SimplePlayerSystem.h"
@@ -31,7 +28,6 @@
 #include "Physics/Systems/CollisionSystem.h"
 #include "Physics/Systems/DynamicBodySystem.h"
 
-
 #include "Renderer/PrimitiveUtils.h"
 #include "Renderer/Gizmo.h"
 #include "Renderer/Techniques/AnimationPBR.h"
@@ -40,6 +36,15 @@
 #include <Renderer/Techniques/Transparent.h>
 #include "Renderer/Techniques/Water.h"
 #include "Renderer/Techniques/UI.h"
+
+#include <AI/EnemiesManager.h>
+#include <AI/StateMachineSystem.h>
+#include <AI/States/IdleState.h>
+#include <AI/States/PatrolState.h>
+#include <AI/States/AttackState.h>
+#include <AI/States/SearchState.h>
+#include "AI/NavMesh/NavAgent.h"
+#include "AI/NavMesh/NavAgentSystem.h"
 
 #define LOAD(COMPONENT)								\
 {													\
@@ -354,6 +359,33 @@ namespace sixengine {
 				file >> s;
 				go->AddComponent<ParticleEmitter>(new Texture(s));
 				continue;
+			}
+
+			else if (s == "-Enemy")
+			{
+				go->AddComponent<BoxCollider>(glm::vec3(1.0f, 1.0f, 1.0f));
+				go->AddComponent<Mesh>(m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
+				go->AddComponent<Material>(*m_MaterialManager->Get("JaJebe"));
+				go->AddComponent<DynamicBody>();
+
+				GameObject* child = new GameObject(en);
+				child->AddComponent<Transform>(child);
+				child->GetComponent<Transform>()->SetParent(go->GetComponent<Transform>().Get());
+				child->GetComponent<Transform>()->SetLocalPosition(glm::vec3(0.0f, 0.6f, -0.75f));
+				child->GetComponent<Transform>()->SetLocalScale(glm::vec3(1.0f, 0.2f, 1.0f));
+				child->AddComponent<Mesh>(m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
+				child->AddComponent<Material>(*m_MaterialManager->Get("JaJebe"));
+
+				go->AddComponent<Enemy>(go);
+				go->AddComponent<StateMachine>();
+				go->AddComponent<NavAgent>(go);
+				go->GetComponent<StateMachine>()->m_States.push_back(new AttackState(go));
+				go->GetComponent<StateMachine>()->m_States.push_back(new SearchState(go));
+				go->GetComponent<StateMachine>()->m_States.push_back(new IdleState(go));
+
+				go->GetComponent<StateMachine>()->m_CurrentState = go->GetComponent<StateMachine>()->m_States[0];
+
+				m_SceneRoot->AddChild(child);
 			}
 			
 			else if (s == "-Text")

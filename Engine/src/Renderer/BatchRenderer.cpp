@@ -134,7 +134,7 @@ namespace sixengine {
 		bool render = true;
 
 		ComponentHandle<Mesh> mesh;
-		if (gameObject->HasComponent<Mesh>())
+		if (gameObject->HasComponent<Mesh>() && gameObject->GetComponent<Mesh>()->GetModel())
 		{
 			mesh = gameObject->GetComponent<Mesh>();
 

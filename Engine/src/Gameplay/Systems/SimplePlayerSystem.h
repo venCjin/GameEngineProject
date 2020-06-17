@@ -15,13 +15,15 @@
 #include <Physics/Systems/CollisionSystem.h>
 #include <Physics/Components/DynamicBody.h>
 
+#include <AI/Enemy.h>
+
 namespace sixengine {
 	
 
 	SYSTEM(SimplePlayerSystem, Transform, SimplePlayer, Material)
 	{
 		//bool m_OnSurface = true;
-		float speed = .25f;
+		float speed = .45f;
 		float maxSpeed = 1.0f;
 		float playerHeight = 2.0f;
 		float health = 100.0f;
@@ -69,24 +71,29 @@ namespace sixengine {
 				Application::attack->model = model;
 				Entity* a = CollisionSystem::CheckSphere(m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f), 1.0f);
 				if (a != nullptr)
-					LOG_ERROR("HIT COLLIDER");
+				{
+					if (a->HasComponent<Enemy>())
+					{
+						a->Component<Enemy>()->ReceiveDamage(50.0f);
+					}
+				}
 			}
 
-			if (Input::IsKeyActive(KeyCode::DOWN)) 
+			if (Input::IsKeyActive(KeyCode::S)) 
 			{ 
 				_db->m_Velocity += cameraDir * speed; 
 				
 				
 
 			}
-			if (Input::IsKeyActive(KeyCode::UP)) { 
+			if (Input::IsKeyActive(KeyCode::W)) { 
 				_db->m_Velocity -= cameraDir * speed; 
 
 				
 			}
 			cameraDir = glm::rotateY(cameraDir, glm::radians(90.0f));
-			if (Input::IsKeyActive(KeyCode::RIGHT)) { _db->m_Velocity += cameraDir * speed; }
-			if (Input::IsKeyActive(KeyCode::LEFT)) { _db->m_Velocity -= cameraDir * speed; }
+			if (Input::IsKeyActive(KeyCode::D)) { _db->m_Velocity += cameraDir * speed; }
+			if (Input::IsKeyActive(KeyCode::A)) { _db->m_Velocity -= cameraDir * speed; }
 			//glm::clamp(_db->m_Velocity, glm::vec3(0.0f), glm::vec3(maxSpeed));
 			//if (Input::IsKeyActive(KeyCode::PAGE_UP)) { dir.y += 1.0f; }
 			//if (Input::IsKeyActive(KeyCode::PAGE_DOWN)) { dir.y -= 1.0f; }
@@ -103,14 +110,15 @@ namespace sixengine {
 				m_SimplePlayer->m_OnSurface = !m_SimplePlayer->m_OnSurface;
 				if (m_SimplePlayer->m_OnSurface)
 				{
-					m_Material->SetShader(MaterialManager::getInstance()->Get("parasiteZombie")->GetShader());
+					m_Material->SetShader(MaterialManager::getInstance()->Get("Bricks")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, -playerHeight, 0.0f));
-
+					m_SimplePlayer->MixingCamera->SetTargetCamera(m_SimplePlayer->OnSurfaceCamera);
 				}
 				else
 				{
 					m_Material->SetShader(MaterialManager::getInstance()->Get("TransparentMaterial")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, +playerHeight, 0.0f));
+					m_SimplePlayer->MixingCamera->SetTargetCamera(m_SimplePlayer->UnderSurfaceCamera);
 				}
 			}
 
