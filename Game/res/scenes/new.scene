@@ -1,11 +1,11 @@
--AddSystem SimplePlayerSystem
--AddSystem CollisionSystem
 -AddSystem FlyingCameraSystem
 -AddSystem AnimationSystem
 -AddSystem ParticleSystem
 -AddSystem AirTextSystem
--AddSystem DynamicBodySystem
 -AddSystem BillboardSystem
+-AddSystem DynamicBodySystem
+-AddSystem CollisionSystem
+-AddSystem SimplePlayerSystem
 
 -Blur res/shaders/PostProcessing.glsl
 -Skybox res/shaders/Skybox.glsl res/textures/skybox/right.jpg res/textures/skybox/left.jpg res/textures/skybox/top.jpg res/textures/skybox/bottom.jpg res/textures/skybox/front.jpg res/textures/skybox/back.jpg
@@ -55,23 +55,7 @@
 
 
 
-+SceneGameObject
--Transform
-0 0 0
-180 0 0
-0.01 0.01 0.01
--Model res/models/par/par.dae
--Animation par res/models/par/par_idle.dae idle
--Animation par res/models/par/par_walk.dae walk
--Animation par res/models/par/par_punch.dae punch
--Material parasiteZombie
--DynamicBody
--ParticleEmitter res/textures/particles/star.png
--BoxCollider 1 2 1 0
--Gizmo 0 255 0 Cube 100 200 100
--SimplePlayer
--LightMaster
-+end
+
 
 +SceneGameObject
 -Transform
@@ -333,16 +317,7 @@
 -Material RedGeneratorPBR
 +end
 
-+SceneGameObject
--Transform
-2.779 1.94 -14.83
-0 355.93 0
-1 1 1
--Model res/models/Props/Ladders/SmallLadder.obj
--Material LadderPBR
--Gizmo 0 255 0 Cube 1.333 3.8 0.259
--BoxCollider 1.333 3.8 0.259 0
-+end
+
 
 +SceneGameObject
 -Transform
@@ -481,6 +456,35 @@
 
 
 
++SceneGameObject
+-Transform
+2.779 1.94 -14.83
+0 355.93 0
+1 1 1
+-Model res/models/Props/Ladders/SmallLadder.obj
+-Material LadderPBR
+-Gizmo 0 255 0 Cube 1.333 3.8 0.259
+-BoxCollider 1.333 3.8 0.259 0
++end
+
++SceneGameObject
+-Transform
+0 0 0
+180 0 0
+0.01 0.01 0.01
+-Model res/models/par/par.dae
+-Animation par res/models/par/par_idle.dae idle
+-Animation par res/models/par/par_walk.dae walk
+-Animation par res/models/par/par_punch.dae punch
+-Material parasiteZombie
+-DynamicBody
+-ParticleEmitter res/textures/particles/star.png
+-BoxCollider 1.0 2.0 1.0 0
+-SimplePlayer
+-Gizmo 0 255 0 Cube 100 200 100
+-LightMaster
++end
+
 
 
 +UIGameObject
@@ -498,7 +502,7 @@
 0 0 0
 1 1 1
 -Text 0.3 1 0 1 Air: 
--AirText
+//-AirText
 -Material FontMaterial
 +end
 

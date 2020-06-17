@@ -74,7 +74,6 @@ namespace sixengine {
 			//PLAY_TRACK("ophelia");
 
 			// HACKS
-
 			//////SHITT!!!11
 			std::vector<GizmoVertex> vertices;
 			std::vector<unsigned int> indices;
@@ -90,7 +89,6 @@ namespace sixengine {
 			Application::attack = new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(255, 0, 0));
 			//////SHIT!!!!
 			
-
 			GameObject* obj;
 			//BAR
 			Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Bar.glsl");
@@ -116,19 +114,8 @@ namespace sixengine {
 			m_Scene.m_SceneRoot->AddChild(m_Billboard);
 			//BAR
 
-			//COLLECTABLE
-			obj = new GameObject(m_EntityManager);
-			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(10.0, 1.0f, 10.0f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
-			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
-			obj->AddComponent<Collectable>();
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
-			m_Scene.m_SceneRoot->AddChild(obj);
-			//COLLECTABLE
-
-			/*
-			obj = new GameObject(m_EntityManager);
+			//PLAYER
+			/*obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
 			obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
@@ -154,15 +141,42 @@ namespace sixengine {
 			vbo = new VertexBuffer(&vertices[0], vertices.size());
 			vbo->SetLayout({
 				{ VertexDataType::VEC3F, "Position" }
-			});
+				});
 			//IndexBuffer*
 			ibo = new IndexBuffer(&indices[0], indices.size());
 			vao->AddVertexBuffer(*vbo);
 			vao->AddIndexBuffer(*ibo);
 			obj->AddGizmo(new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(0, 255, 0)));
 			m_Scene.m_SceneRoot->AddChild(obj);
-			m_BatchRenderer->SetLight(new Light(obj));
-			*/
+			m_BatchRenderer->SetLight(new Light(obj));*/
+			//PLAYER
+
+
+			//COLLECTABLE
+			// TODO: 2 collectable cause a crash on collision with one of them
+			// TODO: also player and collectable must not be separated with other GO with collider in sceneRoot
+			/*obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 1.0f, 5.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
+			obj->AddComponent<Collectable>();
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCratePBR"));
+			m_Scene.m_SceneRoot->AddChild(obj);*/
+			//COLLECTABLE
+
+			//COLLECTABLE2
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(10.0, 1.0f, 10.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
+			obj->AddComponent<Collectable>();
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
+			m_Scene.m_SceneRoot->AddChild(obj);
+			//COLLECTABLE2
+			
+			
 		#if SCENE_ENDS_IN_GAME_CPP
 			m_Scene.m_ModelManager->CreateVAO();
 			m_Scene.m_TextureArray->CreateTextureArray();
