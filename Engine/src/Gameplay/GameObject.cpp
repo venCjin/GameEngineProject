@@ -30,7 +30,7 @@ namespace sixengine {
 
 		for (auto child : m_Childeren)
 		{
-			child->Render();
+			child->Render(Transform(this), dirty);
 		}
 	}
 
@@ -111,21 +111,20 @@ namespace sixengine {
 			}
 
 			///
-			
 			if (HasComponent<NavAgent>())
 			{
 				ImGui::InputFloat3("Nav agent destination", GetComponent<NavAgent>()->m_LastPlayerKnownPosition.data.data);
 				ImGui::Checkbox("move", &GetComponent<NavAgent>()->m_ProcedeMoving);
 			}
-
 			///
 
-			ImGui::TreePop();
-		}
+			ImGui::Text("Children");
+			for each (auto& child in m_Childeren)
+			{
+				child->ImGuiWriteSceneTreeNode();
+			}
 
-		for each (auto& child in m_Childeren)
-		{
-			child->ImGuiWriteSceneTreeNode();
+			ImGui::TreePop();
 		}
 	}
 
@@ -149,12 +148,13 @@ namespace sixengine {
 				GetComponent<Transform>()->SetLocalPosition(pos);
 			}
 
-			ImGui::TreePop();
-		}
+			ImGui::Text("Children");
+			for each (auto & child in m_Childeren)
+			{
+				child->ImGuiWriteUITreeNode();
+			}
 
-		for each (auto & child in m_Childeren)
-		{
-			child->ImGuiWriteUITreeNode();
+			ImGui::TreePop();
 		}
 	}
 #endif // DEBUG

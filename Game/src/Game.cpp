@@ -90,8 +90,9 @@ namespace sixengine {
 			//////SHIT!!!!
 			
 			GameObject* obj;
+
 			//BAR
-			Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Bar.glsl");
+			/*Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Bar.glsl");
 			m_Scene.m_TextureArray->AddTexture("res/textures/ui/question_sign2.png");
 			MaterialManager::getInstance()->CreateMaterial(
 				bar,
@@ -111,7 +112,7 @@ namespace sixengine {
 			m_Billboard->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("billboard"));
 			m_Billboard->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bar"));
 			m_Billboard->AddComponent<Billboard>(m_Billboard);
-			m_Scene.m_SceneRoot->AddChild(m_Billboard);
+			m_Scene.m_SceneRoot->AddChild(m_Billboard);*/
 			//BAR
 
 			//PLAYER
@@ -175,7 +176,6 @@ namespace sixengine {
 			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE2
 			
-			
 		#if SCENE_ENDS_IN_GAME_CPP
 			m_Scene.m_ModelManager->CreateVAO();
 			m_Scene.m_TextureArray->CreateTextureArray();
@@ -235,7 +235,7 @@ namespace sixengine {
 				shakeTimer -= dt;
 			else
 				m_BatchRenderer->SetBlur(false);
-
+			/*
 			m_BarFill = m_Billboard->GetComponent<Transform>()->GetLocalScale().y - .01f;
 			m_BarFill = glm::clamp(m_BarFill, 0.0f, 1.0f);
 			if (m_BarFill == .0f) m_BarFill = 1.00001f;
@@ -246,7 +246,7 @@ namespace sixengine {
 			MaterialManager::getInstance()->Get("Bar")->GetShader()->Unbind();
 			m_Billboard->GetComponent<Transform>()->SetLocalScale(1.0f, m_BarFill, 1.0f);
 			LOG_CORE_INFO("{0} {1} {2} {3}", m_Billboard->GetComponent<Transform>()->GetLocalScale().x, m_Billboard->GetComponent<Transform>()->GetLocalScale().y, m_Billboard->GetComponent<Transform>()->GetLocalScale().z, m_BarFill);
-			
+			*/
 			if (Input::IsKeyPressed(KeyCode::DEL))
 			{
 				WindowCloseEvent e;

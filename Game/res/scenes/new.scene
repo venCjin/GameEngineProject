@@ -483,6 +483,14 @@
 -SimplePlayer
 -Gizmo 0 255 0 Cube 100 200 100
 -LightMaster
+	+Child
+	-Transform
+	100 0 0
+	0 0 0
+	200 200 200
+	-Model res/models/Props/Pots/PotCap.obj
+	-Material PotsPBR
+	+end
 +end
 
 +SceneGameObject

@@ -200,7 +200,9 @@ namespace sixengine {
 			}
 			else if (s == "+SceneGameObject")
 			{
-				m_SceneRoot->AddChild(ReadGameObject(file, *en));
+				GameObject* g = ReadGameObject(file, *en);
+				g->GetComponent<Transform>()->SetParent(m_SceneRoot->GetComponent<Transform>().Get());
+				m_SceneRoot->AddChild(g);
 			}
 			else if (s == "+UIGameObject")
 			{
@@ -399,7 +401,9 @@ namespace sixengine {
 
 			if (s == "+Child")
 			{
-				go->AddChild(ReadGameObject(file, en));
+				GameObject* g = ReadGameObject(file, en);
+				g->GetComponent<Transform>()->SetParent(go->GetComponent<Transform>().Get());
+				go->AddChild(g);
 				continue;
 			}
 
