@@ -28,7 +28,23 @@
 #include <Gameplay/Components/Collectable.h>
 #include <Gameplay\Components\Billboard.h>
 #include <Gameplay/Systems/BillboardSystem.h>
+#include <Gameplay/Systems/AnimationSystem.h>
+#include <Gameplay/Systems/ParticleSystem.h>
 #include <Renderer/Techniques/StaticPBR.h>
+#include <Renderer/Techniques/AnimationPBR.h>
+#include <Renderer/Techniques/UI.h>
+#include <Renderer/Techniques/Transparent.h>
+
+#include <AI/EnemiesManager.h>
+#include <AI/StateMachineSystem.h>
+#include <AI/States/IdleState.h>
+#include <AI/States/PatrolState.h>
+#include <AI/States/AttackState.h>
+#include <AI/States/SearchState.h>
+#include "AI/NavMesh/NavAgent.h"
+#include "AI/NavMesh/NavAgentSystem.h"
+
+
 namespace sixengine {
 
 	class Game : public Application
@@ -46,11 +62,44 @@ namespace sixengine {
 		GameObject* m_Billboard;
 		float m_BarFill;
 		float shakeTimer;
-	#ifdef DEBUG
+#ifdef DEBUG
 		std::array<glm::vec3, 10> tr;
-	#endif //DEBUG
+#endif //DEBUG
 
 	public:
+		void MakeEnemy(glm::vec3 pos, glm::vec3 rotation)
+		{
+			GameObject* obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(pos);
+			obj->GetComponent<Transform>()->SetLocalScale(0.5f, 1.0f, 0.5f);
+			obj->GetComponent<Transform>()->SetLocalOrientation(rotation);
+			obj->AddComponent<BoxCollider>(glm::vec3(1.0f, 1.0f, 1.0f));
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Red"));
+			obj->AddComponent<DynamicBody>();
+
+			GameObject* child = new GameObject(m_EntityManager);
+			child->AddComponent<Transform>(child);
+			child->GetComponent<Transform>()->SetParent(obj->GetComponent<Transform>().Get());
+			child->GetComponent<Transform>()->SetLocalPosition(glm::vec3(0.0f, 0.6f, -0.75f));
+			child->GetComponent<Transform>()->SetLocalScale(glm::vec3(1.0f, 0.2f, 1.0f));
+			child->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
+			child->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Red"));
+
+			obj->AddComponent<Enemy>(obj);
+			obj->AddComponent<StateMachine>();
+			obj->AddComponent<NavAgent>(obj);
+			obj->GetComponent<StateMachine>()->m_States.push_back(new AttackState(obj));
+			obj->GetComponent<StateMachine>()->m_States.push_back(new SearchState(obj));
+			obj->GetComponent<StateMachine>()->m_States.push_back(new IdleState(obj));
+
+			obj->GetComponent<StateMachine>()->m_CurrentState = obj->GetComponent<StateMachine>()->m_States[2];
+
+			m_Scene.m_SceneRoot->AddChild(obj);
+			obj->AddChild(child);
+		}
+
 		Game(std::string title, unsigned int width, unsigned int height)
 			: Application(title, width, height), m_Scene(width, height)
 		{
@@ -58,13 +107,10 @@ namespace sixengine {
 #ifdef DEBUG
 			tr.fill(glm::vec3(0.0f));
 #endif // DEBUG
-			
-
 		}
 
 		~Game()
 		{
-
 		}
 
 		virtual void OnInit() override
@@ -92,7 +138,7 @@ namespace sixengine {
 			GameObject* obj;
 
 			//BAR
-			/*Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Bar.glsl");
+			Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Bar.glsl");
 			m_Scene.m_TextureArray->AddTexture("res/textures/ui/question_sign2.png");
 			MaterialManager::getInstance()->CreateMaterial(
 				bar,
@@ -112,77 +158,52 @@ namespace sixengine {
 			m_Billboard->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("billboard"));
 			m_Billboard->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bar"));
 			m_Billboard->AddComponent<Billboard>(m_Billboard);
-			m_Scene.m_SceneRoot->AddChild(m_Billboard);*/
+			m_Scene.m_SceneRoot->AddChild(m_Billboard);
 			//BAR
-
-			//PLAYER
-			/*obj = new GameObject(m_EntityManager);
-			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.0f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(0.01f, 0.01f, 0.01f);
-			obj->GetComponent<Transform>()->SetLocalOrientation(180.0f, 0.0f, 0.0f);
-			m_Scene.m_ModelManager->AddModel("res/models/par/par.dae");
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
-			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_idle.dae", "idle");
-			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_walk.dae", "walk");
-			m_Scene.m_ModelManager->GetModel("par")->LoadAnimation("res/models/par/par_punch.dae", "punch");
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("parasiteZombie"));
-			obj->AddComponent<Animation>();
-			obj->AddComponent<DynamicBody>();
-			Texture* particleTexture = new Texture("res/textures/particles/star.png");
-			obj->AddComponent<ParticleEmitter>(particleTexture);
-			obj->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
-			obj->AddComponent<SimplePlayer>(obj);
-			//std::vector<GizmoVertex> vertices;
-			//std::vector<unsigned int> indices;
-			PrimitiveUtils::GenerateBox(vertices, indices, 100, 200, 100);
-			//VertexArray*
-			vao = new VertexArray();
-			//VertexBuffer*
-			vbo = new VertexBuffer(&vertices[0], vertices.size());
-			vbo->SetLayout({
-				{ VertexDataType::VEC3F, "Position" }
-				});
-			//IndexBuffer*
-			ibo = new IndexBuffer(&indices[0], indices.size());
-			vao->AddVertexBuffer(*vbo);
-			vao->AddIndexBuffer(*ibo);
-			obj->AddGizmo(new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(0, 255, 0)));
-			m_Scene.m_SceneRoot->AddChild(obj);
-			m_BatchRenderer->SetLight(new Light(obj));*/
-			//PLAYER
-
+			
 			//COLLECTABLE
-			// TODO: 2 collectable cause a crash on collision with one of them
-			// TODO: also player and collectable must not be separated with other GO with collider in sceneRoot
-			/*obj = new GameObject(m_EntityManager);
+			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 1.0f, 5.0f);
+			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 0.5f, 5.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
 			obj->AddComponent<Collectable>();
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCratePBR"));
-			m_Scene.m_SceneRoot->AddChild(obj);*/
+			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE
 
 			//COLLECTABLE2
-			/*obj = new GameObject(m_EntityManager);
+			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(10.0, 1.0f, 10.0f);
+			obj->GetComponent<Transform>()->SetWorldPosition(10.0, 0.5f, 9.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
 			obj->AddComponent<Collectable>();
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
-			m_Scene.m_SceneRoot->AddChild(obj);*/
+			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE2
 			
+			//ENEMIES
+			m_SystemManager.AddSystem<StateMachineSystem>();
+			m_SystemManager.AddSystem<NavAgentSystem>();
+
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<EnemiesManager>();
+
+			MakeEnemy(glm::vec3(17.30613f, 1.0f, 1.866652f), glm::vec3(220.029f, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-0.9738712, 1.0f, 7.736652f), glm::vec3(229.8f, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-7.743871f, 1.0f, 7.686653), glm::vec3(180, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-3.423871, 1.0f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-9.323872, 1.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));
+			//ENEMIES
+
 		#if SCENE_ENDS_IN_GAME_CPP
 			m_Scene.m_ModelManager->CreateVAO();
 			m_Scene.m_TextureArray->CreateTextureArray();
 		#endif
 			// HACKS END
 
-			// Cameras setup
+			// CAMERAS SETUP
 			flying = Camera::ActiveCamera->m_GameObject; //flying camera domyœlnie stworzona w konstruktorze Scene
 
 			//obj = m_Scene.GetFirstGameObjectWithComponent<SimplePlayer>();
@@ -190,26 +211,30 @@ namespace sixengine {
 
 			m_SystemManager.AddSystem<OrbitalCameraSystem>();
 			m_SystemManager.AddSystem<MixingCameraSystem>();
-			
+
+			m_SystemManager.AddSystem<DynamicBodySystem>();
+
 			orbitalCamA = new GameObject(m_EntityManager);
 			orbitalCamA->AddComponent<Transform>(orbitalCamA);
 			orbitalCamA->AddComponent<Camera>(orbitalCamA);
 			orbitalCamA->GetComponent<Camera>()->SetPerspective((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight());
+			obj->GetComponent<SimplePlayer>()->OnSurfaceCamera = orbitalCamA->GetComponent<Camera>().Get();
 
 			orbitalCamA->AddComponent<OrbitalCamera>();
 			orbitalCamA->GetComponent<OrbitalCamera>()->m_LookTarget = obj->GetComponent<Transform>().Get();
 			orbitalCamA->GetComponent<OrbitalCamera>()->m_FollowTarget = obj->GetComponent<Transform>().Get();
-			orbitalCamA->GetComponent<OrbitalCamera>()->m_FollowOffset = glm::vec3(0.0f, 5.0f, 10.0f);
+			orbitalCamA->GetComponent<OrbitalCamera>()->m_FollowOffset = glm::vec3(0.0f, 6.0f, 12.0f);
 
 			orbitalCamB = new GameObject(m_EntityManager);
 			orbitalCamB->AddComponent<Transform>(orbitalCamB);
 			orbitalCamB->AddComponent<Camera>(orbitalCamB);
 			orbitalCamB->GetComponent<Camera>()->SetPerspective((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight());
+			obj->GetComponent<SimplePlayer>()->UnderSurfaceCamera = orbitalCamB->GetComponent<Camera>().Get();
 
 			orbitalCamB->AddComponent<OrbitalCamera>();
 			orbitalCamB->GetComponent<OrbitalCamera>()->m_LookTarget = obj->GetComponent<Transform>().Get();
 			orbitalCamB->GetComponent<OrbitalCamera>()->m_FollowTarget = obj->GetComponent<Transform>().Get();
-			orbitalCamB->GetComponent<OrbitalCamera>()->m_FollowOffset = glm::vec3(0.0f, 7.5f, 7.5f);
+			orbitalCamB->GetComponent<OrbitalCamera>()->m_FollowOffset = glm::vec3(0.0f, 14.0f, 14.0f);
 
 			mixingCam = new GameObject(m_EntityManager);
 			mixingCam->AddComponent<Transform>(mixingCam);
@@ -217,15 +242,16 @@ namespace sixengine {
 			mixingCam->GetComponent<Camera>()->SetPerspective((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight());
 
 			mixingCam->AddComponent<MixingCamera>(mixingCam);
-			mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamB->GetComponent<Camera>().Get());
-			
+			mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(orbitalCamA->GetComponent<Camera>().Get());
+			obj->GetComponent<SimplePlayer>()->MixingCamera = mixingCam->GetComponent<MixingCamera>().Get();
+
 			Camera::ActiveCamera = mixingCam->GetComponent<Camera>().Get();
-			// Cameras setup end
+			// CAMERAS SETUP END
 
 			m_BatchRenderer->Configure();
 
 			m_Scene.Render(true);
-			
+
 			m_BatchRenderer->Render();
 		}
 
@@ -235,7 +261,8 @@ namespace sixengine {
 				shakeTimer -= dt;
 			else
 				m_BatchRenderer->SetBlur(false);
-			/*
+
+			// BAR
 			m_BarFill = m_Billboard->GetComponent<Transform>()->GetLocalScale().y - .01f;
 			m_BarFill = glm::clamp(m_BarFill, 0.0f, 1.0f);
 			if (m_BarFill == .0f) m_BarFill = 1.00001f;
@@ -245,8 +272,9 @@ namespace sixengine {
 			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("color", glm::vec3(1.0f, 0.0f, 0.0f));
 			MaterialManager::getInstance()->Get("Bar")->GetShader()->Unbind();
 			m_Billboard->GetComponent<Transform>()->SetLocalScale(1.0f, m_BarFill, 1.0f);
-			LOG_CORE_INFO("{0} {1} {2} {3}", m_Billboard->GetComponent<Transform>()->GetLocalScale().x, m_Billboard->GetComponent<Transform>()->GetLocalScale().y, m_Billboard->GetComponent<Transform>()->GetLocalScale().z, m_BarFill);
-			*/
+			//LOG_CORE_INFO("{0} {1} {2} {3}", m_Billboard->GetComponent<Transform>()->GetLocalScale().x, m_Billboard->GetComponent<Transform>()->GetLocalScale().y, m_Billboard->GetComponent<Transform>()->GetLocalScale().z, m_BarFill);
+			// BAR
+
 			if (Input::IsKeyPressed(KeyCode::DEL))
 			{
 				WindowCloseEvent e;
@@ -284,7 +312,7 @@ namespace sixengine {
 				m_SystemManager.UpdateAll(dt);
 			}
 
-		#ifdef DEBUG
+#ifdef DEBUG
 			// IMGUI
 			{
 				//PROFILE_SCOPE("ImGui Scene Graph");
@@ -303,7 +331,7 @@ namespace sixengine {
 				ImGui::End();
 			}
 			//------
-		#endif // DEBUG
+#endif // DEBUG
 		}
 
 		virtual void OnRender(float dt) override
@@ -335,6 +363,7 @@ namespace sixengine {
 			}
 		}
 
+		virtual Scene* GetScene() override { return &m_Scene; }
 	};
 
 }

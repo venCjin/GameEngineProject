@@ -35,8 +35,8 @@ void main()
     instanceID = gl_BaseInstance + gl_InstanceID;
     TexCoords = aTexCoords;
 
-    //mat4 BoneTransform = gBones[instanceID].bones[aBoneIDs[0]] * aWeights[0];
-    //BoneTransform += gBones[instanceID].bones[aBoneIDs[1]] * aWeights[1];
+    mat4 BoneTransform = gBones[instanceID].bones[aBoneIDs[0]] * aWeights[0];
+    ///BoneTransform += gBones[instanceID].bones[aBoneIDs[1]] * aWeights[1];
     //BoneTransform += gBones[instanceID].bones[aBoneIDs[2]] * aWeights[2];
     //BoneTransform += gBones[instanceID].bones[aBoneIDs[3]] * aWeights[3];
 

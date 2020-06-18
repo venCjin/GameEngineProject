@@ -4,7 +4,7 @@
 #include "GameObject.h"
 #include "Gameplay/GameObject.h"
 #include "Gameplay/Components/Transform.h"
-#include "Gameplay/Components/NavAgent.h"
+#include "AI/NavMesh/NavAgent.h"
 #include "Renderer/Material.h"
 #include "Renderer/Model.h"
 #include "Renderer/Renderer.h"
@@ -34,25 +34,26 @@ namespace sixengine {
 		}
 	}
 
-	void GameObject::OnDrawGizmos(bool first)
-	{
-		for (auto child : m_Childeren)
-		{
-			child->OnDrawGizmos(Transform(this), first);
-		}
-	}
-
-	void GameObject::OnDrawGizmos(Transform parentWorld, bool dirty)
+	void GameObject::OnDrawGizmos(bool dirty)
 	{
 		auto transform = GetComponent<Transform>();
-
-		for (auto gizmo : m_Gizmos)
+		float time = Timer::Instance()->GetTime(SECOND);
+		for (auto it = m_Gizmos.begin(); it != m_Gizmos.end(); )
 		{
-			gizmo->Draw(transform->GetModelMatrix());
+			if (time > (*it)->endTime)
+			{
+				m_Gizmos.erase(it);
+				(*it)->~Gizmo();
+			}
+			else
+			{
+				(*it)->Draw(transform->GetModelMatrix());
+				++it;
+			}
 		}
 		for (auto child : m_Childeren)
 		{
-			child->OnDrawGizmos(Transform(this), m_Dirty);
+			child->OnDrawGizmos(m_Dirty);
 		}
 	}
 
@@ -113,7 +114,7 @@ namespace sixengine {
 			///
 			if (HasComponent<NavAgent>())
 			{
-				ImGui::InputFloat3("Nav agent destination", GetComponent<NavAgent>()->m_LastPlayerKnownPosition.data.data);
+				ImGui::InputFloat3("Nav agent destination", GetComponent<NavAgent>()->m_Destination.data.data);
 				ImGui::Checkbox("move", &GetComponent<NavAgent>()->m_ProcedeMoving);
 			}
 			///

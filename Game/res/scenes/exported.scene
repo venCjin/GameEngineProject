@@ -30,6 +30,7 @@
 -AddMaterial WellPBR PBR 3 res/models/Props/Well/Textures/Well_Albedo.png res/models/Props/Well/Textures/Well_Normal.png res/models/Props/Well/Textures/Well_Metallic.png 
 -AddMaterial WoodenCratePBR PBR 2 res/models/Props/WoodenCrate/Textures/WoodenCrate_Albedo.png res/models/Props/WoodenCrate/Textures/WoodenCrate_Normal.png 
 -AddMaterial WoodenCrate2PBR PBR 2 res/models/Props/WoodenCrate/Textures/WoodenCrate2_Albedo.png res/models/Props/WoodenCrate/Textures/WoodenCrate2_Normal.png 
+-AddMaterial JaJebe PBR 1 res/textures/test/Bricks.jpg
 
 +SceneGameObject
 -Transform

@@ -13,6 +13,8 @@ namespace sixengine
 	public:
 		void Update(EventManager& eventManager, float dt) override
 		{
+			return;
+
 			std::stringstream ss;
 			ss << "Air:" << m_AirText->player->air;
 			m_Text->text = ss.str();

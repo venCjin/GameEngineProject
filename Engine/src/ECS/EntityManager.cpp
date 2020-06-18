@@ -67,8 +67,8 @@ void EntityManager::DeferredDestroy()
 {
     for (auto i : m_EntityToDestroy)
     {
-        m_EntityComponentMask[i].reset();
-        m_UnusedEntities.push_back(i);
+        //m_EntityComponentMask[i].reset();
+        //m_UnusedEntities.push_back(i);
     }
 
     m_EntityToDestroy.clear();

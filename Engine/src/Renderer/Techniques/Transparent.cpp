@@ -60,7 +60,7 @@ namespace sixengine
 		m_Models.Update(models.data(), models.size() * sizeof(models[0]));
 		m_Layers.Update(layers.data(), layers.size() * sizeof(layers[0]));
 		/*m_Bones.m_LockManager.WaitForLockedRange(m_Bones.m_Head, m_Bones.m_Size);
-		//glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, m_Bones.m_ID, m_Bones.m_Head, m_Bones.m_Size);
+		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, m_Bones.m_ID, m_Bones.m_Head, m_Bones.m_Size);
 
 		std::vector<std::future<void>> threads;
 		threads.reserve(commandList.size());
@@ -72,13 +72,13 @@ namespace sixengine
 			threads[i].wait();
 
 		void* ptr = (unsigned char*)m_Bones.m_Ptr + m_Bones.m_Head;
-		//unsigned int offsetStep = sizeof(BonesStruct);
-		//for (int i = 0; i < commandList.size(); i++)
-		//{
-		//	memcpy(ptr, m_Transforms[i].data(), m_Transforms[i].size() * sizeof(m_Transforms[i][0]));
-		//	ptr = (unsigned char*)ptr + offsetStep;
-		//}
-		*/
+		unsigned int offsetStep = sizeof(BonesStruct);
+		for (int i = 0; i < commandList.size(); i++)
+		{
+			memcpy(ptr, m_Transforms[i].data(), m_Transforms[i].size() * sizeof(m_Transforms[i][0]));
+			ptr = (unsigned char*)ptr + offsetStep;
+		}*/
+
 	}
 
 	
