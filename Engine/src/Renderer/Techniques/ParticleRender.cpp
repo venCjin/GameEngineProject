@@ -13,15 +13,16 @@ namespace sixengine {
 
 	void ParticleRender::Start(TextureArray* textureArray)
 	{
+		// Positions are clockwise - so initially we render backfaces towards us, but it is needed for LookAt
         float vertices[] = { 
 			// Left bottom triangle
 		-0.25f,  0.25f, 0.0f,   0.0f, 1.0f,
-		-0.25f, -0.25f, 0.0f,   0.0f, 0.0f,
 		 0.25f, -0.25f, 0.0f,   1.0f, 0.0f,
+		-0.25f, -0.25f, 0.0f,   0.0f, 0.0f,
 		// Right top triangle
 		 0.25f, -0.25f, 0.0f,   1.0f, 0.0f,
-		 0.25f,  0.25f, 0.0f,   1.0f, 1.0f,
-		-0.25f,  0.25f, 0.0f,   0.0f, 1.0f
+		-0.25f,  0.25f, 0.0f,   0.0f, 1.0f,
+		 0.25f,  0.25f, 0.0f,   1.0f, 1.0f
 			 
         };
 

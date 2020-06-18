@@ -18,7 +18,6 @@ namespace sixengine {
 	public:
 		void Update(EventManager & eventManager, float dt) override
 		{
-			LOG_INFO("PARTICLE UPDATE");
 			// SPAWN PARTICLES
 			if (m_ParticleEmitter->m_Started && timer <= m_ParticleEmitter->m_EmissionDuration)
 			{
@@ -50,9 +49,11 @@ namespace sixengine {
 					{
 						float a = (m_ParticleEmitter->m_Particles[i].m_Timer - m_ParticleEmitter->m_ParticleLifeDuration * 0.9f) / (m_ParticleEmitter->m_ParticleLifeDuration * 0.1f);
 						m_ParticleEmitter->m_Particles[i].m_Color.a = 1 - a;
-						LOG_INFO(a);
 					}
-					m_ParticleEmitter->m_Particles[i].m_TranslationVelocity += m_ParticleEmitter->m_TranslationAcceleration * dt;
+					// velocity update
+
+					/// TODO: MAX SPEED
+					m_ParticleEmitter->m_Particles[i].m_TranslationVelocity += m_ParticleEmitter->m_VelocityAcceleration * dt;
 
 					m_ParticleEmitter->m_Particles[i].UpdateTransform(dt, Camera::ActiveCamera->GetViewMatrix());
 				}

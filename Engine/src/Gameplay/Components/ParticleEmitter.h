@@ -32,26 +32,33 @@ namespace sixengine {
 		
 		bool m_Loop = true;
 		float m_ParticleLifeDuration = 3.0f;
-		
-		float m_StartSpeed = 2.0f; 
-		// m_StartSize?
+
+		// x - startSpeed, y - startRotation, z - startSize
+		//glm::vec3 m_StartTranformations;
+
+		glm::vec3 m_VelocityAcceleration;
+		float m_StartSpeed = 1.0f;
+		float m_StartSize = 1.0f;
+		float m_SizeSpeed = 0.0f;
+
+		// x - translattionAcc, y - rotationAcc, z - scaleAcc
+		//glm::vec3 m_AccelerationsTranformations;
 
 		float m_MaxDirectionAngle = 30.0f;
+		Texture* m_Texture;
+		
+		bool m_CameraAlignment;
 
-		float m_TranslationAcceleration = 0.0f;
-		float m_RotationAcceleration = 0.0f;
-		float m_SizeAcceleration = 0.0f;
 		ParticleObject m_Particles[MAX_PARTICLE_COUNT];
 
-		Texture* m_Texture;
 
 
 		ParticleEmitter() {
 			srand(static_cast <unsigned> (time(0)));			
 		};
 
-		ParticleEmitter(float emissionDuration, float emissionFreq, bool loop, float particleLifeDuration, float startSpeed, float maxAngle, Texture* texture) 
-			: m_EmissionDuration(emissionDuration), m_EmissionFrequency(emissionFreq), m_Loop(loop), m_ParticleLifeDuration(particleLifeDuration), m_StartSpeed(startSpeed), m_MaxDirectionAngle(maxAngle), m_Texture(texture)
+		ParticleEmitter(float emissionDuration, float emissionFreq, bool loop, float particleLifeDuration, glm::vec3 velAcc, float startSpeed, float startSize, float maxAngle, Texture* texture, float sizeSpeed = 0, bool cameraAlignment = true)
+			: m_EmissionDuration(emissionDuration), m_EmissionFrequency(emissionFreq), m_Loop(loop), m_ParticleLifeDuration(particleLifeDuration), m_VelocityAcceleration(velAcc), m_StartSpeed(startSpeed), m_StartSize(startSize), m_MaxDirectionAngle(maxAngle), m_Texture(texture), m_SizeSpeed(sizeSpeed), m_CameraAlignment(cameraAlignment)
 		{ 
 			ParticleEmitter();
 		}
@@ -116,11 +123,10 @@ namespace sixengine {
 
 			direction = glm::normalize(direction);
 			
-			glm::vec3 startTranslationVelocity = direction * m_StartSpeed;
-			glm::vec3 startRotationVelocity = glm::vec3(0.0f);
-			glm::vec3 startScaleVelocity = glm::vec3(0.0f);
+			glm::vec3 transformationVel = glm::vec3(direction * m_StartSpeed);
 
-			m_Particles[FindUnusedParticle()] = ParticleObject(startTranslationVelocity, startRotationVelocity, startScaleVelocity);
+
+			m_Particles[FindUnusedParticle()] = ParticleObject(transformationVel, m_StartSize, m_SizeSpeed, m_CameraAlignment);
 		}
 
 

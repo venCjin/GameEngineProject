@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "Core/CameraSystem/Camera.h"
 
 namespace sixengine {
 
@@ -18,15 +19,17 @@ namespace sixengine {
 	public:		
 
 
-		ParticleObject() : m_TranslationVelocity(0.0f), m_RotationVelocity(0.0f), m_SizeVelocity(0.0f), m_Active(true), m_Timer(0.0f)
+		ParticleObject() : m_TranslationVelocity(glm::vec3(0.0f)), m_Active(true), m_Timer(0.0f)
 		{
-			m_Transform.SetLocalOrientation(glm::vec3(0.0f, -90.0f, 0.0f));
+			m_Transform.SetLocalOrientation(glm::vec3(0.0f, 90.0f, 0.0f));
 		}
 
-		ParticleObject(glm::vec3 tVel, glm::vec3 rVel, glm::vec3 sVel) 
-			: m_TranslationVelocity(tVel), m_RotationVelocity(rVel), m_SizeVelocity(sVel), m_Active(true), m_Timer(0.0f)
+		ParticleObject(glm::vec3 translationVel, float startSize, float sizeSpeed, bool camAlign) 
+			: m_TranslationVelocity(translationVel), m_StartSize(startSize), m_SizeSpeed(sizeSpeed), m_CameraAlignment(camAlign), m_Active(true), m_Timer(0.0f)
 		{
-			m_Transform.SetLocalOrientation(glm::vec3(0.0f, -90.0f, 0.0f));
+
+			m_Transform.SetLocalOrientation(glm::vec3(0.0f, 90.0f, 0.0f));
+			m_Transform.SetLocalScale(glm::vec3(m_StartSize, m_StartSize, m_StartSize));
 		}
 
 		~ParticleObject();
@@ -34,19 +37,15 @@ namespace sixengine {
 		bool m_Active = false;
 
 		glm::vec3 m_TranslationVelocity;
-		glm::vec3 m_RotationVelocity;
-		glm::vec3 m_SizeVelocity;
+		float m_StartSize;
+		float m_SizeSpeed;
 
 		float m_Timer;
+		bool m_CameraAlignment;
 
-		glm::vec4 m_Color = glm::vec4(1.0f, 1.0f, 01.0f, 1.0f);
+		glm::vec4 m_Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 		Transform m_Transform;
-
-		//glm::mat4 transform = glm::mat4(1.0f);
-
-		// Color - mainly for alpha (effect of disappearing)
-		// Texture
 
 		void UpdateTransform(float dt, const glm::mat4& viewMatrix);
 		ParticleData GetParticleData();
