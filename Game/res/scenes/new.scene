@@ -53,7 +53,8 @@
 
 -AddMaterial FontMaterial Font 0
 
-
+-AddMaterial Red PBR 1 res/textures/test/Red.jpg
+-AddMaterial Green PBR 1 res/textures/test/Green.jpg
 
 
 
@@ -470,32 +471,21 @@
 +SceneGameObject
 -Transform
 0 0 0
-180 0 0
-0.01 0.01 0.01
--Model res/models/par/par.dae
--Animation par res/models/par/par_idle.dae idle
--Animation par res/models/par/par_walk.dae walk
--Animation par res/models/par/par_punch.dae punch
--Material parasiteZombie
+0 0 0
+0.5 0.5 0.5
+-Model res/models/primitives/cylinder.obj
+-Material Green
 -DynamicBody
 -ParticleEmitter res/textures/particles/star.png
 -BoxCollider 1.0 2.0 1.0 0
 -SimplePlayer
--Gizmo 0 255 0 Cube 100 200 100
+-Gizmo 0 255 0 Cube 2 2 2
 -LightMaster
-	+Child
-	-Transform
-	100 0 0
-	0 0 0
-	200 200 200
-	-Model res/models/Props/Pots/PotCap.obj
-	-Material PotsPBR
-	+end
 +end
 
 +SceneGameObject
 -Transform
-10 1 10
+10 1 11
 0 0 0
 1 1 1
 -Model res/models/Props/WoodenCrate/WoodenCrate.obj
