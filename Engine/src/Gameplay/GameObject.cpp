@@ -38,19 +38,27 @@ namespace sixengine {
 	{
 		auto transform = GetComponent<Transform>();
 		float time = Timer::Instance()->GetTime(SECOND);
-		for (auto it = m_Gizmos.begin(); it != m_Gizmos.end(); )
+		std::vector<Gizmo*> survived;
+		
+		for (auto child : m_Gizmos)
 		{
-			if (time > (*it)->endTime)
+			if (time > child->endTime)
 			{
-				m_Gizmos.erase(it);
-				(*it)->~Gizmo();
+				child->~Gizmo();
 			}
 			else
 			{
-				(*it)->Draw(transform->GetModelMatrix());
-				++it;
+				survived.push_back(child);
 			}
 		}
+		m_Gizmos.clear();
+		m_Gizmos = survived;
+
+		for (auto child : m_Gizmos)
+		{
+			child->Draw(transform->GetModelMatrix());
+		}
+
 		for (auto child : m_Childeren)
 		{
 			child->OnDrawGizmos(m_Dirty);

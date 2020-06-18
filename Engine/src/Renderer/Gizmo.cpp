@@ -16,6 +16,7 @@ namespace sixengine {
 	Gizmo::~Gizmo()
 	{
 		m_VAO->~VertexArray();
+		delete m_VAO;
 	}
 
 	Gizmo::Gizmo(Shader* shader) : m_Shader(shader), draw(true), endTime(Timer::Instance()->GetTime(SECOND) + 1000000000.0f)
