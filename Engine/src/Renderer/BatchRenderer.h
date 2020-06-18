@@ -121,7 +121,7 @@ namespace sixengine {
 
 		std::vector<Technique*> m_TechniqueList;
 
-		std::vector<GameObject*> m_ParticleList;
+		std::vector<ParticleEmitter*> m_ParticleList;
 
 		std::vector<RendererCommand*> m_CommandList;
 		std::vector<DrawElementsCommand> m_RenderCommandList;

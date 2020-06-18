@@ -39,7 +39,7 @@ namespace sixengine {
 			{
 				//collisionEvent.collision.other.RemoveComponent<BoxCollider>();
 				//collisionEvent.collision.other.RemoveComponent<Mesh>();
-				collisionEvent.collision.other.Component<Transform>()->Translate(glm::vec3(0.0f, -100.0f, 0.0f));
+				collisionEvent.collision.other.Component<Transform>()->Translate(glm::vec3(0.0f, 100.0f, 0.0f));
 
 				//do something
 			}
