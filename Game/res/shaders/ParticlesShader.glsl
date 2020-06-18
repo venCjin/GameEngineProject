@@ -14,6 +14,7 @@ layout(std430, binding = 0) buffer matrices
 {
     mat4 proj;
     mat4 view;
+    mat4 model;
 };
 
 layout(std430, binding = 1) buffer particle_data
@@ -28,7 +29,7 @@ void main()
 {
     TexCoords = aTexCoords;
 	ParticleColor = particleData[gl_InstanceID].color;
-    gl_Position = proj * view * particleData[gl_InstanceID].model * vec4(aPos, 1.0);
+    gl_Position = proj * view * model * particleData[gl_InstanceID].model * vec4(aPos, 1.0);
 }
 
 #shader fragment

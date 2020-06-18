@@ -133,6 +133,14 @@ namespace sixengine {
 	{
 		bool render = true;
 
+		if (gameObject->HasComponent<ParticleEmitter>())
+			m_ParticleList.push_back(gameObject);
+
+		if (!gameObject->HasComponent<Mesh>() && !gameObject->HasComponent<Material>())
+		{
+			render = false;
+		}
+
 		ComponentHandle<Mesh> mesh;
 		if (gameObject->HasComponent<Mesh>() && gameObject->GetComponent<Mesh>()->GetModel())
 		{
@@ -151,9 +159,6 @@ namespace sixengine {
 			render = true;
 		}
 
-		if (gameObject->HasComponent<ParticleEmitter>())
-			m_ParticleList.push_back(gameObject->GetComponent<ParticleEmitter>().Get());
-
 		if (render)
 		{
 			RendererCommand* command = new(m_FrameAllocator.Get(m_CommandList.size())) RendererCommand();
@@ -164,11 +169,11 @@ namespace sixengine {
 			command->gameObject = gameObject;
 
 			command->shader = gameObject->GetComponent<Material>()->GetShader();
+			command->data.textureLayer = gameObject->GetComponent<Material>()->GetTexture();
 
 			if (gameObject->HasComponent<Mesh>())
 				command->ModelID = mesh->GetModel()->m_ID;
 
-			command->data.textureLayer = gameObject->GetComponent<Material>()->GetTexture();
 			command->data.model = model;
 
 			m_CommandList.push_back(command);
