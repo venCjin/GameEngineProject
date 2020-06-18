@@ -21,7 +21,7 @@ namespace sixengine {
 		void StartFrame(std::vector<RendererCommand*>& commandList, std::vector<DrawElementsCommand> drawCommands,
 			std::vector<glm::mat4>& models, std::vector<glm::vec4> layers) override;
 		void Render(std::vector<RendererCommand*>& commandList) override;
-		void Render(std::vector<ParticleEmitter*> particleEmitter);
+		void Render(std::vector<GameObject*> particleEmitter);
 	};
 
 }

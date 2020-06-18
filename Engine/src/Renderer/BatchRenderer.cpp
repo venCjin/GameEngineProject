@@ -152,7 +152,7 @@ namespace sixengine {
 		}
 
 		if (gameObject->HasComponent<ParticleEmitter>())
-			m_ParticleList.push_back(gameObject->GetComponent<ParticleEmitter>().Get());
+			m_ParticleList.push_back(gameObject);
 
 		if (render)
 		{

@@ -164,7 +164,8 @@ namespace sixengine {
 			m_Billboard->AddComponent<Billboard>(m_Billboard);
 			m_Scene.m_SceneRoot->AddChild(m_Billboard);
 			//BAR
-			
+
+			Texture* particleTexture = new Texture("res/textures/particles/star.png");
 			//COLLECTABLE
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
@@ -172,6 +173,7 @@ namespace sixengine {
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
 			obj->AddComponent<Collectable>();
+			obj->AddComponent<ParticleEmitter>(particleTexture);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCratePBR"));
 			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE
@@ -183,6 +185,7 @@ namespace sixengine {
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
 			obj->AddComponent<Collectable>();
+			obj->AddComponent<ParticleEmitter>(particleTexture);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE2
