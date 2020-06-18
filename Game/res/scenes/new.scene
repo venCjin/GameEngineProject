@@ -479,7 +479,7 @@
 -ParticleEmitter res/textures/particles/star.png
 -BoxCollider 1.0 2.0 1.0 0
 -SimplePlayer
--Gizmo 0 255 0 Cube 2 2 2
+-Gizmo 0 255 0 Cube 2 4 2
 -LightMaster
 +end
 

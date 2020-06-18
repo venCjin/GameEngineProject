@@ -13,6 +13,8 @@
 
 #include <Physics/Components/DynamicBody.h>
 
+#include <Renderer/Gizmo.h>
+
 bool sixengine::AttackState::IsStateReady(StateMachine* stateMachine)
 {
 	if (m_Enemy->CanSeeUndergroundMovement())
@@ -146,7 +148,12 @@ void sixengine::AttackState::Shoot(float accuracy)
 {
 	//_references.shootParticle.Play();
 	_lastShootTime = Timer::Instance()->ElapsedTime();
+	
 	//StartCoroutine(ShowShootLine());
+	glm::vec3 playerPos = m_Enemy->GetPlayer().Component<Transform>()->GetWorldPosition();
+	glm::vec3 enemyPos = m_GameObject->GetComponent<Transform>()->GetWorldPosition();
+	Gizmo::DrawLine(enemyPos, playerPos, 0.1f);
+
 
 	//if (UnityEngine.Random.value < accuracy)
 	{

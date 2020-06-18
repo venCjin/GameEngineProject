@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <Core/Timer.h>
+#include <Core/Application.h>
+#include <Core/Scene.h>
 
 namespace sixengine {
 
@@ -16,7 +18,7 @@ namespace sixengine {
 		m_VAO->~VertexArray();
 	}
 
-	Gizmo::Gizmo(Shader* shader) : m_Shader(shader), endTime(Timer::Instance()->GetTime(SECOND) + 1000000000.0f)
+	Gizmo::Gizmo(Shader* shader) : m_Shader(shader), draw(true), endTime(Timer::Instance()->GetTime(SECOND) + 1000000000.0f)
 	{
 	}
 
@@ -80,6 +82,27 @@ namespace sixengine {
 
 	void Gizmo::Save(std::iostream& stream)
 	{
+	}
+
+	void Gizmo::DrawLine(glm::vec3 start, glm::vec3 end, float timeToLive, glm::vec3 color)
+	{
+		std::vector<GizmoVertex> vertices;
+		std::vector<unsigned int> indices;
+		vertices.emplace_back(GizmoVertex{ glm::vec3{ start.x, start.y, start.z } });
+		vertices.emplace_back(GizmoVertex{ glm::vec3{ start.x, start.y, start.z } });
+		vertices.emplace_back(GizmoVertex{ glm::vec3{ end.x, end.y, end.z } });
+		indices.push_back(0);
+		indices.push_back(1);
+		indices.push_back(2);
+		VertexArray* vao = new VertexArray();
+		VertexBuffer* vbo = new VertexBuffer(&vertices[0], vertices.size());
+		vbo->SetLayout({
+			{ VertexDataType::VEC3F, "Position" }
+			});
+		IndexBuffer* ibo = new IndexBuffer(&indices[0], indices.size());
+		vao->AddVertexBuffer(*vbo);
+		vao->AddIndexBuffer(*ibo);
+		Application::Get().GetScene()->m_SceneRoot->AddGizmo(new Gizmo(vao, Application::Get().GetScene()->m_ShaderManager->Get("Gizmo"), color, true, timeToLive));
 	}
 
 	void Gizmo::Draw(const glm::mat4& model)
