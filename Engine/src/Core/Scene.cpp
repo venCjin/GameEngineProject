@@ -211,7 +211,9 @@ namespace sixengine {
 			}
 			else if (s == "+UIGameObject")
 			{
-				m_UIRoot->AddChild(ReadGameObject(file, *en));
+				GameObject* g = ReadGameObject(file, *en);
+				g->GetComponent<Transform>()->SetParent(m_UIRoot->GetComponent<Transform>().Get());
+				m_UIRoot->AddChild(g);
 			}
 			else if (s == "-Blur")
 			{
