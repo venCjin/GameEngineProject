@@ -133,7 +133,7 @@ namespace sixengine {
 			Texture* rippleParticleTexture = new Texture("res/textures/particles/ripple.png");
 
 
-			m_Scene.LoadScene("res/scenes/new.scene");
+			m_Scene.LoadScene("res/scenes/exported.scene");
 			ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
 			PLAY_TRACK("ophelia");
 
