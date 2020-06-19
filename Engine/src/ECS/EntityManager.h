@@ -70,7 +70,6 @@ public:
 
 private:
     bool Valid() const { return m_ID; }
-
     void Invalidate();
 };
 
@@ -79,25 +78,25 @@ private:
 class ComponentFamily
 {
 public:
-	typedef uint64_t Family;
+    typedef uint64_t Family;
 
 protected:
-	static Family m_FamilyCounter;
+    static Family m_FamilyCounter;
 };
 
 template <typename T>
 class ComponentF : public ComponentFamily
 {
 public:
-	static Family GetFamily();
+    static Family GetFamily();
 };
 
 template <typename T>
 ComponentFamily::Family ComponentF<T>::GetFamily()
 {
-	static Family family(m_FamilyCounter++);
-	assert(family < MAX_COMPONENTS);
-	return family;
+    static Family family(m_FamilyCounter++);
+    assert(family < MAX_COMPONENTS);
+    return family;
 }
 
 //////////////////
@@ -149,20 +148,22 @@ class EntityManager
     friend class ComponentHandle;
 
 private:
-	uint64_t m_IdCounter = 1;
+    uint64_t m_IdCounter = 1;
 
     EventManager& m_EventManager;
 
-	std::vector<std::bitset<MAX_COMPONENTS>> m_EntityComponentMask;
-	std::vector<uint64_t> m_UnusedEntities;
-	std::vector<PoolAllocator*> m_ComponentPools;
+    std::vector<std::bitset<MAX_COMPONENTS>> m_EntityComponentMask;
+    std::vector<uint64_t> m_UnusedEntities;
+    std::vector<uint64_t> m_EntityToDestroy;
+    std::vector<PoolAllocator*> m_ComponentPools;
 
 public:
-    EntityManager(EventManager& eventManager) 
+    EntityManager(EventManager& eventManager)
         : m_EventManager(eventManager) {}
 
     Entity CreateEntity();
     void Destroy(Entity::ID entity);
+    void DeferredDestroy();
 
     template <typename T, typename ... Args>
     ComponentHandle<T> AddComponent(Entity::ID id, Args&& ... args);
@@ -182,7 +183,7 @@ public:
 private:
     template <typename T, typename ... Args>
     typename std::enable_if<sizeof...(Args) >= 1, bool>::type
-    HasComponent(Entity::ID id) const;
+        HasComponent(Entity::ID id) const;
 
     template <typename T>
     T* GetComponent(Entity::ID id);
@@ -194,7 +195,7 @@ private:
 };
 
 template <typename T, typename ... Args>
-ComponentHandle<T> EntityManager::AddComponent(Entity::ID id, Args&& ... args) 
+ComponentHandle<T> EntityManager::AddComponent(Entity::ID id, Args&& ... args)
 {
     assert(Entity::Valid(id));
 
@@ -295,12 +296,12 @@ ComponentManager<T>* EntityManager::AllocateComponent()
 {
     const ComponentFamily::Family family = ComponentF<T>::GetFamily();
 
-    if (m_ComponentPools.size() <= family) 
+    if (m_ComponentPools.size() <= family)
     {
         m_ComponentPools.resize(family + 1);
     }
 
-    if (!m_ComponentPools[family]) 
+    if (!m_ComponentPools[family])
     {
         ComponentManager<T>* pool = new ComponentManager<T>();
         pool->AllocateEntity(m_IdCounter);
@@ -321,7 +322,7 @@ ComponentHandle<T> Entity::AddComponent(Args&& ... args)
 template<typename T>
 inline ComponentHandle<T> Entity::AddComponentCopy(const T& component)
 {
-    return m_EntityManager->AddComponent<T>(m_ID, std::forward<const T &>(component));
+    return m_EntityManager->AddComponent<T>(m_ID, std::forward<const T&>(component));
 }
 
 template <typename T>

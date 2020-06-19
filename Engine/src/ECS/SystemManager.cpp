@@ -10,6 +10,8 @@ void SystemManager::UpdateAll(float dt)
 		s->GetEntities(m_EntityManager);
 		s->UpdateAll(m_EventManager, dt);
 	}
+
+	m_EntityManager.DeferredDestroy();
 }
 
 void BaseSystem::OnStart(EventManager& eventManager)

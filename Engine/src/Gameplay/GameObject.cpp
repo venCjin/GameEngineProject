@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "Gameplay/GameObject.h"
 #include "Gameplay/Components/Transform.h"
+#include "AI/NavMesh/NavAgent.h"
 #include "Renderer/Material.h"
 #include "Renderer/Model.h"
 #include "Renderer/Renderer.h"
@@ -29,29 +30,38 @@ namespace sixengine {
 
 		for (auto child : m_Childeren)
 		{
-			child->Render();
+			child->Render(Transform(this), dirty);
 		}
 	}
 
-	void GameObject::OnDrawGizmos(bool first)
-	{
-		for (auto child : m_Childeren)
-		{
-			child->OnDrawGizmos(Transform(this), first);
-		}
-	}
-
-	void GameObject::OnDrawGizmos(Transform parentWorld, bool dirty)
+	void GameObject::OnDrawGizmos(bool dirty)
 	{
 		auto transform = GetComponent<Transform>();
-
-		for (auto gizmo : m_Gizmos)
+		float time = Timer::Instance()->GetTime(SECOND);
+		std::vector<Gizmo*> survived;
+		
+		for (auto child : m_Gizmos)
 		{
-			gizmo->Draw(transform->GetModelMatrix());
+			if (time > child->endTime)
+			{
+				child->~Gizmo();
+			}
+			else
+			{
+				survived.push_back(child);
+			}
 		}
+		m_Gizmos.clear();
+		m_Gizmos = survived;
+
+		for (auto child : m_Gizmos)
+		{
+			child->Draw(transform->GetModelMatrix());
+		}
+
 		for (auto child : m_Childeren)
 		{
-			child->OnDrawGizmos(Transform(this), m_Dirty);
+			child->OnDrawGizmos(m_Dirty);
 		}
 	}
 
@@ -109,12 +119,21 @@ namespace sixengine {
 				GetComponent<Transform>()->SetLocalScale(scale);
 			}
 
-			ImGui::TreePop();
-		}
+			///
+			if (HasComponent<NavAgent>())
+			{
+				ImGui::InputFloat3("Nav agent destination", GetComponent<NavAgent>()->m_Destination.data.data);
+				ImGui::Checkbox("move", &GetComponent<NavAgent>()->m_ProcedeMoving);
+			}
+			///
 
-		for each (auto& child in m_Childeren)
-		{
-			child->ImGuiWriteSceneTreeNode();
+			ImGui::Text("Children");
+			for each (auto& child in m_Childeren)
+			{
+				child->ImGuiWriteSceneTreeNode();
+			}
+
+			ImGui::TreePop();
 		}
 	}
 
@@ -138,12 +157,13 @@ namespace sixengine {
 				GetComponent<Transform>()->SetLocalPosition(pos);
 			}
 
-			ImGui::TreePop();
-		}
+			ImGui::Text("Children");
+			for each (auto & child in m_Childeren)
+			{
+				child->ImGuiWriteUITreeNode();
+			}
 
-		for each (auto & child in m_Childeren)
-		{
-			child->ImGuiWriteUITreeNode();
+			ImGui::TreePop();
 		}
 	}
 #endif // DEBUG

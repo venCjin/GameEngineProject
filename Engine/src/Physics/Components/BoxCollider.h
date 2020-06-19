@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Core/ISerializable.h>
 #include "Collider.h"
 
 #include <glm/glm.hpp>

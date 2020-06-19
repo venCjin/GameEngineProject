@@ -4,38 +4,47 @@
 #include "Core/Application.h"
 #include "Core/ShaderManager.h"
 
-#include "Gameplay/Systems/BillboardSystem.h"
-#include "Gameplay/Systems/RotationSystem.h"
-#include "Gameplay/Systems/UIRendererSystem.h"
-#include "Gameplay/GameObject.h"
+#include <Core/CameraSystem/FlyingCameraSystem.h>
+#include <Core/CameraSystem/FollowCameraSystem.h>
+#include <Core/CameraSystem/MixingCameraSystem.h>
+#include <Core/CameraSystem/OrbitalCameraSystem.h>
 
-#include "Renderer/PrimitiveUtils.h"
-#include "Renderer/Gizmo.h"
-
-#include "Renderer/Techniques/AnimationPBR.h"
-#include "Renderer/Techniques/StaticPBR.h"
 
 #include "Gameplay/Components/DirectionalLight.h"
 #include "Gameplay/Components/PointLight.h"
 #include "Gameplay/Components/SpotLight.h"
 
-#include "Physics/Components/Collider.h"
-#include "Physics/Systems/CollisionSystem.h"
-
-#include "Gameplay/Components/SimplePlayer.h"
+#include "Gameplay/Systems/AirTextSystem.h"
+#include "Gameplay/Systems/AnimationSystem.h"
+#include "Gameplay/Systems/BillboardSystem.h"
+#include "Gameplay/Systems/ParticleSystem.h"
+#include "Gameplay/Systems/RotationSystem.h"
 #include "Gameplay/Systems/SimplePlayerSystem.h"
+#include "Gameplay/Systems/UIRendererSystem.h"
 
-#include "Core/CameraSystem/FlyingCamera.h"
-#include <Core/CameraSystem/FlyingCameraSystem.h>
-#include "Core/CameraSystem/FollowCamera.h"
-#include <Core/CameraSystem/FollowCameraSystem.h>
-#include "Core/CameraSystem/MixingCamera.h"
-#include <Core/CameraSystem/MixingCameraSystem.h>
-#include "Core/CameraSystem/OrbitalCamera.h"
-#include <Core/CameraSystem/OrbitalCameraSystem.h>
+#include "Gameplay/GameObject.h"
 
-#include "Gameplay/StateMachine/State.h"
-#include "Gameplay/StateMachine/StateMachineSystem.h"
+
+#include "Physics/Systems/CollisionSystem.h"
+#include "Physics/Systems/DynamicBodySystem.h"
+
+#include "Renderer/PrimitiveUtils.h"
+#include "Renderer/Gizmo.h"
+#include "Renderer/Techniques/AnimationPBR.h"
+#include "Renderer/Techniques/StaticPBR.h"
+#include "Renderer/Techniques/DepthRender.h"
+#include <Renderer/Techniques/Transparent.h>
+#include "Renderer/Techniques/Water.h"
+#include "Renderer/Techniques/UI.h"
+
+#include <AI/EnemiesManager.h>
+#include <AI/StateMachineSystem.h>
+#include <AI/States/IdleState.h>
+#include <AI/States/PatrolState.h>
+#include <AI/States/AttackState.h>
+#include <AI/States/SearchState.h>
+#include "AI/NavMesh/NavAgent.h"
+#include "AI/NavMesh/NavAgentSystem.h"
 
 #define LOAD(COMPONENT)								\
 {													\
@@ -53,10 +62,16 @@ namespace sixengine {
 	{
 		m_ModelManager = new ModelManager();
 		m_ShaderManager = new ShaderManager();
-		m_MaterialManager = new MaterialManager();
+		m_MaterialManager = MaterialManager::getInstance();
 		m_TextureArray = new TextureArray(2048, 2048);
 		BatchRenderer::Initialize(m_ModelManager, m_TextureArray);
 		m_BatchRenderer = BatchRenderer::Instance();
+
+		m_SceneRoot = new GameObject(*Application::Get().GetEntityManager());
+		m_SceneRoot->AddComponent<Transform>(m_SceneRoot);
+
+		m_UIRoot = new GameObject(*Application::Get().GetEntityManager());
+		m_UIRoot->AddComponent<Transform>(m_UIRoot);
 
 		GameObject* go = new GameObject(*Application::Get().GetEntityManager());
 		go->AddComponent<Transform>(go);
@@ -87,13 +102,6 @@ namespace sixengine {
 		//EventManager* ev = Application::Get().GetEventManager();
 		SystemManager* sys = Application::Get().GetSystemManager();
 
-		m_SceneRoot = new GameObject(*en);
-		m_SceneRoot->AddComponent<Transform>(m_SceneRoot);
-
-		m_UIRoot = new GameObject(*en);
-		m_UIRoot->AddComponent<Transform>(m_UIRoot);
-
-
 		std::string line, s;
 		std::getline(file, line);
 		std::stringstream ss(line);
@@ -118,7 +126,33 @@ namespace sixengine {
 					m_BatchRenderer->AddTechnique(
 						new AnimationPBR(
 							m_ShaderManager->AddShader(s)
-							));
+						));
+				}
+				else if (s == "TransparentTechnique")
+				{
+					ss >> s;
+					m_BatchRenderer->AddTechnique(
+						new TransparentTechnique(
+							m_ShaderManager->AddShader(s)
+						));
+				}
+				else if (s == "UI")
+				{
+					ss >> s;
+					UI* ui = new UI(m_ShaderManager->AddShader(s));
+					while (ss)
+					{
+						ss >> s;
+						ui->AddFont(new Font(s));
+					}
+					m_BatchRenderer->AddTechnique(ui);
+				}
+				else if (s == "Water")
+				{
+					ss >> s;
+					Water* water = new Water(m_ShaderManager->AddShader(s));
+					m_BatchRenderer->SetWater(water);
+					m_BatchRenderer->AddTechnique(water);
 				}
 				else
 				{
@@ -150,25 +184,66 @@ namespace sixengine {
 			else if (s == "-AddSystem")
 			{
 				ss >> s;
-				if (s == "BillboardSystem") sys->AddSystem<BillboardSystem>();
+
+				if (s == "StateMachineSystem") sys->AddSystem<StateMachineSystem>();
+				else if (s == "AirTextSystem") sys->AddSystem<AirTextSystem>();
+				else if (s == "AnimationSystem") sys->AddSystem<AnimationSystem>();
+				else if (s == "BillboardSystem") sys->AddSystem<BillboardSystem>();
+				else if (s == "NavAgentSystem") sys->AddSystem<NavAgentSystem>();
+				else if (s == "ParticleSystem") sys->AddSystem<ParticleSystem>();
 				else if (s == "RotationSystem") sys->AddSystem<RotationSystem>();
-				else if (s == "UIRendererSystem") sys->AddSystem<UIRendererSystem>();
 				else if (s == "SimplePlayerSystem") sys->AddSystem<SimplePlayerSystem>();
-				else if (s == "CollisionSystem") sys->AddSystem<CollisionSystem>();
-				else if (s == "StateMachineSystem") sys->AddSystem<StateMachineSystem>();
+				else if (s == "UIRendererSystem") sys->AddSystem<UIRendererSystem>();
 				else if (s == "FlyingCameraSystem") sys->AddSystem<FlyingCameraSystem>();
 				else if (s == "FollowCameraSystem") sys->AddSystem<FollowCameraSystem>();
 				else if (s == "MixingCameraSystem") sys->AddSystem<MixingCameraSystem>();
 				else if (s == "OrbitalCameraSystem") sys->AddSystem<OrbitalCameraSystem>();
+				else if (s == "CollisionSystem") sys->AddSystem<CollisionSystem>();
+				else if (s == "DynamicBodySystem") sys->AddSystem<DynamicBodySystem>();
+
 				else LOG_WARN("Not recognized system: {0}", s);
 			}
 			else if (s == "+SceneGameObject")
 			{
-				m_SceneRoot->AddChild(ReadGameObject(file, *en));
+				GameObject* g = ReadGameObject(file, *en);
+				g->GetComponent<Transform>()->SetParent(m_SceneRoot->GetComponent<Transform>().Get());
+				m_SceneRoot->AddChild(g);
 			}
 			else if (s == "+UIGameObject")
 			{
-				m_UIRoot->AddChild(ReadGameObject(file, *en));
+				GameObject* g = ReadGameObject(file, *en);
+				g->GetComponent<Transform>()->SetParent(m_UIRoot->GetComponent<Transform>().Get());
+				m_UIRoot->AddChild(g);
+			}
+			else if (s == "-Blur")
+			{
+				ss >> s;
+				m_BatchRenderer->SetBlurShader(m_ShaderManager->AddShader(s));
+			}
+			else if (s == "-Skybox")
+			{
+				ss >> s;
+
+				std::string right, left, top, bottom, front, back;
+				ss >> right >> left >> top >> bottom >> front >> back;
+				Skybox* skybox = new Skybox( { right, left, top, bottom, front, back } );
+				
+				m_BatchRenderer->SetSkybox(new SkyboxRender(m_ShaderManager->AddShader(s), skybox));
+			}
+			else if (s == "-StaticDepth")
+			{
+				ss >> s;
+				m_BatchRenderer->SetStaticDepth(new DepthRender(m_ShaderManager->AddShader(s)));
+			}
+			else if (s == "-AnimatedDepth")
+			{
+				ss >> s;
+				m_BatchRenderer->SetAnimatedDepth(new DepthRender(m_ShaderManager->AddShader(s)));
+			}
+			else if (s == "-Particle")
+			{
+				ss >> s;
+				m_BatchRenderer->SetParticle(new ParticleRender(m_ShaderManager->AddShader(s)));
 			}
 			else if (!s.empty())
 			{
@@ -181,9 +256,11 @@ namespace sixengine {
 		}
 		file.close();
 
-		//m_TextureArray->CreateTextureArray();
-		//m_ModelManager->CreateVAO();
-
+#if SCENE_ENDS_IN_GAME_CPP
+#else
+		m_TextureArray->CreateTextureArray();
+		m_ModelManager->CreateVAO();
+#endif
 		return true;
 	}
 
@@ -257,13 +334,95 @@ namespace sixengine {
 				continue;
 			}
 
+			else if (s == "-Animation")
+			{
+				if (!go->HasComponent<Animation>()) go->AddComponent<Animation>();
+				std::string model, animation, name;
+				file >> model >> animation >> name;
+				m_ModelManager->GetModel(model)->LoadAnimation(animation, name);
+				continue;
+			}
+
 			else if (s == "-Material")
 			{
 				file >> s;
 				go->AddComponent<Material>(*m_MaterialManager->Get(s));
 				continue;
 			}
+
+			else if (s == "-DynamicBody")
+			{
+				go->AddComponent<DynamicBody>();
+				continue;
+			}
+
+			/*else if (s == "-ParticleEmitter")
+			{
+				file >> s;
+				go->AddComponent<ParticleEmitter>(new Texture(s));
+				continue;
+			}*/
+
+			else if (s == "-Enemy")
+			{
+				go->AddComponent<BoxCollider>(glm::vec3(1.0f, 1.0f, 1.0f));
+				go->AddComponent<Mesh>(m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
+				go->AddComponent<Material>(*m_MaterialManager->Get("JaJebe"));
+				go->AddComponent<DynamicBody>();
+
+				GameObject* child = new GameObject(en);
+				child->AddComponent<Transform>(child);
+				child->GetComponent<Transform>()->SetParent(go->GetComponent<Transform>().Get());
+				child->GetComponent<Transform>()->SetLocalPosition(glm::vec3(0.0f, 0.6f, -0.75f));
+				child->GetComponent<Transform>()->SetLocalScale(glm::vec3(1.0f, 0.2f, 1.0f));
+				child->AddComponent<Mesh>(m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
+				child->AddComponent<Material>(*m_MaterialManager->Get("JaJebe"));
+
+				go->AddComponent<Enemy>(go);
+				go->AddComponent<StateMachine>();
+				go->AddComponent<NavAgent>(go);
+				go->GetComponent<StateMachine>()->m_States.push_back(new AttackState(go));
+				go->GetComponent<StateMachine>()->m_States.push_back(new SearchState(go));
+				go->GetComponent<StateMachine>()->m_States.push_back(new IdleState(go));
+
+				go->GetComponent<StateMachine>()->m_CurrentState = go->GetComponent<StateMachine>()->m_States[0];
+
+				m_SceneRoot->AddChild(child);
+			}
 			
+			else if (s == "-Text")
+			{
+				float size, r, g, b;
+				file >> size >> r >> g >> b;
+
+				std::string line;
+				std::getline(file, line);
+
+				go->AddComponent<Text>(line, glm::vec3(r, g, b), size);
+				continue;
+			}
+
+			else if (s == "-AirText")
+			{
+				go->AddComponent<AirText>();
+				go->GetComponent<AirText>()->player = en.EntitiesWithComponents<SimplePlayer>()[0].Component<SimplePlayer>().Get();
+				continue;
+			}
+
+			else if (s == "-LightMaster")
+			{
+				m_BatchRenderer->SetLight(new Light(go));
+				continue;
+			}
+
+			else if (s == "-Water")
+			{
+				m_BatchRenderer->m_Water->SetGameObject(go);
+				continue;
+			}
+
+			LOAD(Collectable);
+
 			LOAD(Rotation)
 			
 			LOAD(Billboard);
@@ -273,6 +432,14 @@ namespace sixengine {
 			LOAD(BoxCollider);
 			
 			LOAD(SphereCollider);
+
+			if (s == "+Child")
+			{
+				GameObject* g = ReadGameObject(file, en);
+				g->GetComponent<Transform>()->SetParent(go->GetComponent<Transform>().Get());
+				go->AddChild(g);
+				continue;
+			}
 
 			LOG_WARN("Not recognized scene component: {0}", s);
 		} while (true);

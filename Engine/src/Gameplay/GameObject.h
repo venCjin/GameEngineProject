@@ -59,6 +59,37 @@ namespace sixengine {
 			return m_Entity.Component<T>();
 		}
 
+		template<typename T>
+		bool GetFirstChildWithComponent(GameObject* result)
+		{
+			LOG_CORE_FATAL("GameObject::GetFirstChildWithComponent() DOES NOT WORKING");
+			__debugbreak();
+
+			if (this->HasComponent<T>())
+			{
+				result = this;
+				return true;
+			}
+
+			for each (auto child in m_Childeren)
+			{
+				if (child->GetFirstChildWithComponent<T>(result)) return true;
+			}
+
+			return false;
+		}
+
+		template<typename T>
+		void GetChildrenWithComponent(std::vector<GameObject*>& result)
+		{
+			if (this->HasComponent<T>()) result.push_back(this);
+
+			for each (auto child in m_Childeren)
+			{
+				child->GetChildrenWithComponent<T>(result);
+			}
+		}
+
 		// Scene graph
 
 		void Render(bool first = false);
@@ -66,8 +97,6 @@ namespace sixengine {
 		void Render(Transform parentWorld, bool dirty);
 
 		void OnDrawGizmos(bool first = false);
-
-		void OnDrawGizmos(Transform parentWorld, bool dirty);
 
 		void SetDirty(bool dirty);
 

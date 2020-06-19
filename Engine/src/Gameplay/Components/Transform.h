@@ -10,6 +10,8 @@
 
 #include <algorithm>
 
+#include <glm/gtx/string_cast.hpp>
+
 namespace sixengine {
 
 	class Transform : public ISerializable

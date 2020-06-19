@@ -77,4 +77,9 @@ namespace sixengine {
 		m_Shader->Unbind();
 	}
 
+	void Water::SetGameObject(GameObject* go)
+	{
+		m_Go = go;
+	}
+
 }
