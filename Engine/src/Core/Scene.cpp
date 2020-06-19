@@ -356,12 +356,12 @@ namespace sixengine {
 				continue;
 			}
 
-			else if (s == "-ParticleEmitter")
+			/*else if (s == "-ParticleEmitter")
 			{
 				file >> s;
 				go->AddComponent<ParticleEmitter>(new Texture(s));
 				continue;
-			}
+			}*/
 
 			else if (s == "-Enemy")
 			{

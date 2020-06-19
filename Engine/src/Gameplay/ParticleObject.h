@@ -24,10 +24,10 @@ namespace sixengine {
 			m_Transform.SetLocalOrientation(glm::vec3(0.0f, 90.0f, 0.0f));
 		}
 
-		ParticleObject(glm::vec3 translationVel, float startSize, float sizeSpeed, bool camAlign) 
+		ParticleObject(glm::vec3 parentPos, glm::vec3 translationVel, float startSize, float sizeSpeed, bool camAlign) 
 			: m_TranslationVelocity(translationVel), m_StartSize(startSize), m_SizeSpeed(sizeSpeed), m_CameraAlignment(camAlign), m_Active(true), m_Timer(0.0f)
 		{
-
+			m_Transform.SetLocalPosition(parentPos);
 			m_Transform.SetLocalOrientation(glm::vec3(0.0f, 90.0f, 0.0f));
 			m_Transform.SetLocalScale(glm::vec3(m_StartSize, m_StartSize, m_StartSize));
 		}
