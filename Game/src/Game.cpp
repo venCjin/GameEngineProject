@@ -134,8 +134,8 @@ namespace sixengine {
 
 
 			m_Scene.LoadScene("res/scenes/new.scene");
-			//ADD_TRACK("res/sounds/ophelia.mp3", "ophelia");
-			//PLAY_TRACK("ophelia");
+			ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
+			PLAY_TRACK("ophelia");
 
 			// HACKS
 			//////SHITT!!!11
