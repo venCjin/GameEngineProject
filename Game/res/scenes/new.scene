@@ -472,7 +472,6 @@
 -Model res/models/primitives/cylinder.obj
 -Material Green
 -DynamicBody
--ParticleEmitter res/textures/particles/star.png
 -BoxCollider 1.0 2.0 1.0 0
 -SimplePlayer
 -LightMaster

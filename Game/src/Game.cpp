@@ -173,7 +173,6 @@ namespace sixengine {
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
 			obj->AddComponent<Collectable>();
-			obj->AddComponent<ParticleEmitter>(particleTexture);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCratePBR"));
 			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE
@@ -185,13 +184,12 @@ namespace sixengine {
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
 			obj->AddComponent<Collectable>();
-			obj->AddComponent<ParticleEmitter>(particleTexture);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE2
 			
 			// PARTICLE SYSTEMS1
-//float emissionDuration, float emissionFreq, bool loop, float particleLifeDuration, glm::vec3 velAcc, float startSpeed, float startSize, float maxAngle, Texture* texture, float sizeSpeed = 0, bool CameraAlignment		
+//gameObject, float emissionDuration, float emissionFreq, bool loop, float particleLifeDuration, glm::vec3 velAcc, float startSpeed, float startSize, float maxAngle, Texture* texture, float sizeSpeed = 0, bool CameraAlignment		
 			/*obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(-35.0f, 0.0f, 0.0f);
@@ -203,11 +201,12 @@ namespace sixengine {
 
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(-25.0f, 0.0f, 0.0f);
+			obj->GetComponent<Transform>()->SetWorldPosition(-25.0f, 1.0f, 0.0f);
 			obj->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
-			obj->AddComponent<ParticleEmitter>(1.0f, 10.0f, true, 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 1.0f, 30.0f, rippleParticleTexture, 5.0f, false);
+			//obj->AddComponent<ParticleEmitter>(obj, 1.0f, 10.0f, true, 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 1.0f, 30.0f, rippleParticleTexture, 5.0f, false);
+			obj->AddComponent<ParticleEmitter>(obj);
 			m_Scene.m_SceneRoot->AddChild(obj);
 			// END Particle Systems
 

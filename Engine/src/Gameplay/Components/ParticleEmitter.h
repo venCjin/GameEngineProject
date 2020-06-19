@@ -10,6 +10,7 @@
 
 #include "Renderer/Texture.h"
 #include "Core/CameraSystem/Camera.h"
+#include "Gameplay/GameObject.h"
 
 #include <iostream>     // std::cout
 #include <algorithm>    // std::sort
@@ -51,22 +52,34 @@ namespace sixengine {
 
 		ParticleObject m_Particles[MAX_PARTICLE_COUNT];
 
+		Transform* m_Transform = nullptr;
+		GameObject* m_GO = nullptr;
 
+		ParticleEmitter(GameObject* go) 
+		{
+			m_GO = go;
+		}
 
 		ParticleEmitter() {
 			srand(static_cast <unsigned> (time(0)));			
 		};
 
-		ParticleEmitter(float emissionDuration, float emissionFreq, bool loop, float particleLifeDuration, glm::vec3 velAcc, float startSpeed, float startSize, float maxAngle, Texture* texture, float sizeSpeed = 0, bool cameraAlignment = true)
+		ParticleEmitter(GameObject* go, float emissionDuration, float emissionFreq, bool loop, float particleLifeDuration, glm::vec3 velAcc, float startSpeed, float startSize, float maxAngle, Texture* texture, float sizeSpeed = 0, bool cameraAlignment = true)
 			: m_EmissionDuration(emissionDuration), m_EmissionFrequency(emissionFreq), m_Loop(loop), m_ParticleLifeDuration(particleLifeDuration), m_VelocityAcceleration(velAcc), m_StartSpeed(startSpeed), m_StartSize(startSize), m_MaxDirectionAngle(maxAngle), m_Texture(texture), m_SizeSpeed(sizeSpeed), m_CameraAlignment(cameraAlignment)
 		{ 
-			ParticleEmitter();
+			//ParticleEmitter();
+			m_GO = go;
+			m_Transform = go->GetComponent<Transform>().Get();
+			//m_Transform = new Transform();
 		}
 
-		ParticleEmitter(Texture* texture)
+		ParticleEmitter(GameObject* go, Texture* texture)
 			: m_Texture(texture)
 		{
-			ParticleEmitter();
+			//ParticleEmitter();
+			m_Transform = go->GetComponent<Transform>().Get();
+			//m_Transform = new Transform();
+
 		}
 	
 		void Start()
@@ -104,8 +117,6 @@ namespace sixengine {
 
 		void SpawnParticle()
 		{
-			//glm::mat4 rotation = glm::mat4(1.0f);
-			//rotation *= glm::yawPitchRoll(45.0f, 0.0f, 89.0f);
 
 			float randomX = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 			float randomY = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -115,7 +126,6 @@ namespace sixengine {
 			glm::vec3 direction = glm::vec3(0.0f, 1.0f, 0.0f);
 			direction = glm::normalize(q * direction);
 
-			//std::cout << "direction.x: " << direction.x << " direction.y: "<< direction.y << " direction.z: " << direction.z << std::endl;
 			if (m_MaxDirectionAngle > 359.0f)
 				direction = glm::vec3(randomX * 2.0f - 1.0f, randomY * 2.0f - 1.0f, randomZ * 2.0f - 1.0f);
 			else
@@ -125,8 +135,7 @@ namespace sixengine {
 			
 			glm::vec3 transformationVel = glm::vec3(direction * m_StartSpeed);
 
-
-			m_Particles[FindUnusedParticle()] = ParticleObject(transformationVel, m_StartSize, m_SizeSpeed, m_CameraAlignment);
+			m_Particles[FindUnusedParticle()] = ParticleObject(m_Transform->GetWorldPosition(), transformationVel, m_StartSize, m_SizeSpeed, m_CameraAlignment);
 		}
 
 
