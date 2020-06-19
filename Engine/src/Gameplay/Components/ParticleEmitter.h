@@ -53,24 +53,25 @@ namespace sixengine {
 		ParticleObject m_Particles[MAX_PARTICLE_COUNT];
 
 		Transform* m_Transform = nullptr;
-		GameObject* m_GO = nullptr;
-
-		ParticleEmitter(GameObject* go) 
-		{
-			m_GO = go;
-		}
 
 		ParticleEmitter() {
 			srand(static_cast <unsigned> (time(0)));			
 		};
 
+		ParticleEmitter(GameObject* go, Texture* texture, std::string preset)
+		{
+			ParticleEmitter();
+			m_Transform = go->GetComponent<Transform>().Get();
+			m_Texture = texture;
+
+			SetPreset(preset);
+		}
+
 		ParticleEmitter(GameObject* go, float emissionDuration, float emissionFreq, bool loop, float particleLifeDuration, glm::vec3 velAcc, float startSpeed, float startSize, float maxAngle, Texture* texture, float sizeSpeed = 0, bool cameraAlignment = true)
 			: m_EmissionDuration(emissionDuration), m_EmissionFrequency(emissionFreq), m_Loop(loop), m_ParticleLifeDuration(particleLifeDuration), m_VelocityAcceleration(velAcc), m_StartSpeed(startSpeed), m_StartSize(startSize), m_MaxDirectionAngle(maxAngle), m_Texture(texture), m_SizeSpeed(sizeSpeed), m_CameraAlignment(cameraAlignment)
 		{ 
-			//ParticleEmitter();
-			m_GO = go;
+			ParticleEmitter();
 			m_Transform = go->GetComponent<Transform>().Get();
-			//m_Transform = new Transform();
 		}
 
 		ParticleEmitter(GameObject* go, Texture* texture)
@@ -166,6 +167,23 @@ namespace sixengine {
 			return particleDataVector;
 		}
 
+
+		void SetPreset(std::string preset)
+		{
+			if (preset == "EnemyEffect")
+			{
+				m_EmissionDuration = 1.0f;
+				m_EmissionFrequency = 1.0f;
+				m_Loop = true;
+				m_ParticleLifeDuration = 1.0f;
+				m_VelocityAcceleration = glm::vec3(0.0f, 0.0f, 0.0f);
+				m_StartSpeed = 0.0f;
+				m_StartSize = 1.0f;
+				m_MaxDirectionAngle = 30.0f;
+				m_SizeSpeed = 5.0f;
+				m_CameraAlignment = false;
+			}
+		}
 
 		
 
