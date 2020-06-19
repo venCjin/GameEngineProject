@@ -6,12 +6,14 @@
 
 // hacks
 #include "Gameplay/Systems/AnimationSystem.h"
+#include "Gameplay/Systems/ScolopendraSystem.h"
 #include "Renderer/Techniques/AnimationPBR.h"
 #include "Renderer/Techniques/DepthRender.h"
 #include "Renderer/Techniques/Water.h"
 #include "Renderer/Techniques/UI.h"
 #include <Renderer/Techniques/Transparent.h>
 #include "Gameplay/Components/SimplePlayer.h"
+#include "Gameplay/Components/ScolopendraComponent.h"
 #include <Physics/Components/BoxCollider.h>
 #include "Renderer/PrimitiveUtils.h"
 #include "Renderer/Gizmo.h"
@@ -77,6 +79,7 @@ namespace sixengine {
 			// HACKS
 
 			m_SystemManager.AddSystem<AnimationSystem>();
+			m_SystemManager.AddSystem<ScolopendraSystem>();
 			//m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 
 			Shader* m_BasicShader2 = m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
@@ -230,10 +233,9 @@ namespace sixengine {
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			//obj->GetComponent<Transform>()->SetWorldPosition(0.0f, 1.0f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(.5f, .5f, .5f);
+			obj->GetComponent<Transform>()->SetLocalScale(.005f, .005f, .005f);
 			//obj->GetComponent<Transform>()->SetLocalOrientation(0.0f, 90.0f, 0.0f);
-
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolo"));
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("cylinder"));
 			//obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("par"));
 			obj->AddComponent<Material>(*MaterialManager::getInstance()->Get("Test"));
 			obj->AddComponent<Animation>();
@@ -244,7 +246,17 @@ namespace sixengine {
 			airText->GetComponent<AirText>()->player = obj->GetComponent<SimplePlayer>().Get();
 			m_Scene.m_SceneRoot->AddChild(obj);
 
-			
+			GameObject* scolopendra = new GameObject(m_EntityManager);
+			scolopendra->AddComponent<Transform>(scolopendra);
+			scolopendra->GetComponent<Transform>()->SetWorldPosition(0.0f, 0.25f, 0.0f);
+			//scolopendra->GetComponent<Transform>()->SetLocalOrientation(180.0f, 0.0f, 0.0f);
+			//scolopendra->GetComponent<Transform>()->SetLocalScale(.5f, .5f, .5f);
+			scolopendra->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolo"));
+			scolopendra->AddComponent<Material>(*MaterialManager::getInstance()->Get("Test"));
+			scolopendra->AddComponent<Animation>();
+			scolopendra->AddComponent<ScolopendraComponent>(scolopendra, obj);
+			m_Scene.m_SceneRoot->AddChild(scolopendra);
+
 
 			std::vector<GizmoVertex> vertices;
 			std::vector<unsigned int> indices;

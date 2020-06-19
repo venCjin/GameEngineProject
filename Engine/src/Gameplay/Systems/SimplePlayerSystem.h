@@ -24,9 +24,7 @@ namespace sixengine {
 		//float air = 100.0f;
 		float airLosingRate = 5.0f;
 		void Update(EventManager & eventManager, float dt) override
-		{
-			UpdateModelBones();
-			
+		{			
 			DynamicBody* _db = m_SimplePlayer->gameObject->GetComponent<DynamicBody>().Get();
 			_db->m_Drag = 4;
 
@@ -35,29 +33,24 @@ namespace sixengine {
 
 			if (Input::IsKeyActive(KeyCode::UP)) 
 			{ 
-				//_db->m_Velocity -= cameraDir * speed; 
-				m_SimplePlayer->m_Bones[0].m_Bone.Translate(glm::vec3(cameraForward.x, cameraForward.z, 0.0f));
+				_db->m_Velocity += cameraForward * speed;
 			}
 
-			/// THERE IS NO MOVING BACK
-			/// For a time being.
-			/*if (Input::IsKeyActive(KeyCode::DOWN)) 
+		
+			if (Input::IsKeyActive(KeyCode::DOWN)) 
 			{ 
-				//_db->m_Velocity += cameraDir * speed; LOG_INFO("DOWN"); 
-				m_SimplePlayer->m_Bones[0].m_Bone.Translate(glm::vec3(0.0f, 0.1f, 0.0f));			
-			}*/
+				_db->m_Velocity -= cameraForward * speed;
+			}
 
 
 			if (Input::IsKeyActive(KeyCode::RIGHT)) 
 			{ 
-				//_db->m_Velocity += cameraDir * speed; 
-				m_SimplePlayer->m_Bones[0].m_Bone.Translate(glm::vec3(cameraRight.x, cameraRight.z, 0.0f));
+				_db->m_Velocity += cameraRight * speed;
 
 			}
 			if (Input::IsKeyActive(KeyCode::LEFT)) 
 			{ 
-				//_db->m_Velocity -= cameraDir * speed; 
-				m_SimplePlayer->m_Bones[0].m_Bone.Translate(glm::vec3(-cameraRight.x, cameraRight.z, 0.0f));
+				_db->m_Velocity -= cameraRight * speed;
 
 			}
 			//glm::clamp(_db->m_Velocity, glm::vec3(0.0f), glm::vec3(maxSpeed));
@@ -110,17 +103,6 @@ namespace sixengine {
 			{
 				m_Transform->LookAt(m_Transform->GetWorldPosition() + (originalPos - finalDir));
 			}*/
-		}
-
-		void UpdateModelBones()
-		{
-			m_SimplePlayer->UpdateBones();
-			m_SimplePlayer->m_Bones[0].m_Bone.SetLocalOrientation(m_SimplePlayer->m_Bones[1].m_Bone.GetLocalOrientation());
-
-			for (int i = 0; i < m_SimplePlayer->model->m_BoneInfo.size(); ++i)
-			{
-				m_SimplePlayer->model->m_BoneInfo[i].GlobalTransformation = m_SimplePlayer->m_Bones[i].m_Bone.GetLocalMatrix();
-			}			
 		}
 	};
 }
