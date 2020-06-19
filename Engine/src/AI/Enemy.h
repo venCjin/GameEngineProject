@@ -67,6 +67,8 @@ namespace sixengine
 
 		void ReceiveDamage(float damage);
 		void RotateTowardsVelocity();
+
+		//float GetDetectionLevel();
 	};
 }
 

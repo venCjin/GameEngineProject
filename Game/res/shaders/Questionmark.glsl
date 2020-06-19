@@ -14,7 +14,7 @@ out vec3 Normal;
 out vec3 bar;
 
 uniform vec3 barOrientation;
-uniform float barFill;
+
 
 
 layout(std430, binding = 0) buffer matrixes
@@ -27,12 +27,9 @@ layout(std430, binding = 0) buffer matrixes
 void main()
 {
 	instanceID = gl_BaseInstance + gl_InstanceID;
-	vec3 v = (barOrientation * barFill);
-	if (v.x == 0) v.x = 1;//aTexCoords.x;
-	if (v.y == 0) v.y = 1;// -aTexCoords.y;
-	bar = v;
 	
-	TexCoords = aTexCoords * vec2(v);
+	
+	TexCoords = aTexCoords;
 
 	mat4 activeView = view;
 
@@ -52,14 +49,16 @@ in vec2 TexCoords;
 in flat int instanceID;
 in vec3 FragPos;
 in vec3 Normal;
-in mat3 TBN;
 in vec3 bar;
 
-uniform vec3 color;
+
 
 layout(std430, binding = 1) buffer textureLayers
 {
 	vec4 layer[1000];
+	float barFill[1000];
+	vec4 color[1000];
+	int visable[1000];
 };
 
 uniform sampler2DArray textureArray;
@@ -67,14 +66,14 @@ uniform sampler2DArray textureArray;
 
 
 
-
-
 void main()
 {
 	
-
-	vec4 c = texture(textureArray, vec3(TexCoords, layer[instanceID].x));
-	FragColor = vec4(color, 1.0f) * c;//vec4(1.0, .0f, .0, .5);
+	vec4 outline = texture(textureArray, vec3(TexCoords, layer[instanceID].y)) * color[instanceID];
+	vec4 fill =  texture(textureArray, vec3(TexCoords, layer[instanceID].x)) * color[instanceID];
+	fill.a = fill.a > 0.0f ? ( TexCoords.x > barFill[instanceID] ? 0 : 1.0f) : 0.0f;
+	vec4 c = outline.a > 0.3 ? outline : fill;
+	FragColor = c * visable[instanceID];
 
 
 }

@@ -43,6 +43,8 @@
 #include <AI/States/SearchState.h>
 #include "AI/NavMesh/NavAgent.h"
 #include "AI/NavMesh/NavAgentSystem.h"
+#include "Gameplay/Systems/QuestionmarkSystem.h"
+#include "Renderer/Techniques/QuestionmarkTechnique.h"
 
 
 namespace sixengine {
@@ -95,9 +97,21 @@ namespace sixengine {
 			obj->GetComponent<StateMachine>()->m_States.push_back(new IdleState(obj));
 
 			obj->GetComponent<StateMachine>()->m_CurrentState = obj->GetComponent<StateMachine>()->m_States[2];
+			Shader* bar = MaterialManager::getInstance()->Get("Bar")->GetShader();
+			m_Billboard = new GameObject(m_EntityManager);
+			m_Billboard->AddComponent<Transform>(m_Billboard);
+			//m_Billboard->GetComponent<Transform>()->SetParent(child->GetComponent<Transform>().Get());
+			//m_Billboard->GetComponent<Transform>()->SetLocalScale(glm::vec3(1.0f, 5.f, 1.0f));
+			m_Billboard->GetComponent<Transform>()->SetLocalPosition(glm::vec3(0, 2, 0));
+			m_Billboard->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("billboard"));
+			m_Billboard->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bar"));
+			m_Billboard->AddComponent<Questionmark>();
+			m_Billboard->GetComponent<Questionmark>()->enemy = obj;
+			m_Billboard->AddComponent<Billboard>(m_Billboard);
 
 			m_Scene.m_SceneRoot->AddChild(obj);
 			obj->AddChild(child);
+			obj->AddChild(m_Billboard);
 		}
 
 		Game(std::string title, unsigned int width, unsigned int height)
@@ -142,28 +156,17 @@ namespace sixengine {
 			GameObject* obj;
 
 			//BAR
-			Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Bar.glsl");
+			Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Questionmark.glsl");
 			m_Scene.m_TextureArray->AddTexture("res/textures/ui/question_sign2.png");
+			m_Scene.m_TextureArray->AddTexture("res/textures/ui/question_sign2_outline.png");
 			MaterialManager::getInstance()->CreateMaterial(
 				bar,
-				glm::vec4(m_Scene.m_TextureArray->GetTexture("question_sign2"), 0.0f, 0.0f, 0.0f),
+				glm::vec4(m_Scene.m_TextureArray->GetTexture("question_sign2"), m_Scene.m_TextureArray->GetTexture("question_sign2_outline"), 0.0f, 0.0f),
 				"Bar");
-			m_Scene.m_BatchRenderer->AddTechnique(new StaticPBR(bar));
+			m_Scene.m_BatchRenderer->AddTechnique(new QuestionmarkTechnique(bar));
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/billboard.obj");
-			bar->Bind();
-			bar->SetFloat("barFill", m_BarFill);
-			bar->SetVec3("barOrientation", glm::vec3(0.0f, 1.0f, 0.0f));
-			bar->Unbind();
-			m_Billboard = new GameObject(m_EntityManager);
-			m_Billboard->AddComponent<Transform>(m_Billboard);
-			m_Billboard->GetComponent<Transform>()->SetWorldPosition(0.0f, 2.0f, 0.0f);
-			m_Billboard->GetComponent<Transform>()->SetLocalScale(1.0f, 1.0f, 1.0f);
-			m_Billboard->GetComponent<Transform>()->SetLocalOrientation(0.0f, 90.0f, 90.0f);
-			m_Billboard->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("billboard"));
-			m_Billboard->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bar"));
-			m_Billboard->AddComponent<Billboard>(m_Billboard);
-			m_Scene.m_SceneRoot->AddChild(m_Billboard);
 			//BAR
+
 
 			Texture* particleTexture = new Texture("res/textures/particles/star.png");
 			//COLLECTABLE
@@ -239,7 +242,7 @@ namespace sixengine {
 
 			m_SystemManager.AddSystem<OrbitalCameraSystem>();
 			m_SystemManager.AddSystem<MixingCameraSystem>();
-
+			m_SystemManager.AddSystem<QuestionmarkSystem>();
 			m_SystemManager.AddSystem<DynamicBodySystem>();
 
 			orbitalCamA = new GameObject(m_EntityManager);
@@ -291,15 +294,15 @@ namespace sixengine {
 				m_BatchRenderer->SetBlur(false);
 
 			// BAR
-			m_BarFill = m_Billboard->GetComponent<Transform>()->GetLocalScale().y - .01f;
+			/*m_BarFill += .01f;
 			m_BarFill = glm::clamp(m_BarFill, 0.0f, 1.0f);
-			if (m_BarFill == .0f) m_BarFill = 1.00001f;
+			if (m_BarFill == 1.0f) m_BarFill = .00001f;
 			MaterialManager::getInstance()->Get("Bar")->GetShader()->Bind();
 			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetFloat("barFill", m_BarFill);
 			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("barOrientation", glm::vec3(1.0f, 0.0f, 0.0f));
 			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("color", glm::vec3(1.0f, 0.0f, 0.0f));
 			MaterialManager::getInstance()->Get("Bar")->GetShader()->Unbind();
-			m_Billboard->GetComponent<Transform>()->SetLocalScale(1.0f, m_BarFill, 1.0f);
+			m_Billboard->GetComponent<Transform>()->SetLocalPosition(m_BarFill*10.0f, 2, 1.0f);*/
 			//LOG_CORE_INFO("{0} {1} {2} {3}", m_Billboard->GetComponent<Transform>()->GetLocalScale().x, m_Billboard->GetComponent<Transform>()->GetLocalScale().y, m_Billboard->GetComponent<Transform>()->GetLocalScale().z, m_BarFill);
 			// BAR
 
