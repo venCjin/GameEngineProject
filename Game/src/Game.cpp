@@ -129,19 +129,11 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			m_Scene.LoadScene("res/scenes/exported.scene");
-			//ADD_TRACK("res/sounds/ophelia.mp3", "ophelia");
-			//PLAY_TRACK("ophelia");
-			// HACKS
-
-			m_SystemManager.AddSystem<AnimationSystem>();
-			m_SystemManager.AddSystem<ScolopendraSystem>();
-			//m_SystemManager.AddSystem<PlayerMaterialManagerSystem>();
 			Texture* starParticleTexture = new Texture("res/textures/particles/star.png");
 			Texture* rippleParticleTexture = new Texture("res/textures/particles/ripple.png");
 
 
-			m_Scene.LoadScene("res/scenes/new.scene");
+			m_Scene.LoadScene("res/scenes/exported.scene");
 			ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
 			PLAY_TRACK("ophelia");
 
@@ -160,7 +152,7 @@ namespace sixengine {
 			vao->AddIndexBuffer(*ibo);
 			Application::attack = new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(255, 0, 0));
 			//////SHIT!!!!
-			
+
 			GameObject* obj;
 
 			//BAR
@@ -198,7 +190,7 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE2
-			
+
 			// PARTICLE SYSTEM1
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
@@ -206,7 +198,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
-			obj->AddComponent<ParticleEmitter>(obj, rippleParticleTexture, std::string("EnemyEffect"));
+			//obj->AddComponent<ParticleEmitter>(obj, rippleParticleTexture, std::string("EnemyEffect"));
 			m_Scene.m_SceneRoot->AddChild(obj);
 			// END Particle Systems
 
@@ -224,10 +216,10 @@ namespace sixengine {
 			MakeEnemy(glm::vec3(-9.323872, 1.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));
 			//ENEMIES
 
-		#if SCENE_ENDS_IN_GAME_CPP
+#if SCENE_ENDS_IN_GAME_CPP
 			m_Scene.m_ModelManager->CreateVAO();
 			m_Scene.m_TextureArray->CreateTextureArray();
-		#endif
+#endif
 			// HACKS END
 
 			// CAMERAS SETUP
