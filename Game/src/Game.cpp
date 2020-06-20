@@ -193,6 +193,7 @@ namespace sixengine {
 			scolopendra->AddComponent<ScolopendraComponent>(scolopendra, player);
 			m_Scene.m_SceneRoot->AddChild(scolopendra);
 
+			player->GetComponent<SimplePlayer>().Get()->scolopendraMaterial = scolopendra->GetComponent<Material>().Get();
 
 			//Texture* particleTexture = new Texture("res/textures/particles/star.png");
 			//COLLECTABLE

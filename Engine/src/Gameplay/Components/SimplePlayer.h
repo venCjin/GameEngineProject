@@ -34,6 +34,8 @@ namespace sixengine {
 		float air = 100;
 		bool m_OnSurface = true;
 
+		Material* scolopendraMaterial;
+
 		Camera* OnSurfaceCamera;
 		Camera* UnderSurfaceCamera;
 		MixingCamera* MixingCamera;

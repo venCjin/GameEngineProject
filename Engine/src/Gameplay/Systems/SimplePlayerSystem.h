@@ -22,12 +22,21 @@ namespace sixengine {
 	SYSTEM(SimplePlayerSystem, Transform, SimplePlayer, Material)
 	{
 		//bool m_OnSurface = true;
-		float speed = .45f;
-		float maxSpeed = 1.0f;
+		float speed = 1.25f;
+		float maxSpeed = 2.0f;
 		float playerHeight = 1.0f;
 		float health = 100.0f;
 		//float air = 100.0f;
 		float airLosingRate = 5.0f;
+
+		// Going Underground
+		/*float speed = 2.0f;
+		float length = 3.0f;
+		glm::vec3 startPos = glm::vec3(0.0f);
+		float duration = 1.0f / speed;
+		bool movingVertically = false;*/
+
+		float timer = 0.0f;
 
 		void OnCollisionHandle(BaseEvent & e)
 		{
@@ -106,16 +115,24 @@ namespace sixengine {
 			//LOG_CORE_INFO("Dot {0}", glm::dot(_db->m_Velocity, _db->m_Velocity));
 			if (Input::IsKeyPressed(KeyCode::SPACE))
 			{
+				/*if (!movingVertically)
+				{
+
+					movingVertically = true;
+				}*/
+
 				m_SimplePlayer->m_OnSurface = !m_SimplePlayer->m_OnSurface;
 				if (m_SimplePlayer->m_OnSurface)
 				{
-					m_Material->SetShader(MaterialManager::getInstance()->Get("Green")->GetShader());
+					//m_Material->SetShader(MaterialManager::getInstance()->Get("Green")->GetShader());
+					m_SimplePlayer->scolopendraMaterial->SetShader(MaterialManager::getInstance()->Get("GreenAnim")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, -playerHeight, 0.0f));
 					m_SimplePlayer->MixingCamera->SetTargetCamera(m_SimplePlayer->OnSurfaceCamera);
 				}
 				else
 				{
-					m_Material->SetShader(MaterialManager::getInstance()->Get("TransparentMaterial")->GetShader());
+					//m_Material->SetShader(MaterialManager::getInstance()->Get("TransparentMaterial")->GetShader());
+					m_SimplePlayer->scolopendraMaterial->SetShader(MaterialManager::getInstance()->Get("TransparentMaterial")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, +playerHeight, 0.0f));
 					m_SimplePlayer->MixingCamera->SetTargetCamera(m_SimplePlayer->UnderSurfaceCamera);
 				}
@@ -144,6 +161,11 @@ namespace sixengine {
 			{
 				m_Transform->LookAt(m_Transform->GetWorldPosition() + (originalPos - finalDir));
 			}*/
+		}
+
+		float EaseInCubic(float x)
+		{
+			return x < 0.5f ? 4.0f * x * x * x : 1.0f - pow(-2.0f * x + 2.0f, 3.0f) / 2.0f;
 		}
 	};
 }
