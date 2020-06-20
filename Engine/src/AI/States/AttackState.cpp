@@ -14,6 +14,8 @@
 #include <Physics/Components/DynamicBody.h>
 
 #include <Renderer/Gizmo.h>
+#include "Core/Scene.h"
+#include <Gameplay/Components/Projectile.h>
 
 bool sixengine::AttackState::IsStateReady(StateMachine* stateMachine)
 {
@@ -152,7 +154,21 @@ void sixengine::AttackState::Shoot(float accuracy)
 	//StartCoroutine(ShowShootLine());
 	glm::vec3 playerPos = m_Enemy->GetPlayer().Component<Transform>()->GetWorldPosition();
 	glm::vec3 enemyPos = m_GameObject->GetComponent<Transform>()->GetWorldPosition();
-	Gizmo::DrawLine(enemyPos, playerPos, 0.1f);
+	
+	// LINE
+	//Gizmo::DrawLine(enemyPos, playerPos, 0.1f);
+
+	// PROJECTILE
+	GameObject* bullet = new GameObject(*Application::Get().GetEntityManager());
+	bullet->AddComponent<Transform>(bullet);
+	bullet->GetComponent<Transform>()->SetWorldPosition(enemyPos);
+	bullet->GetComponent<Transform>()->SetLocalScale(3.0f, 3.0f, 3.0f);
+	bullet->AddComponent<Material>(*Application::Get().GetScene()->m_MaterialManager->Get("BulletMaterial"));
+	bullet->AddComponent<Mesh>(Application::Get().GetScene()->m_ModelManager->GetModel("Bullet"));
+	bullet->AddComponent<Projectile>(glm::normalize(playerPos - enemyPos));
+
+
+	Application::Get().GetScene()->m_SceneRoot->AddChild(bullet);
 
 
 	//if (UnityEngine.Random.value < accuracy)
