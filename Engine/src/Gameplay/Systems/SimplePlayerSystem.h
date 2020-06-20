@@ -16,6 +16,7 @@
 #include <Physics/Components/DynamicBody.h>
 
 #include <AI/Enemy.h>
+#include <Gameplay/Components/Generator.h>
 
 namespace sixengine {
 	
@@ -77,12 +78,16 @@ namespace sixengine {
 				glm::mat4 model = glm::mat4(1.0f);
 				model = glm::translate(model, m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f));
 				Application::attack->model = model;
-				Entity* a = CollisionSystem::CheckSphere(m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f), 1.0f);
-				if (a != nullptr)
+				Entity a = CollisionSystem::CheckSphere(m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f), 1.0f);
+				if (Entity::Valid(a.GetID()))
 				{
-					if (a->HasComponent<Enemy>())
+					if (a.HasComponent<Enemy>())
 					{
-						a->Component<Enemy>()->ReceiveDamage(50.0f);
+						a.Component<Enemy>()->ReceiveDamage(50.0f);
+					}
+					else if (a.HasComponent<Generator>())
+					{
+						a.Component<Generator>()->DestroyGenerator();
 					}
 				}
 			}

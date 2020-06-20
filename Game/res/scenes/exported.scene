@@ -17,6 +17,7 @@
 -AddShader AnimationPBR res/shaders/AnimationPBR.glsl
 -AddShader TransparentTechnique res/shaders/Transparent.glsl
 -AddShader Water res/shaders/Water.glsl
+-AddShader QuestionmarkTechnique res/shaders/Questionmark.glsl
 -AddShader UI res/shaders/Font.glsl res/fonts/DroidSans.ttf
 
 -AddMaterial GroundPBR PBR 3 res/models/Environment/Ground/Textures/Ground_Albedo.png res/models/Environment/Ground/Textures/Ground_Normal.png res/models/Environment/Ground/Textures/Ground_Metallic.png 
@@ -456,3 +457,30 @@
 -Material WoodenCrate2PBR
 +end
 
++UIGameObject
+-Transform
+5 690 0
+0 0 0
+1 1 1
+-Text 0.3 1 0 1 Sixengine 0.?
+-Material FontMaterial
++end
+
++UIGameObject
+-Transform
+5 660 0
+0 0 0
+1 1 1
+-Text 0.3 1 0 1 Air: 
+//-AirText
+-Material FontMaterial
++end
+
++UIGameObject
+-Transform
+5 10 0
+0 0 0
+1 1 1
+-Text 1 0 1 1 Testowy tekst, do testowania.
+-Material FontMaterial
++end

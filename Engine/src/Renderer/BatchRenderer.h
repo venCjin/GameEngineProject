@@ -141,6 +141,7 @@ namespace sixengine {
 
 		Shader* m_BlurShader;
 		bool m_Blur = false;
+		bool m_Shake = false;
 
 		unsigned int m_QuadVAO;
 
@@ -158,6 +159,7 @@ namespace sixengine {
 
 		void SetBlurShader(Shader* blur);
 		void SetBlur(bool blur);
+		void SetShake(bool shake);
 		void ApplyBlur();
 
 		void SetParticle(ParticleRender* technique);

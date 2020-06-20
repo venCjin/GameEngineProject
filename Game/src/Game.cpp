@@ -20,17 +20,22 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include <Physics\Components\DynamicBody.h>
+#include <Physics/Components/DynamicBody.h>
+#include <Physics/Components/StaticBody.h>
 #include <Physics/Systems/DynamicBodySystem.h>
-#include <Gameplay\Components\AirText.h>
-#include <Gameplay\Systems\AirTextSystem.h>
+#include <Gameplay/Components/AirText.h>
+#include <Gameplay/Systems/AirTextSystem.h>
+#include <Gameplay/Systems/GateSystem.h>
 
 #include <Gameplay/Components/Collectable.h>
-#include <Gameplay\Components\Billboard.h>
+#include "Gameplay/Components/Generator.h"
+#include "Gameplay/Components/Gate.h"
+#include <Gameplay/Components/Billboard.h>
 #include <Gameplay/Systems/BillboardSystem.h>
 #include <Gameplay/Systems/AnimationSystem.h>
 #include <Gameplay/Systems/ParticleSystem.h>
 #include <Gameplay/Systems/ScolopendraSystem.h>
+#include <Gameplay/Systems/ProjectileSystem.h>
 #include <Renderer/Techniques/StaticPBR.h>
 #include <Renderer/Techniques/AnimationPBR.h>
 #include <Renderer/Techniques/UI.h>
@@ -99,6 +104,7 @@ namespace sixengine {
 
 			obj->GetComponent<StateMachine>()->m_CurrentState = obj->GetComponent<StateMachine>()->m_States[2];
 			Shader* bar = MaterialManager::getInstance()->Get("Bar")->GetShader();
+
 			m_Billboard = new GameObject(m_EntityManager);
 			m_Billboard->AddComponent<Transform>(m_Billboard);
 			//m_Billboard->GetComponent<Transform>()->SetParent(child->GetComponent<Transform>().Get());
@@ -133,6 +139,7 @@ namespace sixengine {
 			Texture* starParticleTexture = new Texture("res/textures/particles/star.png");
 			Texture* rippleParticleTexture = new Texture("res/textures/particles/ripple.png");
 
+			m_SystemManager.AddSystem<GateSystem>();
 
 			m_Scene.LoadScene("res/scenes/exported.scene");
 			ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
@@ -164,7 +171,6 @@ namespace sixengine {
 				bar,
 				glm::vec4(m_Scene.m_TextureArray->GetTexture("question_sign2"), m_Scene.m_TextureArray->GetTexture("question_sign2_outline"), 0.0f, 0.0f),
 				"Bar");
-			m_Scene.m_BatchRenderer->AddTechnique(new QuestionmarkTechnique(bar));
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/billboard.obj");
 			//BAR
 
@@ -218,6 +224,44 @@ namespace sixengine {
 			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE2
 
+			//Generator 1
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 0.5f, -5.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("Generator"));
+			obj->AddComponent<StaticBody>();
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
+			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
+			Generator* gen1 = obj->GetComponent<Generator>().Get();
+			m_Scene.m_SceneRoot->AddChild(obj);
+
+			//Generator 2
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 0.5f, -2.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("Generator"));
+			obj->AddComponent<StaticBody>();
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
+			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
+			Generator* gen2 = obj->GetComponent<Generator>().Get();
+			m_Scene.m_SceneRoot->AddChild(obj);
+
+			//Gate
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(10.0, 0.0f, -5.0f);
+			obj->GetComponent<Transform>()->SetLocalScale(1.0, 6.0f, 10.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
+			obj->AddComponent<StaticBody>();
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
+			obj->AddComponent<Gate>();
+			obj->GetComponent<Gate>()->AddGenerator(gen1);
+			obj->GetComponent<Gate>()->AddGenerator(gen2);
+			m_Scene.m_SceneRoot->AddChild(obj);
+			
 			// PARTICLE SYSTEM1
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
@@ -243,7 +287,20 @@ namespace sixengine {
 			MakeEnemy(glm::vec3(-9.323872, 1.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));
 			//ENEMIES
 
-#if SCENE_ENDS_IN_GAME_CPP
+			//Projetlie
+			m_Scene.m_ModelManager->AddModel("res/models/Enemies/Bullet/Bullet.obj");
+			MaterialManager::getInstance()->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("PBR"),
+				glm::vec4(
+					m_Scene.m_TextureArray->AddTexture("res/models/Enemies/Bullet/al.png"), 
+					m_Scene.m_TextureArray->AddTexture("res/models/Enemies/Bullet/no.png"),
+					0.0f,
+					0.0f),
+				"BulletMaterial");
+			m_SystemManager.AddSystem<ProjectileSystem>();
+			//Projetlie
+
+		#if SCENE_ENDS_IN_GAME_CPP
 			m_Scene.m_ModelManager->CreateVAO();
 			m_Scene.m_TextureArray->CreateTextureArray();
 #endif
@@ -307,7 +364,10 @@ namespace sixengine {
 			if (shakeTimer > 0)
 				shakeTimer -= dt;
 			else
-				m_BatchRenderer->SetBlur(false);
+			{
+				//m_BatchRenderer->SetBlur(false);
+				//m_BatchRenderer->SetShake(false);
+			}
 
 			// BAR
 			/*m_BarFill += .01f;
@@ -348,11 +408,24 @@ namespace sixengine {
 				mixingCam->GetComponent<MixingCamera>()->SetTargetCamera(flying->GetComponent<Camera>().Get());
 			}
 
-			if (Input::IsKeyPressed(KeyCode::P))
+			if (Input::IsKeyPressed(KeyCode::B))
 			{
 				m_BatchRenderer->SetBlur(true);
-				shakeTimer = 0.1f;
+				shakeTimer = 1.0f;
 			}
+
+			if (Input::IsKeyPressed(KeyCode::N))
+			{
+				m_BatchRenderer->SetShake(true);
+				shakeTimer = 1.0f;
+			}
+
+			if (Input::IsKeyPressed(KeyCode::M))
+			{
+				m_BatchRenderer->SetBlur(false);
+				m_BatchRenderer->SetShake(false);
+			}
+
 
 			{
 				//PROFILE_SCOPE("ECS")

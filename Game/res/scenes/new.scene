@@ -61,7 +61,7 @@
 
 -AddMaterial agent PBR 3 res/models/Enemies/BlackAgent/textures/agent_diffuse.png res/models/Enemies/BlackAgent/textures/agent_normal.png res/models/Enemies/BlackAgent/textures/agent_specular.png 
 -AddMaterial gun PBR 3 res/models/Enemies/Gun/PM-40_albedo.png res/models/Enemies/Gun/PM-40_normal.png res/models/Enemies/Gun/PM-40_metallic.png 
--AddMaterial bullet PBR 2 res/models/Enemies/Bullet/al.png res/models/Enemies/Bullet/no.png
+-AddMaterial BulletMaterial PBR 2 res/models/Enemies/Bullet/al.png res/models/Enemies/Bullet/no.png
 
 
 +SceneGameObject
