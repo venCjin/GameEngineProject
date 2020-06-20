@@ -63,9 +63,6 @@ layout(std430, binding = 1) buffer textureLayers
 
 uniform sampler2DArray textureArray;
 
-
-
-
 void main()
 {
 	

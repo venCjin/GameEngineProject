@@ -34,6 +34,7 @@
 #include "Renderer/Techniques/StaticPBR.h"
 #include "Renderer/Techniques/DepthRender.h"
 #include <Renderer/Techniques/Transparent.h>
+#include <Renderer/Techniques/QuestionmarkTechnique.h>
 #include "Renderer/Techniques/Water.h"
 #include "Renderer/Techniques/UI.h"
 
@@ -133,6 +134,14 @@ namespace sixengine {
 					ss >> s;
 					m_BatchRenderer->AddTechnique(
 						new TransparentTechnique(
+							m_ShaderManager->AddShader(s)
+						));
+				}
+				else if (s == "QuestionmarkTechnique")
+				{
+					ss >> s;
+					m_BatchRenderer->AddTechnique(
+						new QuestionmarkTechnique(
 							m_ShaderManager->AddShader(s)
 						));
 				}
