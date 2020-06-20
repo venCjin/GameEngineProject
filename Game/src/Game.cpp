@@ -182,7 +182,7 @@ namespace sixengine {
 			player->AddComponent<DynamicBody>();
 			player->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
 			player->AddComponent<SimplePlayer>(player);
-
+			m_BatchRenderer->SetLight(new Light(player));
 			// SimplePlayer
 			/*GameObject* player = new GameObject(m_EntityManager);
 			player->AddComponent<Transform>(player);
@@ -193,8 +193,8 @@ namespace sixengine {
 			//player->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
 			player->AddComponent<SimplePlayer>(player);
 			//player->AddComponent<Animation>();
-			//player->AddComponent<DynamicBody>();
-			m_Scene.m_SceneRoot->AddChild(player);*/
+			//player->AddComponent<DynamicBody>();*/
+			m_Scene.m_SceneRoot->AddChild(player);
 
 			//Texture* particleTexture = new Texture("res/textures/particles/star.png");
 			//COLLECTABLE
@@ -226,7 +226,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
-			//obj->AddComponent<ParticleEmitter>(obj, rippleParticleTexture, std::string("EnemyEffect"));
+			obj->AddComponent<ParticleEmitter>(obj, rippleParticleTexture, std::string("EnemyEffect"));
 			m_Scene.m_SceneRoot->AddChild(obj);
 			// END Particle Systems
 
