@@ -57,20 +57,6 @@
 
 +SceneGameObject
 -Transform
-0 0 0
-0 0 0
-0.5 0.5 0.5
--Model res/models/primitives/cylinder.obj
--Material Green
--DynamicBody
--ParticleEmitter res/textures/particles/star.png
--BoxCollider 1.0 2.0 1.0 0
--SimplePlayer
--LightMaster
-+end
-
-+SceneGameObject
--Transform
 -4 0.8 -6.2
 0 0 0
 1 1 1

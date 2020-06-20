@@ -60,7 +60,7 @@ namespace sixengine {
 		GameObject* orbitalCamB;
 		GameObject* mixingCam;
 		GameObject* flying;
-		GameObject* m_Player;
+		//GameObject* m_Player;
 		GameObject* m_Billboard;
 		float m_BarFill;
 		float shakeTimer;
@@ -167,8 +167,36 @@ namespace sixengine {
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/billboard.obj");
 			//BAR
 
-
 			Texture* particleTexture = new Texture("res/textures/particles/star.png");
+
+			
+
+			GameObject* player = new GameObject(m_EntityManager);
+			player->AddComponent<Transform>(player);
+			player->GetComponent<Transform>()->SetWorldPosition(-35.0f, 0.0f, 0.0f);
+			player->GetComponent<Transform>()->SetLocalScale(0.6f, 0.75f, 0.6f);
+			player->GetComponent<Transform>()->SetLocalOrientation(0.0, 0.0f, 0.0f);
+			player->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
+			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
+			player->AddComponent<Animation>();
+			player->AddComponent<DynamicBody>();
+			player->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+			player->AddComponent<SimplePlayer>(player);
+
+			// SimplePlayer
+			/*GameObject* player = new GameObject(m_EntityManager);
+			player->AddComponent<Transform>(player);
+			player->GetComponent<Transform>()->SetWorldPosition(5.0, 0.5f, 5.0f);
+			player->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
+			player->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
+			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
+			//player->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
+			player->AddComponent<SimplePlayer>(player);
+			//player->AddComponent<Animation>();
+			//player->AddComponent<DynamicBody>();
+			m_Scene.m_SceneRoot->AddChild(player);*/
+
+			//Texture* particleTexture = new Texture("res/textures/particles/star.png");
 			//COLLECTABLE
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
@@ -226,7 +254,7 @@ namespace sixengine {
 			flying = Camera::ActiveCamera->m_GameObject; //flying camera domy�lnie stworzona w konstruktorze Scene
 
 			//obj = m_Scene.GetFirstGameObjectWithComponent<SimplePlayer>();
-			obj = m_Scene.GetGameObjectsWithComponent<SimplePlayer>()[0];
+			obj = player;//m_Scene.GetGameObjectsWithComponent<SimplePlayer>()[0];
 
 			m_SystemManager.AddSystem<OrbitalCameraSystem>();
 			m_SystemManager.AddSystem<MixingCameraSystem>();
