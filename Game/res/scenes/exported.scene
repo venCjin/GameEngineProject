@@ -53,7 +53,10 @@
 -AddMaterial Red PBR 1 res/textures/test/Red.jpg
 
 -AddMaterial Green PBR 1 res/textures/test/Green.jpg
+-AddMaterial GreenAnim AnimationPBR 1 res/textures/test/Green.jpg
+
 -AddMaterial TransparentMaterial Transparent 0
+
 
 +SceneGameObject
 -Transform

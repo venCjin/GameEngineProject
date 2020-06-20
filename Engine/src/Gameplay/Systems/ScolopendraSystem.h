@@ -20,9 +20,14 @@ namespace sixengine {
 		
 		void Update(EventManager & eventManager, float dt) override
 		{
+			
+
 			glm::vec3 transformedPos = m_ScolopendraComponent->m_PlayerTransform->GetWorldPosition();
-			transformedPos = glm::vec3(transformedPos.x, transformedPos.z, /*transformedPos.y*/0.0f);
+			transformedPos = glm::vec3(transformedPos.x, transformedPos.z, -transformedPos.y);
+
 			m_ScolopendraComponent->m_Bones[0].m_Bone.SetLocalPosition(transformedPos);
+
+			glm::vec3 p = m_ScolopendraComponent->m_Bones[0].m_Bone.GetLocalPosition();
 
 			UpdateModelBones();			
 		}

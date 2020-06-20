@@ -433,7 +433,6 @@ namespace sixengine {
 
 	void Model::BoneTransform(float currentTimer, float previousTimer, std::vector<glm::mat4>& transforms, std::string currentAnimationName, std::string previousAnimationName)
 	{
-
 		if (m_FreeBones)
 		{
 			transforms.clear();
@@ -445,14 +444,10 @@ namespace sixengine {
 
 				transforms[i] = m_BoneInfo[i].FinalTransformation;
 			}
-
-			//std::cout << "m_FreeBones: " << transforms.size() << std::endl;
-
 			return;
 		}
 		if (!m_Scene->HasAnimations() || m_AnimationsMapping.size() == 0)
 			return;
-		LOG_INFO("m_FreeBones false");
 
 		float currentTicksPerSecond = (float)(m_AnimationsMapping[currentAnimationName]->animation->mTicksPerSecond != 0 ? m_AnimationsMapping[currentAnimationName]->animation->mTicksPerSecond : 25.0f);
 		float currentTimeInTicks = currentTimer * currentTicksPerSecond;
@@ -486,6 +481,13 @@ namespace sixengine {
 			
 			transforms[i] = blendLayer1[i] * blendProgress + blendLayer2[i] * (1.0f - blendProgress);
 		}	
+	}
+
+	void Model::SetFrustumInfinity()
+	{
+		float inf = std::numeric_limits<float>::infinity();
+		m_MinAxis = glm::vec3(-inf, -inf, -inf);
+		m_MaxAxis = glm::vec3(inf, inf, inf);
 	}
 	
 }

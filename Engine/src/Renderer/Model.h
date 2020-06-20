@@ -12,6 +12,7 @@
 #include <glad/glad.h>
 #include <assimp/Importer.hpp>
 #include <map>
+#include <limits>
 
 #include "Core/Profile.h"
 namespace sixengine {
@@ -51,6 +52,8 @@ namespace sixengine {
 
 		inline std::string GetDirectory() { return m_Directory; }
 		inline std::string GetName() { return m_Name; }
+
+		void SetFrustumInfinity();
 
 		unsigned int m_ID;
 		VertexArray* VAO;

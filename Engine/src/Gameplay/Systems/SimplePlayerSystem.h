@@ -24,7 +24,7 @@ namespace sixengine {
 		//bool m_OnSurface = true;
 		float speed = .45f;
 		float maxSpeed = 1.0f;
-		float playerHeight = 2.0f;
+		float playerHeight = 1.0f;
 		float health = 100.0f;
 		//float air = 100.0f;
 		float airLosingRate = 5.0f;

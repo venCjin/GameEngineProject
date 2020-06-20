@@ -30,6 +30,7 @@
 #include <Gameplay/Systems/BillboardSystem.h>
 #include <Gameplay/Systems/AnimationSystem.h>
 #include <Gameplay/Systems/ParticleSystem.h>
+#include <Gameplay/Systems/ScolopendraSystem.h>
 #include <Renderer/Techniques/StaticPBR.h>
 #include <Renderer/Techniques/AnimationPBR.h>
 #include <Renderer/Techniques/UI.h>
@@ -174,8 +175,7 @@ namespace sixengine {
 			GameObject* player = new GameObject(m_EntityManager);
 			player->AddComponent<Transform>(player);
 			player->GetComponent<Transform>()->SetWorldPosition(-35.0f, 0.0f, 0.0f);
-			player->GetComponent<Transform>()->SetLocalScale(0.6f, 0.75f, 0.6f);
-			player->GetComponent<Transform>()->SetLocalOrientation(0.0, 0.0f, 0.0f);
+			player->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			player->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
 			player->AddComponent<Animation>();
@@ -183,18 +183,16 @@ namespace sixengine {
 			player->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
 			player->AddComponent<SimplePlayer>(player);
 			m_BatchRenderer->SetLight(new Light(player));
-			// SimplePlayer
-			/*GameObject* player = new GameObject(m_EntityManager);
-			player->AddComponent<Transform>(player);
-			player->GetComponent<Transform>()->SetWorldPosition(5.0, 0.5f, 5.0f);
-			player->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
-			player->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
-			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
-			//player->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
-			player->AddComponent<SimplePlayer>(player);
-			//player->AddComponent<Animation>();
-			//player->AddComponent<DynamicBody>();*/
 			m_Scene.m_SceneRoot->AddChild(player);
+
+			GameObject* scolopendra = new GameObject(m_EntityManager);
+			scolopendra->AddComponent<Transform>(scolopendra);
+			scolopendra->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo.dae"));
+			scolopendra->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("GreenAnim"));
+			scolopendra->AddComponent<Animation>();
+			scolopendra->AddComponent<ScolopendraComponent>(scolopendra, player);
+			m_Scene.m_SceneRoot->AddChild(scolopendra);
+
 
 			//Texture* particleTexture = new Texture("res/textures/particles/star.png");
 			//COLLECTABLE
@@ -260,6 +258,7 @@ namespace sixengine {
 			m_SystemManager.AddSystem<MixingCameraSystem>();
 			m_SystemManager.AddSystem<QuestionmarkSystem>();
 			m_SystemManager.AddSystem<DynamicBodySystem>();
+			m_SystemManager.AddSystem<ScolopendraSystem>();
 
 			orbitalCamA = new GameObject(m_EntityManager);
 			orbitalCamA->AddComponent<Transform>(orbitalCamA);

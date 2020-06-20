@@ -1,8 +1,16 @@
 #pragma once
+#include "pch.h"
+
 #include <glm/glm.hpp>
 #include <Gameplay/Bone.h>
 #include <Renderer/Model.h>
 #include <Gameplay/Components/Mesh.h>
+#include "Gameplay/GameObject.h"
+
+#include <iostream>     // std::cout
+#include <algorithm>    // std::sort
+#include <vector>       // std::vector
+
 
 namespace sixengine {
 
@@ -25,6 +33,8 @@ namespace sixengine {
 			m_PlayerTransform = player->GetComponent<Transform>().Get();
 
 			m_Model->m_FreeBones = true;
+			m_Model->SetFrustumInfinity();
+
 			for (int i = 0; i < m_Model->m_BoneInfo.size(); ++i)
 			{
 				std::cout << m_Model->m_BoneInfo[i].Name <<  std::endl;
@@ -34,8 +44,6 @@ namespace sixengine {
 					m_Bones[i].Init(&m_Bones[i - 1].m_Bone);
 				}		
 			}
-
-			
 		}
 
 		void ScolopendraComponent::UpdateBones()
