@@ -14,7 +14,7 @@
 #include <Core/CameraSystem/Camera.h>
 #include <Physics/Systems/CollisionSystem.h>
 #include <Physics/Components/DynamicBody.h>
-
+#include <Core/AudioManager.h>
 #include <AI/Enemy.h>
 
 namespace sixengine {
@@ -53,6 +53,7 @@ namespace sixengine {
 		void Update(EventManager & eventManager, float dt) override
 		{
 			//LOG_INFO(m_SimplePlayer->collider->IsStatic());
+			AudioManager::getInstance()->SetListenerPosition(m_Transform->GetWorldPosition(), m_Transform->GetForward());
 			glm::vec3 dir = glm::vec3();
 			DynamicBody* _db = m_SimplePlayer->gameObject->GetComponent<DynamicBody>().Get();	
 			_db->m_Drag = 4;

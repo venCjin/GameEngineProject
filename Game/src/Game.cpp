@@ -134,8 +134,12 @@ namespace sixengine {
 
 
 			m_Scene.LoadScene("res/scenes/new.scene");
-			ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
-			PLAY_TRACK("ophelia");
+			//ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
+			//PLAY_TRACK("ophelia");
+
+			ADD_TRACK("res/sounds/electricity-generator-loop.mp3", "generator");
+			PLAY_TRACK_3D("generator", glm::vec3(0.0f));
+			PLAY_TRACK_3D_LOOPED("generator", glm::vec3(30.0f, 0, 0));
 
 			// HACKS
 			//////SHITT!!!11
@@ -293,6 +297,12 @@ namespace sixengine {
 			else
 				m_BatchRenderer->SetBlur(false);
 
+			AudioManager::getInstance()->ClearSoundsArray();
+			std::vector<irrklang::ISound*> s = AudioManager::getInstance()->sounds;
+			for (auto sound : s)
+			{
+				LOG_CORE_ERROR("Sound: {0}", sound->isFinished());
+			}
 			// BAR
 			/*m_BarFill += .01f;
 			m_BarFill = glm::clamp(m_BarFill, 0.0f, 1.0f);
@@ -315,6 +325,11 @@ namespace sixengine {
 			if (Input::IsKeyPressed(KeyCode::F9))
 			{
 				Application::Get().GetWindow().SwitchCursorVisibility();
+			}
+
+			if (Input::IsKeyPressed(KeyCode::N))
+			{
+				PLAY_TRACK_3D("generator", glm::vec3(30.0f, 0, 0));
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F5))
