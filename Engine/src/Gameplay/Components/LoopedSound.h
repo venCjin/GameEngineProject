@@ -5,7 +5,7 @@
 
 namespace sixengine 
 {
-	class StaticLoopedSound 
+	class LoopedSound 
 	{
 		std::string m_Key;
 		glm::vec3 m_Position;
@@ -13,9 +13,9 @@ namespace sixengine
 		irrklang::ISound* m_Sound = nullptr;
 	public:
 
-		StaticLoopedSound(std::string key, glm::vec3 position) : m_Key(key), m_Position(position) {}
+		LoopedSound(std::string key, glm::vec3 position) : m_Key(key), m_Position(position) {}
 
-		StaticLoopedSound(std::string key, glm::vec3 position, float rad) : m_Key(key), m_Position(position), m_Rad(rad)
+		LoopedSound(std::string key, glm::vec3 position, float rad) : m_Key(key), m_Position(position), m_Rad(rad)
 		{
 			m_Sound = INIT_TRACK_3D_LOOPED(key, position);
 		}
@@ -53,7 +53,20 @@ namespace sixengine
 				m_Sound->setIsPaused(true);
 		}
 
+		void SetMinDistance(float value)
+		{
+			m_Sound->setMinDistance(value);
+		}
 
+		void SetPosition(glm::vec3 pos) {
+			this->m_Position = pos;
+			if (m_Sound) m_Sound->setPosition(irrklang::vec3df(pos.x, pos.y, pos.z));
+		}
+
+		void SetSpeed(float value)
+		{
+			m_Sound->setPlaybackSpeed(value);
+		}
 		bool isPaused()
 		{
 			if (m_Sound)
@@ -61,7 +74,7 @@ namespace sixengine
 			else
 				return false;
 		}
-		//StaticLoopedSound();
+		//LoopedSound();
 	};
 	
 }
