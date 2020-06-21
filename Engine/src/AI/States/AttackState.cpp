@@ -16,7 +16,8 @@
 #include <Renderer/Gizmo.h>
 #include "Core/Scene.h"
 #include <Gameplay/Components/Projectile.h>
-
+#include <Core/AudioManager.h>
+#include <irrKlang.h>
 bool sixengine::AttackState::IsStateReady(StateMachine* stateMachine)
 {
 	if (m_Enemy->CanSeeUndergroundMovement())
@@ -150,7 +151,10 @@ void sixengine::AttackState::Shoot(float accuracy)
 {
 	//_references.shootParticle.Play();
 	_lastShootTime = Timer::Instance()->ElapsedTime();
-	
+	//play audio
+	irrklang::ISound* s = INIT_TRACK("shot");
+	s->setVolume(.05f);
+	s->setIsPaused(false);
 	//StartCoroutine(ShowShootLine());
 	glm::vec3 playerPos = m_Enemy->GetPlayer().Component<Transform>()->GetWorldPosition();
 	glm::vec3 enemyPos = m_GameObject->GetComponent<Transform>()->GetWorldPosition();
