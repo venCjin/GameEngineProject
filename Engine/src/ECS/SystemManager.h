@@ -90,7 +90,8 @@ public:
 
 	template <typename T>
 	void AddSystem();
-
+	template <typename T, typename ... Args>
+	void AddSystem(Args&& ... args);
 	void UpdateAll(float dt);
 };
 
@@ -110,6 +111,27 @@ void SystemManager::AddSystem()
 	else
 	{
 		T* system = new T();
+		m_Systems.push_back(system);
+		system->OnStart(m_EventManager);
+	}
+}
+
+template<typename T, typename ...Args>
+inline void SystemManager::AddSystem(Args&& ...args)
+{
+	auto it = std::find_if(m_Systems.begin(), m_Systems.end(),
+		[](BaseSystem* val) {
+			return (dynamic_cast<T*>(val));
+		});
+
+	if (it != m_Systems.end())
+	{
+		LOG_CORE_WARN("System already added");
+		return;
+	}
+	else
+	{
+		T* system = new T(std::forward<Args>(args) ...);
 		m_Systems.push_back(system);
 		system->OnStart(m_EventManager);
 	}

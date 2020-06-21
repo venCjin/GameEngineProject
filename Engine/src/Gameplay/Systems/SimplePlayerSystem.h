@@ -53,7 +53,10 @@ namespace sixengine {
 		void Update(EventManager & eventManager, float dt) override
 		{
 			//LOG_INFO(m_SimplePlayer->collider->IsStatic());
+			//AUDIO
+			//Updating audio listener 
 			AudioManager::getInstance()->SetListenerPosition(m_Transform->GetWorldPosition(), m_Transform->GetForward());
+			//AUDIO
 			glm::vec3 dir = glm::vec3();
 			DynamicBody* _db = m_SimplePlayer->gameObject->GetComponent<DynamicBody>().Get();	
 			_db->m_Drag = 4;

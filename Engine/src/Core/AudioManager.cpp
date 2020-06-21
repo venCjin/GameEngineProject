@@ -20,27 +20,29 @@ namespace sixengine
 		return instance;
 	}
 
-	void AudioManager::Play(std::string key)
+	irrklang::ISound* AudioManager::Init(std::string key)
 	{
 		irrklang::ISound* s = m_SoundEngine->play2D(Get(key).c_str(),
 			false,
 			true,
 			true);
 		sounds.push_back(s);
-		s->setIsPaused(false);
+		//s->setIsPaused(false);
+		return s;
 	}
 
-	void AudioManager::PlayLooped(std::string key)
+	irrklang::ISound* AudioManager::InitLooped(std::string key)
 	{
 		irrklang::ISound* s = m_SoundEngine->play2D(Get(key).c_str(),
 			true,
 			true,
 			true);
 		sounds.push_back(s);
-		s->setIsPaused(false);
+		//s->setIsPaused(false);
+		return s;
 	}
 
-	void AudioManager::Play3D(std::string key, glm::vec3 position)
+	irrklang::ISound* AudioManager::Init3D(std::string key, glm::vec3 position)
 	{
 		irrklang::ISound* s = m_SoundEngine->play3D(Get(key).c_str(),
 			irrklang::vec3df(position.x, position.y, position.z),
@@ -48,18 +50,20 @@ namespace sixengine
 			true,
 			true);
 		sounds.push_back(s);
-		s->setIsPaused(false);
+		//s->setIsPaused(false);
+		return s;
 	}
 
-	void AudioManager::PlayLooped3D(std::string key, glm::vec3 position)
+	irrklang::ISound* AudioManager::InitLooped3D(std::string key, glm::vec3 position)
 	{
 		irrklang::ISound* s = m_SoundEngine->play3D(Get(key).c_str(),
 			irrklang::vec3df(position.x, position.y, position.z),
 			true,
 			true,
 			true);
-		s->setIsPaused(false);
+		//s->setIsPaused(false);
 		sounds.push_back(s);
+		return s;
 	}
 	
 	std::string AudioManager::AddTrack(std::string path, std::string trackName)

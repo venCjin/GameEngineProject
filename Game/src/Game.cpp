@@ -45,6 +45,8 @@
 #include "AI/NavMesh/NavAgentSystem.h"
 #include "Gameplay/Systems/QuestionmarkSystem.h"
 #include "Renderer/Techniques/QuestionmarkTechnique.h"
+#include <Gameplay/Systems/StaticLoopedSoundSystem.h>
+#include <Gameplay/Components/StaticLoopedSound.h>
 
 
 namespace sixengine {
@@ -135,11 +137,11 @@ namespace sixengine {
 
 			m_Scene.LoadScene("res/scenes/new.scene");
 			//ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
-			//PLAY_TRACK("ophelia");
+			//INIT_TRACK("ophelia");
 
 			ADD_TRACK("res/sounds/electricity-generator-loop.mp3", "generator");
-			PLAY_TRACK_3D("generator", glm::vec3(0.0f));
-			PLAY_TRACK_3D_LOOPED("generator", glm::vec3(30.0f, 0, 0));
+			//INIT_TRACK_3D("generator", glm::vec3(0.0f));
+			//INIT_TRACK_3D_LOOPED("generator", glm::vec3(30.0f, 0, 0));
 
 			// HACKS
 			//////SHITT!!!11
@@ -182,6 +184,7 @@ namespace sixengine {
 			obj->AddComponent<Collectable>();
 			obj->AddComponent<ParticleEmitter>(particleTexture);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCratePBR"));
+
 			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE
 
@@ -214,6 +217,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
+			obj->AddComponent<StaticLoopedSound>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 30.f);
 			obj->AddComponent<ParticleEmitter>(1.0f, 10.0f, true, 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 1.0f, 30.0f, rippleParticleTexture, 5.0f, false);
 			m_Scene.m_SceneRoot->AddChild(obj);
 			// END Particle Systems
@@ -248,7 +252,8 @@ namespace sixengine {
 			m_SystemManager.AddSystem<MixingCameraSystem>();
 			m_SystemManager.AddSystem<QuestionmarkSystem>();
 			m_SystemManager.AddSystem<DynamicBodySystem>();
-
+			m_SystemManager.AddSystem<StaticLoopedSoundSystem>(m_Scene.GetGameObjectsWithComponent<SimplePlayer>()[0]);
+			
 			orbitalCamA = new GameObject(m_EntityManager);
 			orbitalCamA->AddComponent<Transform>(orbitalCamA);
 			orbitalCamA->AddComponent<Camera>(orbitalCamA);
@@ -297,12 +302,15 @@ namespace sixengine {
 			else
 				m_BatchRenderer->SetBlur(false);
 
+
+			//AUDIO
 			AudioManager::getInstance()->ClearSoundsArray();
 			std::vector<irrklang::ISound*> s = AudioManager::getInstance()->sounds;
 			for (auto sound : s)
 			{
 				LOG_CORE_ERROR("Sound: {0}", sound->isFinished());
 			}
+			//AUDIO
 			// BAR
 			/*m_BarFill += .01f;
 			m_BarFill = glm::clamp(m_BarFill, 0.0f, 1.0f);
@@ -329,7 +337,7 @@ namespace sixengine {
 
 			if (Input::IsKeyPressed(KeyCode::N))
 			{
-				PLAY_TRACK_3D("generator", glm::vec3(30.0f, 0, 0));
+				//INIT_TRACK_3D("generator", glm::vec3(30.0f, 0, 0));
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F5))
