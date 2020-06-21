@@ -48,6 +48,8 @@
 #include <Gameplay/Systems/StaticLoopedSoundSystem.h>
 #include <Gameplay/Components/LoopedSound.h>
 #include  <Gameplay/Systems/DynamicSoundSystem.h>
+#include <Gameplay/Components/BackgroundSound.h>
+#include <Gameplay/Components/BackgroundSoundSystem.h>
 
 
 namespace sixengine {
@@ -81,7 +83,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalOrientation(rotation);
 			obj->AddComponent<BoxCollider>(glm::vec3(1.0f, 1.0f, 1.0f));
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
-			obj->AddComponent<LoopedSound>("footstep", pos, 5.0f);
+			obj->AddComponent<LoopedSound3D>("footstep", pos, 5.0f);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Red"));
 			obj->AddComponent<DynamicBody>();
 
@@ -143,6 +145,9 @@ namespace sixengine {
 
 			ADD_TRACK("res/sounds/electricity-generator-loop.mp3", "generator");
 			ADD_TRACK("res/sounds/footstep-gravel.mp3", "footstep");
+			ADD_TRACK("res/sounds/desert/wind-sounds.mp3", "wind");
+			ADD_TRACK("res/sounds/solider_base/military-helicopter.mp3", "helicopter");
+
 			//INIT_TRACK_3D("generator", glm::vec3(0.0f));
 			//INIT_TRACK_3D_LOOPED("generator", glm::vec3(30.0f, 0, 0));
 
@@ -175,8 +180,14 @@ namespace sixengine {
 			m_Scene.m_BatchRenderer->AddTechnique(new QuestionmarkTechnique(bar));
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/billboard.obj");
 			//BAR
-
-
+			//Audio
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<BackgroundSound>(100.0f, 100.0f, "helicopter");
+			obj->GetComponent<BackgroundSound>()->m_Sound->setPlaybackSpeed(3.0f);
+			//obj->AddComponent<LoopedSound>("wind");
+			//obj->GetComponent<LoopedSound>()->Play();
+			//obj->GetComponent<LoopedSound>()->SetVolume(.5f);
+			//Audio
 			Texture* particleTexture = new Texture("res/textures/particles/star.png");
 			//COLLECTABLE
 			obj = new GameObject(m_EntityManager);
@@ -220,8 +231,8 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
-			obj->AddComponent<LoopedSound>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 30.f);
-			obj->GetComponent<LoopedSound>()->SetMinDistance(-1.0f);
+			obj->AddComponent<LoopedSound3D>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 30.f);
+			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
 			obj->AddComponent<ParticleEmitter>(1.0f, 10.0f, true, 1.0f, glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, 1.0f, 30.0f, rippleParticleTexture, 5.0f, false);
 			m_Scene.m_SceneRoot->AddChild(obj);
 			// END Particle Systems
@@ -256,8 +267,10 @@ namespace sixengine {
 			m_SystemManager.AddSystem<MixingCameraSystem>();
 			m_SystemManager.AddSystem<QuestionmarkSystem>();
 			m_SystemManager.AddSystem<DynamicBodySystem>();
-			m_SystemManager.AddSystem<StaticLoopedSoundSystem>(m_Scene.GetGameObjectsWithComponent<SimplePlayer>()[0]);
+			m_SystemManager.AddSystem<LoopedSoundSystem>();
+			m_SystemManager.AddSystem<StaticLoopedSound3DSystem>(m_Scene.GetGameObjectsWithComponent<SimplePlayer>()[0]);
 			m_SystemManager.AddSystem<DynamicSoundSystem>();
+			m_SystemManager.AddSystem<BackgroundSoundSystem>();
 
 			orbitalCamA = new GameObject(m_EntityManager);
 			orbitalCamA->AddComponent<Transform>(orbitalCamA);

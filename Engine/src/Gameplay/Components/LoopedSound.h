@@ -5,7 +5,40 @@
 
 namespace sixengine 
 {
-	class LoopedSound 
+
+	class LoopedSound
+	{
+		std::string m_Key;
+		irrklang::ISound* m_Sound = nullptr;
+		//float volume;
+	public:
+		LoopedSound(std::string key) : m_Key(key)
+		{
+			m_Sound = INIT_TRACK_LOOPED(key);
+		}
+		void SetVolume(float value)
+		{
+			m_Sound->setVolume(value);
+		}
+		
+		void Play()
+		{
+			if (m_Sound)
+				m_Sound->setIsPaused(false);
+		}
+
+		void Pause()
+		{
+			if (m_Sound)
+				m_Sound->setIsPaused(true);
+		}
+
+		bool IsPaused()
+		{
+			return m_Sound->getIsPaused();
+		}
+	};
+	class LoopedSound3D 
 	{
 		std::string m_Key;
 		glm::vec3 m_Position;
@@ -13,9 +46,9 @@ namespace sixengine
 		irrklang::ISound* m_Sound = nullptr;
 	public:
 
-		LoopedSound(std::string key, glm::vec3 position) : m_Key(key), m_Position(position) {}
+		LoopedSound3D(std::string key, glm::vec3 position) : m_Key(key), m_Position(position) {}
 
-		LoopedSound(std::string key, glm::vec3 position, float rad) : m_Key(key), m_Position(position), m_Rad(rad)
+		LoopedSound3D(std::string key, glm::vec3 position, float rad) : m_Key(key), m_Position(position), m_Rad(rad)
 		{
 			m_Sound = INIT_TRACK_3D_LOOPED(key, position);
 		}
@@ -74,7 +107,7 @@ namespace sixengine
 			else
 				return false;
 		}
-		//LoopedSound();
+		//LoopedSound3D();
 	};
 	
 }

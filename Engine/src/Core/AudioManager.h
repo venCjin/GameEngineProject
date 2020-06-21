@@ -29,6 +29,8 @@ namespace sixengine
 }
 #define INIT_TRACK(...) AudioManager::getInstance()->Init(__VA_ARGS__)
 
+#define INIT_TRACK_LOOPED(...) AudioManager::getInstance()->InitLooped(__VA_ARGS__)
+
 #define ADD_TRACK(...) AudioManager::getInstance()->AddTrack(__VA_ARGS__)
 
 #define INIT_TRACK_3D(...)  AudioManager::getInstance()->Init3D(__VA_ARGS__)
