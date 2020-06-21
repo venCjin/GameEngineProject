@@ -14,7 +14,7 @@
 #include <Core/CameraSystem/Camera.h>
 #include <Physics/Systems/CollisionSystem.h>
 #include <Physics/Components/DynamicBody.h>
-
+#include <Core/AudioManager.h>
 #include <AI/Enemy.h>
 #include <Gameplay/Components/Generator.h>
 
@@ -63,6 +63,10 @@ namespace sixengine {
 		void Update(EventManager & eventManager, float dt) override
 		{
 			//LOG_INFO(m_SimplePlayer->collider->IsStatic());
+			//AUDIO
+			//Updating audio listener 
+			AudioManager::getInstance()->SetListenerPosition(m_Transform->GetWorldPosition(), m_Transform->GetForward());
+			//AUDIO
 			glm::vec3 dir = glm::vec3();
 			DynamicBody* _db = m_SimplePlayer->gameObject->GetComponent<DynamicBody>().Get();	
 			_db->m_Drag = 4;
@@ -75,6 +79,9 @@ namespace sixengine {
 			if (Input::IsMouseButtonActive(0))
 			{
 				//LOG_INFO("___MOUSE");
+
+				m_SimplePlayer->scolopendraAnimation->ChangeAnimation(std::string("attack"));
+
 				glm::mat4 model = glm::mat4(1.0f);
 				model = glm::translate(model, m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f));
 				Application::attack->model = model;

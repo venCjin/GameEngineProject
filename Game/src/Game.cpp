@@ -51,6 +51,11 @@
 #include "AI/NavMesh/NavAgentSystem.h"
 #include "Gameplay/Systems/QuestionmarkSystem.h"
 #include "Renderer/Techniques/QuestionmarkTechnique.h"
+#include <Gameplay/Systems/StaticLoopedSoundSystem.h>
+#include <Gameplay/Components/LoopedSound.h>
+#include  <Gameplay/Systems/DynamicSoundSystem.h>
+#include <Gameplay/Components/BackgroundSound.h>
+#include <Gameplay/Components/BackgroundSoundSystem.h>
 
 
 namespace sixengine {
@@ -84,8 +89,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalOrientation(rotation);
 			obj->AddComponent<BoxCollider>(glm::vec3(1.0f, 2.0f, 1.0f));
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/BlackAgent/agent2.dae"));
-
-
+			obj->AddComponent<LoopedSound3D>("footstep", pos, 5.0f);
 			//obj->AddComponent<Animation>();
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("AgentMaterial"));
 			obj->AddComponent<DynamicBody>();
@@ -170,9 +174,18 @@ namespace sixengine {
 
 			m_SystemManager.AddSystem<GateSystem>();
 
+
 			m_Scene.LoadScene("res/scenes/exported.scene");
-			ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
-			PLAY_TRACK("ophelia");
+			//ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
+			//INIT_TRACK("ophelia");
+
+			ADD_TRACK("res/sounds/electricity-generator-loop.mp3", "generator");
+			ADD_TRACK("res/sounds/footstep-gravel.mp3", "footstep");
+			ADD_TRACK("res/sounds/desert/wind-sounds.mp3", "wind");
+			ADD_TRACK("res/sounds/solider_base/military-helicopter.mp3", "helicopter");
+
+			//INIT_TRACK_3D("generator", glm::vec3(0.0f));
+			//INIT_TRACK_3D_LOOPED("generator", glm::vec3(30.0f, 0, 0));
 
 			// HACKS
 			//////SHITT!!!11
@@ -202,10 +215,18 @@ namespace sixengine {
 				"Bar");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/billboard.obj");
 			//BAR
-
+			//Audio
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<BackgroundSound>(100.0f, 100.0f, "helicopter", 3.0f, .25f);
+			//obj->GetComponent<BackgroundSound>()->m_Sound->setPlaybackSpeed(3.0f);
+			//obj->AddComponent<LoopedSound>("wind");
+			//obj->GetComponent<LoopedSound>()->Play();
+			//obj->GetComponent<LoopedSound>()->SetVolume(.5f);
+			//Audio
 			Texture* particleTexture = new Texture("res/textures/particles/star.png");
-
 			
+			// WORKING SCOLOPENDRA
+			m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo.dae");
 
 			GameObject* player = new GameObject(m_EntityManager);
 			player->AddComponent<Transform>(player);
@@ -213,7 +234,6 @@ namespace sixengine {
 			player->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			player->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
-			player->AddComponent<Animation>();
 			player->AddComponent<DynamicBody>();
 			player->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
 			player->AddComponent<SimplePlayer>(player);
@@ -222,13 +242,18 @@ namespace sixengine {
 
 			GameObject* scolopendra = new GameObject(m_EntityManager);
 			scolopendra->AddComponent<Transform>(scolopendra);
-			scolopendra->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo.dae"));
+			scolopendra->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolo"));
 			scolopendra->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("GreenAnim"));
 			scolopendra->AddComponent<Animation>();
 			scolopendra->AddComponent<ScolopendraComponent>(scolopendra, player);
 			m_Scene.m_SceneRoot->AddChild(scolopendra);
 
+			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_idle.dae", "idle", false, 0.5f);
+			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_attack.dae", "attack", true, 0.0f);
 			player->GetComponent<SimplePlayer>().Get()->scolopendraMaterial = scolopendra->GetComponent<Material>().Get();
+			player->GetComponent<SimplePlayer>().Get()->scolopendraAnimation = scolopendra->GetComponent<Animation>().Get();
+			//m_Scene.m_ModelManager->GetModel("scolo")->LoadAnimation("res/models/scolopendra/scolo_anim.dae", "idle");
+
 
 			//Texture* particleTexture = new Texture("res/textures/particles/star.png");
 			//COLLECTABLE
@@ -239,6 +264,7 @@ namespace sixengine {
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
 			obj->AddComponent<Collectable>();
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCratePBR"));
+
 			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE
 
@@ -263,6 +289,8 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
 			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
 			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
+			obj->AddComponent<LoopedSound3D>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 15.f);
+			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
 			Generator* gen1 = obj->GetComponent<Generator>().Get();
 			m_Scene.m_SceneRoot->AddChild(obj);
 
@@ -282,6 +310,8 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
 			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
 			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
+			obj->AddComponent<LoopedSound3D>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 15.f);
+			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
 			Generator* gen2 = obj->GetComponent<Generator>().Get();
 			m_Scene.m_SceneRoot->AddChild(obj);
 
@@ -306,6 +336,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
+
 			obj->AddComponent<ParticleEmitter>(obj, rippleParticleTexture, std::string("EnemyEffect"));
 			m_Scene.m_SceneRoot->AddChild(obj);
 			// END Particle Systems
@@ -354,6 +385,10 @@ namespace sixengine {
 			m_SystemManager.AddSystem<QuestionmarkSystem>();
 			m_SystemManager.AddSystem<DynamicBodySystem>();
 			m_SystemManager.AddSystem<ScolopendraSystem>();
+			m_SystemManager.AddSystem<LoopedSoundSystem>();
+			m_SystemManager.AddSystem<StaticLoopedSound3DSystem>(m_Scene.GetGameObjectsWithComponent<SimplePlayer>()[0]);
+			m_SystemManager.AddSystem<DynamicSoundSystem>();
+			m_SystemManager.AddSystem<BackgroundSoundSystem>();
 
 			orbitalCamA = new GameObject(m_EntityManager);
 			orbitalCamA->AddComponent<Transform>(orbitalCamA);
@@ -406,6 +441,15 @@ namespace sixengine {
 				//m_BatchRenderer->SetShake(false);
 			}
 
+
+			//AUDIO
+			AudioManager::getInstance()->ClearSoundsArray();
+			std::vector<irrklang::ISound*> s = AudioManager::getInstance()->sounds;
+			for (auto sound : s)
+			{
+				LOG_CORE_ERROR("Sound: {0}", sound->getIsPaused());
+			}
+			//AUDIO
 			// BAR
 			/*m_BarFill += .01f;
 			m_BarFill = glm::clamp(m_BarFill, 0.0f, 1.0f);
@@ -428,6 +472,11 @@ namespace sixengine {
 			if (Input::IsKeyPressed(KeyCode::F9))
 			{
 				Application::Get().GetWindow().SwitchCursorVisibility();
+			}
+
+			if (Input::IsKeyPressed(KeyCode::N))
+			{
+				//INIT_TRACK_3D("generator", glm::vec3(30.0f, 0, 0));
 			}
 
 			if (Input::IsKeyPressed(KeyCode::F5))
@@ -508,7 +557,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				m_Scene.DrawGizmos();
+				//m_Scene.DrawGizmos();
 
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				glDisable(GL_CULL_FACE);

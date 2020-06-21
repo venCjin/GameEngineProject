@@ -35,6 +35,7 @@ namespace sixengine {
 		bool m_OnSurface = true;
 
 		Material* scolopendraMaterial;
+		Animation* scolopendraAnimation;
 
 		Camera* OnSurfaceCamera;
 		Camera* UnderSurfaceCamera;
