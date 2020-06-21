@@ -176,7 +176,28 @@ namespace sixengine {
 
 			Texture* particleTexture = new Texture("res/textures/particles/star.png");
 
+
+			// WORKING SCOLOPENDRA ANIMATION
+			/*m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo_anim.dae");
+			m_Scene.m_ModelManager->GetModel("scolo_anim")->LoadAnimation("res/models/scolopendra/scolo_anim.dae", "idle");
+
+			GameObject* player = new GameObject(m_EntityManager);
+			player->AddComponent<Transform>(player);
+			player->GetComponent<Transform>()->SetWorldPosition(-35.0f, 0.0f, 0.0f);
+			//player->GetComponent<Transform>()->SetLocalScale(0.1f, 0.1f, 0.1f);
+			player->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolo_anim"));
+			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("GreenAnim"));
+			player->AddComponent<Animation>();
+			player->AddComponent<DynamicBody>();
+			player->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+			player->AddComponent<SimplePlayer>(player);
+			m_BatchRenderer->SetLight(new Light(player));
+			m_Scene.m_SceneRoot->AddChild(player);*/
+
 			
+			// WORKING SCOLOPENDRA
+
+			m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo.dae");
 
 			GameObject* player = new GameObject(m_EntityManager);
 			player->AddComponent<Transform>(player);
@@ -184,7 +205,7 @@ namespace sixengine {
 			player->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			player->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
-			player->AddComponent<Animation>();
+			//->AddComponent<Animation>();
 			player->AddComponent<DynamicBody>();
 			player->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
 			player->AddComponent<SimplePlayer>(player);
@@ -193,13 +214,18 @@ namespace sixengine {
 
 			GameObject* scolopendra = new GameObject(m_EntityManager);
 			scolopendra->AddComponent<Transform>(scolopendra);
-			scolopendra->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo.dae"));
+			scolopendra->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolo"));
 			scolopendra->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("GreenAnim"));
 			scolopendra->AddComponent<Animation>();
 			scolopendra->AddComponent<ScolopendraComponent>(scolopendra, player);
 			m_Scene.m_SceneRoot->AddChild(scolopendra);
 
+			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_idle.dae", "idle", false);
+			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_attack.dae", "attack", true);
 			player->GetComponent<SimplePlayer>().Get()->scolopendraMaterial = scolopendra->GetComponent<Material>().Get();
+
+			//m_Scene.m_ModelManager->GetModel("scolo")->LoadAnimation("res/models/scolopendra/scolo_anim.dae", "idle");
+
 
 			//Texture* particleTexture = new Texture("res/textures/particles/star.png");
 			//COLLECTABLE

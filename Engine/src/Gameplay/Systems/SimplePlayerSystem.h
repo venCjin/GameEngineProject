@@ -75,6 +75,9 @@ namespace sixengine {
 			if (Input::IsMouseButtonActive(0))
 			{
 				//LOG_INFO("___MOUSE");
+
+				m_SimplePlayer->scolopendraAnimation->ChangeAnimation(std::string("attack"));
+
 				glm::mat4 model = glm::mat4(1.0f);
 				model = glm::translate(model, m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f));
 				Application::attack->model = model;

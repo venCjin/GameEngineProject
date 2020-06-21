@@ -37,12 +37,16 @@ namespace sixengine {
 
 			for (int i = 0; i < m_Model->m_BoneInfo.size(); ++i)
 			{
-				std::cout << m_Model->m_BoneInfo[i].Name <<  std::endl;
-				m_Bones.push_back(Bone(m_Model->m_BoneInfo[i].GlobalTransformation));
-				if (i > 0)
+				std::size_t found = m_Model->m_BoneInfo[i].Name.find("Bone");
+				if (found != std::string::npos)
 				{
-					m_Bones[i].Init(&m_Bones[i - 1].m_Bone);
-				}		
+					m_Model->m_BoneInfo[i].FreeBone = true;
+					m_Bones.push_back(Bone(m_Model->m_BoneInfo[i].GlobalTransformation));
+					if (i > 0)
+					{
+						m_Bones[i].Init(&m_Bones[i - 1].m_Bone);
+					}
+				}
 			}
 		}
 

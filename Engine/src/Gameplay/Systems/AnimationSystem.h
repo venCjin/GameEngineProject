@@ -16,8 +16,21 @@ namespace sixengine {
 
 		void Update(EventManager & eventManager, float dt) override
 		{
+			float currentTimeInTicks = m_Animation->GetCurrentAnimation()->timer * m_Animation->GetCurrentAnimation()->ticksPerSecond;
+			float previousTimeInTicks = m_Animation->GetPreviousAnimation()->timer * m_Animation->GetPreviousAnimation()->ticksPerSecond;
+			
+			if (m_Animation->m_CurrentAnimationName != "idle" && currentTimeInTicks < m_Animation->GetCurrentAnimation()->duration)
+				m_Animation->GetCurrentAnimation()->timer += dt;
+			else
+				m_Animation->ChangeAnimation("idle");
+
+			if (!m_Animation->GetPreviousAnimation()->singleCycle || (m_Animation->GetPreviousAnimation()->singleCycle && previousTimeInTicks < m_Animation->GetPreviousAnimation()->duration))
+				m_Animation->GetPreviousAnimation()->timer += dt;
+ 
+			/*m_Animation->currentAnimationTimer += dt;
+			m_Animation->previousAnimationTimer += dt;*/
 					   
-			if (Input::IsKeyActive(KeyCode::DOWN) || Input::IsKeyActive(KeyCode::UP) ||
+			/*if (Input::IsKeyActive(KeyCode::DOWN) || Input::IsKeyActive(KeyCode::UP) ||
 				Input::IsKeyActive(KeyCode::RIGHT) || Input::IsKeyActive(KeyCode::LEFT))
 			{ 
 				ChangeAnimation("walk");
@@ -29,14 +42,13 @@ namespace sixengine {
 			else
 			{
 				ChangeAnimation("idle");
-			}
+			}*/
 
-			m_Animation.Get()->currentAnimationTimer += dt;
-			m_Animation.Get()->previousAnimationTimer += dt;
+			
 
 		}
 
-		void ChangeAnimation(std::string newAnimationName)
+		/*void ChangeAnimation(std::string newAnimationName)
 		{
 			if (m_Animation.Get()->currentAnimationName == newAnimationName)
 				return;
@@ -47,6 +59,6 @@ namespace sixengine {
 			m_Animation.Get()->currentAnimationTimer = 0.0f;
 
 
-		}
+		}*/
 	};
 }

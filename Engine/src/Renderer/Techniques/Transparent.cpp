@@ -14,13 +14,10 @@ namespace sixengine
 	{
 		float time = Timer::Instance()->ElapsedTime();
 
-		std::string currentAnimationName = command->gameObject->GetComponent<Animation>().Get()->currentAnimationName;
-		std::string previousAnimationName = command->gameObject->GetComponent<Animation>().Get()->previousAnimationName;
+		AnimationEntry* curentAnimation = command->gameObject->GetComponent<Animation>().Get()->GetCurrentAnimation();
+		AnimationEntry* previousAnimation = command->gameObject->GetComponent<Animation>().Get()->GetPreviousAnimation();
 
-		float currentTimer = command->gameObject->GetComponent<Animation>().Get()->currentAnimationTimer;
-		float previousTimer = command->gameObject->GetComponent<Animation>().Get()->previousAnimationTimer;
-
-		command->gameObject->GetComponent<Mesh>()->GetModel()->BoneTransform(currentTimer, previousTimer, *transform, currentAnimationName, previousAnimationName);
+		command->gameObject->GetComponent<Mesh>()->GetModel()->BoneTransform(curentAnimation, previousAnimation, *transform);
 	}
 
 	TransparentTechnique::TransparentTechnique(Shader* shader) 
