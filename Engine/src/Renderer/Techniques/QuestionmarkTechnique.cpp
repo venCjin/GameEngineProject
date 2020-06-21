@@ -36,15 +36,31 @@ namespace sixengine {
 		std::vector<float> barFill;
 		std::vector<glm::vec4> color;
 		std::vector<int> visible;
+		std::vector<glm::mat4> models2;
+		models2.push_back(models[0]);
+		models2.push_back(models[1]);
+
+		std::sort(commandList.begin(), commandList.end(),
+			[](const RendererCommand* a, const RendererCommand* b) -> bool
+			{
+				glm::vec3 posA(a->data.model[3]);
+				glm::vec3 posB(b->data.model[3]);
+
+				glm::vec3 camPosition = Camera::ActiveCamera->m_Transform->GetWorldPosition();
+
+				return glm::distance2(camPosition, posA) > glm::distance2(camPosition, posB);
+			});
+
 		for (auto command : commandList)
 		{
 			Questionmark* q = command->gameObject->GetComponent<Questionmark>().Get();
 			barFill.push_back(q->fill);
 			color.push_back(q->color);
 			visible.push_back(q->visable);
-			//tablica bar fill
+			models2.push_back(command->data.model);
 		}
-		m_Models.Update(models.data(), models.size() * sizeof(models[0]));
+
+		m_Models.Update(models2.data(), models2.size() * sizeof(models2[0]));
 		m_Layers.Update(layers.data(), layers.size() * sizeof(layers[0]));
 		m_Layers.Update(barFill.data(), barFill.size() * sizeof(barFill[0]), 1000 * sizeof(glm::vec4));
 		m_Layers.Update(color.data(), color.size() * sizeof(color[0]), 1000 * sizeof(glm::vec4) + 1000 * sizeof(float));

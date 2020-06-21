@@ -13,6 +13,10 @@ namespace sixengine {
 
 	struct SimplePlayer : public ISerializable
 	{
+
+	private:
+
+	public:
 		SimplePlayer() { gameObject = nullptr; }
         SimplePlayer(GameObject* go) 
 		{ 
@@ -22,12 +26,15 @@ namespace sixengine {
 		}
         virtual void Load(std::iostream& stream) {}
 		virtual void Save(std::iostream& stream) {}
-	public:
+
+
 		GameObject* gameObject;
 		Transform* transform;
 		BoxCollider* collider;
 		float air = 100;
 		bool m_OnSurface = true;
+
+		Material* scolopendraMaterial;
 
 		Camera* OnSurfaceCamera;
 		Camera* UnderSurfaceCamera;

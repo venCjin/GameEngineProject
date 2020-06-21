@@ -7,8 +7,8 @@ namespace sixengine {
 	class ShadowFrustum
 	{
 	private:
-		const float m_Offset = 0.0f;
-		const float m_ShadowDistance = 25.0f;
+		const float m_Offset = 5.0f;
+		const float m_ShadowDistance = 30.0f;
 
 		float minX, maxX;
 		float minY, maxY;

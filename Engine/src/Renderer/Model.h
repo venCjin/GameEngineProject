@@ -12,6 +12,7 @@
 #include <glad/glad.h>
 #include <assimp/Importer.hpp>
 #include <map>
+#include <limits>
 
 #include "Core/Profile.h"
 namespace sixengine {
@@ -22,6 +23,15 @@ namespace sixengine {
 	class Model
 	{
 	public:
+
+		struct BoneInfo
+		{
+			glm::mat4 BoneOffset = glm::mat4(0.0f);
+			glm::mat4 FinalTransformation = glm::mat4(0.0f);
+			glm::mat4 LocalTransformation = glm::mat4(1.0f);
+			glm::mat4 GlobalTransformation = glm::mat4(0.0f);
+			std::string Name;
+		};
 
 		Model();
 		Model(const std::string& filename, unsigned ID);
@@ -43,6 +53,8 @@ namespace sixengine {
 		inline std::string GetDirectory() { return m_Directory; }
 		inline std::string GetName() { return m_Name; }
 
+		void SetFrustumInfinity();
+
 		unsigned int m_ID;
 		VertexArray* VAO;
 
@@ -52,15 +64,15 @@ namespace sixengine {
 
 		glm::vec3 m_MinAxis;
 		glm::vec3 m_MaxAxis;
+		std::vector<BoneInfo> m_BoneInfo;
+		bool m_FreeBones = false;
+		glm::mat4 m_GlobalInverseTransform;
+		void LoadGlobalPositions(const aiNode* node, const glm::mat4& parentTransform);
+		bool m_GlobalPositionsLoaded = false;
+		const aiScene* m_Scene;
 
 	private:
-		bool firstRNH = false;
-
-		struct BoneInfo
-		{
-			glm::mat4 BoneOffset = glm::mat4(0.0f);
-			glm::mat4 FinalTransformation = glm::mat4(0.0f);;
-		};
+		bool firstRNH = false;	
 
 		void CalcInterpolatedScaling(aiVector3D& out, float animationTime, const aiNodeAnim* nodeAnim);
 		void CalcInterpolatedRotation(aiQuaternion& out, float animationTime, const aiNodeAnim* nodeAnim);
@@ -70,6 +82,7 @@ namespace sixengine {
 		uint FindRotation(float animationTime, const aiNodeAnim* nodeAnim);
 		uint FindPosition(float animationTime, const aiNodeAnim* nodeAnim);
 		void ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform, std::string animationName, std::vector<glm::mat4>& transforms);
+		void ReadNodeHierarchyFreeBones(const aiNode* node);
 		bool InitFromScene(const aiScene* scene, const std::string& filename);
 		void InitMesh(uint MeshIndex, const aiMesh* mesh/*, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices*/);
 		void LoadBones(uint MeshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices);
@@ -136,12 +149,9 @@ namespace sixengine {
 		std::map<std::string, uint> m_BoneMapping; // maps a bone name to its index
 		std::map<std::string, AnimationEntry*> m_AnimationsMapping;
 		uint m_NumBones;
-		std::vector<BoneInfo> m_BoneInfo;
-		glm::mat4 m_GlobalInverseTransform;
 		std::string m_Directory;
 		std::string m_Name;
 
-		const aiScene* m_Scene;
 		Assimp::Importer m_Importer;
 	};
 }

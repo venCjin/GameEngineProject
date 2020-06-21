@@ -31,6 +31,11 @@ namespace sixengine {
 			: m_Parent(nullptr)
 		{}
 
+		Transform(glm::mat4 transformMatrix) : m_Parent(nullptr)
+		{
+			m_Local = transformMatrix;
+		}
+
 		virtual void Load(std::iostream& stream) override
 		{
 			glm::vec3 pos;
@@ -357,10 +362,20 @@ namespace sixengine {
 
 			glm::vec3 right = glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f));
 			glm::vec3 upwards = glm::cross(right, forward);
-
+		
 			auto scale = GetLocalScale();
 			m_Local = glm::inverse((glm::lookAt(getWorldPosition(), getWorldPosition() + forward, upwards)));
 			m_Local = glm::scale(m_Local, scale);
+
+		}
+
+
+		void LookAtBone(glm::vec3 position)
+		{
+			glm::vec3 forward = position - this->getWorldPosition();
+			forward = glm::normalize(forward);
+
+			this->SetLocalRotation(glm::quatLookAt(forward, glm::vec3(0.0f, 0.0f, -1.0f)));
 		}
 
 

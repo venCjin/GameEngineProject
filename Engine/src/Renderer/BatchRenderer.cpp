@@ -133,6 +133,9 @@ namespace sixengine {
 	{
 		bool render = true;
 
+		if (gameObject->HasComponent<ParticleEmitter>())
+			m_ParticleList.push_back(gameObject);
+
 		ComponentHandle<Mesh> mesh;
 		if (gameObject->HasComponent<Mesh>() && gameObject->GetComponent<Mesh>()->GetModel())
 		{
@@ -146,13 +149,11 @@ namespace sixengine {
 
 			render = FrustumAABB(min, max);
 		}
-		else if (gameObject->HasComponent<Text>())
-		{
-			render = true;
-		}
 
-		if (gameObject->HasComponent<ParticleEmitter>())
-			m_ParticleList.push_back(gameObject);
+		if (!gameObject->HasComponent<Mesh>() && !gameObject->HasComponent<Material>())
+			render = false;
+		else if (gameObject->HasComponent<Text>())
+			render = true;
 
 		if (render)
 		{
@@ -282,10 +283,6 @@ namespace sixengine {
 			m_RenderCommandList.clear();
 		}
 
-		// Light shadow box update
-		//***********************************************
-		m_DirectionalLight->Update();
-
 		// Draw depth
 		//***********************************************
 
@@ -299,9 +296,13 @@ namespace sixengine {
 
 		m_DirectionalLight->m_DepthFramebuffer.Unbind();
 
+		// Light shadow box update
+		//***********************************************
+		m_DirectionalLight->Update();
+
 		// Draw skybox
 		//***********************************************
-		if (m_Blur)
+		if (m_Blur || m_Shake)
 			m_Default.BindTarget();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -313,8 +314,9 @@ namespace sixengine {
 		if (m_Water && m_Water->IsVisible())
 			RenderWater(m_TechniqueList[0], m_TechniqueList[1]);
 
-		if (m_Blur)
+		if (m_Blur || m_Shake)
 			m_Default.BindTarget();
+
 
 		// Draw normal
 		//***********************************************
@@ -334,9 +336,16 @@ namespace sixengine {
 				m_Offset += m_TechniqueList[i]->m_DrawCommands.size() * sizeof(DrawElementsCommand);
 				m_TechniqueList[i]->m_DrawCommands.clear();
 			}
+
+			if (i == 3)
+			{
+				if (m_ParticleRender)
+					m_ParticleRender->Render(m_ParticleList);
+			}
 		}
 
-		if (m_Blur)
+
+		if (m_Blur || m_Shake)
 			ApplyBlur();
 
 		{
@@ -356,9 +365,6 @@ namespace sixengine {
 				m_TechniqueList[i]->m_DrawCommands.clear();
 			}
 		}
-
-		if (m_ParticleRender)
-			m_ParticleRender->Render(m_ParticleList);
 
 		for (auto t : m_TechniqueList)
 			t->FinishFrame();
@@ -406,6 +412,8 @@ namespace sixengine {
 
 		m_BlurShader->Bind();
 		m_BlurShader->SetFloat("time", Timer::Instance()->ElapsedTime());
+		m_BlurShader->SetBool("shakeEnabled", m_Shake);
+		m_BlurShader->SetBool("blurEnabled", m_Blur);
 
 		glActiveTexture(GL_TEXTURE2);
 		m_Default.BindTexture();
@@ -548,6 +556,11 @@ namespace sixengine {
 	void BatchRenderer::SetBlur(bool blur)
 	{
 		m_Blur = blur;
+	}
+
+	void BatchRenderer::SetShake(bool shake)
+	{
+		m_Shake = shake;
 	}
 
 	void BatchRenderer::SetSkybox(SkyboxRender* technique)

@@ -456,9 +456,9 @@ int sixengine::CollisionSystem::TestSegmentAABB(glm::vec3 p0, glm::vec3 p1, Enti
 	return 1;
 }
 
-std::vector<Entity*> sixengine::CollisionSystem::RaycastAll(glm::vec3 origin, glm::vec3 direction)
+std::vector<Entity> sixengine::CollisionSystem::RaycastAll(glm::vec3 origin, glm::vec3 direction)
 {
-	std::vector<Entity*> result;
+	std::vector<Entity> result;
 
 	float distance = glm::dot(direction, direction);
 
@@ -474,7 +474,7 @@ std::vector<Entity*> sixengine::CollisionSystem::RaycastAll(glm::vec3 origin, gl
 
 			if (TestSegmentAABB(origin, origin + direction, boxes[i]))
 			{
-				result.push_back(&boxes[i]);
+				result.push_back(boxes[i]);
 			}
 		}
 	}
@@ -491,7 +491,7 @@ std::vector<Entity*> sixengine::CollisionSystem::RaycastAll(glm::vec3 origin, gl
 
 			if (TestSegmentSphere(origin, origin + direction, spheres[i]))
 			{
-				result.push_back(&spheres[i]);
+				result.push_back(spheres[i]);
 			}
 		}
 	}
@@ -499,7 +499,7 @@ std::vector<Entity*> sixengine::CollisionSystem::RaycastAll(glm::vec3 origin, gl
 	return result;
 }
 
-Entity* sixengine::CollisionSystem::CheckSphere(glm::vec3 center, float radius)
+Entity sixengine::CollisionSystem::CheckSphere(glm::vec3 center, float radius)
 {
 	{
 		auto spheres = Application::Get().GetEntityManager()->EntitiesWithComponents<SphereCollider>();
@@ -516,7 +516,7 @@ Entity* sixengine::CollisionSystem::CheckSphere(glm::vec3 center, float radius)
 				float portionB = 0.5f;
 
 				LOG_ERROR("SYSTEM HIT COLLIDER");
-				return &spheres[i];
+				return spheres[i];
 
 			}
 		}
@@ -539,17 +539,17 @@ Entity* sixengine::CollisionSystem::CheckSphere(glm::vec3 center, float radius)
 			if (glm::length(relativeCenter - closestPoint) < radius)
 			{
 				LOG_ERROR("SYSTEM HIT COLLIDER");
-				return &boxes[i];
+				return boxes[i];
 			}
 		}
 	}
 
-	return NULL;	
+	return Entity();	
 }
 
-std::vector<Entity*> sixengine::CollisionSystem::CheckSphereAll(glm::vec3 center, float radius)
+std::vector<Entity> sixengine::CollisionSystem::CheckSphereAll(glm::vec3 center, float radius)
 {
-	std::vector<Entity*> result;
+	std::vector<Entity> result;
 
 	{
 		auto spheres = Application::Get().GetEntityManager()->EntitiesWithComponents<SphereCollider>();
@@ -565,7 +565,7 @@ std::vector<Entity*> sixengine::CollisionSystem::CheckSphereAll(glm::vec3 center
 				float portionA = 0.5f;
 				float portionB = 0.5f;
 
-				result.push_back(&spheres[i]);
+				result.push_back(spheres[i]);
 			}
 		}
 	}
@@ -585,7 +585,7 @@ std::vector<Entity*> sixengine::CollisionSystem::CheckSphereAll(glm::vec3 center
 
 			if (glm::length(relativeCenter - closestPoint) < radius)
 			{
-				result.push_back(&boxes[i]);
+				result.push_back(boxes[i]);
 			}
 		}
 	}

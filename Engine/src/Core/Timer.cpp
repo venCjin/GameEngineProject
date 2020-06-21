@@ -12,7 +12,9 @@ namespace sixengine {
 		m_ElapsedTime(0.f),
 		m_ElapsedTimeUnscaled(0.f),
 		m_TimeScale(1.f),
-		m_Paused(false)
+		m_Paused(false),
+		m_IsFixedDeltaTime(false),
+		m_FixedDeltaTime(FRAMERATE_60)
 	{
 		Reset();
 	}
@@ -53,7 +55,11 @@ namespace sixengine {
 			return;
 		}
 
-		m_DeltaTime = (HighResClock::now() - m_CurrentTime).count() / SECOND;
+		if (m_IsFixedDeltaTime)
+			m_DeltaTime = m_FixedDeltaTime;
+		else
+			m_DeltaTime = (HighResClock::now() - m_CurrentTime).count() / SECOND;
+
 		m_ElapsedTime += m_DeltaTime * m_TimeScale;
 		m_ElapsedTimeUnscaled += m_DeltaTime;
 	}
@@ -72,6 +78,10 @@ namespace sixengine {
 			m_CurrentTime = HighResClock::now();
 		}
 	}
+
+	void Timer::SetIsFixedUpdate(bool fixed) { m_IsFixedDeltaTime = fixed; }
+	void Timer::SetFixedUpdate(float fixed) { m_FixedDeltaTime = fixed; }
+
 	bool Timer::IsPaused() const { return m_Paused; }
 
 	void Timer::SetTimeScale(float timeScale) { m_TimeScale = timeScale; }

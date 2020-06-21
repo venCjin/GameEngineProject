@@ -59,9 +59,9 @@ namespace sixengine {
 		static int TestRaySphere(glm::vec3 p, glm::vec3 d, Entity entity);
 		static int TestSegmentSphere(glm::vec3 v, glm::vec3 w, Entity entity);
 		static int TestSegmentAABB(glm::vec3 p0, glm::vec3 p1, Entity entity);
-		static std::vector<Entity*> RaycastAll(glm::vec3 origin, glm::vec3 direction);
+		static std::vector<Entity> RaycastAll(glm::vec3 origin, glm::vec3 direction);
 
-		static Entity* CheckSphere(glm::vec3 center, float radius);
-		static std::vector<Entity*> CheckSphereAll(glm::vec3 center, float radius);
+		static Entity CheckSphere(glm::vec3 center, float radius);
+		static std::vector<Entity> CheckSphereAll(glm::vec3 center, float radius);
 	};
 }
