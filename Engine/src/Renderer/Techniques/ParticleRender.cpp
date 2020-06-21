@@ -1,4 +1,6 @@
 #include "pch.h"
+
+#include <Gameplay/GameObject.h>
 #include "ParticleRender.h"
 
 namespace sixengine {
@@ -54,6 +56,17 @@ namespace sixengine {
 
 	void ParticleRender::Render(std::vector<GameObject*> particleEmitters)
 	{
+		std::sort(particleEmitters.begin(), particleEmitters.end(),
+			[](GameObject* a, GameObject* b) -> bool
+			{
+				glm::vec3 posA(a->GetComponent<Transform>()->GetWorldPosition());
+				glm::vec3 posB(b->GetComponent<Transform>()->GetWorldPosition());
+
+				glm::vec3 camPosition = Camera::ActiveCamera->m_Transform->GetWorldPosition();
+
+				return glm::distance2(camPosition, posA) > glm::distance2(camPosition, posB);
+			});
+
 		std::vector<glm::mat4> models;
 		std::vector<ParticleData> particleData;
 
@@ -62,6 +75,7 @@ namespace sixengine {
 
 		m_Models.Update(models.data(), 2 * sizeof(glm::mat4));
 		m_Models.Bind();
+		m_ParticleData.LockAndMovePointer();
 
 		m_Shader->Bind();
 		glBindVertexArray(m_VAO);

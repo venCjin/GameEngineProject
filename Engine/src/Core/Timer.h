@@ -11,7 +11,7 @@ namespace sixengine {
 	const double FRAMERATE_60 = 0.016666666;
 	const double FRAMERATE_30 = 0.033333333;
 
-	const double FIXED_UPDATE = 0.01;
+	const double FIXED_UPDATE = 0.016666666;
 
 	const double SECOND = 1000000000.0;
 	const double MILISECOND = 1000000.0;
@@ -32,6 +32,9 @@ namespace sixengine {
 		float m_TimeScale;
 		bool m_Paused;
 
+		bool m_IsFixedDeltaTime;
+		float m_FixedDeltaTime;
+
 		Timer();
 		~Timer();
 	public:
@@ -46,6 +49,9 @@ namespace sixengine {
 
 		bool IsPaused() const;
 		void SetPaused(bool paused);
+
+		void SetIsFixedUpdate(bool fixed);
+		void SetFixedUpdate(float fixed);
 
 		float GetTimeScale() const;
 		void SetTimeScale(float timeScale);

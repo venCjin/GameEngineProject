@@ -233,18 +233,26 @@ namespace sixengine {
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
 			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
+			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
 			Generator* gen1 = obj->GetComponent<Generator>().Get();
+			m_Scene.m_SceneRoot->AddChild(obj);
+
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(9.0, 0.5f, -9.0f);
+			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
 			m_Scene.m_SceneRoot->AddChild(obj);
 
 			//Generator 2
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 0.5f, -2.0f);
+			obj->GetComponent<Transform>()->SetWorldPosition(100.0, 0.5f, -2.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("Generator"));
 			obj->AddComponent<StaticBody>();
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
 			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
+			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
 			Generator* gen2 = obj->GetComponent<Generator>().Get();
 			m_Scene.m_SceneRoot->AddChild(obj);
 
