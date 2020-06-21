@@ -284,6 +284,8 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
 			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
 			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
+			obj->AddComponent<LoopedSound3D>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 15.f);
+			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
 			Generator* gen1 = obj->GetComponent<Generator>().Get();
 			m_Scene.m_SceneRoot->AddChild(obj);
 
@@ -303,6 +305,8 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
 			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
 			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
+			obj->AddComponent<LoopedSound3D>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 15.f);
+			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
 			Generator* gen2 = obj->GetComponent<Generator>().Get();
 			m_Scene.m_SceneRoot->AddChild(obj);
 
@@ -327,8 +331,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
-			obj->AddComponent<LoopedSound3D>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 30.f);
-			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
+
 			obj->AddComponent<ParticleEmitter>(obj, rippleParticleTexture, std::string("EnemyEffect"));
 			m_Scene.m_SceneRoot->AddChild(obj);
 			// END Particle Systems

@@ -3,6 +3,7 @@
 #include "Core/ISerializable.h"
 #include "Gameplay/Components/Mesh.h"
 #include "Gameplay/GameObject.h"
+#include "Gameplay/Components/LoopedSound.h"
 
 
 namespace sixengine
@@ -19,6 +20,9 @@ namespace sixengine
 
 		void DestroyGenerator()
 		{
+			//setting rad to -1 so it would always be paused
+			owner->GetComponent<LoopedSound3D>()->SetRad(-1.0f);
+			//owner->RemoveComponent<LoopedSound3D>();
 			owner->GetComponent<Mesh>()->m_Model = secondModel;
 			destroyed = true;
 		}
