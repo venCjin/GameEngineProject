@@ -17,16 +17,13 @@ namespace sixengine {
 
 	void ShadowFrustum::Update()
 	{
-		//glm::vec3 forwardVector = Camera::ActiveCamera->m_Transform->GetForward(); //m_Center->GetComponent<Transform>()->GetForward(); 
-		glm::vec3 forwardVector = glm::vec3(1.0f, 0.0f, 0.0f);
+		glm::vec3 forwardVector = Camera::ActiveCamera->m_Transform->GetForward(); //m_Center->GetComponent<Transform>()->GetForward(); 
 
-		//glm::vec3 toNear = forwardVector * Camera::ActiveCamera->m_NearPlane;
-		glm::vec3 toNear = forwardVector * -m_ShadowDistance;
-		glm::vec3 toFar = forwardVector * m_ShadowDistance;
+		glm::vec3 toNear = forwardVector * -(m_ShadowDistance - m_Offset);
+		glm::vec3 toFar = forwardVector * (m_ShadowDistance + m_Offset);
 
 		//glm::vec3 centerNear = toNear + Camera::ActiveCamera->m_Transform->GetWorldPosition(); //m_Center->GetComponent<Transform>()->GetWorldPosition();
 		//glm::vec3 centerFar = toFar + Camera::ActiveCamera->m_Transform->GetWorldPosition(); //m_Center->GetComponent<Transform>()->GetWorldPosition();
-
 		glm::vec3 centerNear = toNear + m_Center->GetComponent<Transform>()->GetWorldPosition();
 		glm::vec3 centerFar = toFar + m_Center->GetComponent<Transform>()->GetWorldPosition();
 
@@ -60,8 +57,6 @@ namespace sixengine {
 				minZ = point.z;
 		}
 
-		maxZ += m_Offset;
-
 		delete points;
 	}
 
@@ -75,8 +70,8 @@ namespace sixengine {
 
 	glm::vec4* ShadowFrustum::CalculateFrustumVertices(glm::vec3& centerNear, glm::vec3& centerFar)
 	{
-		glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);//Camera::ActiveCamera->m_Transform->GetUpwards(); //m_Center->GetComponent<Transform>()->GetUpwards();
-		glm::vec3 rightVector = glm::vec3(0.0f, 0.0f, 1.0f); //Camera::ActiveCamera->m_Transform->GetRight(); //m_Center->GetComponent<Transform>()->GetRight();
+		glm::vec3 upVector = Camera::ActiveCamera->m_Transform->GetUpwards(); //m_Center->GetComponent<Transform>()->GetUpwards();
+		glm::vec3 rightVector = Camera::ActiveCamera->m_Transform->GetRight(); //m_Center->GetComponent<Transform>()->GetRight();
 		glm::vec3 downVector = -upVector;
 		glm::vec3 leftVector = -rightVector;
 
