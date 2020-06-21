@@ -343,14 +343,14 @@ namespace sixengine {
 				continue;
 			}
 
-			else if (s == "-Animation")
+			/*else if (s == "-Animation")
 			{
 				if (!go->HasComponent<Animation>()) go->AddComponent<Animation>();
 				std::string model, animation, name;
 				file >> model >> animation >> name;
 				m_ModelManager->GetModel(model)->LoadAnimation(animation, name);
 				continue;
-			}
+			}*/
 
 			else if (s == "-Material")
 			{

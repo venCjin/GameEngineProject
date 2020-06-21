@@ -224,8 +224,9 @@ namespace sixengine {
 			//obj->GetComponent<LoopedSound>()->SetVolume(.5f);
 			//Audio
 			Texture* particleTexture = new Texture("res/textures/particles/star.png");
-
 			
+			// WORKING SCOLOPENDRA
+			m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo.dae");
 
 			GameObject* player = new GameObject(m_EntityManager);
 			player->AddComponent<Transform>(player);
@@ -233,7 +234,6 @@ namespace sixengine {
 			player->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			player->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
-			player->AddComponent<Animation>();
 			player->AddComponent<DynamicBody>();
 			player->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
 			player->AddComponent<SimplePlayer>(player);
@@ -242,13 +242,18 @@ namespace sixengine {
 
 			GameObject* scolopendra = new GameObject(m_EntityManager);
 			scolopendra->AddComponent<Transform>(scolopendra);
-			scolopendra->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo.dae"));
+			scolopendra->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolo"));
 			scolopendra->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("GreenAnim"));
 			scolopendra->AddComponent<Animation>();
 			scolopendra->AddComponent<ScolopendraComponent>(scolopendra, player);
 			m_Scene.m_SceneRoot->AddChild(scolopendra);
 
+			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_idle.dae", "idle", false, 0.5f);
+			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_attack.dae", "attack", true, 0.0f);
 			player->GetComponent<SimplePlayer>().Get()->scolopendraMaterial = scolopendra->GetComponent<Material>().Get();
+			player->GetComponent<SimplePlayer>().Get()->scolopendraAnimation = scolopendra->GetComponent<Animation>().Get();
+			//m_Scene.m_ModelManager->GetModel("scolo")->LoadAnimation("res/models/scolopendra/scolo_anim.dae", "idle");
+
 
 			//Texture* particleTexture = new Texture("res/textures/particles/star.png");
 			//COLLECTABLE
@@ -552,7 +557,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				m_Scene.DrawGizmos();
+				//m_Scene.DrawGizmos();
 
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				glDisable(GL_CULL_FACE);

@@ -15,13 +15,16 @@ namespace sixengine {
 	{
 		float time = Timer::Instance()->ElapsedTime();
 
-		std::string currentAnimationName = command->gameObject->GetComponent<Animation>().Get()->currentAnimationName;
+		/*std::string currentAnimationName = command->gameObject->GetComponent<Animation>().Get()->currentAnimationName;
 		std::string previousAnimationName = command->gameObject->GetComponent<Animation>().Get()->previousAnimationName;
 
 		float currentTimer = command->gameObject->GetComponent<Animation>().Get()->currentAnimationTimer;
-		float previousTimer = command->gameObject->GetComponent<Animation>().Get()->previousAnimationTimer;
+		float previousTimer = command->gameObject->GetComponent<Animation>().Get()->previousAnimationTimer;*/
 
-		command->gameObject->GetComponent<Mesh>()->GetModel()->BoneTransform(currentTimer, previousTimer, *transform, currentAnimationName, previousAnimationName);
+		AnimationEntry* curentAnimation = command->gameObject->GetComponent<Animation>().Get()->GetCurrentAnimation();
+		AnimationEntry* previousAnimation = command->gameObject->GetComponent<Animation>().Get()->GetPreviousAnimation();
+
+		command->gameObject->GetComponent<Mesh>()->GetModel()->BoneTransform(curentAnimation, previousAnimation, *transform);
 	}
 
 	AnimationPBR::AnimationPBR(Shader* shader)
