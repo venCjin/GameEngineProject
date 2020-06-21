@@ -76,8 +76,6 @@ namespace sixengine {
 
 		void UpdateLightView(glm::vec3 direction, glm::vec3 center)
 		{
-			//std::cout << center.x << " " << center.y << " " << center.z << "\n";
-
 			direction = glm::normalize(direction);
 			//center = -Camera::ActiveCamera->m_Transform->GetWorldPosition(); 
 			//std::cout << center.x << " " << center.y << " " << center.z << "\n";
@@ -92,7 +90,7 @@ namespace sixengine {
 			yaw = direction.z > 0 ? yaw - 180 : yaw;
 			m_LightView = glm::rotate(m_LightView, yaw, glm::vec3(0, 1, 0));
 
-			m_LightView = glm::translate(m_LightView, center);// -m_Center->GetComponent<Transform>()->GetWorldPosition());
+			m_LightView = glm::translate(m_LightView, center);
 		}
 
 		void UpdateOrthoProjection(float width, float height, float length)

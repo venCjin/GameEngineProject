@@ -80,31 +80,62 @@ namespace sixengine {
 			GameObject* obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(pos);
-			obj->GetComponent<Transform>()->SetLocalScale(0.5f, 1.0f, 0.5f);
+			obj->GetComponent<Transform>()->SetLocalScale(0.02f, 0.02f, 0.02f);
 			obj->GetComponent<Transform>()->SetLocalOrientation(rotation);
-			obj->AddComponent<BoxCollider>(glm::vec3(1.0f, 1.0f, 1.0f));
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Red"));
+			obj->AddComponent<BoxCollider>(glm::vec3(1.0f, 2.0f, 1.0f));
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/BlackAgent/agent2.dae"));
+
+
+			//obj->AddComponent<Animation>();
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("AgentMaterial"));
 			obj->AddComponent<DynamicBody>();
-
-			GameObject* child = new GameObject(m_EntityManager);
-			child->AddComponent<Transform>(child);
-			child->GetComponent<Transform>()->SetParent(obj->GetComponent<Transform>().Get());
-			child->GetComponent<Transform>()->SetLocalPosition(glm::vec3(0.0f, 0.6f, -0.75f));
-			child->GetComponent<Transform>()->SetLocalScale(glm::vec3(1.0f, 0.2f, 1.0f));
-			child->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
-			child->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Red"));
-
 			obj->AddComponent<Enemy>(obj);
 			obj->AddComponent<StateMachine>();
 			obj->AddComponent<NavAgent>(obj);
 			obj->GetComponent<StateMachine>()->m_States.push_back(new AttackState(obj));
 			obj->GetComponent<StateMachine>()->m_States.push_back(new SearchState(obj));
 			obj->GetComponent<StateMachine>()->m_States.push_back(new IdleState(obj));
-
 			obj->GetComponent<StateMachine>()->m_CurrentState = obj->GetComponent<StateMachine>()->m_States[2];
-			Shader* bar = MaterialManager::getInstance()->Get("Bar")->GetShader();
+			m_Scene.m_SceneRoot->AddChild(obj);
 
+			// pistol
+			// bone name : mixamorig_RightHand
+			GameObject* pistol = new GameObject(m_EntityManager);
+			pistol->AddComponent<Transform>(pistol);
+			pistol->GetComponent<Transform>()->SetParent(obj->GetComponent<Transform>().Get());
+			//pistol->GetComponent<Transform>()->Rotate();
+			pistol->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/Gun/pm-40.obj"));
+			pistol->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("PistolMaterial"));
+			obj->AddChild(pistol);
+			/*
+			GameObject* p = new GameObject(m_EntityManager);
+			p->AddComponent<Transform>(p);
+			p->GetComponent<Transform>()->SetParent(pistol->GetComponent<Transform>().Get());
+			p->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/Gun/MP40_Slider.obj"));
+			p->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("PistolMaterial"));
+			pistol->AddChild(p);
+			p = new GameObject(m_EntityManager);
+			p->AddComponent<Transform>(p);
+			p->GetComponent<Transform>()->SetParent(pistol->GetComponent<Transform>().Get());
+			p->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/Gun/PM40_Receiver.obj"));
+			p->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("PistolMaterial"));
+			pistol->AddChild(p);
+			p = new GameObject(m_EntityManager);
+			p->AddComponent<Transform>(p);
+			p->GetComponent<Transform>()->SetParent(pistol->GetComponent<Transform>().Get());
+			p->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/Gun/MP40_Trigger.obj"));
+			p->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("PistolMaterial"));
+			pistol->AddChild(p);
+			p = new GameObject(m_EntityManager);
+			p->AddComponent<Transform>(p);
+			p->GetComponent<Transform>()->SetParent(pistol->GetComponent<Transform>().Get());
+			p->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/Gun/PM40_Magazine.obj"));
+			p->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("PistolMaterial"));
+			pistol->AddChild(p);
+			*/
+			//pistol
+
+			//question mark
 			m_Billboard = new GameObject(m_EntityManager);
 			m_Billboard->AddComponent<Transform>(m_Billboard);
 			//m_Billboard->GetComponent<Transform>()->SetParent(child->GetComponent<Transform>().Get());
@@ -115,10 +146,8 @@ namespace sixengine {
 			m_Billboard->AddComponent<Questionmark>();
 			m_Billboard->GetComponent<Questionmark>()->enemy = obj;
 			m_Billboard->AddComponent<Billboard>(m_Billboard);
-
-			m_Scene.m_SceneRoot->AddChild(obj);
-			obj->AddChild(child);
 			obj->AddChild(m_Billboard);
+			//question mark
 		}
 
 		Game(std::string title, unsigned int width, unsigned int height)
@@ -238,18 +267,26 @@ namespace sixengine {
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
 			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
+			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
 			Generator* gen1 = obj->GetComponent<Generator>().Get();
+			m_Scene.m_SceneRoot->AddChild(obj);
+
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(9.0, 0.5f, -9.0f);
+			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
 			m_Scene.m_SceneRoot->AddChild(obj);
 
 			//Generator 2
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 0.5f, -2.0f);
+			obj->GetComponent<Transform>()->SetWorldPosition(100.0, 0.5f, -2.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("Generator"));
 			obj->AddComponent<StaticBody>();
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
 			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
+			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
 			Generator* gen2 = obj->GetComponent<Generator>().Get();
 			m_Scene.m_SceneRoot->AddChild(obj);
 
@@ -285,11 +322,11 @@ namespace sixengine {
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<EnemiesManager>();
 
-			MakeEnemy(glm::vec3(17.30613f, 1.0f, 1.866652f), glm::vec3(220.029f, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-0.9738712, 1.0f, 7.736652f), glm::vec3(229.8f, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-7.743871f, 1.0f, 7.686653), glm::vec3(180, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-3.423871, 1.0f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-9.323872, 1.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(17.30613f, 0.0f, 1.866652f), glm::vec3(220.029f, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-0.9738712, 0.0f, 7.736652f), glm::vec3(229.8f, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-7.743871f, 0.0f, 7.686653), glm::vec3(180, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-3.423871, 0.0f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-9.323872, 0.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));
 			//ENEMIES
 
 			//Projetlie

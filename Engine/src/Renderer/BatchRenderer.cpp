@@ -149,13 +149,11 @@ namespace sixengine {
 
 			render = FrustumAABB(min, max);
 		}
-		else if (gameObject->HasComponent<Text>())
-		{
-			render = true;
-		}
 
 		if (!gameObject->HasComponent<Mesh>() && !gameObject->HasComponent<Material>())
 			render = false;
+		else if (gameObject->HasComponent<Text>())
+			render = true;
 
 		if (render)
 		{
@@ -285,10 +283,6 @@ namespace sixengine {
 			m_RenderCommandList.clear();
 		}
 
-		// Light shadow box update
-		//***********************************************
-		m_DirectionalLight->Update();
-
 		// Draw depth
 		//***********************************************
 
@@ -301,6 +295,10 @@ namespace sixengine {
 			RenderDepth(m_DepthAnimated, m_TechniqueList[1]);
 
 		m_DirectionalLight->m_DepthFramebuffer.Unbind();
+
+		// Light shadow box update
+		//***********************************************
+		m_DirectionalLight->Update();
 
 		// Draw skybox
 		//***********************************************
@@ -318,6 +316,7 @@ namespace sixengine {
 
 		if (m_Blur || m_Shake)
 			m_Default.BindTarget();
+
 
 		// Draw normal
 		//***********************************************
@@ -337,10 +336,14 @@ namespace sixengine {
 				m_Offset += m_TechniqueList[i]->m_DrawCommands.size() * sizeof(DrawElementsCommand);
 				m_TechniqueList[i]->m_DrawCommands.clear();
 			}
+
+			if (i == 3)
+			{
+				if (m_ParticleRender)
+					m_ParticleRender->Render(m_ParticleList);
+			}
 		}
 
-		if (m_ParticleRender)
-			m_ParticleRender->Render(m_ParticleList);
 
 		if (m_Blur || m_Shake)
 			ApplyBlur();
