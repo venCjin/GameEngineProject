@@ -70,6 +70,23 @@ void sixengine::CollisionSystem::BoxWithBox(Entity entityA, Entity entityB)
 		float portionA = 0.5f;
 		float portionB = 0.5f;
 
+		if (entityA.HasComponent<DynamicBody>() && entityB.HasComponent<DynamicBody>())
+		{
+		}
+		else
+		{
+			if (entityA.HasComponent<DynamicBody>() && entityA.HasComponent<DynamicBody>() == false)
+			{
+				portionA = 1.0f;
+				portionB = 0.0f;
+			}
+			else if (entityA.HasComponent<DynamicBody>() == false && entityA.HasComponent<DynamicBody>())
+			{
+				portionA = 0.0f;
+				portionB = 1.0f;
+			}
+		}
+
 		Collision collisionA = Collision();
 
 		collisionA.self = entityA;
@@ -105,14 +122,17 @@ void sixengine::CollisionSystem::SphereWithSphere(Entity entityA, Entity entityB
 		float portionA = 0.5f;
 		float portionB = 0.5f;
 
-		if (circleA->IsStatic() || circleB->IsStatic())
+		if (entityA.HasComponent<DynamicBody>() && entityB.HasComponent<DynamicBody>())
 		{
-			if (circleA->IsStatic() == false && circleB->IsStatic())
+		}
+		else
+		{
+			if (entityA.HasComponent<DynamicBody>() && entityA.HasComponent<DynamicBody>() == false)
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (circleA->IsStatic() && circleB->IsStatic() == false)
+			else if (entityA.HasComponent<DynamicBody>() == false && entityA.HasComponent<DynamicBody>())
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;
@@ -207,19 +227,17 @@ void sixengine::CollisionSystem::BoxWithCircle(Entity entityBox, Entity entityCi
 		float portionA = 0.5f;
 		float portionB = 0.5f;
 
-		if (boxCollider->IsStatic() || sphereCollider->IsStatic())
+		if (entityBox.HasComponent<DynamicBody>() && entityCircle.HasComponent<DynamicBody>())
 		{
-			if (boxCollider->IsStatic() && sphereCollider->IsStatic())
-			{
-				portionA = 0.0f;
-				portionB = 0.0f;
-			}
-			else if (boxCollider->IsStatic() == false && sphereCollider->IsStatic())
+		}
+		else
+		{
+			if (entityBox.HasComponent<DynamicBody>() && entityCircle.HasComponent<DynamicBody>() == false)
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (boxCollider->IsStatic() && sphereCollider->IsStatic() == false)
+			else if (entityBox.HasComponent<DynamicBody>() == false && entityCircle.HasComponent<DynamicBody>())
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;

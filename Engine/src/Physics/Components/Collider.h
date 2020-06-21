@@ -22,11 +22,5 @@ namespace sixengine {
 		}
 
 		virtual ~Collider() {}
-
-		bool IsStatic()
-		{
-			return m_isStatic;
-		}	
-
 	};
 }
