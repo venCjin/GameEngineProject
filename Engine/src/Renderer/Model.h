@@ -40,7 +40,6 @@ namespace sixengine {
 		~Model();
 
 		bool LoadModel(const std::string& filename);
-		//bool LoadAnimation(const std::string& filename, std::string name);
 
 		uint NumBones() const
 		{
@@ -83,9 +82,8 @@ namespace sixengine {
 		uint FindRotation(float animationTime, const aiNodeAnim* nodeAnim);
 		uint FindPosition(float animationTime, const aiNodeAnim* nodeAnim);
 		void ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform, AnimationEntry* animation, std::vector<glm::mat4>& transforms);
-		//void ReadNodeHierarchyFreeBones(const aiNode* node);
 		bool InitFromScene(const aiScene* scene, const std::string& filename);
-		void InitMesh(uint MeshIndex, const aiMesh* mesh/*, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices*/);
+		void InitMesh(uint MeshIndex, const aiMesh* mesh);
 		void LoadBones(uint MeshIndex, const aiMesh* mesh, std::vector<Vertex>& vertices);
 		void Clear();
 
@@ -101,54 +99,13 @@ namespace sixengine {
 			unsigned int NumIndices;
 			unsigned int BaseVertex;
 			unsigned int BaseIndex;
-		};
-
-		/*struct AnimationEntry
-		{
-			AnimationEntry()
-			{
-				scene = nullptr;
-				animation = nullptr;
-			}
-
-			AnimationEntry(const std::string& filename)
-			{
-				scene = importer.ReadFile(filename.c_str(), aiProcess_FlipUVs);
-				if (scene->HasAnimations())
-				{
-					animation = scene->mAnimations[0];
-					LoadAnimationNodes();
-				}
-
-				if (!scene->HasAnimations() || animation == nullptr || nodeAnimationMapping.size() == 0)
-					LOG_ERROR("AnimationEntry nullptr");
-
-			}
-
-			void LoadAnimationNodes()
-			{			
-				for (uint i = 0; i < animation->mNumChannels; i++) {
-					const aiNodeAnim* nodeAnim = animation->mChannels[i];
-
-					if (nodeAnimationMapping.find(std::string(nodeAnim->mNodeName.data)) == nodeAnimationMapping.end())
-					{
-						nodeAnimationMapping[std::string(nodeAnim->mNodeName.data)] = nodeAnim;
-					}
-				}
-			}
-
-			Assimp::Importer importer;
-			const aiScene* scene;
-			aiAnimation* animation;
-			std::map<std::string, const aiNodeAnim* > nodeAnimationMapping;
-		};*/
+		};		
 
 		std::vector<MeshEntry> m_Entries;
 
 		std::vector<glm::mat4> currentTransforms; // current animation transforms for shader
 
 		std::map<std::string, uint> m_BoneMapping; // maps a bone name to its index
-		//std::map<std::string, AnimationEntry*> m_AnimationsMapping;
 		uint m_NumBones;
 		std::string m_Directory;
 		std::string m_Name;

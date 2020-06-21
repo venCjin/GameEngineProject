@@ -65,21 +65,6 @@ namespace sixengine {
 		return ret;
 	}
 
-	/*bool Model::LoadAnimation(const std::string & filename, std::string name)
-	{
-		AnimationEntry* ae = new AnimationEntry(filename);
-
-		if (m_AnimationsMapping.find(name) == m_AnimationsMapping.end())
-		{
-			m_AnimationsMapping[name] = ae;
-		}
-		else
-			std::cout << "Already exists" << std::endl;		
-
-		return false;
-	}*/
-
-
 	bool Model::InitFromScene(const aiScene* scene, const std::string& filename)
 	{
 		m_Entries.resize(scene->mNumMeshes);
@@ -322,8 +307,6 @@ namespace sixengine {
 		out = start + factor * delta;
 	}
 
-
-	//void Model::ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform, std::string animationName, std::vector<glm::mat4>& transforms)
 	void Model::ReadNodeHierarchy(float animationTime, const aiNode* node, const glm::mat4& parentTransform, AnimationEntry* animation, std::vector<glm::mat4>& transforms)
 	{
 		std::string nodeName(node->mName.data);
@@ -383,22 +366,7 @@ namespace sixengine {
 		for (uint i = 0; i < node->mNumChildren; i++) {
 			ReadNodeHierarchy(animationTime, node->mChildren[i], globalTransformation, animation, transforms);
 		}
-	}
-
-	/*void Model::ReadNodeHierarchyFreeBones(const aiNode* node)
-	{
-		std::string nodeName(node->mName.data);
-
-		if (m_BoneMapping.find(nodeName) != m_BoneMapping.end()) 
-		{
-			uint boneIndex = m_BoneMapping[nodeName];			
-			m_BoneInfo[boneIndex].FinalTransformation = m_GlobalInverseTransform * m_BoneInfo[boneIndex].GlobalTransformation * m_BoneInfo[boneIndex].BoneOffset;
-		}
-
-		for (uint i = 0; i < node->mNumChildren; i++) {
-			ReadNodeHierarchyFreeBones(node->mChildren[i]);
-		}
-	}*/
+	}	
 
 	void Model::LoadGlobalPositions(const aiNode* node, const glm::mat4& parentTransform)
 	{
@@ -418,67 +386,41 @@ namespace sixengine {
 	}
 
 
-	//void Model::BoneTransform(float currentTimer, float previousTimer, std::vector<glm::mat4>& transforms, std::string currentAnimationName, std::string previousAnimationName)
 	void Model::BoneTransform(AnimationEntry* currentAnimation, AnimationEntry* previousAnimation, std::vector<glm::mat4>& transforms)
-	{
-		/*bool blendAnimations = false;
-		float currentTicksPerSecond = 0.0f;
-		float currentTimeInTicks = 0.0f;
-		float currentAnimationTime = 0.0f;
-		std::string currentName = std::string();
-
-		float previousTicksPerSecond = 0.0f;
-		float previousTimeInTicks = 0.0f;
-		float previousAnimationTime = 0.0f;
-		std::string previousName = std::string();
-
-		if (m_AnimationsMapping.find(currentAnimationName) != m_AnimationsMapping.end())
-		{
-			currentTicksPerSecond = (float)(m_AnimationsMapping[currentAnimationName]->animation->mTicksPerSecond != 0 ? m_AnimationsMapping[currentAnimationName]->animation->mTicksPerSecond : 25.0f);
-			currentTimeInTicks = currentTimer * currentTicksPerSecond;
-			currentAnimationTime = fmod(currentTimeInTicks, (float)m_AnimationsMapping[currentAnimationName]->animation->mDuration);
-			currentName = currentAnimationName;
-		}
-
-		if (m_AnimationsMapping.find(previousAnimationName) != m_AnimationsMapping.end())
-		{
-			previousTicksPerSecond = (float)(m_AnimationsMapping[previousAnimationName]->animation->mTicksPerSecond != 0 ? m_AnimationsMapping[previousAnimationName]->animation->mTicksPerSecond : 25.0f);
-			previousTimeInTicks = previousTimer * previousTicksPerSecond;
-			previousAnimationTime = fmod(previousTimeInTicks, (float)m_AnimationsMapping[previousAnimationName]->animation->mDuration);
-			blendAnimations = true;
-			previousName = previousAnimationName;
-		}*/
-
-
-		//if (blendAnimations && currentName != std::string() && previousName != std::string())
-
+	{	
 		float currentTimeInTicks = currentAnimation->timer * currentAnimation->ticksPerSecond;
 		float previousTimeInTicks = previousAnimation->timer * previousAnimation->ticksPerSecond;
 
-		float currentAnimationTime = fmod(currentTimeInTicks, (float)currentAnimation->duration);
+		float currentAnimationTime = fmod(currentTimeInTicks, (float)currentAnimation->animation->mDuration);
 		float previousAnimationTime = fmod(previousTimeInTicks, (float)previousAnimation->animation->mDuration);
-
 
 		if (currentAnimation && previousAnimation)
 		{
 			std::vector<glm::mat4> blendLayer1(m_NumBones);
 			std::vector<glm::mat4> blendLayer2(m_NumBones);
+			float blendProgress = 0.0f;
 
 			transforms.resize(m_NumBones);
 			ReadNodeHierarchy(currentAnimationTime, currentAnimation->scene->mRootNode, glm::mat4(1.0f), currentAnimation, transforms);
 			for (uint i = 0; i < m_NumBones; i++)
 				blendLayer1[i] = transforms[i];
 
-			transforms.clear();
-			transforms.resize(m_NumBones);
+			if (currentAnimation->blendLength > 0.0f)
+			{
+				transforms.clear();
+				transforms.resize(m_NumBones);
 
-			ReadNodeHierarchy(previousAnimationTime, previousAnimation->scene->mRootNode, glm::mat4(1.0f), previousAnimation, transforms);
-			for (uint i = 0; i < m_NumBones; i++)
-				blendLayer2[i] = transforms[i];
+				ReadNodeHierarchy(previousAnimationTime, previousAnimation->scene->mRootNode, glm::mat4(1.0f), previousAnimation, transforms);
+				for (uint i = 0; i < m_NumBones; i++)
+					blendLayer2[i] = transforms[i];
 
-			float blendProgress = ((currentAnimation->timer / 1.0f) > 1.0f) ? 1.0f : (currentAnimation->timer / 1.0f);
+				blendProgress = ((currentAnimation->timer / currentAnimation->blendLength) > 1.0f) ? 1.0f : (currentAnimation->timer / 1.0f);
+			}
+			else
+				blendProgress = 1.0f;
+
 			for (uint i = 0; i < m_NumBones; i++)
-				transforms[i] = blendLayer1[i] * blendProgress + blendLayer2[i] * (1.0f - blendProgress);
+				transforms[i] = blendLayer1[i] *blendProgress + blendLayer2[i] * (1.0f - blendProgress);
 		}
 		else
 		{

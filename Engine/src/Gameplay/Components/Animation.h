@@ -50,6 +50,7 @@ namespace sixengine {
 		float ticksPerSecond = 0.0f;
 		float duration = 0.0f;
 		std::string name;
+		float blendLength = 0.0f;
 	};
 
 
@@ -65,7 +66,6 @@ namespace sixengine {
 
 		AnimationEntry* GetCurrentAnimation()
 		{
-			LOG_INFO("___curr anim: {0}", m_CurrentAnimationName);
 			if (m_AnimationsMapping.find(m_CurrentAnimationName) != m_AnimationsMapping.end())
 				return m_AnimationsMapping[m_CurrentAnimationName];
 
@@ -74,8 +74,6 @@ namespace sixengine {
 		
 		AnimationEntry* GetPreviousAnimation()
 		{
-			LOG_INFO("___prev anim: {0}", m_PreviousAnimationName);
-
 			if (m_AnimationsMapping.find(m_PreviousAnimationName) != m_AnimationsMapping.end())
 				return m_AnimationsMapping[m_PreviousAnimationName];
 
@@ -87,16 +85,12 @@ namespace sixengine {
 			if (m_CurrentAnimationName == newAnimationName)
 				return;
 
-
 			m_PreviousAnimationName = m_CurrentAnimationName;
 			m_CurrentAnimationName = newAnimationName;
-			LOG_INFO("___new anim name: {0}", m_CurrentAnimationName);
-			//previousAnimationTimer = currentAnimationTimer;
 			m_AnimationsMapping[m_CurrentAnimationName]->timer = 0.0f;
 		}
 
-		// TODO: czy jeœli przypiszê na starcie do singleCycle false, to bêdzie siê to zmienia³o przy wywo³aniu z true?
-		bool LoadAnimation(const std::string & filename, std::string name, bool singleCycle)
+		bool LoadAnimation(const std::string & filename, std::string name, bool singleCycle = false, float blendLength = 0.5f)
 		{
 			AnimationEntry* ae = new AnimationEntry(filename, name);
 
@@ -104,6 +98,7 @@ namespace sixengine {
 			{
 				m_AnimationsMapping[name] = ae;
 				m_AnimationsMapping[name]->singleCycle = singleCycle;
+				m_AnimationsMapping[name]->blendLength = blendLength;
 			}
 			else
 				std::cout << "Already exists" << std::endl;

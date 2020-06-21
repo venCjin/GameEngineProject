@@ -175,28 +175,8 @@ namespace sixengine {
 			//BAR
 
 			Texture* particleTexture = new Texture("res/textures/particles/star.png");
-
-
-			// WORKING SCOLOPENDRA ANIMATION
-			/*m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo_anim.dae");
-			m_Scene.m_ModelManager->GetModel("scolo_anim")->LoadAnimation("res/models/scolopendra/scolo_anim.dae", "idle");
-
-			GameObject* player = new GameObject(m_EntityManager);
-			player->AddComponent<Transform>(player);
-			player->GetComponent<Transform>()->SetWorldPosition(-35.0f, 0.0f, 0.0f);
-			//player->GetComponent<Transform>()->SetLocalScale(0.1f, 0.1f, 0.1f);
-			player->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolo_anim"));
-			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("GreenAnim"));
-			player->AddComponent<Animation>();
-			player->AddComponent<DynamicBody>();
-			player->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
-			player->AddComponent<SimplePlayer>(player);
-			m_BatchRenderer->SetLight(new Light(player));
-			m_Scene.m_SceneRoot->AddChild(player);*/
-
 			
 			// WORKING SCOLOPENDRA
-
 			m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo.dae");
 
 			GameObject* player = new GameObject(m_EntityManager);
@@ -205,7 +185,6 @@ namespace sixengine {
 			player->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			player->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
-			//->AddComponent<Animation>();
 			player->AddComponent<DynamicBody>();
 			player->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
 			player->AddComponent<SimplePlayer>(player);
@@ -220,10 +199,10 @@ namespace sixengine {
 			scolopendra->AddComponent<ScolopendraComponent>(scolopendra, player);
 			m_Scene.m_SceneRoot->AddChild(scolopendra);
 
-			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_idle.dae", "idle", false);
-			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_attack.dae", "attack", true);
+			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_idle.dae", "idle", false, 0.5f);
+			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_attack.dae", "attack", true, 0.0f);
 			player->GetComponent<SimplePlayer>().Get()->scolopendraMaterial = scolopendra->GetComponent<Material>().Get();
-
+			player->GetComponent<SimplePlayer>().Get()->scolopendraAnimation = scolopendra->GetComponent<Animation>().Get();
 			//m_Scene.m_ModelManager->GetModel("scolo")->LoadAnimation("res/models/scolopendra/scolo_anim.dae", "idle");
 
 
@@ -497,7 +476,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				m_Scene.DrawGizmos();
+				//m_Scene.DrawGizmos();
 
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				glDisable(GL_CULL_FACE);
