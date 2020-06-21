@@ -86,6 +86,11 @@ namespace sixengine
 				m_Sound->setIsPaused(true);
 		}
 
+		void Stop()
+		{
+			m_Sound->stop();
+			m_Sound->drop();
+		}
 		void SetMinDistance(float value)
 		{
 			m_Sound->setMinDistance(value);

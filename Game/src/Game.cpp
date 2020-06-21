@@ -183,6 +183,7 @@ namespace sixengine {
 			ADD_TRACK("res/sounds/footstep-gravel.mp3", "footstep");
 			ADD_TRACK("res/sounds/desert/wind-sounds.mp3", "wind");
 			ADD_TRACK("res/sounds/solider_base/military-helicopter.mp3", "helicopter");
+			ADD_TRACK("res/sounds/gun-shot.mp3", "shot");
 
 			//INIT_TRACK_3D("generator", glm::vec3(0.0f));
 			//INIT_TRACK_3D_LOOPED("generator", glm::vec3(30.0f, 0, 0));
@@ -289,6 +290,8 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
 			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
 			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
+			obj->AddComponent<LoopedSound3D>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 15.f);
+			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
 			Generator* gen1 = obj->GetComponent<Generator>().Get();
 			m_Scene.m_SceneRoot->AddChild(obj);
 
@@ -308,6 +311,8 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
 			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
 			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
+			obj->AddComponent<LoopedSound3D>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 15.f);
+			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
 			Generator* gen2 = obj->GetComponent<Generator>().Get();
 			m_Scene.m_SceneRoot->AddChild(obj);
 
@@ -332,8 +337,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
-			obj->AddComponent<LoopedSound3D>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 30.f);
-			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
+
 			obj->AddComponent<ParticleEmitter>(obj, rippleParticleTexture, std::string("EnemyEffect"));
 			m_Scene.m_SceneRoot->AddChild(obj);
 			// END Particle Systems
@@ -554,7 +558,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				//m_Scene.DrawGizmos();
+				m_Scene.DrawGizmos();
 
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				glDisable(GL_CULL_FACE);
