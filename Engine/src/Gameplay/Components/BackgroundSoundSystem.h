@@ -18,6 +18,8 @@ namespace sixengine
 				if (m_BackgroundSound->timer > m_BackgroundSound->interval)
 				{
 					m_BackgroundSound->m_Sound = INIT_TRACK(m_BackgroundSound->m_Key);
+					m_BackgroundSound->m_Sound->setPlaybackSpeed(m_BackgroundSound->speed);
+					m_BackgroundSound->m_Sound->setVolume(m_BackgroundSound->volume);
 					m_BackgroundSound->m_Sound->setIsPaused(false);
 					m_BackgroundSound->timer = 0.0f;
 					float percent = ((rand() % 100) / 100.0f);

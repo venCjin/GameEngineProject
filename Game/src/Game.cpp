@@ -182,8 +182,8 @@ namespace sixengine {
 			//BAR
 			//Audio
 			obj = new GameObject(m_EntityManager);
-			obj->AddComponent<BackgroundSound>(100.0f, 100.0f, "helicopter");
-			obj->GetComponent<BackgroundSound>()->m_Sound->setPlaybackSpeed(3.0f);
+			obj->AddComponent<BackgroundSound>(100.0f, 100.0f, "helicopter", 3.0f, .25f);
+			//obj->GetComponent<BackgroundSound>()->m_Sound->setPlaybackSpeed(3.0f);
 			//obj->AddComponent<LoopedSound>("wind");
 			//obj->GetComponent<LoopedSound>()->Play();
 			//obj->GetComponent<LoopedSound>()->SetVolume(.5f);
