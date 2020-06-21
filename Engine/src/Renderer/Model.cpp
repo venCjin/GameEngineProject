@@ -355,11 +355,12 @@ namespace sixengine {
 			{
 				transforms[boneIndex] = m_GlobalInverseTransform * m_BoneInfo[boneIndex].GlobalTransformation * m_BoneInfo[boneIndex].BoneOffset;
 				globalTransformation = m_BoneInfo[boneIndex].GlobalTransformation;
+				m_BoneInfo[boneIndex].FinalTransformation = transforms[boneIndex];
 			}
 			else
 			{
-				transforms[boneIndex] = glm::mat4(0.0f);
 				transforms[boneIndex] = m_GlobalInverseTransform * globalTransformation * m_BoneInfo[boneIndex].BoneOffset;
+				m_BoneInfo[boneIndex].FinalTransformation = transforms[boneIndex];
 			}
 		}
 
