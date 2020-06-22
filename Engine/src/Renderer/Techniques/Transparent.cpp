@@ -38,7 +38,7 @@ namespace sixengine
 
 		//textureArray->Bind(0);
 		m_Shader->SetVec3("color", glm::vec3(1.0f, .6f, .4f));
-		m_Shader->SetFloat("FresnelExponent", 1.f);
+		m_Shader->SetFloat("FresnelExponent", 3.f);
 		m_Shader->Unbind();
 	}
 
@@ -79,7 +79,7 @@ namespace sixengine
 	void TransparentTechnique::Render(std::vector<RendererCommand*>& commandList)
 	{
 		m_Shader->Bind();
-		m_Shader->SetVec3("viewDir", Camera::ActiveCamera->m_Transform->GetForward());
+		m_Shader->SetVec3("cameraPos", Camera::ActiveCamera->m_Transform->GetWorldPosition());
 
 		m_Models.Bind();
 		m_Bones.Bind();
