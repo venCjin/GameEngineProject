@@ -64,7 +64,13 @@
 -AddMaterial GreenAnim AnimationPBR 1 res/textures/test/Red.jpg
 -AddMaterial TransparentMaterial Transparent 0
 
-
++SceneGameObject
+-Transform
+0 -0.8 0
+0 0 0
+1 1 1 
+-BoxCollider 100 0.1 100 0
++end
 
 +SceneGameObject
 -Transform
@@ -90,10 +96,9 @@
 -Transform
 123.7424 -0.27 59.84809
 0 0 0
-1 1.538462 1
+1 1 1
 -Model res/models/Environment/Ground/Ground.obj
 -Material GroundPBR
--BoxCollider 1000 0 1000 0
 +end
 
 +SceneGameObject
@@ -1020,10 +1025,10 @@
 -Transform
 103.17 -0.38 16.5
 0 0 0
-1.847361 2.842094 1.847361
+1.4 1.4 1.4
 -Model res/models/Car/hummer.obj
 -Material Hummer
--BoxCollider 4.857778 7.900884 8.799509 0
+-BoxCollider 4 7 8 0
 +end
 
 +SceneGameObject

@@ -90,7 +90,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetWorldPosition(pos + glm::vec3(0.0f, 0.05f, 0.0f));
 			obj->GetComponent<Transform>()->SetLocalScale(0.011f, 0.011f, 0.011f);
 			obj->GetComponent<Transform>()->SetLocalOrientation(rotation);
-			obj->AddComponent<BoxCollider>(glm::vec3(1.0f, 2.0f, 1.0f));
+			obj->AddComponent<BoxCollider>(glm::vec3(1.0f, 0.5f, 1.0f));
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/BlackAgent/agent.dae"));
 			obj->AddComponent<LoopedSound3D>("footstep", pos, 5.0f);
 			obj->AddComponent<Animation>();
@@ -265,7 +265,7 @@ namespace sixengine {
 
 			GameObject* player = new GameObject(m_EntityManager);
 			player->AddComponent<Transform>(player);
-			player->GetComponent<Transform>()->SetWorldPosition(-35.0f, 0.0f, 0.0f);
+			player->GetComponent<Transform>()->SetWorldPosition(-35.0f, -0.1f, 0.0f);
 			player->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			player->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
@@ -476,11 +476,28 @@ namespace sixengine {
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<EnemiesManager>();
 
-			MakeEnemy(glm::vec3(17.30613f, 0.0f, 1.866652f), glm::vec3(220.029f, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-0.9738712, 0.0f, 7.736652f), glm::vec3(229.8f, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-7.743871f, 0.0f, 7.686653), glm::vec3(180, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-3.423871, 0.0f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-9.323872, 0.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));
+			/*MakeEnemy(glm::vec3(17.30613f, -0.27f, 1.866652f), glm::vec3(220.029f, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-0.9738712, -0.27f, 7.736652f), glm::vec3(229.8f, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-7.743871f, -0.27f, 7.686653), glm::vec3(180, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-3.423871, -0.27f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-9.323872, -0.27f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));*/
+
+			MakeEnemy(glm::vec3(16.06, -0.27f, -4.96), glm::vec3(303.9931, 0, 0));
+			MakeEnemy(glm::vec3(22.89, -0.27f, 6.85), glm::vec3(243.2002, 0, 0));
+			MakeEnemy(glm::vec3(59.59, -0.27f, 5.97), glm::vec3(128.7469, 0, 0));
+			MakeEnemy(glm::vec3(64.78, -0.27f, 0.09), glm::vec3(340.3404, 0, 0));
+			MakeEnemy(glm::vec3(147.03, -0.27f, -22.93), glm::vec3(5.779317, 0, 0));
+			MakeEnemy(glm::vec3(147.3, -0.27f, -17.6), glm::vec3(175.3088, 0, 0));
+			MakeEnemy(glm::vec3(165.65, -0.27f, 12.49), glm::vec3(291.341, 0, 0));
+			MakeEnemy(glm::vec3(165.65, -0.27f, 29.3), glm::vec3(239.1137, 0, 0));
+			MakeEnemy(glm::vec3(163.77, -0.27f, 56.02), glm::vec3(209.1315, 0, 0));
+			MakeEnemy(glm::vec3(130.1, -0.27f, 48.75), glm::vec3(318.0522, 0, 0));
+			MakeEnemy(glm::vec3(102, -0.27f, 56.2), glm::vec3(216.9023, 0, 0));
+			MakeEnemy(glm::vec3(99.57, -0.27f, 12.22), glm::vec3(253.604, 0, 0));
+			MakeEnemy(glm::vec3(100.06, -0.27f, 20.11), glm::vec3(64.77235, 0, 0));
+			MakeEnemy(glm::vec3(111.53, -0.27f, -11.15), glm::vec3(176.9345, 0, 0));
+			MakeEnemy(glm::vec3(101.06, -0.27f, -19.86), glm::vec3(52.59827, 0, 0));
+			MakeEnemy(glm::vec3(113.97, -0.27f, -24.53), glm::vec3(0, 0, 0));
 			//ENEMIES
 
 		#if SCENE_ENDS_IN_GAME_CPP
@@ -559,11 +576,11 @@ namespace sixengine {
 
 			//AUDIO
 			AudioManager::getInstance()->ClearSoundsArray();
-			std::vector<irrklang::ISound*> s = AudioManager::getInstance()->sounds;
-			for (auto sound : s)
+			//std::vector<irrklang::ISound*> s = AudioManager::getInstance()->sounds;
+			/*for (auto sound : s)
 			{
 				LOG_CORE_ERROR("Sound: {0}", sound->getIsPaused());
-			}
+			}*/
 			//AUDIO
 			// BAR
 			/*m_BarFill += .01f;
@@ -578,12 +595,12 @@ namespace sixengine {
 			//LOG_CORE_INFO("{0} {1} {2} {3}", m_Billboard->GetComponent<Transform>()->GetLocalScale().x, m_Billboard->GetComponent<Transform>()->GetLocalScale().y, m_Billboard->GetComponent<Transform>()->GetLocalScale().z, m_BarFill);
 			// BAR
 
-			if (Input::IsKeyPressed(KeyCode::DEL))
+			if (Input::IsKeyPressed(KeyCode::ESCAPE))
 			{
 				WindowCloseEvent e;
 				Application::Get().OnEvent(e);
 			}
-
+			/*
 			if (Input::IsKeyPressed(KeyCode::F9))
 			{
 				Application::Get().GetWindow().SwitchCursorVisibility();
@@ -626,7 +643,7 @@ namespace sixengine {
 				m_BatchRenderer->SetBlur(false);
 				m_BatchRenderer->SetShake(false);
 			}
-
+			*/
 
 			{
 				//PROFILE_SCOPE("ECS")
