@@ -421,7 +421,10 @@ namespace sixengine {
 				blendProgress = 1.0f;
 
 			for (uint i = 0; i < m_NumBones; i++)
+			{
 				transforms[i] = blendLayer1[i] *blendProgress + blendLayer2[i] * (1.0f - blendProgress);
+				m_BoneInfo[i].FinalTransformation = transforms[i];
+			}
 		}
 		else
 		{
@@ -433,6 +436,8 @@ namespace sixengine {
 			else
 				ReadNodeHierarchy(currentAnimationTime, currentAnimation->scene->mRootNode, glm::mat4(1.0f), currentAnimation, transforms);
 
+			for (uint i = 0; i < m_NumBones; i++)
+				m_BoneInfo[i].FinalTransformation = transforms[i];
 		}
 	}
 
