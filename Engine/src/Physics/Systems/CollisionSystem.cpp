@@ -171,7 +171,7 @@ void sixengine::CollisionSystem::BoxWithCircle(Entity entityBox, Entity entityCi
 
 	Transform* sphereTransform = entityCircle.Component<Transform>().Get();
 	SphereCollider* sphereCollider = entityCircle.Component<SphereCollider>().Get();
-	glm::vec3 spherePosition = boxTransform->InverseTransformPoint(sphereTransform->GetWorldPosition());
+	glm::vec3 spherePosition = boxTransform->InverseTransformPointIgnoringScale(sphereTransform->GetWorldPosition());
 
 	glm::vec3 closestPoint;
 	closestPoint.x = std::clamp(spherePosition.x, boxPosition.x - boxSize.x * 0.5f, boxPosition.x + boxSize.x * 0.5f);
@@ -248,16 +248,16 @@ void sixengine::CollisionSystem::BoxWithCircle(Entity entityBox, Entity entityCi
 
 		collisionB.self = entityBox;
 		collisionB.other = entityCircle;
-		collisionB.offset = -portionA * (boxTransform->TransformPoint(totalOffset) - boxTransform->GetWorldPosition());
+		collisionB.offset = -portionA * (boxTransform->TransformPointIgnoringScale(totalOffset) - boxTransform->GetWorldPosition());
 		HandleCollision(entityBox, collisionB);
-		boxTransform->SetWorldPosition(boxTransform->TransformPoint(-portionA * totalOffset));
+		boxTransform->SetWorldPosition(boxTransform->TransformPointIgnoringScale(-portionA * totalOffset));
 
 		Collision collisionA = Collision();
 
 		collisionA.self = entityCircle;
 		collisionA.other = entityBox;
-		collisionA.offset = portionB * (boxTransform->TransformPoint(spherePosition + totalOffset) - sphereTransform->GetWorldPosition());
-		sphereTransform->SetWorldPosition(boxTransform->TransformPoint(portionB * spherePosition + totalOffset));
+		collisionA.offset = portionB * (boxTransform->TransformPointIgnoringScale(spherePosition + totalOffset) - sphereTransform->GetWorldPosition());
+		sphereTransform->SetWorldPosition(boxTransform->TransformPointIgnoringScale(portionB * spherePosition + totalOffset));
 
 		HandleCollision(entityCircle, collisionA);
 	}
@@ -425,8 +425,8 @@ int sixengine::CollisionSystem::TestSegmentSphere(glm::vec3 v, glm::vec3 w, Enti
 // Test if segment specified by points p0 and p1 intersects AABB b
 int sixengine::CollisionSystem::TestSegmentAABB(glm::vec3 p0, glm::vec3 p1, Entity entity)
 {
-	p0 = entity.Component<Transform>()->InverseTransformPoint(p0);
-	p1 = entity.Component<Transform>()->InverseTransformPoint(p1);
+	p0 = entity.Component<Transform>()->InverseTransformPointIgnoringScale(p0);
+	p1 = entity.Component<Transform>()->InverseTransformPointIgnoringScale(p1);
 
 	BoxCollider* box = entity.Component<BoxCollider>().Get();
 

@@ -85,16 +85,20 @@ namespace sixengine {
 				glm::mat4 model = glm::mat4(1.0f);
 				model = glm::translate(model, m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f));
 				Application::attack->model = model;
-				Entity a = CollisionSystem::CheckSphere(m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f), 1.5f);
-				if (Entity::Valid(a.GetID()))
+
+				for (auto hit : CollisionSystem::CheckSphereAll(m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f), 1.0f))
 				{
-					if (a.HasComponent<Enemy>())
+					if (Entity::Valid(hit.GetID()))
 					{
-						a.Component<Enemy>()->ReceiveDamage(50.0f);
-					}
-					else if (a.HasComponent<Generator>())
-					{
-						a.Component<Generator>()->DestroyGenerator();
+						if (hit.HasComponent<Enemy>())
+						{
+							LOG_INFO("MAM CIE CHUJU!");
+							hit.Component<Enemy>()->ReceiveDamage(50.0f);
+						}
+						else if (hit.HasComponent<Generator>())
+						{
+							hit.Component<Generator>()->DestroyGenerator();
+						}
 					}
 				}
 			}
@@ -140,6 +144,13 @@ namespace sixengine {
 					m_SimplePlayer->scolopendraMaterial->SetShader(MaterialManager::getInstance()->Get("GreenAnim")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, -playerHeight, 0.0f));
 					m_SimplePlayer->MixingCamera->SetTargetCamera(m_SimplePlayer->OnSurfaceCamera);
+
+					BatchRenderer::Instance()->SetBlur(false);
+
+					for (auto enemy : Application::Get().GetEntityManager()->EntitiesWithComponents<Enemy, ParticleEmitter, Mesh>())
+					{
+						enemy.Component<ParticleEmitter>()->Stop();
+					}
 				}
 				else
 				{
@@ -147,6 +158,13 @@ namespace sixengine {
 					m_SimplePlayer->scolopendraMaterial->SetShader(MaterialManager::getInstance()->Get("TransparentMaterial")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, +playerHeight, 0.0f));
 					m_SimplePlayer->MixingCamera->SetTargetCamera(m_SimplePlayer->UnderSurfaceCamera);
+					
+					BatchRenderer::Instance()->SetBlur(true);
+
+					for (auto enemy : Application::Get().GetEntityManager()->EntitiesWithComponents<Enemy, ParticleEmitter>())
+					{
+						enemy.Component<ParticleEmitter>()->Start();
+					}
 				}
 			}
 
