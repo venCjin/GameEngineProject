@@ -24,6 +24,8 @@ namespace sixengine
 			owner->GetComponent<LoopedSound3D>()->SetRad(-1.0f);
 			//owner->RemoveComponent<LoopedSound3D>();
 			owner->GetComponent<Mesh>()->m_Model = secondModel;
+			irrklang::ISound* s = INIT_TRACK_3D("explosion", owner->GetComponent<Transform>()->GetWorldPosition());
+			s->setIsPaused(false);
 			destroyed = true;
 		}
 

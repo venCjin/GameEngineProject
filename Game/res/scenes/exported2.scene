@@ -52,8 +52,8 @@
 -AddMaterial PistolMaterial PBR 3 res/models/Enemies/Gun/PM-40_albedo.png res/models/Enemies/Gun/PM-40_normal.png res/models/Enemies/Gun/PM-40_metallic.png 
 -AddMaterial BulletMaterial PBR 2 res/models/Enemies/Bullet/al.png res/models/Enemies/Bullet/no.png
 -AddMaterial Red PBR 1 res/textures/test/Red.jpg
--AddMaterial Green PBR 1 res/textures/test/Green.jpg
--AddMaterial GreenAnim AnimationPBR 1 res/textures/test/Green.jpg
+-AddMaterial Green PBR 1 res/textures/test/Red.jpg
+-AddMaterial GreenAnim AnimationPBR 1 res/textures/test/Red.jpg
 -AddMaterial TransparentMaterial Transparent 0
 -AddMaterial Simplest PBR 1 res/textures/Grid.jpg
 

@@ -203,6 +203,8 @@ namespace sixengine {
 			ADD_TRACK("res/sounds/solider_base/military-helicopter.mp3", "helicopter");
 			ADD_TRACK("res/sounds/gun-shot.mp3", "shot");
 			ADD_TRACK("res/sounds/generator.mp3", "gate");
+			ADD_TRACK("res/sounds/scolopendrawalk.mp3", "scolopendrawalk");
+			ADD_TRACK("res/sounds/generator_explosion.mp3", "explosion");
 
 			//INIT_TRACK_3D("generator", glm::vec3(0.0f));
 			//INIT_TRACK_3D_LOOPED("generator", glm::vec3(30.0f, 0, 0));
@@ -270,6 +272,7 @@ namespace sixengine {
 			player->AddComponent<DynamicBody>();
 			player->AddComponent<SphereCollider>(0.5f, 0);
 			player->AddComponent<SimplePlayer>(player);
+			player->AddComponent<LoopedSound3D>("scolopendrawalk", player->GetComponent<Transform>()->GetWorldPosition(), 1.0f); //obj->AddComponent<LoopedSound3D>("footstep", pos, 5.0f);
 			m_BatchRenderer->SetLight(new Light(player));
 			m_Scene.m_SceneRoot->AddChild(player);
 
