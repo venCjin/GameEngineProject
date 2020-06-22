@@ -27,6 +27,8 @@ namespace sixengine
 		class SimplePlayer* m_SimplePlayer = NULL;
 		class EnemiesManager* m_Manager = NULL;
 
+		unsigned int m_CurrentProjectile = 0;
+		std::vector<GameObject*> m_Projectiles;
 
 		float m_LastCharacterSeenTime = 0.0f;
 		float m_LastUndergroundMovementSeenTime = -10.0f;
@@ -45,6 +47,8 @@ namespace sixengine
 		Enemy(GameObject* go);
 		
 		Entity GetPlayer();
+
+		void Shoot();
 
 		void UpdateDetectionLevel();
 

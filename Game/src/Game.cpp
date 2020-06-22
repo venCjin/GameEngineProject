@@ -222,6 +222,19 @@ namespace sixengine {
 
 			GameObject* obj;
 
+			//Projetlie
+			m_Scene.m_ModelManager->AddModel("res/models/Enemies/Bullet/Bullet.obj");
+			MaterialManager::getInstance()->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("PBR"),
+				glm::vec4(
+					m_Scene.m_TextureArray->AddTexture("res/models/Enemies/Bullet/al.png"),
+					m_Scene.m_TextureArray->AddTexture("res/models/Enemies/Bullet/no.png"),
+					0.0f,
+					0.0f),
+				"BulletMaterial");
+			m_SystemManager.AddSystem<ProjectileSystem>();
+			//Projetlie
+
 			//BAR
 			Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Questionmark.glsl");
 			m_Scene.m_TextureArray->AddTexture("res/textures/ui/question_sign2.png");
@@ -371,19 +384,6 @@ namespace sixengine {
 			MakeEnemy(glm::vec3(-3.423871, 0.0f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
 			MakeEnemy(glm::vec3(-9.323872, 0.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));
 			//ENEMIES
-
-			//Projetlie
-			m_Scene.m_ModelManager->AddModel("res/models/Enemies/Bullet/Bullet.obj");
-			MaterialManager::getInstance()->CreateMaterial(
-				m_Scene.m_ShaderManager->Get("PBR"),
-				glm::vec4(
-					m_Scene.m_TextureArray->AddTexture("res/models/Enemies/Bullet/al.png"), 
-					m_Scene.m_TextureArray->AddTexture("res/models/Enemies/Bullet/no.png"),
-					0.0f,
-					0.0f),
-				"BulletMaterial");
-			m_SystemManager.AddSystem<ProjectileSystem>();
-			//Projetlie
 
 		#if SCENE_ENDS_IN_GAME_CPP
 			m_Scene.m_ModelManager->CreateVAO();

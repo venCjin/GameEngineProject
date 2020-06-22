@@ -1,7 +1,11 @@
 #include "pch.h"
 #include "Enemy.h"
 
+#include <Core/Application.h>
+#include <Core/Scene.h>
+
 #include <Gameplay\Components\SimplePlayer.h>
+#include <Gameplay/Components/Projectile.h>
 #include <Physics/Components/DynamicBody.h>
 #include <glm/gtx/vector_angle.hpp>
 
@@ -23,6 +27,22 @@ sixengine::Enemy::Enemy(GameObject* go)
 	m_LastKnownChatacterPosition = glm::vec3(NAN, NAN, NAN);
 
 	m_OriginalPosition = m_Transform->GetWorldPosition();
+
+	GameObject* bullet;
+	for (int i = 0; i < 3; i++)
+	{
+		bullet = new GameObject(*Application::Get().GetEntityManager());
+		bullet->AddComponent<Transform>(bullet);
+		bullet->GetComponent<Transform>()->SetWorldPosition(glm::vec3(0.0f, -100.0f, 0.0f));
+		bullet->GetComponent<Transform>()->SetLocalScale(3.0f, 3.0f, 3.0f);
+		bullet->AddComponent<Material>(*Application::Get().GetScene()->m_MaterialManager->Get("BulletMaterial"));
+		bullet->AddComponent<Mesh>(Application::Get().GetScene()->m_ModelManager->GetModel("Bullet"));
+		bullet->AddComponent<Projectile>(glm::vec3(0.0f));
+
+		Application::Get().GetScene()->m_SceneRoot->AddChild(bullet);
+
+		m_Projectiles.push_back(bullet);
+	}
 }
 
 bool sixengine::Enemy::CanSeePlayer()
@@ -236,6 +256,32 @@ void sixengine::Enemy::RotateTowardsVelocity()
 Entity sixengine::Enemy::GetPlayer()
 {
 	return Application::Get().GetEntityManager()->EntitiesWithComponents<SimplePlayer>()[0];
+}
+
+void sixengine::Enemy::Shoot()
+{
+	glm::vec3 playerPos = GetPlayer().Component<Transform>()->GetWorldPosition();
+	glm::vec3 enemyPos = m_GameObject->GetComponent<Transform>()->GetWorldPosition();
+
+	enemyPos.y += 2.5f;
+
+	GameObject* bullet = m_Projectiles[m_CurrentProjectile++];
+	bullet->GetComponent<Transform>()->SetWorldPosition(enemyPos);
+
+	glm::vec3 dir = playerPos - enemyPos;
+
+	float angle = glm::atan(dir.y, dir.x) * (180 );
+	glm::quat rot2 = glm::rotate(angle, glm::vec3(1.0f, 0.0f, 0.0f));
+
+	glm::quat rot = glm::quatLookAt(glm::normalize(dir), glm::vec3(0.0f, 1.0f, 0.0f));
+	
+	bullet->GetComponent<Transform>()->SetWorldPosition(enemyPos);
+	bullet->GetComponent<Transform>()->SetWorldRotation(rot2);
+	
+	bullet->GetComponent<Projectile>()->SetDirection(glm::normalize(playerPos - enemyPos));
+
+	if (m_CurrentProjectile >= 3)
+		m_CurrentProjectile = 0;
 }
 
 void sixengine::Enemy::UpdateDetectionLevel()

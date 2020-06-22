@@ -160,23 +160,12 @@ void sixengine::AttackState::Shoot(float accuracy)
 	s->setVolume(.05f);
 	s->setIsPaused(false);
 	//StartCoroutine(ShowShootLine());
-	glm::vec3 playerPos = m_Enemy->GetPlayer().Component<Transform>()->GetWorldPosition();
-	glm::vec3 enemyPos = m_GameObject->GetComponent<Transform>()->GetWorldPosition() + glm::vec3(0.0f, 2.2f, 0.0f);
 	
 	// LINE
 	//Gizmo::DrawLine(enemyPos, playerPos, 0.1f);
 
 	// PROJECTILE
-	GameObject* bullet = new GameObject(*Application::Get().GetEntityManager());
-	bullet->AddComponent<Transform>(bullet);
-	bullet->GetComponent<Transform>()->SetWorldPosition(enemyPos);
-	bullet->GetComponent<Transform>()->SetLocalScale(3.0f, 3.0f, 3.0f);
-	bullet->AddComponent<Material>(*Application::Get().GetScene()->m_MaterialManager->Get("BulletMaterial"));
-	bullet->AddComponent<Mesh>(Application::Get().GetScene()->m_ModelManager->GetModel("Bullet"));
-	bullet->AddComponent<Projectile>(glm::normalize(playerPos - enemyPos));
-
-
-	Application::Get().GetScene()->m_SceneRoot->AddChild(bullet);
+	m_Enemy->Shoot();
 
 
 	//if (UnityEngine.Random.value < accuracy)
