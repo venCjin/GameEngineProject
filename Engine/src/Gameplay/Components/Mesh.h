@@ -7,9 +7,10 @@ namespace sixengine {
 	struct Mesh : public ISerializable
 	{
 		Model* m_Model;
+		bool m_Visible;
 
 		Mesh(Model *model)
-			: m_Model(model)
+			: m_Model(model), m_Visible(true)
 		{
 		}
 

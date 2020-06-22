@@ -100,6 +100,7 @@ namespace sixengine {
 			
 			Texture* rippleParticleTexture = new Texture("res/textures/particles/ripple.png");
 			obj->AddComponent<ParticleEmitter>(obj, rippleParticleTexture, std::string("EnemyEffect"));
+			obj->GetComponent<ParticleEmitter>()->Stop();
 
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("AgentMaterial"));
 			obj->AddComponent<DynamicBody>();
