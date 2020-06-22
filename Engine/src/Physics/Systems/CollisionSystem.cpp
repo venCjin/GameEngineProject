@@ -72,15 +72,16 @@ void sixengine::CollisionSystem::BoxWithBox(Entity entityA, Entity entityB)
 
 		if (entityA.HasComponent<DynamicBody>() && entityB.HasComponent<DynamicBody>())
 		{
+
 		}
 		else
 		{
-			if (entityA.HasComponent<DynamicBody>() && entityA.HasComponent<DynamicBody>() == false)
+			if (entityA.HasComponent<DynamicBody>() && entityB.HasComponent<DynamicBody>() == false)
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (entityA.HasComponent<DynamicBody>() == false && entityA.HasComponent<DynamicBody>())
+			else if (entityA.HasComponent<DynamicBody>() == false && entityB.HasComponent<DynamicBody>())
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;
@@ -95,7 +96,6 @@ void sixengine::CollisionSystem::BoxWithBox(Entity entityA, Entity entityB)
 		entityA.Component<Transform>()->Translate(portionA * totalOffset);
 
 		HandleCollision(entityA, collisionA);
-
 
 		Collision collisionB = Collision();
 
@@ -127,12 +127,12 @@ void sixengine::CollisionSystem::SphereWithSphere(Entity entityA, Entity entityB
 		}
 		else
 		{
-			if (entityA.HasComponent<DynamicBody>() && entityA.HasComponent<DynamicBody>() == false)
+			if (entityA.HasComponent<DynamicBody>() && entityB.HasComponent<DynamicBody>() == false)
 			{
 				portionA = 1.0f;
 				portionB = 0.0f;
 			}
-			else if (entityA.HasComponent<DynamicBody>() == false && entityA.HasComponent<DynamicBody>())
+			else if (entityA.HasComponent<DynamicBody>() == false && entityB.HasComponent<DynamicBody>())
 			{
 				portionA = 0.0f;
 				portionB = 1.0f;
@@ -256,8 +256,8 @@ void sixengine::CollisionSystem::BoxWithCircle(Entity entityBox, Entity entityCi
 
 		collisionA.self = entityCircle;
 		collisionA.other = entityBox;
-		collisionA.offset = portionB * (boxTransform->TransformPointIgnoringScale(spherePosition + totalOffset) - sphereTransform->GetWorldPosition());
-		sphereTransform->SetWorldPosition(boxTransform->TransformPointIgnoringScale(portionB * spherePosition + totalOffset));
+		//collisionA.offset = portionB * (boxTransform->TransformPointIgnoringScale(spherePosition + totalOffset) - sphereTransform->GetWorldPosition());
+		sphereTransform->SetWorldPosition(boxTransform->TransformPointIgnoringScale(spherePosition + portionB * totalOffset));
 
 		HandleCollision(entityCircle, collisionA);
 	}

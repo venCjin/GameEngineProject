@@ -35,11 +35,11 @@ namespace sixengine
 		glm::vec3 m_LastKnowUndergroundPosition;
 		glm::vec3 m_OriginalPosition;
 		
-		float m_DetectionLevel = 0.0f;
 
 		double m_LastDetectionUpdateTime = 0.0f;;
 
 	public:
+		float m_DetectionLevel = 0.0f;
 		float m_Health = 100.0f;
 
 		Enemy(GameObject* go);

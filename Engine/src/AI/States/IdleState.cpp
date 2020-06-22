@@ -18,6 +18,8 @@ void sixengine::IdleState::OnStateEnter(StateMachine* stateMachine, State* previ
 	m_GameObject->GetComponent<Enemy>()->ClearCharacterPosition();
 	m_GameObject->GetComponent<Enemy>()->ClearUndergroundPosition();
 
+	m_GameObject->GetComponent<Enemy>()->m_DetectionLevel = 0.0f;
+
 	m_GameObject->GetComponent<Animation>()->ChangeAnimation("walk");
 	m_NacAgent->SetDestination(m_OriginalPosition);
 	m_NacAgent->Go();

@@ -5,6 +5,8 @@
 #include <Physics/Components/DynamicBody.h>
 #include <glm/gtx/vector_angle.hpp>
 
+#include <Physics/Systems/CollisionSystem.h>
+
 #include <AI/StateMachine.h>
 #include <AI/States/AttackState.h>
 #include <AI/States/IdleState.h>
@@ -37,7 +39,7 @@ bool sixengine::Enemy::CanSeePlayer()
 
 	float distanceToPlayer = glm::length(a - b);
 
-	if (distanceToPlayer > 10.0f)
+	if (distanceToPlayer > 15.0f)
 	{
 		return false;
 	}
@@ -49,6 +51,11 @@ bool sixengine::Enemy::CanSeePlayer()
 
 	if (glm::dot(forward, forward) > 0) { forward = glm::normalize(forward); }
 	if (glm::dot(v, v) > 0) { v = glm::normalize(v); }
+
+	if (CollisionSystem::RaycastAll(m_Transform->GetWorldPosition(), player.Component<Transform>()->GetWorldPosition() - m_Transform->GetWorldPosition()).size() > 2)
+	{
+		return false;
+	}
 
 	return (glm::dot(forward, v) > glm::cos(glm::radians(45.0f)));
 }
@@ -96,7 +103,7 @@ bool sixengine::Enemy::CanSeeUndergroundMovement()
 	}
 
 	// Jesli nic nie stoi na preskodie
-	if (true)
+	if (CollisionSystem::RaycastAll(m_Transform->GetWorldPosition(), GetPlayer().Component<Transform>()->GetWorldPosition() - m_Transform->GetWorldPosition()).size() <= 2)
 	{
 		m_LastKnowUndergroundPosition = m_GameObject->GetComponent<Transform>()->GetWorldPosition();
 		m_LastUndergroundMovementSeenTime = Timer::Instance()->ElapsedTime();
@@ -121,13 +128,19 @@ bool sixengine::Enemy::HasDetectedPlayer()
 			if (CanSeePlayer() == true)
 			{
 				float distance = glm::length(m_Transform->GetWorldPosition() - GetPlayer().Component<Transform>()->GetWorldPosition());
-				float speed = 0.4f;
+
+				if (distance < 3.0f)
+				{
+					m_DetectionLevel = 1.0f;
+				}
+
+				float speed = 0.3f;
 
 				m_DetectionLevel += speed * Timer::Instance()->DeltaTime();
 			}
-			else if (Timer::Instance()->DeltaTime() > m_LastCharacterSeenTime + 1.0f)
+			else
 			{
-				float speed = 0.1f * m_Parameters.TimeToForget;
+				float speed = 0.4f;
 				m_DetectionLevel -= speed * Timer::Instance()->DeltaTime();
 			}
 		}
