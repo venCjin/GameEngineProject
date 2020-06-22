@@ -137,7 +137,9 @@ namespace sixengine {
 			m_ParticleList.push_back(gameObject);
 
 		ComponentHandle<Mesh> mesh;
-		if (gameObject->HasComponent<Mesh>() && gameObject->GetComponent<Mesh>()->GetModel())
+		if (gameObject->HasComponent<Mesh>() && 
+			gameObject->GetComponent<Mesh>()->m_Visible && 
+			gameObject->GetComponent<Mesh>()->GetModel())
 		{
 			mesh = gameObject->GetComponent<Mesh>();
 
@@ -150,7 +152,8 @@ namespace sixengine {
 			render = FrustumAABB(min, max);
 		}
 
-		if (!gameObject->HasComponent<Mesh>() && !gameObject->HasComponent<Material>())
+		if (!gameObject->HasComponent<Mesh>() && 
+			!gameObject->HasComponent<Material>())
 			render = false;
 		else if (gameObject->HasComponent<Text>())
 			render = true;
@@ -166,7 +169,7 @@ namespace sixengine {
 
 			command->shader = gameObject->GetComponent<Material>()->GetShader();
 
-			if (gameObject->HasComponent<Mesh>())
+			if (gameObject->HasComponent<Mesh>() && gameObject->GetComponent<Mesh>()->m_Visible)
 				command->ModelID = mesh->GetModel()->m_ID;
 
 			command->data.textureLayer = gameObject->GetComponent<Material>()->GetTexture();

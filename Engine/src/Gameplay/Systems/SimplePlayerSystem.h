@@ -5,6 +5,7 @@
 #include <Gameplay/Components/Transform.h>
 #include <Gameplay/Components/SimplePlayer.h>
 #include <Gameplay/Components/Collectable.h>
+#include <Gameplay/Components/Pistol.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -149,7 +150,13 @@ namespace sixengine {
 
 					for (auto enemy : Application::Get().GetEntityManager()->EntitiesWithComponents<Enemy, ParticleEmitter, Mesh>())
 					{
+						enemy.Component<Mesh>()->m_Visible = true;
 						enemy.Component<ParticleEmitter>()->Stop();
+					}
+
+					for (auto pistol : Application::Get().GetEntityManager()->EntitiesWithComponents<Pistol>())
+					{
+						pistol.Component<Mesh>()->m_Visible = true;
 					}
 				}
 				else
@@ -163,7 +170,13 @@ namespace sixengine {
 
 					for (auto enemy : Application::Get().GetEntityManager()->EntitiesWithComponents<Enemy, ParticleEmitter>())
 					{
+						enemy.Component<Mesh>()->m_Visible = false;
 						enemy.Component<ParticleEmitter>()->Start();
+					}
+
+					for (auto pistol : Application::Get().GetEntityManager()->EntitiesWithComponents<Pistol>())
+					{
+						pistol.Component<Mesh>()->m_Visible = false;
 					}
 				}
 			}
