@@ -18,21 +18,22 @@
 #include "Core/Profile.h"
 namespace sixengine {
 
-
 	typedef unsigned int uint;
+
+	struct BoneInfo
+	{
+		glm::mat4 BoneOffset = glm::mat4(0.0f);
+		glm::mat4 FinalTransformation = glm::mat4(0.0f);
+		glm::mat4 GlobalTransformation = glm::mat4(0.0f);
+		std::string Name;
+		bool FreeBone = false;
+	};
 
 	class Model
 	{
 	public:
 
-		struct BoneInfo
-		{
-			glm::mat4 BoneOffset = glm::mat4(0.0f);
-			glm::mat4 FinalTransformation = glm::mat4(0.0f);
-			glm::mat4 GlobalTransformation = glm::mat4(0.0f);
-			std::string Name;
-			bool FreeBone = false;
-		};
+		
 
 		Model();
 		Model(const std::string& filename, unsigned ID);
@@ -47,6 +48,8 @@ namespace sixengine {
 		}
 
 		void BoneTransform(AnimationEntry* currentAnimation, AnimationEntry* previousAnimation, std::vector<glm::mat4>& transforms);
+		int GetBoneInfoIndex(std::string boneName);
+		BoneInfo* GetBoneInfo(int index);
 
 		inline std::vector<glm::mat4>& GetCurrentTransforms() { return currentTransforms; }
 

@@ -9,13 +9,18 @@ namespace sixengine
 {
 	class Projectile : ISerializable
 	{
-		const float speed = 10.0f;
+		const float speed = 30.0f;
+
 	public:
-		Projectile(glm::vec3 dir, unsigned int timeToLive = 2.0f, GameObject* go = nullptr)
-			: speedDir(dir * speed), endTime(Timer::Instance()->GetTime(SECOND) + timeToLive) {}
+		Projectile(glm::vec3 dir, GameObject* go = nullptr)
+			: speedDir(dir * speed) {}
 
 		glm::vec3 speedDir;
-		unsigned int endTime;
+
+		void SetDirection(glm::vec3 dir)
+		{
+			speedDir = dir * speed;
+		}
 
 		virtual void Load(std::iostream& stream) override {}
 		virtual void Save(std::iostream& stream) override {}

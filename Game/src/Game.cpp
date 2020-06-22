@@ -36,6 +36,7 @@
 #include <Gameplay/Systems/ParticleSystem.h>
 #include <Gameplay/Systems/ScolopendraSystem.h>
 #include <Gameplay/Systems/ProjectileSystem.h>
+#include <Gameplay/Systems/PistolSystem.h>
 #include <Renderer/Techniques/StaticPBR.h>
 #include <Renderer/Techniques/AnimationPBR.h>
 #include <Renderer/Techniques/UI.h>
@@ -112,14 +113,19 @@ namespace sixengine {
 			m_Scene.m_SceneRoot->AddChild(obj);
 
 			// pistol
-			// bone name : mixamorig_RightHand
 			GameObject* pistol = new GameObject(m_EntityManager);
 			pistol->AddComponent<Transform>(pistol);
-			pistol->GetComponent<Transform>()->SetParent(obj->GetComponent<Transform>().Get());
-			//pistol->GetComponent<Transform>()->Rotate();
-			pistol->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/Gun/pm-40.obj"));
+			pistol->GetComponent<Transform>()->SetParent(new Transform());
+			pistol->GetComponent<Transform>()->Translate(glm::vec3(-80.3f, 139.1f, 1.8f));
+			pistol->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/Gun/pm-40-2.obj"));
 			pistol->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("PistolMaterial"));
-			obj->AddChild(pistol);
+			m_SystemManager.AddSystem<PistolSystem>();
+			
+			//int index = obj->GetComponent<Mesh>()->GetModel()->GetBoneInfoIndex("mixamorig_RightHand");
+			pistol->AddComponent<Pistol>(obj, "mixamorig_RightHand");
+			//pistol->GetComponent<Pistol>()->m_OwnerTransform = obj->GetComponent<Transform>().Get();
+			//pistol->GetComponent<Pistol>()->m_BoneInfo = obj->GetComponent<Mesh>()->GetModel()->GetBoneInfo(index);
+			m_Scene.m_SceneRoot->AddChild(pistol);
 			/*
 			GameObject* p = new GameObject(m_EntityManager);
 			p->AddComponent<Transform>(p);
@@ -153,7 +159,7 @@ namespace sixengine {
 			m_Billboard->AddComponent<Transform>(m_Billboard);
 			//m_Billboard->GetComponent<Transform>()->SetParent(child->GetComponent<Transform>().Get());
 			//m_Billboard->GetComponent<Transform>()->SetLocalScale(glm::vec3(1.0f, 5.f, 1.0f));
-			m_Billboard->GetComponent<Transform>()->SetLocalPosition(glm::vec3(0, 2, 0));
+			m_Billboard->GetComponent<Transform>()->SetLocalPosition(glm::vec3(0, 5, 0));
 			m_Billboard->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("billboard"));
 			m_Billboard->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bar"));
 			m_Billboard->AddComponent<Questionmark>();
@@ -215,6 +221,19 @@ namespace sixengine {
 			//////SHIT!!!!
 
 			GameObject* obj;
+
+			//Projetlie
+			m_Scene.m_ModelManager->AddModel("res/models/Enemies/Bullet/Bullet.obj");
+			MaterialManager::getInstance()->CreateMaterial(
+				m_Scene.m_ShaderManager->Get("PBR"),
+				glm::vec4(
+					m_Scene.m_TextureArray->AddTexture("res/models/Enemies/Bullet/al.png"),
+					m_Scene.m_TextureArray->AddTexture("res/models/Enemies/Bullet/no.png"),
+					0.0f,
+					0.0f),
+				"BulletMaterial");
+			m_SystemManager.AddSystem<ProjectileSystem>();
+			//Projetlie
 
 			//BAR
 			Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Questionmark.glsl");
@@ -365,19 +384,6 @@ namespace sixengine {
 			MakeEnemy(glm::vec3(-3.423871, 0.0f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
 			MakeEnemy(glm::vec3(-9.323872, 0.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));
 			//ENEMIES
-
-			//Projetlie
-			m_Scene.m_ModelManager->AddModel("res/models/Enemies/Bullet/Bullet.obj");
-			MaterialManager::getInstance()->CreateMaterial(
-				m_Scene.m_ShaderManager->Get("PBR"),
-				glm::vec4(
-					m_Scene.m_TextureArray->AddTexture("res/models/Enemies/Bullet/al.png"), 
-					m_Scene.m_TextureArray->AddTexture("res/models/Enemies/Bullet/no.png"),
-					0.0f,
-					0.0f),
-				"BulletMaterial");
-			m_SystemManager.AddSystem<ProjectileSystem>();
-			//Projetlie
 
 		#if SCENE_ENDS_IN_GAME_CPP
 			m_Scene.m_ModelManager->CreateVAO();
