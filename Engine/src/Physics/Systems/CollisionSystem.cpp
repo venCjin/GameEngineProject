@@ -528,14 +528,14 @@ Entity sixengine::CollisionSystem::CheckSphere(glm::vec3 center, float radius)
 		for (int i = 0; i < boxes.size(); i++)
 		{
 			auto box = boxes[i].Component<BoxCollider>();
-			glm::vec3 relativeCenter = boxes[i].Component<Transform>()->InverseTransformPoint(center);
+			glm::vec3 relativeCenter = boxes[i].Component<Transform>()->InverseTransformPointIgnoringScale(center);
 
 			glm::vec3 closestPoint;
 			closestPoint.x = std::clamp(relativeCenter.x, -box->m_Size.x * 0.5f, box->m_Size.x * 0.5f);
 			closestPoint.y = std::clamp(relativeCenter.y, -box->m_Size.y * 0.5f, box->m_Size.y * 0.5f);
 			closestPoint.z = std::clamp(relativeCenter.z, -box->m_Size.z * 0.5f, box->m_Size.z * 0.5f);
 
-			if (glm::length(center - boxes[i].Component<Transform>()->TransformPoint(closestPoint)) < radius)
+			if (glm::length(relativeCenter - closestPoint) < radius)
 			{
 				LOG_ERROR("SYSTEM HIT COLLIDER");
 				return boxes[i];
@@ -575,14 +575,12 @@ std::vector<Entity> sixengine::CollisionSystem::CheckSphereAll(glm::vec3 center,
 		for (int i = 0; i < boxes.size(); i++)
 		{
 			auto box = boxes[i].Component<BoxCollider>();
-			glm::vec3 boxSize = box->m_Size;
-
-			glm::vec3 relativeCenter = boxes[i].Component<Transform>()->InverseTransformPoint(center);
+			glm::vec3 relativeCenter = boxes[i].Component<Transform>()->InverseTransformPointIgnoringScale(center);
 
 			glm::vec3 closestPoint;
-			closestPoint.x = std::clamp(relativeCenter.x, -boxSize.x * 0.5f, boxSize.x * 0.5f);
-			closestPoint.y = std::clamp(relativeCenter.y, -boxSize.y * 0.5f, boxSize.y * 0.5f);
-			closestPoint.z = std::clamp(relativeCenter.z, -boxSize.z * 0.5f, boxSize.z * 0.5f);
+			closestPoint.x = std::clamp(relativeCenter.x, -box->m_Size.x * 0.5f, box->m_Size.x * 0.5f);
+			closestPoint.y = std::clamp(relativeCenter.y, -box->m_Size.y * 0.5f, box->m_Size.y * 0.5f);
+			closestPoint.z = std::clamp(relativeCenter.z, -box->m_Size.z * 0.5f, box->m_Size.z * 0.5f);
 
 			if (glm::length(relativeCenter - closestPoint) < radius)
 			{

@@ -385,12 +385,29 @@ namespace sixengine {
 			return m_Local * glm::vec4(point, 1.0f);
 		}
 
+		glm::vec3 TransformPointIgnoringScale(glm::vec3 point)
+		{
+			glm::mat4 mat = glm::mat4(1.0f);
+			mat = glm::translate(mat, GetWorldPosition());
+			mat = mat * glm::toMat4(GetWorldRotation());
+
+			return mat * glm::vec4(point, 1.0f);
+		}
+
 		// Transforms position from world space to local space.
 		glm::vec3 InverseTransformPoint(glm::vec3 point)
 		{
 			return glm::inverse(m_Local) * glm::vec4(point, 1.0f);
 		}
 
+		glm::vec3 InverseTransformPointIgnoringScale(glm::vec3 point)
+		{
+			glm::mat4 mat = glm::mat4(1.0f);
+			mat = glm::translate(mat, GetWorldPosition());
+			mat = mat * glm::toMat4(GetWorldRotation());
+
+			return glm::inverse(mat) * glm::vec4(point, 1.0f);
+		}
 
 		glm::mat4 GetModelMatrix()
 		{
