@@ -20,10 +20,15 @@ namespace sixengine {
 			float currentTimeInTicks = m_Animation->GetCurrentAnimation()->timer * m_Animation->GetCurrentAnimation()->ticksPerSecond;
 			float previousTimeInTicks = m_Animation->GetPreviousAnimation()->timer * m_Animation->GetPreviousAnimation()->ticksPerSecond;
 			
-			if (m_Animation->m_CurrentAnimationName != "idle" && currentTimeInTicks < m_Animation->GetCurrentAnimation()->duration)
+			if ((m_Animation->m_CurrentAnimationName != "idle" && currentTimeInTicks < m_Animation->GetCurrentAnimation()->duration) || !m_Animation->GetCurrentAnimation()->singleCycle)
 				m_Animation->GetCurrentAnimation()->timer += dt;
+			//else if (m_Animation->m_CurrentAnimationName == "death") {}
 			else
+			{
 				m_Animation->ChangeAnimation("idle");
+				m_Animation->GetCurrentAnimation()->timer += dt;
+			}
+				
 
 			if (!m_Animation->GetPreviousAnimation()->singleCycle || (m_Animation->GetPreviousAnimation()->singleCycle && previousTimeInTicks < m_Animation->GetPreviousAnimation()->duration))
 				m_Animation->GetPreviousAnimation()->timer += dt;		

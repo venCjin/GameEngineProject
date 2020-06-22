@@ -85,12 +85,17 @@ namespace sixengine {
 			GameObject* obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(pos);
-			obj->GetComponent<Transform>()->SetLocalScale(0.02f, 0.02f, 0.02f);
+			obj->GetComponent<Transform>()->SetLocalScale(0.015f, 0.015f, 0.015f);
 			obj->GetComponent<Transform>()->SetLocalOrientation(rotation);
 			obj->AddComponent<BoxCollider>(glm::vec3(1.0f, 2.0f, 1.0f));
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/BlackAgent/agent2.dae"));
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/BlackAgent/agent.dae"));
 			obj->AddComponent<LoopedSound3D>("footstep", pos, 5.0f);
-			//obj->AddComponent<Animation>();
+			obj->AddComponent<Animation>();
+			obj->GetComponent<Animation>()->LoadAnimation("res/models/Enemies/BlackAgent/Pistol Idle.dae" , "idle", false, 0.1f);
+			obj->GetComponent<Animation>()->LoadAnimation("res/models/Enemies/BlackAgent/Pistol Walk.dae" , "walk", false, 0.1f);
+			obj->GetComponent<Animation>()->LoadAnimation("res/models/Enemies/BlackAgent/Shooting.dae" , "shoot", true, 0.1f);
+			obj->GetComponent<Animation>()->LoadAnimation("res/models/Enemies/BlackAgent/Death From Right.dae" , "death", true, 0.2f);
+
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("AgentMaterial"));
 			obj->AddComponent<DynamicBody>();
 			obj->AddComponent<Enemy>(obj);

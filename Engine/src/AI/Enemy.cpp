@@ -44,7 +44,7 @@ bool sixengine::Enemy::CanSeePlayer()
 
 	auto player = GetPlayer();
 
-	auto forward = m_GameObject->GetComponent<Transform>()->GetForward();
+	auto forward = -m_GameObject->GetComponent<Transform>()->GetForward();
 	auto v = player.Component<Transform>()->GetWorldPosition() - m_GameObject->GetComponent<Transform>()->GetWorldPosition();
 
 	if (glm::dot(forward, forward) > 0) { forward = glm::normalize(forward); }
@@ -215,7 +215,7 @@ void sixengine::Enemy::ReceiveDamage(float damage)
 
 void sixengine::Enemy::RotateTowardsVelocity()
 {
-	auto direction = m_GameObject->GetComponent<DynamicBody>()->m_Velocity;
+	auto direction = -m_GameObject->GetComponent<DynamicBody>()->m_Velocity;
 	direction.y = 0.0f;
 
 	if (glm::length(direction) < 0.1f)

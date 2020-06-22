@@ -43,6 +43,7 @@ void sixengine::SearchState::OnStateUpdate(StateMachine* stateMachine)
 		}
 		else
 		{
+			m_GameObject->GetComponent<Animation>()->ChangeAnimation("idle");
 			m_WaitingTime += (float)Timer::Instance()->DeltaTime();
 		}
 	}
@@ -88,6 +89,7 @@ void sixengine::SearchState::GoToRandomPlace(float min, float max)
 		m_TargetPosition = m_Enemy->GetOriginalPosition() + direction * distance;
 	}
 
+	m_GameObject->GetComponent<Animation>()->ChangeAnimation("walk");
 	m_NavAgent->SetDestination(m_TargetPosition);
 	m_NavAgent->Go();
 }

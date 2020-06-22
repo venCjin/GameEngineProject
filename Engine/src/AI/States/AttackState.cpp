@@ -61,16 +61,18 @@ void sixengine::AttackState::OnStateUpdate(StateMachine* stateMachine)
 
 		if (distanceToDestination >= m_Parameters.minShotRange)
 		{
+			m_GameObject->GetComponent<Animation>()->ChangeAnimation("walk");
 			m_NavAgent->SetDestination(m_Manager->GetCharacterPosition());
 			m_NavAgent->Go();
 		}
 		else
 		{
+			//m_GameObject->GetComponent<Animation>()->ChangeAnimation("idle");
 			//float t = Mathf.InverseLerp(_parameters.maxShotRange, _parameters.minShotRange, distanceToDestination);
 			//float accuracyDistanceFactor = _parameters.accuracyOfDistance.Evaluate(t);
 			float accuracyDistanceFactor = 1.0f;
 
-			glm::vec3 forward = m_GameObject->GetComponent<Transform>()->GetForward(); forward.y = 0.0f;
+			glm::vec3 forward = -m_GameObject->GetComponent<Transform>()->GetForward(); forward.y = 0.0f;
 			glm::vec3 offset = m_Character->gameObject->GetComponent<Transform>()->GetWorldPosition() - m_GameObject->GetComponent<Transform>()->GetWorldPosition(); offset.y = 0.0f;
 			float angle = glm::degrees(glm::angle(forward, offset));
 
@@ -99,6 +101,7 @@ void sixengine::AttackState::OnStateUpdate(StateMachine* stateMachine)
 
 		if (glm::length(a - b) >= 0.5f)
 		{
+			m_GameObject->GetComponent<Animation>()->ChangeAnimation("walk");
 			m_NavAgent->SetDestination(b);
 			m_NavAgent->Go();
 		
@@ -134,7 +137,7 @@ void sixengine::AttackState::RoateTowardsPlayer()
 	auto playerPos = player.Component<Transform>()->GetWorldPosition();
 	auto enemyPos = m_GameObject->GetComponent<Transform>()->GetWorldPosition();
 
-	auto direction = glm::normalize(playerPos - enemyPos);
+	auto direction = -glm::normalize(playerPos - enemyPos);
 	direction.y = 0.0f;
 
 	auto target = glm::quatLookAt(direction, glm::vec3(0.0f, 1.0f, 0.0f)); 
@@ -150,6 +153,7 @@ void sixengine::AttackState::RoateTowardsPlayer()
 void sixengine::AttackState::Shoot(float accuracy)
 {
 	//_references.shootParticle.Play();
+	m_GameObject->GetComponent<Animation>()->ChangeAnimation("shoot");
 	_lastShootTime = Timer::Instance()->ElapsedTime();
 	//play audio
 	irrklang::ISound* s = INIT_TRACK("shot");
@@ -157,7 +161,7 @@ void sixengine::AttackState::Shoot(float accuracy)
 	s->setIsPaused(false);
 	//StartCoroutine(ShowShootLine());
 	glm::vec3 playerPos = m_Enemy->GetPlayer().Component<Transform>()->GetWorldPosition();
-	glm::vec3 enemyPos = m_GameObject->GetComponent<Transform>()->GetWorldPosition();
+	glm::vec3 enemyPos = m_GameObject->GetComponent<Transform>()->GetWorldPosition() + glm::vec3(0.0f, 2.2f, 0.0f);
 	
 	// LINE
 	//Gizmo::DrawLine(enemyPos, playerPos, 0.1f);
