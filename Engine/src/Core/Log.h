@@ -19,7 +19,7 @@ namespace sixengine {
 	};
 
 }
-
+#ifdef DEBUG
 // Core Logging Macros
 #define LOG_CORE_TRACE(...)	sixengine::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define LOG_CORE_INFO(...)	sixengine::Log::GetCoreLogger()->info(__VA_ARGS__)
@@ -33,3 +33,18 @@ namespace sixengine {
 #define LOG_WARN(...)	sixengine::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define LOG_ERROR(...)	sixengine::Log::GetClientLogger()->error(__VA_ARGS__)
 #define LOG_FATAL(...)	sixengine::Log::GetClientLogger()->critical(__VA_ARGS__)
+#else
+// Core Logging Macros
+#define LOG_CORE_TRACE(...)  
+#define LOG_CORE_INFO(...)  
+#define LOG_CORE_WARN(...)  
+#define LOG_CORE_ERROR(...)  
+#define LOG_CORE_FATAL(...)  
+
+// Client Logging Macros
+#define LOG_TRACE(...)  
+#define LOG_INFO(...)  
+#define LOG_WARN(...)  
+#define LOG_ERROR(...)  
+#define LOG_FATAL(...)  
+#endif

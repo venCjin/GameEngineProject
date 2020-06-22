@@ -315,6 +315,8 @@ namespace sixengine {
 			m_Scene.m_SceneRoot->AddChild(obj);
 			//COLLECTABLE2
 
+
+			m_Scene.m_ModelManager->AddModel("res/models/Props/Generator/Generator.obj");
 			//Generator 1
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
@@ -436,7 +438,7 @@ namespace sixengine {
 			m_Scene.m_SceneRoot->AddChild(obj);
 
 			//Eggs
-			/*obj = new GameObject(m_EntityManager);
+			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(212.0, 0.36f, 20.6f);
 			obj->GetComponent<Transform>()->SetLocalScale(1.0, 1.0f, 1.0f);
@@ -445,7 +447,7 @@ namespace sixengine {
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			obj->AddComponent<Eggs>();
-			m_Scene.m_SceneRoot->AddChild(obj);*/
+			m_Scene.m_SceneRoot->AddChild(obj);
 		
 			//UI
 			obj = new GameObject(m_EntityManager);
@@ -670,7 +672,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				m_Scene.DrawGizmos();
+				/*m_Scene.DrawGizmos();
 
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				glDisable(GL_CULL_FACE);
@@ -678,7 +680,7 @@ namespace sixengine {
 				attack->Draw(attack->model);
 				glPolygonMode(GL_FRONT, GL_FILL);
 				glEnable(GL_CULL_FACE);
-				glCullFace(GL_BACK);
+				glCullFace(GL_BACK);*/
 			}
 		}
 
