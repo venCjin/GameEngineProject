@@ -37,6 +37,7 @@
 #include <Gameplay/Systems/ScolopendraSystem.h>
 #include <Gameplay/Systems/ProjectileSystem.h>
 #include <Gameplay/Systems/PistolSystem.h>
+#include <Gameplay/Systems/WinLossSystem.h>
 #include <Renderer/Techniques/StaticPBR.h>
 #include <Renderer/Techniques/AnimationPBR.h>
 #include <Renderer/Techniques/UI.h>
@@ -359,18 +360,38 @@ namespace sixengine {
 			obj->GetComponent<Gate>()->AddGenerator(gen1);
 			obj->GetComponent<Gate>()->AddGenerator(gen2);
 			m_Scene.m_SceneRoot->AddChild(obj);
-			
-			// PARTICLE SYSTEM1
+
+			//Eggs
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(-1.0f, 0.1f, 0.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
-
-			obj->AddComponent<ParticleEmitter>(obj, rippleParticleTexture, std::string("EnemyEffect"));
+			obj->GetComponent<Transform>()->SetWorldPosition(15.0, 0.0f, -15.0f);
+			obj->GetComponent<Transform>()->SetLocalScale(1.0, 1.0f, 1.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
+			obj->AddComponent<StaticBody>();
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
+			obj->AddComponent<Eggs>();
 			m_Scene.m_SceneRoot->AddChild(obj);
-			// END Particle Systems
+		
+			//UI
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 680.0f, 0.0f);
+			obj->AddComponent<AirText>();
+			obj->GetComponent<AirText>()->player = player->GetComponent<SimplePlayer>().Get();
+			obj->AddComponent<Text>("Health: ", glm::vec3(0.8f, 0.4f, 0.4f), 0.5f);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
+			m_Scene.m_UIRoot->AddChild(obj);
+
+			//WIN/LOSS
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(400.0, 320.0f, 0.0f);
+			obj->AddComponent<Text>("", glm::vec3(1.0f, 0.0f, 0.0f), 1.5f);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
+			m_Scene.m_UIRoot->AddChild(obj);
+
+			m_SystemManager.AddSystem<WinLossSystem>(obj);
 
 			//ENEMIES
 			m_SystemManager.AddSystem<StateMachineSystem>();

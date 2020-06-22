@@ -6,6 +6,7 @@
 #include <Gameplay/Components/SimplePlayer.h>
 #include <Gameplay/Components/Collectable.h>
 #include <Gameplay/Components/Pistol.h>
+#include <Gameplay/Components/Projectile.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -27,7 +28,6 @@ namespace sixengine {
 		float speed = 1.25f;
 		float maxSpeed = 2.0f;
 		float playerHeight = 1.0f;
-		float health = 100.0f;
 		//float air = 100.0f;
 		float airLosingRate = 5.0f;
 
@@ -52,6 +52,14 @@ namespace sixengine {
 				collisionEvent.collision.other.Component<Transform>()->Translate(glm::vec3(0.0f, -100.0f, 0.0f));
 
 				//do something
+			}
+			else if (collisionEvent.m_Entity.HasComponent<SimplePlayer>() &&
+				collisionEvent.collision.other.HasComponent<Projectile>())
+			{
+				collisionEvent.collision.other.Component<Transform>()->Translate(glm::vec3(0.0f, -100.0f, 0.0f));
+				glm::vec3 pos = collisionEvent.m_Entity.Component<Transform>()->GetWorldPosition();
+				collisionEvent.m_Entity.Component<Transform>()->SetWorldPosition(glm::vec3(pos.x, 0.0f, pos.z));
+				collisionEvent.m_Entity.Component<SimplePlayer>()->m_Health -= 10.0f;
 			}
 		}
 
