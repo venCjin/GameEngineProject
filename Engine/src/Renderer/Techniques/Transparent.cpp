@@ -37,7 +37,7 @@ namespace sixengine
 		m_Shader->Bind();
 
 		//textureArray->Bind(0);
-		m_Shader->SetVec3("color", glm::vec3(1.0f, .6f, .4f));
+		m_Shader->SetVec3("color", glm::vec3(.2f));
 		m_Shader->SetFloat("FresnelExponent", 1.f);
 		m_Shader->Unbind();
 	}

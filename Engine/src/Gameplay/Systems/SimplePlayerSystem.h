@@ -39,7 +39,7 @@ namespace sixengine {
 		bool movingVertically = false;*/
 
 		float timer = 0.0f;
-
+		float cooldown = 1.0f;
 		void OnCollisionHandle(BaseEvent & e)
 		{
 			OnCollision& collisionEvent = dynamic_cast<OnCollision&>(e);
@@ -72,15 +72,15 @@ namespace sixengine {
 			DynamicBody* _db = m_SimplePlayer->gameObject->GetComponent<DynamicBody>().Get();	
 			_db->m_Drag = 4;
 			glm::vec3 cameraDir = -glm::normalize(glm::vec3(Camera::ActiveCamera->m_Transform->GetForward().x, 0.0f, Camera::ActiveCamera->m_Transform->GetForward().z));
-			
+			timer += dt;
 
 			glm::vec3 f = m_SimplePlayer->transform->GetForward();
 			//LOG_WARN("Forward: {0} {1} {2}", f.x, f.y, f.z);
 
-			if (Input::IsMouseButtonActive(0))
+			if (Input::IsMouseButtonActive(0) && timer > cooldown && m_SimplePlayer->m_OnSurface)
 			{
 				//LOG_INFO("___MOUSE");
-
+				timer = 0.0f;
 				m_SimplePlayer->scolopendraAnimation->ChangeAnimation(std::string("attack"));
 
 				glm::mat4 model = glm::mat4(1.0f);
