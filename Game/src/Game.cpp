@@ -189,6 +189,7 @@ namespace sixengine {
 			ADD_TRACK("res/sounds/desert/wind-sounds.mp3", "wind");
 			ADD_TRACK("res/sounds/solider_base/military-helicopter.mp3", "helicopter");
 			ADD_TRACK("res/sounds/gun-shot.mp3", "shot");
+			ADD_TRACK("res/sounds/generator.mp3", "gate");
 
 			//INIT_TRACK_3D("generator", glm::vec3(0.0f));
 			//INIT_TRACK_3D_LOOPED("generator", glm::vec3(30.0f, 0, 0));

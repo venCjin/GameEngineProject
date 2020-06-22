@@ -22,7 +22,7 @@ namespace sixengine {
 		Model* m_Model;
 		float air = 100;
 
-		std::vector<Bone> m_Bones;
+		std::map<int, Bone> m_Bones;
 		ScolopendraComponent() { m_PlayerTransform = nullptr; }
 
 		// We need   GameObject* player   only for transform - scolopendra needs to be seperate GameObject
@@ -41,13 +41,21 @@ namespace sixengine {
 				if (found != std::string::npos)
 				{
 					m_Model->m_BoneInfo[i].FreeBone = true;
-					m_Bones.push_back(Bone(m_Model->m_BoneInfo[i].GlobalTransformation));
-					if (i > 0)
+					if (m_Bones.find(i) == m_Bones.end())
 					{
-						m_Bones[i].Init(&m_Bones[i - 1].m_Bone);
+						m_Bones[i] = Bone(m_Model->m_BoneInfo[i].GlobalTransformation);
+						if (i > 0)
+							m_Bones[i].Init(&m_Bones[i - 1].m_Bone);
 					}
+
+					//m_Bones.push_back(Bone(m_Model->m_BoneInfo[i].GlobalTransformation));
+					
 				}
 			}
+
+			LOG_WARN("m_Model->m_BoneInfo.size(): {0}, m_Bones.size(): {1}", m_Model->m_BoneInfo.size(), m_Bones.size());
+
+			
 		}
 
 		void ScolopendraComponent::UpdateBones()

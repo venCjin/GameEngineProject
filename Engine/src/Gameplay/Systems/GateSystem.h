@@ -8,11 +8,12 @@
 
 namespace sixengine {
 
-	SYSTEM(GateSystem, Gate)
+	SYSTEM(GateSystem, Gate, Transform)
 	{
-
+		irrklang::ISound* openingSound = nullptr;
 		void Update(EventManager & eventManager, float dt) override
 		{
+			
 			if (m_Gate->closed)
 			{
 				bool open = true;
@@ -23,10 +24,23 @@ namespace sixengine {
 			}
 			else
 			{
+				
+
 				if (m_Gate->openingDuration > 0.0f)
 				{
+					if (openingSound == nullptr) 
+					{
+						openingSound = INIT_TRACK_3D("gate", m_Transform->GetWorldPosition());
+						openingSound->setIsPaused(false);
+					}
 					entity.Component<Transform>()->Translate(m_Gate->openingSpeed * dt);
 					m_Gate->openingDuration -= dt;
+				}
+				else
+				{
+					//openingSound->stop();
+					//openingSound->drop();
+					openingSound = nullptr;
 				}
 			}
 		}

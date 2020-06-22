@@ -22,7 +22,7 @@ namespace sixengine {
 		{ 
 			gameObject = go;
 			transform = go->GetComponent<Transform>().Get();
-			collider = go->GetComponent<BoxCollider>().Get();
+			//collider = go->GetComponent<BoxCollider>().Get();
 		}
         virtual void Load(std::iostream& stream) {}
 		virtual void Save(std::iostream& stream) {}
