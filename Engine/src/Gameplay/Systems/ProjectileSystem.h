@@ -12,7 +12,10 @@ namespace sixengine {
 
 		void Update(EventManager & eventManager, float dt) override
 		{
-			if (entity.Component<Transform>()->GetWorldPosition().y <= 0.0001f) {}
+			if (entity.Component<Transform>()->GetWorldPosition().y <= 0.0001f) 
+			{
+				entity.Component<Transform>()->Translate(glm::vec3(0.0f, -100.0f, 0.0f));
+			}
 			else { entity.Component<Transform>()->Translate(m_Projectile->speedDir * dt); }
 		}
 

@@ -38,6 +38,7 @@ sixengine::Enemy::Enemy(GameObject* go)
 		bullet->GetComponent<Transform>()->SetWorldPosition(glm::vec3(0.0f, -100.0f, 0.0f));
 		bullet->GetComponent<Transform>()->SetLocalScale(3.0f, 3.0f, 3.0f);
 		bullet->AddComponent<Material>(*Application::Get().GetScene()->m_MaterialManager->Get("BulletMaterial"));
+		bullet->AddComponent<SphereCollider>(0.5f);
 		bullet->AddComponent<Mesh>(Application::Get().GetScene()->m_ModelManager->GetModel("Bullet"));
 		bullet->AddComponent<Projectile>(glm::vec3(0.0f));
 

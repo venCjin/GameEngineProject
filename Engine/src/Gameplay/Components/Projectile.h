@@ -9,7 +9,7 @@ namespace sixengine
 {
 	class Projectile : ISerializable
 	{
-		const float speed = 30.0f;
+		const float speed = 80.0f;
 
 	public:
 		Projectile(glm::vec3 dir, GameObject* go = nullptr)
