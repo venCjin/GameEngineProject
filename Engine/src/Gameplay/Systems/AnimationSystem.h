@@ -24,7 +24,10 @@ namespace sixengine {
 			{
 				m_Animation->GetCurrentAnimation()->timer += dt;
 			}
-			//else if (m_Animation->m_CurrentAnimationName == "death") {}
+			else if (m_Animation->m_CurrentAnimationName == "death")
+			{
+				m_Animation->GetCurrentAnimation()->timer = m_Animation->GetCurrentAnimation()->duration - 0.001f;
+			}
 			else
 			{
 				m_Animation->ChangeAnimation("idle");

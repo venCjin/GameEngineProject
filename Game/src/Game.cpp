@@ -98,6 +98,7 @@ namespace sixengine {
 			obj->GetComponent<Animation>()->LoadAnimation("res/models/Enemies/BlackAgent/Pistol Walk.dae" , "walk", false, 0.1f);
 			obj->GetComponent<Animation>()->LoadAnimation("res/models/Enemies/BlackAgent/Shooting.dae" , "shoot", true, 0.1f);
 			obj->GetComponent<Animation>()->LoadAnimation("res/models/Enemies/BlackAgent/Death From Right.dae" , "death", true, 0.2f);
+			obj->GetComponent<Animation>()->LoadAnimation("res/models/Enemies/BlackAgent/Hit Reaction.dae" , "hit", true, 0.2f);
 			
 			Texture* rippleParticleTexture = new Texture("res/textures/particles/ripple.png");
 			obj->AddComponent<ParticleEmitter>(obj, rippleParticleTexture, std::string("EnemyEffect"));
@@ -192,7 +193,7 @@ namespace sixengine {
 			m_SystemManager.AddSystem<GateSystem>();
 
 
-			m_Scene.LoadScene("res/scenes/exported.scene");
+			m_Scene.LoadScene("res/scenes/exported2.scene");
 			//ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
 			//INIT_TRACK("ophelia");
 

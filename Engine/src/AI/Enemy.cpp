@@ -245,16 +245,19 @@ float sixengine::Enemy::GetDetectionLevel()
 
 void sixengine::Enemy::ReceiveDamage(float damage)
 {
-	m_Health -= damage;
-
-	if (m_Health <= 0)
+	if (m_Health > 0)
 	{
-		m_GameObject->GetComponent<Transform>()->SetWorldPosition(0.0f, -100.0f, 0.0f);
-
-		m_GameObject->AddComponent<DeathState>(m_GameObject);
-		m_GameObject->GetComponent<StateMachine>()->ChangeState(m_GameObject->GetComponent<DeathState>().Get());
-
-		m_GameObject->GetComponent<StateMachine>()->m_States.clear();
+		m_Health -= damage;
+		m_GameObject->GetComponent<Animation>()->ChangeAnimation("hit");
+	}
+	else
+	{
+		if (!m_GameObject->HasComponent<DeathState>())
+		{
+			m_GameObject->AddComponent<DeathState>(m_GameObject);
+			m_GameObject->GetComponent<StateMachine>()->ChangeState(m_GameObject->GetComponent<DeathState>().Get());
+			m_GameObject->GetComponent<StateMachine>()->m_States.clear();
+		}
 	}
 }
 

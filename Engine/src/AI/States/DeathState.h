@@ -7,6 +7,7 @@ namespace sixengine
 	class DeathState : public State
 	{
 	public:
+		float endOfVisibleTime = 5.0f;
 		DeathState(GameObject* go) : State(go)
 		{
 		}
