@@ -56,6 +56,7 @@
 #include  <Gameplay/Systems/DynamicSoundSystem.h>
 #include <Gameplay/Components/BackgroundSound.h>
 #include <Gameplay/Components/BackgroundSoundSystem.h>
+#include <Physics\Components\SphereCollider.h>
 
 
 namespace sixengine {
@@ -84,7 +85,7 @@ namespace sixengine {
 		{
 			GameObject* obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(pos);
+			obj->GetComponent<Transform>()->SetWorldPosition(pos + glm::vec3(0.0f, 0.05f, 0.0f));
 			obj->GetComponent<Transform>()->SetLocalScale(0.015f, 0.015f, 0.015f);
 			obj->GetComponent<Transform>()->SetLocalOrientation(rotation);
 			obj->AddComponent<BoxCollider>(glm::vec3(1.0f, 2.0f, 1.0f));
@@ -95,6 +96,9 @@ namespace sixengine {
 			obj->GetComponent<Animation>()->LoadAnimation("res/models/Enemies/BlackAgent/Pistol Walk.dae" , "walk", false, 0.1f);
 			obj->GetComponent<Animation>()->LoadAnimation("res/models/Enemies/BlackAgent/Shooting.dae" , "shoot", true, 0.1f);
 			obj->GetComponent<Animation>()->LoadAnimation("res/models/Enemies/BlackAgent/Death From Right.dae" , "death", true, 0.2f);
+			
+			Texture* rippleParticleTexture = new Texture("res/textures/particles/ripple.png");
+			obj->AddComponent<ParticleEmitter>(obj, rippleParticleTexture, std::string("EnemyEffect"));
 
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("AgentMaterial"));
 			obj->AddComponent<DynamicBody>();
@@ -242,7 +246,7 @@ namespace sixengine {
 			player->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
 			player->AddComponent<DynamicBody>();
-			player->AddComponent<BoxCollider>(glm::vec3(1, 2, 1), 0);
+			player->AddComponent<SphereCollider>(0.5f, 0);
 			player->AddComponent<SimplePlayer>(player);
 			m_BatchRenderer->SetLight(new Light(player));
 			m_Scene.m_SceneRoot->AddChild(player);
