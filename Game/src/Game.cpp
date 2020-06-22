@@ -193,7 +193,7 @@ namespace sixengine {
 			m_SystemManager.AddSystem<GateSystem>();
 
 
-			m_Scene.LoadScene("res/scenes/exported2.scene");
+			m_Scene.LoadScene("res/scenes/exported3.scene");
 			//ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
 			//INIT_TRACK("ophelia");
 
@@ -365,7 +365,7 @@ namespace sixengine {
 			//Eggs
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(15.0, 0.0f, -15.0f);
+			obj->GetComponent<Transform>()->SetWorldPosition(212.0, 0.36f, 20.6f);
 			obj->GetComponent<Transform>()->SetLocalScale(1.0, 1.0f, 1.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<StaticBody>();
