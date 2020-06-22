@@ -318,7 +318,8 @@ namespace sixengine {
 			//Generator 1
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 0.5f, -5.0f);
+			obj->GetComponent<Transform>()->SetWorldPosition(19.14324, .74f, 1.672457);
+			obj->GetComponent<Transform>()->SetLocalScale(2.f, 3.076923f, 2.f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("Generator"));
 			obj->AddComponent<StaticBody>();
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
@@ -330,16 +331,32 @@ namespace sixengine {
 			Generator* gen1 = obj->GetComponent<Generator>().Get();
 			m_Scene.m_SceneRoot->AddChild(obj);
 
-			obj = new GameObject(m_EntityManager);
+			/*obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(9.0, 0.5f, -9.0f);
 			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
-			m_Scene.m_SceneRoot->AddChild(obj);
+			m_Scene.m_SceneRoot->AddChild(obj);*/
 
-			//Generator 2
+
+			//Gate 1
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(100.0, 0.5f, -2.0f);
+			obj->GetComponent<Transform>()->SetWorldPosition(41.0, 0.0f, -2);
+			obj->GetComponent<Transform>()->SetLocalScale(1.0, 6.0f, 12.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
+			obj->AddComponent<StaticBody>();
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 6, 10), true);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
+			obj->AddComponent<Gate>();
+			obj->GetComponent<Gate>()->AddGenerator(gen1);
+
+			m_Scene.m_SceneRoot->AddChild(obj);
+
+			//Generator 2.1
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(154.22, 0.64, 64.31);
+			obj->GetComponent<Transform>()->SetLocalScale(2.f, 3.076923f, 2.f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("Generator"));
 			obj->AddComponent<StaticBody>();
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
@@ -351,22 +368,75 @@ namespace sixengine {
 			Generator* gen2 = obj->GetComponent<Generator>().Get();
 			m_Scene.m_SceneRoot->AddChild(obj);
 
-			//Gate
+			//Generator 2.2
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(10.0, 0.0f, -5.0f);
-			obj->GetComponent<Transform>()->SetLocalScale(1.0, 6.0f, 10.0f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
+			obj->GetComponent<Transform>()->SetWorldPosition(150.12, 0.64, -24.2);
+			obj->GetComponent<Transform>()->SetLocalScale(2.f, 3.076923f, 2.f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("Generator"));
 			obj->AddComponent<StaticBody>();
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
+			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
+			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
+			obj->AddComponent<LoopedSound3D>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 15.f);
+			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
+			Generator* gen3 = obj->GetComponent<Generator>().Get();
+			m_Scene.m_SceneRoot->AddChild(obj);
+
+			//Generator 2.3
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(110.5, 0.64, -24.2);
+			obj->GetComponent<Transform>()->SetLocalScale(2.f, 3.076923f, 2.f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("Generator"));
+			obj->AddComponent<StaticBody>();
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
+			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
+			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
+			obj->AddComponent<LoopedSound3D>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 15.f);
+			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
+			Generator* gen4 = obj->GetComponent<Generator>().Get();
+			m_Scene.m_SceneRoot->AddChild(obj);
+
+			//Generator 2.4
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(112.26, 0.64, 64.31);
+			obj->GetComponent<Transform>()->SetLocalScale(2.f, 3.076923f, 2.f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("Generator"));
+			obj->AddComponent<StaticBody>();
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("YellowGeneratorPBR"));
+			obj->AddComponent<Generator>(m_Scene.m_ModelManager->GetModel("WoodenCrate"), obj);
+			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
+			obj->AddComponent<LoopedSound3D>("generator", obj->GetComponent<Transform>()->GetWorldPosition(), 15.f);
+			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
+			Generator* gen5 = obj->GetComponent<Generator>().Get();
+			m_Scene.m_SceneRoot->AddChild(obj);
+
+
+			//Gate 2
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(170.5, .0f, 20);
+			obj->GetComponent<Transform>()->SetLocalScale(1.0, 6.0f, 12.0f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
+			obj->AddComponent<StaticBody>();
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 6, 10), true);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			obj->AddComponent<Gate>();
-			obj->GetComponent<Gate>()->AddGenerator(gen1);
 			obj->GetComponent<Gate>()->AddGenerator(gen2);
+			obj->GetComponent<Gate>()->AddGenerator(gen3);
+			obj->GetComponent<Gate>()->AddGenerator(gen4);
+			obj->GetComponent<Gate>()->AddGenerator(gen5);
+
+
 			m_Scene.m_SceneRoot->AddChild(obj);
 
 			//Eggs
-			obj = new GameObject(m_EntityManager);
+			/*obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(15.0, 0.0f, -15.0f);
 			obj->GetComponent<Transform>()->SetLocalScale(1.0, 1.0f, 1.0f);
@@ -375,7 +445,7 @@ namespace sixengine {
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			obj->AddComponent<Eggs>();
-			m_Scene.m_SceneRoot->AddChild(obj);
+			m_Scene.m_SceneRoot->AddChild(obj);*/
 		
 			//UI
 			obj = new GameObject(m_EntityManager);

@@ -168,16 +168,6 @@
 -Gizmo 0 255 0 Cube 1.0 1.0 1.0
 +end
 
-+SceneGameObject
--Transform
-19.14324 0.74 1.672457
-0 0 0
-2 3.076923 2
--Model res/models/Props/Generator/Generator.obj
--Material YellowGeneratorPBR
--BoxCollider 2.057684 1.926068 3.05362 0
--Gizmo 0 255 0 Cube 1.0 1.0 1.0
-+end
 
 +SceneGameObject
 -Transform
@@ -817,38 +807,10 @@
 -Gizmo 0 255 0 Cube 1.0 1.0 1.0
 +end
 
-+SceneGameObject
--Transform
-154.22 0.64 64.31
-270 0 0
-2 3.076923 2
--Model res/models/Props/Generator/Generator.obj
--Material YellowGeneratorPBR
--BoxCollider 2.057684 1.926068 3.05362 0
--Gizmo 0 255 0 Cube 1.0 1.0 1.0
-+end
 
-+SceneGameObject
--Transform
-150.12 0.64 -24.2
-270 0 0
-2 3.076923 2
--Model res/models/Props/Generator/Generator.obj
--Material YellowGeneratorPBR
--BoxCollider 2.057684 1.926068 3.05362 0
--Gizmo 0 255 0 Cube 1.0 1.0 1.0
-+end
 
-+SceneGameObject
--Transform
-110.5 0.64 -24.2
-270 0 0
-2 3.076923 2
--Model res/models/Props/Generator/Generator.obj
--Material YellowGeneratorPBR
--BoxCollider 2.057684 1.926068 3.05362 0
--Gizmo 0 255 0 Cube 1.0 1.0 1.0
-+end
+
+
 
 +SceneGameObject
 -Transform
