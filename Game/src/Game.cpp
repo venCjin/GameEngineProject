@@ -87,7 +87,7 @@ namespace sixengine {
 			GameObject* obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(pos + glm::vec3(0.0f, 0.05f, 0.0f));
-			obj->GetComponent<Transform>()->SetLocalScale(0.015f, 0.015f, 0.015f);
+			obj->GetComponent<Transform>()->SetLocalScale(0.011f, 0.011f, 0.011f);
 			obj->GetComponent<Transform>()->SetLocalOrientation(rotation);
 			obj->AddComponent<BoxCollider>(glm::vec3(1.0f, 2.0f, 1.0f));
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/BlackAgent/agent.dae"));

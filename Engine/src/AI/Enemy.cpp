@@ -96,10 +96,21 @@ bool sixengine::Enemy::CanSeeUndergroundMovement()
 	glm::vec3 a = GetPlayer().Component<Transform>()->GetWorldPosition(); a.y = 0.0f;
 	glm::vec3 b = m_GameObject->GetComponent<Transform>()->GetWorldPosition(); b.y = 0.0f;
 
-	if (glm::length(a - b) > 3.0f)
+	if (m_GameObject->GetComponent<StateMachine>()->IsCurrentlyInState(typeid(AttackState*)))
 	{
-		return false;
+		if (glm::length(a - b) > 10.0f)
+		{
+			return false;
+		}
 	}
+	else
+	{
+		if (glm::length(a - b) > 3.0f)
+		{
+			return false;
+		}
+	}
+
 
 	if (glm::length(GetPlayer().Component<DynamicBody>()->m_Velocity) < 0.1f)
 	{
