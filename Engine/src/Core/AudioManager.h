@@ -21,6 +21,10 @@ namespace sixengine
 		void ClearSoundsArray();
 		irrklang::ISoundEngine* GetEngine();
 		void SetListenerPosition(glm::vec3 position, glm::vec3 lookDir);
+		void EnableEchoToAll();
+		void EnableDistoritionToAll();
+		void EnableGargleToAll();
+		void DisableAllEffects();
 		//use PLAY macro to play tracks
 
 	};

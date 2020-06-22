@@ -25,6 +25,8 @@ namespace sixengine
 		irrklang::ISound* s = m_SoundEngine->play2D(Get(key).c_str(),
 			false,
 			true,
+			true,
+			irrklang::E_STREAM_MODE::ESM_AUTO_DETECT,
 			true);
 		sounds.push_back(s);
 		//s->setIsPaused(false);
@@ -36,6 +38,8 @@ namespace sixengine
 		irrklang::ISound* s = m_SoundEngine->play2D(Get(key).c_str(),
 			true,
 			true,
+			true,
+			irrklang::E_STREAM_MODE::ESM_AUTO_DETECT,
 			true);
 		sounds.push_back(s);
 		//s->setIsPaused(false);
@@ -48,6 +52,8 @@ namespace sixengine
 			irrklang::vec3df(position.x, position.y, position.z),
 			false,
 			true,
+			true,
+			irrklang::E_STREAM_MODE::ESM_AUTO_DETECT,
 			true);
 		sounds.push_back(s);
 		//s->setIsPaused(false);
@@ -60,6 +66,8 @@ namespace sixengine
 			irrklang::vec3df(position.x, position.y, position.z),
 			true,
 			true,
+			true,
+			irrklang::E_STREAM_MODE::ESM_AUTO_DETECT,
 			true);
 		//s->setIsPaused(false);
 		sounds.push_back(s);
@@ -82,7 +90,7 @@ namespace sixengine
 		{
 			if ((*it)->isFinished())
 			{
-				sounds.erase(it);
+				it = sounds.erase(it);
 			}
 			else
 			{
@@ -98,6 +106,52 @@ namespace sixengine
 	{
 		m_SoundEngine->setListenerPosition(irrklang::vec3df(position.x, position.y, position.z),
 			irrklang::vec3df(lookDir.x, lookDir.y, lookDir.z));
+	}
+
+	void AudioManager::EnableEchoToAll()
+	{
+		for(auto s : this->sounds)
+		{
+			irrklang::ISoundEffectControl* fx = s->getSoundEffectControl();
+			s->setIsPaused(true);
+			fx->enableEchoSoundEffect();
+			s->setIsPaused(false);
+
+		}
+	}
+
+	void AudioManager::EnableDistoritionToAll()
+	{
+		for (auto s : this->sounds)
+		{
+			irrklang::ISoundEffectControl* fx = s->getSoundEffectControl();
+			s->setIsPaused(true);
+			fx->enableDistortionSoundEffect();
+			s->setIsPaused(false);
+		}
+	}
+
+
+	void AudioManager::EnableGargleToAll()
+	{
+		for (auto s : this->sounds)
+		{
+			irrklang::ISoundEffectControl* fx = s->getSoundEffectControl();
+			s->setIsPaused(true);
+			fx->enableGargleSoundEffect();
+			s->setIsPaused(false);
+		}
+	}
+
+	void AudioManager::DisableAllEffects()
+	{
+		for (auto s : this->sounds)
+		{
+			irrklang::ISoundEffectControl* fx = s->getSoundEffectControl();
+			s->setIsPaused(true);
+			fx->disableAllEffects();
+			s->setIsPaused(false);
+		}
 	}
 }
 
