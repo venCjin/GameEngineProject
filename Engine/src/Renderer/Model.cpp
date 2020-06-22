@@ -436,6 +436,20 @@ namespace sixengine {
 		}
 	}
 
+	int Model::GetBoneInfoIndex(std::string boneName)
+	{
+		if (m_BoneMapping.find(boneName) != m_BoneMapping.end())
+		{
+			return m_BoneMapping[boneName];
+		}
+		return -1;
+	}
+
+	BoneInfo* Model::GetBoneInfo(int index)
+	{
+		return &m_BoneInfo[index];
+	}
+
 	void Model::SetFrustumInfinity()
 	{
 		float inf = std::numeric_limits<float>::infinity();

@@ -21,7 +21,9 @@ namespace sixengine {
 			float previousTimeInTicks = m_Animation->GetPreviousAnimation()->timer * m_Animation->GetPreviousAnimation()->ticksPerSecond;
 			
 			if ((m_Animation->m_CurrentAnimationName != "idle" && currentTimeInTicks < m_Animation->GetCurrentAnimation()->duration) || !m_Animation->GetCurrentAnimation()->singleCycle)
+			{
 				m_Animation->GetCurrentAnimation()->timer += dt;
+			}
 			//else if (m_Animation->m_CurrentAnimationName == "death") {}
 			else
 			{
@@ -31,7 +33,9 @@ namespace sixengine {
 				
 
 			if (!m_Animation->GetPreviousAnimation()->singleCycle || (m_Animation->GetPreviousAnimation()->singleCycle && previousTimeInTicks < m_Animation->GetPreviousAnimation()->duration))
-				m_Animation->GetPreviousAnimation()->timer += dt;		
+			{
+				m_Animation->GetPreviousAnimation()->timer += dt;
+			}
 		}
 		
 	};

@@ -449,4 +449,3 @@ namespace sixengine {
 	};
 
 }
-
