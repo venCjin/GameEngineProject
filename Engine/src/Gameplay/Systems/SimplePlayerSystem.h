@@ -25,8 +25,9 @@ namespace sixengine {
 	SYSTEM(SimplePlayerSystem, Transform, SimplePlayer, Material)
 	{
 		//bool m_OnSurface = true;
-		float speed = 1.25f;
-		float maxSpeed = 2.0f;
+		float speed = .625f;
+		//float maxSpeed = 2.0f;
+		float speedMultiplicator = 2.0f;
 		float playerHeight = 1.0f;
 		//float air = 100.0f;
 		float airLosingRate = 5.0f;
@@ -39,7 +40,7 @@ namespace sixengine {
 		bool movingVertically = false;*/
 
 		float timer = 0.0f;
-		float cooldown = 1.0f;
+		float cooldown = .5f;
 		void OnCollisionHandle(BaseEvent & e)
 		{
 			OnCollision& collisionEvent = dynamic_cast<OnCollision&>(e);
@@ -72,6 +73,9 @@ namespace sixengine {
 		void Update(EventManager & eventManager, float dt) override
 		{
 			//LOG_INFO(m_SimplePlayer->collider->IsStatic());
+
+
+
 			//AUDIO
 			//Updating audio listener 
 			AudioManager::getInstance()->SetListenerPosition(m_Transform->GetWorldPosition(), m_Transform->GetForward());
@@ -149,6 +153,7 @@ namespace sixengine {
 				m_SimplePlayer->m_OnSurface = !m_SimplePlayer->m_OnSurface;
 				if (m_SimplePlayer->m_OnSurface)
 				{
+					speed /= speedMultiplicator;
 					//m_Material->SetShader(MaterialManager::getInstance()->Get("Green")->GetShader());
 					m_SimplePlayer->scolopendraMaterial->SetShader(MaterialManager::getInstance()->Get("GreenAnim")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, -playerHeight, 0.0f));
@@ -169,6 +174,7 @@ namespace sixengine {
 				}
 				else
 				{
+					speed *= speedMultiplicator;
 					//m_Material->SetShader(MaterialManager::getInstance()->Get("TransparentMaterial")->GetShader());
 					m_SimplePlayer->scolopendraMaterial->SetShader(MaterialManager::getInstance()->Get("TransparentMaterial")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, +playerHeight, 0.0f));
