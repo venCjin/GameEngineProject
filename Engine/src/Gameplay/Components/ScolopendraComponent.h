@@ -32,7 +32,6 @@ namespace sixengine {
 			m_Model = go->GetComponent<Mesh>().Get()->m_Model;
 			m_PlayerTransform = player->GetComponent<Transform>().Get();
 
-			m_Model->m_FreeBones = true;
 			m_Model->SetFrustumInfinity();
 
 			for (int i = 0; i < m_Model->m_BoneInfo.size(); ++i)
@@ -45,17 +44,10 @@ namespace sixengine {
 					{
 						m_Bones[i] = Bone(m_Model->m_BoneInfo[i].GlobalTransformation);
 						if (i > 0)
-							m_Bones[i].Init(&m_Bones[i - 1].m_Bone);
-					}
-
-					//m_Bones.push_back(Bone(m_Model->m_BoneInfo[i].GlobalTransformation));
-					
+							m_Bones[i].Init(&m_Bones[i - 1].m_GlobalTransformationBone);
+					}					
 				}
-			}
-
-			LOG_WARN("m_Model->m_BoneInfo.size(): {0}, m_Bones.size(): {1}", m_Model->m_BoneInfo.size(), m_Bones.size());
-
-			
+			}			
 		}
 
 		void ScolopendraComponent::UpdateBones()
@@ -64,14 +56,11 @@ namespace sixengine {
 			for (int i = 0; i < m_Bones.size(); i++)
 			{
 				if (i > 0)
-					m_Bones[i].UpdateBone(m_Bones[i - 1].m_Bone.GetLocalPosition());
+					m_Bones[i].UpdateBone(m_Bones[i - 1].m_GlobalTransformationBone.GetLocalPosition());
 				else
 					m_Bones[i].UpdateBone(glm::vec3(0.f));
 
 			}
 		}
-
-		/*virtual void Load(std::iostream& stream) {}
-		virtual void Save(std::iostream& stream) {}*/
 	};
 }

@@ -25,6 +25,7 @@ namespace sixengine {
 		glm::mat4 BoneOffset = glm::mat4(0.0f);
 		glm::mat4 FinalTransformation = glm::mat4(0.0f);
 		glm::mat4 GlobalTransformation = glm::mat4(0.0f);
+		glm::mat4 LocalTransformation = glm::mat4(0.0f);
 		std::string Name;
 		bool FreeBone = false;
 	};
@@ -68,7 +69,6 @@ namespace sixengine {
 		glm::vec3 m_MinAxis;
 		glm::vec3 m_MaxAxis;
 		std::vector<BoneInfo> m_BoneInfo;
-		bool m_FreeBones = false;
 		glm::mat4 m_GlobalInverseTransform;
 		void LoadGlobalPositions(const aiNode* node, const glm::mat4& parentTransform);
 		bool m_GlobalPositionsLoaded = false;
