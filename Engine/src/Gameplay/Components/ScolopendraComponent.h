@@ -56,9 +56,9 @@ namespace sixengine {
 			for (int i = 0; i < m_Bones.size(); i++)
 			{
 				if (i > 0)
-					m_Bones[i].UpdateBone(m_Bones[i - 1].m_GlobalTransformationBone.GetLocalPosition());
+					m_Bones[i].UpdateBone(&m_Bones[i - 1]);
 				else
-					m_Bones[i].UpdateBone(glm::vec3(0.f));
+					m_Bones[i].UpdateBone(nullptr);
 
 			}
 		}

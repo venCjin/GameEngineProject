@@ -2,6 +2,7 @@
 #include "Model.h"
 #include <glad/glad.h> 
 #include "stb_image.h"
+#include <Gameplay/Components/Transform.h>
 
 namespace sixengine {
 
@@ -351,17 +352,12 @@ namespace sixengine {
 		{
 			uint boneIndex = m_BoneMapping[nodeName];
 
+			transforms[boneIndex] = m_GlobalInverseTransform * globalTransformation * m_BoneInfo[boneIndex].LocalTransformation * m_BoneInfo[boneIndex].BoneOffset;
+			m_BoneInfo[boneIndex].FinalTransformation = transforms[boneIndex];
+			
 			if (m_BoneInfo[boneIndex].FreeBone)
-			{
-				transforms[boneIndex] = m_GlobalInverseTransform * m_BoneInfo[boneIndex].GlobalTransformation * m_BoneInfo[boneIndex].BoneOffset;
-				globalTransformation = m_BoneInfo[boneIndex].GlobalTransformation;
-				m_BoneInfo[boneIndex].FinalTransformation = transforms[boneIndex];
-			}
-			else
-			{
-				transforms[boneIndex] = m_GlobalInverseTransform * globalTransformation * m_BoneInfo[boneIndex].BoneOffset;
-				m_BoneInfo[boneIndex].FinalTransformation = transforms[boneIndex];
-			}
+				globalTransformation = globalTransformation * m_BoneInfo[boneIndex].LocalTransformation;
+						
 		}
 
 		for (uint i = 0; i < node->mNumChildren; i++) {

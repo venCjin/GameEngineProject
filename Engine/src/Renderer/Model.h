@@ -25,7 +25,7 @@ namespace sixengine {
 		glm::mat4 BoneOffset = glm::mat4(0.0f);
 		glm::mat4 FinalTransformation = glm::mat4(0.0f);
 		glm::mat4 GlobalTransformation = glm::mat4(0.0f);
-		glm::mat4 LocalTransformation = glm::mat4(0.0f);
+		glm::mat4 LocalTransformation = glm::mat4(1.0f);
 		std::string Name;
 		bool FreeBone = false;
 	};

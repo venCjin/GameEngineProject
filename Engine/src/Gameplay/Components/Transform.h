@@ -270,7 +270,7 @@ namespace sixengine {
 		// Rotates the transform by given Yaw, Pitch and Roll angles.
 		void Rotate(float x, float y, float z)
 		{
-			m_Local *= glm::yawPitchRoll(x, y, z);
+			m_Local *= glm::yawPitchRoll(y, x, z);
 		}
 
 

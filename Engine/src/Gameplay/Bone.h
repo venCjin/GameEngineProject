@@ -18,8 +18,9 @@ namespace sixengine {
 		void Init(Transform* parent);
 
 		Transform m_GlobalTransformationBone;
+		Transform m_LocalTransformationBone;
 
-		void UpdateBone(glm::vec3 position);
+		void UpdateBone(Bone* bone);
 	};
 
 }
