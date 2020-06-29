@@ -16,7 +16,7 @@ bool sixengine::SearchState::IsStateReady(StateMachine* stateMachine)
 		return true;
 	}
 
-	LOG_INFO(m_Manager->HasAnybodyDetectedPlayer());
+	//LOG_INFO(m_Manager->HasAnybodyDetectedPlayer());
 
 	return (m_GameObject->GetComponent<StateMachine>()->IsCurrentlyInState(typeid(AttackState*)) && m_Manager->HasAnybodyDetectedPlayer() == false);
 
@@ -30,7 +30,7 @@ void sixengine::SearchState::OnStateEnter(StateMachine* stateMachine, State* pre
 
 void sixengine::SearchState::OnStateUpdate(StateMachine* stateMachine)
 {
-	LOG_INFO("SearchState reporting on duty");
+	//LOG_INFO("SearchState reporting on duty");
 
 	if (m_NavAgent->GetRemainingDistance() < 1.0f)
 	{

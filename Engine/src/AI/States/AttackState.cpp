@@ -53,7 +53,7 @@ void sixengine::AttackState::OnStateEnter(StateMachine* stateMachine, State* pre
 
 void sixengine::AttackState::OnStateUpdate(StateMachine* stateMachine)
 {
-	LOG_INFO("AttackState reporting on duty");
+	//LOG_INFO("AttackState reporting on duty");
 
 	if (m_Manager->HasAnybodyDetectedPlayer())
 	{

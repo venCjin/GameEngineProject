@@ -53,6 +53,7 @@
 -AddMaterial ConcreteFence PBR 2 res/models/Concrete/Fence/Fencealbedo.png res/models/Concrete/Fence/Fencenormal.png 
 -AddMaterial Chainlink PBR 3 res/models/Chainlink/Chainlinkalbedo.png res/models/Chainlink/Chainlinknormal.png res/models/Chainlink/Chainlinkspecular.png 
 -AddMaterial Barricade PBR 3 res/models/Barricade/Barricadealbedo.png res/models/Barricade/Barricadenormal.png res/models/Barricade/Barricadespecular.png 
+-AddMaterial Rope PBR 1 res/models/rope/rope.png 
 
 -AddMaterial WaterMaterial Water 2 res/textures/water/dudv2.png res/textures/water/normal2.png
 -AddMaterial FontMaterial Font 0
@@ -68,9 +69,9 @@
 
 +SceneGameObject
 -Transform
-160.91 1.09 50.77
+160.91 0.89 50.77
 0 0 0
-2.4 2.4 2.4
+1 1 1
 -Model res/models/primitives/circleplane.obj
 -Material WaterMaterial
 -Water

@@ -27,7 +27,7 @@ void sixengine::IdleState::OnStateEnter(StateMachine* stateMachine, State* previ
 
 void sixengine::IdleState::OnStateUpdate(StateMachine* stateMachine)
 {
-	LOG_INFO("IdleState reporting on duty");
+	//LOG_INFO("IdleState reporting on duty");
 	
 	if (m_NacAgent->GetRemainingDistance() < 0.25f)
 	{

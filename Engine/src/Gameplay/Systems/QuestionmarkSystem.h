@@ -22,7 +22,7 @@ namespace sixengine
 
 			if (enemy->GetComponent<Enemy>()->GetDetectionLevel() > .9f) m_Questionmark->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
-			LOG_CORE_WARN("DEtection: {0} {1}", enemy->GetComponent<Enemy>()->GetDetectionLevel(), m_Questionmark->fill);
+			//LOG_CORE_WARN("DEtection: {0} {1}", enemy->GetComponent<Enemy>()->GetDetectionLevel(), m_Questionmark->fill);
 
 		}
 	};

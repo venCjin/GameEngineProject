@@ -16,7 +16,8 @@ namespace sixengine {
 
 		void Update(EventManager & eventManager, float dt) override
 		{
-			LOG_ERROR(m_Animation->m_CurrentAnimationName);
+			//LOG_ERROR(m_Animation->m_CurrentAnimationName);
+
 			float currentTimeInTicks = m_Animation->GetCurrentAnimation()->timer * m_Animation->GetCurrentAnimation()->ticksPerSecond;
 			float previousTimeInTicks = m_Animation->GetPreviousAnimation()->timer * m_Animation->GetPreviousAnimation()->ticksPerSecond;
 			

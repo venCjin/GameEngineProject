@@ -87,7 +87,7 @@ namespace sixengine {
 		{
 			GameObject* obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(pos + glm::vec3(0.0f, 0.05f, 0.0f));
+			obj->GetComponent<Transform>()->SetWorldPosition(pos);
 			obj->GetComponent<Transform>()->SetLocalScale(0.011f, 0.011f, 0.011f);
 			obj->GetComponent<Transform>()->SetLocalOrientation(rotation);
 			obj->AddComponent<BoxCollider>(glm::vec3(1.0f, 0.5f, 1.0f));
@@ -116,6 +116,7 @@ namespace sixengine {
 			m_Scene.m_SceneRoot->AddChild(obj);
 
 			// pistol
+			
 			GameObject* pistol = new GameObject(m_EntityManager);
 			pistol->AddComponent<Transform>(pistol);
 			pistol->GetComponent<Transform>()->SetParent(new Transform());
@@ -129,6 +130,7 @@ namespace sixengine {
 			//pistol->GetComponent<Pistol>()->m_OwnerTransform = obj->GetComponent<Transform>().Get();
 			//pistol->GetComponent<Pistol>()->m_BoneInfo = obj->GetComponent<Mesh>()->GetModel()->GetBoneInfo(index);
 			m_Scene.m_SceneRoot->AddChild(pistol);
+			
 			/*
 			GameObject* p = new GameObject(m_EntityManager);
 			p->AddComponent<Transform>(p);
@@ -161,8 +163,8 @@ namespace sixengine {
 			m_Billboard = new GameObject(m_EntityManager);
 			m_Billboard->AddComponent<Transform>(m_Billboard);
 			//m_Billboard->GetComponent<Transform>()->SetParent(child->GetComponent<Transform>().Get());
-			//m_Billboard->GetComponent<Transform>()->SetLocalScale(glm::vec3(1.0f, 5.f, 1.0f));
-			m_Billboard->GetComponent<Transform>()->SetLocalPosition(glm::vec3(0, 5, 0));
+			m_Billboard->GetComponent<Transform>()->SetLocalScale(glm::vec3(0.7f, 0.7f, 0.7f));
+			m_Billboard->GetComponent<Transform>()->SetLocalPosition(glm::vec3(0, 8, 0));
 			m_Billboard->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("billboard"));
 			m_Billboard->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bar"));
 			m_Billboard->AddComponent<Questionmark>();
@@ -193,7 +195,7 @@ namespace sixengine {
 			m_SystemManager.AddSystem<GateSystem>();
 
 
-			m_Scene.LoadScene("res/scenes/exported3.scene");
+			m_Scene.LoadScene("res/scenes/exported4.scene");
 			//ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
 			//INIT_TRACK("ophelia");
 
@@ -265,7 +267,7 @@ namespace sixengine {
 
 			GameObject* player = new GameObject(m_EntityManager);
 			player->AddComponent<Transform>(player);
-			player->GetComponent<Transform>()->SetWorldPosition(-35.0f, -0.1f, 0.0f);
+			player->GetComponent<Transform>()->SetWorldPosition(-35.0f, 0.1f, 0.0f);
 			player->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			player->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
@@ -321,7 +323,7 @@ namespace sixengine {
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(19.14324, .74f, 1.672457);
-			obj->GetComponent<Transform>()->SetLocalScale(2.f, 3.076923f, 2.f);
+			obj->GetComponent<Transform>()->SetLocalScale(1.5f, 1.5f, 1.5f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("Generator"));
 			obj->AddComponent<StaticBody>();
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
@@ -332,13 +334,6 @@ namespace sixengine {
 			obj->GetComponent<LoopedSound3D>()->SetMinDistance(-1.0f);
 			Generator* gen1 = obj->GetComponent<Generator>().Get();
 			m_Scene.m_SceneRoot->AddChild(obj);
-
-			/*obj = new GameObject(m_EntityManager);
-			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(9.0, 0.5f, -9.0f);
-			obj->AddComponent<ParticleEmitter>(obj, starParticleTexture);
-			m_Scene.m_SceneRoot->AddChild(obj);*/
-
 
 			//Gate 1
 			obj = new GameObject(m_EntityManager);
@@ -433,14 +428,13 @@ namespace sixengine {
 			obj->GetComponent<Gate>()->AddGenerator(gen3);
 			obj->GetComponent<Gate>()->AddGenerator(gen4);
 			obj->GetComponent<Gate>()->AddGenerator(gen5);
-
-
 			m_Scene.m_SceneRoot->AddChild(obj);
 
 			//Eggs
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(212.0, 0.36f, 20.6f);
+			obj->GetComponent<Transform>()->SetWorldPosition(213.0, -0.10f, 20.0f);
+
 			obj->GetComponent<Transform>()->SetLocalScale(1.0, 1.0f, 1.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<StaticBody>();
@@ -476,28 +470,28 @@ namespace sixengine {
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<EnemiesManager>();
 
-			/*MakeEnemy(glm::vec3(17.30613f, -0.27f, 1.866652f), glm::vec3(220.029f, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-0.9738712, -0.27f, 7.736652f), glm::vec3(229.8f, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-7.743871f, -0.27f, 7.686653), glm::vec3(180, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-3.423871, -0.27f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-9.323872, -0.27f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));*/
+			/*MakeEnemy(glm::vec3(17.30613f, 0.0f, 1.866652f), glm::vec3(220.029f, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-0.9738712, 0.0f, 7.736652f), glm::vec3(229.8f, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-7.743871f, 0.0f, 7.686653), glm::vec3(180, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-3.423871, 0.0f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
+			MakeEnemy(glm::vec3(-9.323872, 0.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));*/
 
-			MakeEnemy(glm::vec3(16.06, -0.27f, -4.96), glm::vec3(303.9931, 0, 0));
-			MakeEnemy(glm::vec3(22.89, -0.27f, 6.85), glm::vec3(243.2002, 0, 0));
-			MakeEnemy(glm::vec3(59.59, -0.27f, 5.97), glm::vec3(128.7469, 0, 0));
-			MakeEnemy(glm::vec3(64.78, -0.27f, 0.09), glm::vec3(340.3404, 0, 0));
-			MakeEnemy(glm::vec3(147.03, -0.27f, -22.93), glm::vec3(5.779317, 0, 0));
-			MakeEnemy(glm::vec3(147.3, -0.27f, -17.6), glm::vec3(175.3088, 0, 0));
-			MakeEnemy(glm::vec3(165.65, -0.27f, 12.49), glm::vec3(291.341, 0, 0));
-			MakeEnemy(glm::vec3(165.65, -0.27f, 29.3), glm::vec3(239.1137, 0, 0));
-			MakeEnemy(glm::vec3(163.77, -0.27f, 56.02), glm::vec3(209.1315, 0, 0));
-			MakeEnemy(glm::vec3(130.1, -0.27f, 48.75), glm::vec3(318.0522, 0, 0));
-			MakeEnemy(glm::vec3(102, -0.27f, 56.2), glm::vec3(216.9023, 0, 0));
-			MakeEnemy(glm::vec3(99.57, -0.27f, 12.22), glm::vec3(253.604, 0, 0));
-			MakeEnemy(glm::vec3(100.06, -0.27f, 20.11), glm::vec3(64.77235, 0, 0));
-			MakeEnemy(glm::vec3(111.53, -0.27f, -11.15), glm::vec3(176.9345, 0, 0));
-			MakeEnemy(glm::vec3(101.06, -0.27f, -19.86), glm::vec3(52.59827, 0, 0));
-			MakeEnemy(glm::vec3(113.97, -0.27f, -24.53), glm::vec3(0, 0, 0));
+			MakeEnemy(glm::vec3(16.06, 0.0f, -4.96), glm::vec3(303.9931, 0, 0));
+			MakeEnemy(glm::vec3(22.89, 0.0f, 6.85), glm::vec3(243.2002, 0, 0));
+			MakeEnemy(glm::vec3(59.59, 0.0f, 5.97), glm::vec3(128.7469, 0, 0));
+			MakeEnemy(glm::vec3(64.78, 0.0f, 0.09), glm::vec3(340.3404, 0, 0));
+			MakeEnemy(glm::vec3(147.03, 0.0f, -22.93), glm::vec3(5.779317, 0, 0));
+			MakeEnemy(glm::vec3(147.3, 0.0f, -17.6), glm::vec3(175.3088, 0, 0));
+			MakeEnemy(glm::vec3(165.65, 0.0f, 12.49), glm::vec3(291.341, 0, 0));
+			MakeEnemy(glm::vec3(165.65, 0.0f, 29.3), glm::vec3(239.1137, 0, 0));
+			MakeEnemy(glm::vec3(163.77, 0.0f, 56.02), glm::vec3(209.1315, 0, 0));
+			MakeEnemy(glm::vec3(130.1, 0.0f, 48.75), glm::vec3(318.0522, 0, 0));
+			MakeEnemy(glm::vec3(102, 0.0f, 56.2), glm::vec3(216.9023, 0, 0));
+			MakeEnemy(glm::vec3(99.57, 0.0f, 12.22), glm::vec3(253.604, 0, 0));
+			MakeEnemy(glm::vec3(100.06, 0.0f, 20.11), glm::vec3(64.77235, 0, 0));
+			MakeEnemy(glm::vec3(111.53, 0.0f, -11.15), glm::vec3(176.9345, 0, 0));
+			MakeEnemy(glm::vec3(101.06, 0.0f, -19.86), glm::vec3(52.59827, 0, 0));
+			MakeEnemy(glm::vec3(113.97, 0.0f, -24.53), glm::vec3(0, 0, 0));
 			//ENEMIES
 
 		#if SCENE_ENDS_IN_GAME_CPP
@@ -600,7 +594,7 @@ namespace sixengine {
 				WindowCloseEvent e;
 				Application::Get().OnEvent(e);
 			}
-			/*
+			
 			if (Input::IsKeyPressed(KeyCode::F9))
 			{
 				Application::Get().GetWindow().SwitchCursorVisibility();
@@ -643,8 +637,8 @@ namespace sixengine {
 				m_BatchRenderer->SetBlur(false);
 				m_BatchRenderer->SetShake(false);
 			}
-			*/
-
+			
+  
 			{
 				//PROFILE_SCOPE("ECS")
 				m_SystemManager.UpdateAll(dt);

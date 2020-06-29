@@ -59,7 +59,7 @@ namespace sixengine {
 			{
 				collisionEvent.collision.other.Component<Transform>()->Translate(glm::vec3(0.0f, -100.0f, 0.0f));
 				glm::vec3 pos = collisionEvent.m_Entity.Component<Transform>()->GetWorldPosition();
-				collisionEvent.m_Entity.Component<Transform>()->SetWorldPosition(glm::vec3(pos.x, 0.0f, pos.z));
+				collisionEvent.m_Entity.Component<Transform>()->SetWorldPosition(glm::vec3(pos.x, 0.1f, pos.z));
 				collisionEvent.m_Entity.Component<SimplePlayer>()->m_Health -= 10.0f;
 			}
 		}
@@ -96,16 +96,16 @@ namespace sixengine {
 				m_SimplePlayer->scolopendraAnimation->ChangeAnimation(std::string("attack"));
 
 				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::translate(model, m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f));
+				model = glm::translate(model, m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward());
 				Application::attack->model = model;
 
-				for (auto hit : CollisionSystem::CheckSphereAll(m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward() + glm::vec3(0.0f, 1.0f, 0.0f), 1.0f))
+				for (auto hit : CollisionSystem::CheckSphereAll(m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward(), 1.0f))
 				{
 					if (Entity::Valid(hit.GetID()))
 					{
 						if (hit.HasComponent<Enemy>())
 						{
-							LOG_INFO("MAM CIE CHUJU!");
+							//LOG_INFO("MAM CIE CHUJU!");
 							hit.Component<Enemy>()->ReceiveDamage(50.0f);
 						}
 						else if (hit.HasComponent<Generator>())
