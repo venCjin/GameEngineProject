@@ -213,7 +213,7 @@ namespace sixengine {
 			ui->AddFont(font);
 			m_BatchRenderer->AddTechnique(ui);
 
-			m_Scene.LoadScene("res/scenes/exported4.scene");
+			m_Scene.LoadScene("res/scenes/exported5.scene");
 
 			m_SystemManager.AddSystem<GateSystem>();
 			m_SystemManager.AddSystem<ProjectileSystem>();
@@ -257,7 +257,7 @@ namespace sixengine {
 			rippleParticleTexture = new Texture("res/textures/particles/ripple.png");
 
 //<<<<<<< HEAD
-			//m_Scene.LoadScene("res/scenes/exported4.scene");
+			//m_Scene.LoadScene("res/scenes/exported5.scene");
 //=======
 //>>>>>>> 31cd89ea8514475f1699153dd50538a9dee5ded1
 			//ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
@@ -341,7 +341,7 @@ namespace sixengine {
 			m_Scene.m_UIRoot->~GameObject();
 			m_Scene.InitScene();
 
-			m_Scene.LoadScene("res/scenes/exported4.scene");
+			m_Scene.LoadScene("res/scenes/exported5.scene");
 		}
 
 		void LoadScene()
@@ -771,7 +771,7 @@ namespace sixengine {
 
 			{
 				//PROFILE_SCOPE("DRAW GIZMOS")
-				/*m_Scene.DrawGizmos();
+				m_Scene.DrawGizmos();
 
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				glDisable(GL_CULL_FACE);
@@ -779,7 +779,7 @@ namespace sixengine {
 				attack->Draw(attack->model);
 				glPolygonMode(GL_FRONT, GL_FILL);
 				glEnable(GL_CULL_FACE);
-				glCullFace(GL_BACK);*/
+				glCullFace(GL_BACK);
 			}
 		}
 
