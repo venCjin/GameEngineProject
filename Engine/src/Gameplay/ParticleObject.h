@@ -21,6 +21,8 @@ namespace sixengine {
 
 		ParticleObject() : m_TranslationVelocity(glm::vec3(0.0f)), m_Active(true), m_Timer(0.0f)
 		{
+			//m_Transform.SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+			m_Transform.SetLocalScale(glm::vec3(0.0f, 0.0f, 0.0f));
 			m_Transform.SetLocalOrientation(glm::vec3(0.0f, 90.0f, 0.0f));
 		}
 

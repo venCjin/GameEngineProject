@@ -16,6 +16,9 @@ namespace sixengine {
 	class Scene
 	{
 	private:
+		unsigned int m_Width;
+		unsigned int m_Height;
+
 	public:
 		GameObject *m_UIRoot, *m_SceneRoot;
 		ModelManager* m_ModelManager;
@@ -30,6 +33,7 @@ namespace sixengine {
 		bool SaveScene(const char* filePath);
 		void Render(bool first = false);
 		void DrawGizmos();
+		void InitScene();
 		template <typename Component>
 		GameObject* GetFirstGameObjectWithComponent();
 		template <typename Component>

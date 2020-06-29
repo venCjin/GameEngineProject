@@ -7,19 +7,6 @@
 -AddSystem CollisionSystem
 -AddSystem SimplePlayerSystem
 
--Blur res/shaders/PostProcessing.glsl
--Skybox res/shaders/Skybox.glsl res/textures/skybox/right.jpg res/textures/skybox/left.jpg res/textures/skybox/top.jpg res/textures/skybox/bottom.jpg res/textures/skybox/front.jpg res/textures/skybox/back.jpg
--StaticDepth res/shaders/Depth.glsl
--AnimatedDepth res/shaders/DepthAnim.glsl
--Particle res/shaders/ParticlesShader.glsl
-
--AddShader StaticPBR res/shaders/PBR.glsl
--AddShader AnimationPBR res/shaders/AnimationPBR.glsl
--AddShader TransparentTechnique res/shaders/Transparent.glsl
--AddShader Water res/shaders/Water.glsl
--AddShader QuestionmarkTechnique res/shaders/Questionmark.glsl
--AddShader UI res/shaders/Font.glsl res/fonts/DroidSans.ttf
-
 -AddMaterial GroundPBR PBR 3 res/models/Environment/Ground/Textures/Ground_Albedo.png res/models/Environment/Ground/Textures/Ground_Normal.png res/models/Environment/Ground/Textures/Ground_Metallic.png 
 -AddMaterial RocksPBR PBR 3 res/models/Environment/Rocks/Textures/Rocks_Albedo.png res/models/Environment/Rocks/Textures/Rocks_Normal.png res/models/Environment/Rocks/Textures/Rocks_Metallic.png 
 -AddMaterial BigBushPBR PBR 1 res/models/Environment/Vegetation/Textures/BigBush_Albedo.png 
@@ -67,15 +54,7 @@
 -AddMaterial TransparentMaterial Transparent 0
 
 
-+SceneGameObject
--Transform
--4 0.8 -6.2
-0 0 0
-1 1 1
--Model res/models/primitives/circleplane.obj
--Material WaterMaterial
--Water
-+end
+
 
 
 +SceneGameObject

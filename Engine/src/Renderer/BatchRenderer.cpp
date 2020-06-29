@@ -340,13 +340,12 @@ namespace sixengine {
 				m_TechniqueList[i]->m_DrawCommands.clear();
 			}
 
-			if (i == 3)
+			if (i == 2)
 			{
 				if (m_ParticleRender)
 					m_ParticleRender->Render(m_ParticleList);
 			}
 		}
-
 
 		if (m_Blur || m_Shake)
 			ApplyBlur();

@@ -16,15 +16,8 @@ namespace sixengine
 	};
 	SYSTEM(StaticLoopedSound3DSystem, LoopedSound3D)
 	{
-
-		GameObject* m_Player;
-
 	public:
-
-		StaticLoopedSound3DSystem(GameObject* player) : BaseStaticLoopedSound3DSystem()
-		{
-			m_Player = player;
-		}
+		GameObject* m_Player;
 
 		void OnStart(EventManager & eventManager) override
 		{

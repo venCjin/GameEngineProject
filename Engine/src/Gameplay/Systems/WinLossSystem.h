@@ -12,24 +12,24 @@ namespace sixengine
 {
 	SYSTEM(WinLossSystem, SimplePlayer)
 	{
-	GameObject* winLoseText;
+	public:
+		GameObject* winLoseText;
 
-	void OnCollisionHandle(BaseEvent & e)
-	{
-		OnCollision& collisionEvent = dynamic_cast<OnCollision&>(e);
-
-		if (collisionEvent.m_Entity.HasComponent<SimplePlayer>() &&
-			collisionEvent.collision.other.HasComponent<Eggs>())
+	private:
+		void OnCollisionHandle(BaseEvent & e)
 		{
-			winLoseText->GetComponent<Text>()->SetText("Congratulations!");
-			winLoseText->GetComponent<Transform>()->SetWorldPosition(260.0, 340.0f, 0.0f);
-			Timer::Instance()->SetPaused(true);
+			OnCollision& collisionEvent = dynamic_cast<OnCollision&>(e);
+
+			if (collisionEvent.m_Entity.HasComponent<SimplePlayer>() &&
+				collisionEvent.collision.other.HasComponent<Eggs>())
+			{
+				winLoseText->GetComponent<Text>()->SetText("Congratulations!");
+				winLoseText->GetComponent<Transform>()->SetWorldPosition(260.0, 340.0f, 0.0f);
+				Timer::Instance()->SetPaused(true);
+			}
 		}
-	}
 
 	public:
-		WinLossSystem(GameObject* text)
-			: winLoseText(text) {}
 
 		void OnStart(EventManager& eventManager) override
 		{
