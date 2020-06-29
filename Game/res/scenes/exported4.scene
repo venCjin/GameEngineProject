@@ -7,18 +7,7 @@
 -AddSystem CollisionSystem
 -AddSystem SimplePlayerSystem
 
--Blur res/shaders/PostProcessing.glsl
--Skybox res/shaders/Skybox.glsl res/textures/skybox/right.jpg res/textures/skybox/left.jpg res/textures/skybox/top.jpg res/textures/skybox/bottom.jpg res/textures/skybox/front.jpg res/textures/skybox/back.jpg
--StaticDepth res/shaders/Depth.glsl
--AnimatedDepth res/shaders/DepthAnim.glsl
--Particle res/shaders/ParticlesShader.glsl
 
--AddShader StaticPBR res/shaders/PBR.glsl
--AddShader AnimationPBR res/shaders/AnimationPBR.glsl
--AddShader TransparentTechnique res/shaders/Transparent.glsl
--AddShader Water res/shaders/Water.glsl
--AddShader QuestionmarkTechnique res/shaders/Questionmark.glsl
--AddShader UI res/shaders/Font.glsl res/fonts/DroidSans.ttf
 
 -AddMaterial GroundPBR PBR 3 res/models/Environment/Ground/Textures/Ground_Albedo.png res/models/Environment/Ground/Textures/Ground_Normal.png res/models/Environment/Ground/Textures/Ground_Metallic.png 
 -AddMaterial RocksPBR PBR 3 res/models/Environment/Rocks/Textures/Rocks_Albedo.png res/models/Environment/Rocks/Textures/Rocks_Normal.png res/models/Environment/Rocks/Textures/Rocks_Metallic.png 
@@ -53,7 +42,8 @@
 -AddMaterial ConcreteFence PBR 2 res/models/Concrete/Fence/Fencealbedo.png res/models/Concrete/Fence/Fencenormal.png 
 -AddMaterial Chainlink PBR 3 res/models/Chainlink/Chainlinkalbedo.png res/models/Chainlink/Chainlinknormal.png res/models/Chainlink/Chainlinkspecular.png 
 -AddMaterial Barricade PBR 3 res/models/Barricade/Barricadealbedo.png res/models/Barricade/Barricadenormal.png res/models/Barricade/Barricadespecular.png 
--AddMaterial Rope PBR 1 res/models/rope/rope.png 
+-AddMaterial Rope PBR 1 res/models/rope/rope.png
+-AddMaterial Wire PBR 1 res/models/Wires/wire_texture.png 
 
 -AddMaterial WaterMaterial Water 2 res/textures/water/dudv2.png res/textures/water/normal2.png
 -AddMaterial FontMaterial Font 0
@@ -128,7 +118,7 @@
 
 +SceneGameObject
 -Transform
-12.397 2.081 -5.245
+12.397 1.578 -5.245
 270 0 0
 1 1 1
 -Model res/models/Props/Tires/TireWall.obj
@@ -168,16 +158,6 @@
 
 +SceneGameObject
 -Transform
-108.9 1.81 49
-90.00002 0 0
-1 1 1
--Model res/models/Props/House/House.obj
--Material HousePBR
--BoxCollider 11.07905 4.140896 7.529713 0
-+end
-
-+SceneGameObject
--Transform
 50.74 0.89 5.36
 259.2 0 0
 0.9999999 2.307692 0.9999999
@@ -204,6 +184,16 @@
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
 -BoxCollider 3.568696 1.913527 0.6334439 0
++end
+
++SceneGameObject
+-Transform
+108.9 1.81 49
+90.00002 0 0
+1 1 1
+-Model res/models/Props/House/House.obj
+-Material HousePBR
+-BoxCollider 11.07905 4.140896 7.529713 0
 +end
 
 +SceneGameObject
@@ -738,7 +728,7 @@
 
 +SceneGameObject
 -Transform
-151.51 2.162308 28.64
+151.51 2.162308 30.22
 0 0 0
 1.5 1.5 1.5
 -Model res/models/Props/Container/Container.obj
@@ -838,8 +828,8 @@
 
 +SceneGameObject
 -Transform
-133.9 2.162308 16.2
-0 0 0
+129.7 2.162308 15.55
+270 0 0
 1.5 1.5 1.5
 -Model res/models/Props/Container/Container.obj
 -Material GreenContainerPBR
@@ -848,7 +838,7 @@
 
 +SceneGameObject
 -Transform
-148.2 2.162308 16.1
+148.2 2.162308 17.46
 0 0 0
 1.5 1.5 1.5
 -Model res/models/Props/Container/Container.obj
@@ -868,7 +858,7 @@
 
 +SceneGameObject
 -Transform
-146.75 6.77 28.85
+146.75 6.77 30.43
 0 0 0
 1.5 1.5 1.5
 -Model res/models/Props/Container/Container.obj
@@ -878,7 +868,7 @@
 
 +SceneGameObject
 -Transform
-142.66 2.27 31.17
+142.66 2.27 32.75
 270 0 0
 1.5 1.5 1.5
 -Model res/models/Props/Container/Container.obj
@@ -888,7 +878,7 @@
 
 +SceneGameObject
 -Transform
-125.7 2.27 32.1
+127.2 2.27 32.8
 270 0 0
 1.5 1.5 1.5
 -Model res/models/Props/Container/Container.obj
@@ -904,16 +894,6 @@
 -Model res/models/Props/Container/Container.obj
 -Material BlueContainerPBR
 -BoxCollider 9.931654 4.668952 4.623354 0
-+end
-
-+SceneGameObject
--Transform
-145.6 1.8 -13.5
-90.00002 0 0
-1 1 1
--Model res/models/Props/House/House.obj
--Material HousePBR
--BoxCollider 11.07905 4.140896 7.529713 0
 +end
 
 +SceneGameObject
@@ -1134,6 +1114,16 @@
 -BoxCollider 9.449961 4.493848 0.9428279 0
 -Model res/models/Concrete/Wall/Wall.obj
 -Material Wall
++end
+
++SceneGameObject
+-Transform
+145.6 1.8 -13.5
+90.00002 0 0
+1 1 1
+-Model res/models/Props/House/House.obj
+-Material HousePBR
+-BoxCollider 11.07905 4.140896 7.529713 0
 +end
 
 +SceneGameObject
@@ -2052,16 +2042,6 @@
 
 +SceneGameObject
 -Transform
-160.91 0.521 50.77
-0 0 0
-1 1 1
--Model res/models/Props/Well/Well.obj
--Material WellPBR
--BoxCollider 3.416605 2.746342 3.043858 0
-+end
-
-+SceneGameObject
--Transform
 170.73 0.7769229 26.23
 0 0 0
 1 1.538462 1
@@ -2142,6 +2122,16 @@
 
 +SceneGameObject
 -Transform
+160.91 0.521 50.77
+0 0 0
+1 1 1
+-Model res/models/Props/Well/Well.obj
+-Material WellPBR
+-BoxCollider 3.416605 2.746342 3.043858 0
++end
+
++SceneGameObject
+-Transform
 205.267 1.534 28.682
 51.01896 8.708546 357.2357
 1 1 1
@@ -2162,280 +2152,208 @@
 
 +SceneGameObject
 -Transform
-19.98 0.31 1.121455
-0 0 348.4891
+19.539 0.085 3.0988
+0 0 0
 1 1 1
--Model res/models/rope/rope.obj
--Material Rope
+-Model res/models/Wires/TurnWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-38.97124 0.1149997 3.997455
-13.88718 359.768 0.6770139
-0.9999999 0.9999999 0.9999999
--Model res/models/rope/rope.obj
--Material Rope
+30.79 0.085 4.04
+0 0 0
+3.063916 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-38.00224 0.1039999 4.095455
-356.7432 359.9778 0.7153293
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
+123.8 0.085 -21.369
+0 0 0
+3.063916 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-37.02024 0.09199971 4.039455
-356.7432 359.9778 0.7153293
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-36.02824 0.07099971 3.983455
-356.7432 359.9778 1.929404
+112.55 0.085 -22.31
+0 0 0
 1 1 1
--Model res/models/rope/rope.obj
--Material Rope
+-Model res/models/Wires/TurnWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-35.06324 0.03799951 3.928455
-356.7432 359.9778 1.929404
+135.05 0.085 -20.428
+180 0 0
 1 1 1
--Model res/models/rope/rope.obj
--Material Rope
+-Model res/models/Wires/TurnWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-34.683 0.046 3.906455
-356.7432 359.9778 359.6107
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
+135.99 0.085 -3.3692
+270 0 0
+5 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-33.727 0.04 3.852
-356.7432 359.9778 1.029384
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-32.78024 0.03499994 3.798455
-356.7432 359.9778 359.6107
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-31.83524 0.04099941 3.744455
-356.7432 359.9778 359.6107
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-30.87224 0.04699969 3.689455
-356.7432 359.9778 359.6107
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-29.89824 0.05399956 3.634455
-356.7432 359.9778 359.6107
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-28.91824 0.06099968 3.578455
-356.7432 359.9778 359.6107
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-27.97124 0.06699952 3.524455
-356.7432 359.9778 359.6107
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-26.99524 0.07399978 3.468455
-356.7432 359.9778 359.6107
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-26.12324 0.07999957 3.156455
-322.9797 359.7652 359.6887
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-25.37024 0.08499973 2.588455
-322.9797 359.7652 359.6887
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-24.59824 0.08999975 2.006455
-322.9797 359.7652 359.6887
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-23.80324 0.09499964 1.406455
-322.9797 359.7652 359.6887
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-22.93724 0.1009996 1.117155
-0 0 359.61
-0.9999999 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
-+end
-
-+SceneGameObject
--Transform
-21.95224 0.1239997 1.117155
-0 0 358.4835
+136.93 0.085 13.69
+0 0 0
 1 1 1
--Model res/models/rope/rope.obj
--Material Rope
+-Model res/models/Wires/TurnWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-20.97654 0.1743997 1.117155
-0 0 356.088
+155.1 0.085 14.631
+0 0 0
+5.371907 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
++end
+
++SceneGameObject
+-Transform
+158.04 0.085 13.36
+0 0 0
 1 1 1
--Model res/models/rope/rope.obj
--Material Rope
+-Model res/models/Wires/TurnWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-39.90224 0.1249998 3.771455
-13.79489 359.769 0.6773869
-1 0.9999999 1
--Model res/models/rope/rope.obj
--Material Rope
+157.1 0.085 -5.4853
+270 0 0
+5.5955 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-152.2312 0.2103 -24.6603
-268.8 8.537737E-07 336.0748
-0.5 0.5 0.5
--Model res/models/rope/rope.obj
--Material Rope
+165.52 0.085 14.301
+0 0 0
+1.806392 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-152.222 0.0939 -24.1929
-268.8 -2.134434E-07 355.6153
-0.5000001 0.5 0.5000001
--Model res/models/rope/rope.obj
--Material Rope
+156.16 0.085 -24.331
+180 0 0
+1 1 1
+-Model res/models/Wires/TurnWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-152.211 0.0755 -23.7
-268.8 0 0
-0.5 0.5 0.5
--Model res/models/rope/rope.obj
--Material Rope
+153.06 0.085 -25.272
+0 0 0
+0.3472922 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-152.2728 0.0755 -23.2238
-285.7301 0 0
-0.5000001 0.5 0.5000001
--Model res/models/rope/rope.obj
--Material Rope
+147.2 0.085 26.63
+0 0 0
+8 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-152.4791 0.0755 -22.8021
-306.5568 0 0
-0.5 0.5 0.5
--Model res/models/rope/rope.obj
--Material Rope
+168.34 0.085 27.975
+270 0 0
+1 1 1
+-Model res/models/Wires/TurnWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-156.264 0.0755 -19.755
-321.8943 0 0
-9.2635 0.5 0.5
--Model res/models/rope/rope.obj
--Material Rope
+167.4 0.085 45.634
+270 0 0
+5.2 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-160.0561 0.0755 -16.7001
-306.5568 0 0
-0.5 0.5 0.5
--Model res/models/rope/rope.obj
--Material Rope
+166.46 0.085 63.293
+90.00002 0 0
+1 1 1
+-Model res/models/Wires/TurnWire.obj
+-Material Wire
 +end
 
 +SceneGameObject
 -Transform
-164.799 0.0755 -6.67
-295.0546 0 0
-21.74808 0.5 0.5
--Model res/models/rope/rope.obj
--Material Rope
+160.7 0.085 64.234
+0 0 0
+1.233964 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
++end
+
++SceneGameObject
+-Transform
+121.14 0.085 27.571
+270 0 0
+1 1 1
+-Model res/models/Wires/TurnWire.obj
+-Material Wire
++end
+
++SceneGameObject
+-Transform
+120.2 0.085 43.969
+270 0 0
+4.77969 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
++end
+
++SceneGameObject
+-Transform
+116.088 0.085 61.308
+0 0 0
+0.3735 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
++end
+
++SceneGameObject
+-Transform
+112.908 0.085 62.249
+270 0 0
+1 1 1
+-Model res/models/Wires/TurnWire.obj
+-Material Wire
++end
+
++SceneGameObject
+-Transform
+119.26 0.085 60.367
+90.00002 0 0
+1 1 1
+-Model res/models/Wires/TurnWire.obj
+-Material Wire
 +end
 

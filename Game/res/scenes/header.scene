@@ -7,18 +7,7 @@
 -AddSystem CollisionSystem
 -AddSystem SimplePlayerSystem
 
--Blur res/shaders/PostProcessing.glsl
--Skybox res/shaders/Skybox.glsl res/textures/skybox/right.jpg res/textures/skybox/left.jpg res/textures/skybox/top.jpg res/textures/skybox/bottom.jpg res/textures/skybox/front.jpg res/textures/skybox/back.jpg
--StaticDepth res/shaders/Depth.glsl
--AnimatedDepth res/shaders/DepthAnim.glsl
--Particle res/shaders/ParticlesShader.glsl
 
--AddShader StaticPBR res/shaders/PBR.glsl
--AddShader AnimationPBR res/shaders/AnimationPBR.glsl
--AddShader TransparentTechnique res/shaders/Transparent.glsl
--AddShader Water res/shaders/Water.glsl
--AddShader QuestionmarkTechnique res/shaders/Questionmark.glsl
--AddShader UI res/shaders/Font.glsl res/fonts/DroidSans.ttf
 
 -AddMaterial GroundPBR PBR 3 res/models/Environment/Ground/Textures/Ground_Albedo.png res/models/Environment/Ground/Textures/Ground_Normal.png res/models/Environment/Ground/Textures/Ground_Metallic.png 
 -AddMaterial RocksPBR PBR 3 res/models/Environment/Rocks/Textures/Rocks_Albedo.png res/models/Environment/Rocks/Textures/Rocks_Normal.png res/models/Environment/Rocks/Textures/Rocks_Metallic.png 
@@ -53,7 +42,8 @@
 -AddMaterial ConcreteFence PBR 2 res/models/Concrete/Fence/Fencealbedo.png res/models/Concrete/Fence/Fencenormal.png 
 -AddMaterial Chainlink PBR 3 res/models/Chainlink/Chainlinkalbedo.png res/models/Chainlink/Chainlinknormal.png res/models/Chainlink/Chainlinkspecular.png 
 -AddMaterial Barricade PBR 3 res/models/Barricade/Barricadealbedo.png res/models/Barricade/Barricadenormal.png res/models/Barricade/Barricadespecular.png 
--AddMaterial Rope PBR 1 res/models/rope/rope.png 
+-AddMaterial Rope PBR 1 res/models/rope/rope.png
+-AddMaterial Wire PBR 1 res/models/Wires/wire_texture.png 
 
 -AddMaterial WaterMaterial Water 2 res/textures/water/dudv2.png res/textures/water/normal2.png
 -AddMaterial FontMaterial Font 0
