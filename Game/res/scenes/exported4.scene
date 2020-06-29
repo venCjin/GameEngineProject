@@ -56,17 +56,6 @@
 -AddMaterial TransparentMaterial Transparent 0
 
 
-
-+SceneGameObject
--Transform
-160.91 0.89 50.77
-0 0 0
-1 1 1
--Model res/models/primitives/circleplane.obj
--Material WaterMaterial
--Water
-+end
-
 +SceneGameObject
 -Transform
 123.7424 0.06769216 59.84809

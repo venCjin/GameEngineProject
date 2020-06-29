@@ -178,6 +178,7 @@ namespace sixengine {
 		float Distance(glm::vec3* x, glm::vec3* y);
 
 		friend class Scene;
+		friend class Game;
 	};
 
 }

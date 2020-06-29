@@ -136,7 +136,7 @@ namespace sixengine {
 			
 			glm::vec3 transformationVel = glm::vec3(direction * m_StartSpeed);
 
-			m_Particles[FindUnusedParticle()] = ParticleObject(m_Transform->GetWorldPosition(), transformationVel, m_StartSize, m_SizeSpeed, m_CameraAlignment);
+			m_Particles[FindUnusedParticle()] = ParticleObject(m_Transform->GetWorldPosition()+glm::vec3(0.0f, 0.1f, 0.0f), transformationVel, m_StartSize, m_SizeSpeed, m_CameraAlignment);
 		}
 
 

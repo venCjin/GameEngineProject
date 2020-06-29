@@ -204,7 +204,9 @@ namespace sixengine {
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_Scene.m_ShaderManager->Get("AnimationPBR")));
 			m_BatchRenderer->AddTechnique(new TransparentTechnique(m_Scene.m_ShaderManager->Get("Transparent")));
 			m_BatchRenderer->AddTechnique(new QuestionmarkTechnique(m_Scene.m_ShaderManager->Get("Questionmark")));
-			m_BatchRenderer->SetWater(new Water(m_Scene.m_ShaderManager->Get("Water")));
+			Water* water = new Water(m_Scene.m_ShaderManager->Get("Water"));
+			m_BatchRenderer->SetWater(water);
+			m_BatchRenderer->AddTechnique(water);
 
 			Font* font = new Font("res/fonts/DroidSans.ttf");
 			UI* ui = new UI(m_Scene.m_ShaderManager->Get("Font"));
@@ -345,6 +347,16 @@ namespace sixengine {
 		void LoadScene()
 		{
 			GameObject* obj;
+
+			// WATER
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(160.91f, 0.89f, 50.77f);
+			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/circleplane.obj"));
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WaterMaterial"));
+			m_BatchRenderer->m_Water->SetGameObject(obj);
+			m_Scene.m_SceneRoot->AddChild(obj);
+			// WATER
 
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
