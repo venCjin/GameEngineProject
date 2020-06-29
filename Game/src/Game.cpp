@@ -76,8 +76,13 @@ namespace sixengine {
 		GameObject* flying;
 		//GameObject* m_Player;
 		GameObject* m_Billboard;
-		float m_BarFill;
-		float shakeTimer;
+
+		Texture* starParticleTexture;
+		Texture* rippleParticleTexture;
+
+		WinLossSystem* winlossSystem;
+		StaticLoopedSound3DSystem* staticLoopedSound3DSystem;
+
 #ifdef DEBUG
 		std::array<glm::vec3, 10> tr;
 #endif //DEBUG
@@ -122,8 +127,7 @@ namespace sixengine {
 			pistol->GetComponent<Transform>()->Translate(glm::vec3(-80.3f, 139.1f, 1.8f));
 			pistol->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/Gun/pm-40-2.obj"));
 			pistol->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("PistolMaterial"));
-			m_SystemManager.AddSystem<PistolSystem>();
-			
+
 			//int index = obj->GetComponent<Mesh>()->GetModel()->GetBoneInfoIndex("mixamorig_RightHand");
 			pistol->AddComponent<Pistol>(obj, "mixamorig_RightHand");
 			//pistol->GetComponent<Pistol>()->m_OwnerTransform = obj->GetComponent<Transform>().Get();
@@ -187,13 +191,67 @@ namespace sixengine {
 
 		virtual void OnInit() override
 		{
-			Texture* starParticleTexture = new Texture("res/textures/particles/star.png");
-			Texture* rippleParticleTexture = new Texture("res/textures/particles/ripple.png");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/PBR.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/Transparent.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/Water.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/Questionmark.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/Font.glsl");
 
-			m_SystemManager.AddSystem<GateSystem>();
+			m_BatchRenderer->AddTechnique(new StaticPBR(m_Scene.m_ShaderManager->Get("PBR")));
+			m_BatchRenderer->AddTechnique(new AnimationPBR(m_Scene.m_ShaderManager->Get("AnimationPBR")));
+			m_BatchRenderer->AddTechnique(new TransparentTechnique(m_Scene.m_ShaderManager->Get("Transparent")));
+			m_BatchRenderer->AddTechnique(new QuestionmarkTechnique(m_Scene.m_ShaderManager->Get("Questionmark")));
+			m_BatchRenderer->SetWater(new Water(m_Scene.m_ShaderManager->Get("Water")));
 
+			Font* font = new Font("res/fonts/DroidSans.ttf");
+			UI* ui = new UI(m_Scene.m_ShaderManager->Get("Font"));
+			ui->AddFont(font);
+			m_BatchRenderer->AddTechnique(ui);
 
 			m_Scene.LoadScene("res/scenes/exported3.scene");
+
+			m_SystemManager.AddSystem<GateSystem>();
+			m_SystemManager.AddSystem<ProjectileSystem>();
+			m_SystemManager.AddSystem<OrbitalCameraSystem>();
+			m_SystemManager.AddSystem<MixingCameraSystem>();
+			m_SystemManager.AddSystem<QuestionmarkSystem>();
+			m_SystemManager.AddSystem<DynamicBodySystem>();
+			m_SystemManager.AddSystem<ScolopendraSystem>();
+			m_SystemManager.AddSystem<LoopedSoundSystem>();
+			m_SystemManager.AddSystem<DynamicSoundSystem>();
+			m_SystemManager.AddSystem<BackgroundSoundSystem>();
+			m_SystemManager.AddSystem<StateMachineSystem>();
+			m_SystemManager.AddSystem<NavAgentSystem>();
+			winlossSystem = m_SystemManager.AddSystem<WinLossSystem>();
+			staticLoopedSound3DSystem = m_SystemManager.AddSystem<StaticLoopedSound3DSystem>();
+
+			m_Scene.m_ShaderManager->AddShader("res/shaders/Depth.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/DepthAnim.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/Skybox.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/ParticlesShader.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/PostProcessing.glsl");
+
+			m_BatchRenderer->SetBlurShader(m_Scene.m_ShaderManager->Get("PostProcessing"));
+			Skybox * skybox = new Skybox(
+				{
+					"res/textures/skybox/right.jpg",
+					"res/textures/skybox/left.jpg",
+					"res/textures/skybox/top.jpg",
+					"res/textures/skybox/bottom.jpg",
+					"res/textures/skybox/front.jpg",
+					"res/textures/skybox/back.jpg"
+				}
+			);
+			m_BatchRenderer->SetSkybox(new SkyboxRender(m_Scene.m_ShaderManager->Get("Skybox"), skybox));
+			m_BatchRenderer->SetStaticDepth(new DepthRender(m_Scene.m_ShaderManager->Get("Depth")));
+			m_BatchRenderer->SetAnimatedDepth(new DepthRender(m_Scene.m_ShaderManager->Get("DepthAnim")));
+			m_BatchRenderer->SetParticle(new ParticleRender(m_Scene.m_ShaderManager->Get("ParticlesShader")));
+
+
+			starParticleTexture = new Texture("res/textures/particles/star.png");
+			rippleParticleTexture = new Texture("res/textures/particles/ripple.png");
+
 			//ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
 			//INIT_TRACK("ophelia");
 
@@ -225,9 +283,8 @@ namespace sixengine {
 			Application::attack = new Gizmo(vao, m_Scene.m_ShaderManager->AddShader("res/shaders/Gizmo.glsl"), glm::vec3(255, 0, 0));
 			//////SHIT!!!!
 
-			GameObject* obj;
 
-			//Projetlie
+			//PROJECTILE
 			m_Scene.m_ModelManager->AddModel("res/models/Enemies/Bullet/Bullet.obj");
 			MaterialManager::getInstance()->CreateMaterial(
 				m_Scene.m_ShaderManager->Get("PBR"),
@@ -237,8 +294,7 @@ namespace sixengine {
 					0.0f,
 					0.0f),
 				"BulletMaterial");
-			m_SystemManager.AddSystem<ProjectileSystem>();
-			//Projetlie
+			//PROJECTILE
 
 			//BAR
 			Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Questionmark.glsl");
@@ -250,20 +306,56 @@ namespace sixengine {
 				"Bar");
 			m_Scene.m_ModelManager->AddModel("res/models/primitives/billboard.obj");
 			//BAR
-			//Audio
+
+			LoadScene();
+
+		#if SCENE_ENDS_IN_GAME_CPP
+			m_Scene.m_ModelManager->CreateVAO();
+			m_Scene.m_TextureArray->CreateTextureArray();
+		#endif
+
+			m_BatchRenderer->Configure();
+			m_Scene.Render(true);
+			m_BatchRenderer->Render();
+		}
+
+		void ReloadScene()
+		{
+			ResetScene();
+			LoadScene();
+		}
+
+		void ResetScene()
+		{
+			m_BatchRenderer->SetBlur(false);
+
+			m_Scene.m_SceneRoot->~GameObject();
+			m_Scene.m_UIRoot->~GameObject();
+			m_Scene.InitScene();
+
+			m_Scene.LoadScene("res/scenes/exported3.scene");
+		}
+
+		void LoadScene()
+		{
+			GameObject* obj;
+
 			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
 			obj->AddComponent<BackgroundSound>(100.0f, 100.0f, "helicopter", 3.0f, .25f);
+			m_Scene.m_SceneRoot->AddChild(obj);
+
 			//obj->GetComponent<BackgroundSound>()->m_Sound->setPlaybackSpeed(3.0f);
 			//obj->AddComponent<LoopedSound>("wind");
 			//obj->GetComponent<LoopedSound>()->Play();
 			//obj->GetComponent<LoopedSound>()->SetVolume(.5f);
 			//Audio
 			Texture* particleTexture = new Texture("res/textures/particles/star.png");
-			
+
 			// WORKING SCOLOPENDRA
 			m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo.dae");
 
-			GameObject* player = new GameObject(m_EntityManager);
+			GameObject* player = new GameObject(m_EntityManager); 
 			player->AddComponent<Transform>(player);
 			player->GetComponent<Transform>()->SetWorldPosition(-35.0f, -0.1f, 0.0f);
 			player->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
@@ -448,7 +540,7 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			obj->AddComponent<Eggs>();
 			m_Scene.m_SceneRoot->AddChild(obj);
-		
+
 			//UI
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
@@ -467,14 +559,14 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
 			m_Scene.m_UIRoot->AddChild(obj);
 
-			m_SystemManager.AddSystem<WinLossSystem>(obj);
+			winlossSystem->winLoseText = obj;
 
 			//ENEMIES
-			m_SystemManager.AddSystem<StateMachineSystem>();
-			m_SystemManager.AddSystem<NavAgentSystem>();
 
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<EnemiesManager>();
+			obj->AddComponent<Transform>(obj);
+			m_Scene.m_SceneRoot->AddChild(obj);
 
 			/*MakeEnemy(glm::vec3(17.30613f, -0.27f, 1.866652f), glm::vec3(220.029f, 0.0f, 0.0f));
 			MakeEnemy(glm::vec3(-0.9738712, -0.27f, 7.736652f), glm::vec3(229.8f, 0.0f, 0.0f));
@@ -500,27 +592,13 @@ namespace sixengine {
 			MakeEnemy(glm::vec3(113.97, -0.27f, -24.53), glm::vec3(0, 0, 0));
 			//ENEMIES
 
-		#if SCENE_ENDS_IN_GAME_CPP
-			m_Scene.m_ModelManager->CreateVAO();
-			m_Scene.m_TextureArray->CreateTextureArray();
-#endif
-			// HACKS END
-
 			// CAMERAS SETUP
 			flying = Camera::ActiveCamera->m_GameObject; //flying camera domy�lnie stworzona w konstruktorze Scene
 
 			//obj = m_Scene.GetFirstGameObjectWithComponent<SimplePlayer>();
 			obj = player;//m_Scene.GetGameObjectsWithComponent<SimplePlayer>()[0];
 
-			m_SystemManager.AddSystem<OrbitalCameraSystem>();
-			m_SystemManager.AddSystem<MixingCameraSystem>();
-			m_SystemManager.AddSystem<QuestionmarkSystem>();
-			m_SystemManager.AddSystem<DynamicBodySystem>();
-			m_SystemManager.AddSystem<ScolopendraSystem>();
-			m_SystemManager.AddSystem<LoopedSoundSystem>();
-			m_SystemManager.AddSystem<StaticLoopedSound3DSystem>(m_Scene.GetGameObjectsWithComponent<SimplePlayer>()[0]);
-			m_SystemManager.AddSystem<DynamicSoundSystem>();
-			m_SystemManager.AddSystem<BackgroundSoundSystem>();
+			staticLoopedSound3DSystem->m_Player = m_Scene.GetGameObjectsWithComponent<SimplePlayer>()[0];
 
 			orbitalCamA = new GameObject(m_EntityManager);
 			orbitalCamA->AddComponent<Transform>(orbitalCamA);
@@ -555,25 +633,10 @@ namespace sixengine {
 
 			Camera::ActiveCamera = mixingCam->GetComponent<Camera>().Get();
 			// CAMERAS SETUP END
-
-			m_BatchRenderer->Configure();
-
-			m_Scene.Render(true);
-
-			m_BatchRenderer->Render();
 		}
 
 		virtual void OnUpdate(float dt) override
 		{
-			if (shakeTimer > 0)
-				shakeTimer -= dt;
-			else
-			{
-				//m_BatchRenderer->SetBlur(false);
-				//m_BatchRenderer->SetShake(false);
-			}
-
-
 			//AUDIO
 			AudioManager::getInstance()->ClearSoundsArray();
 			//std::vector<irrklang::ISound*> s = AudioManager::getInstance()->sounds;
@@ -644,6 +707,15 @@ namespace sixengine {
 				m_BatchRenderer->SetShake(false);
 			}
 			*/
+
+			if (Input::IsKeyPressed(KeyCode::R))
+			{
+				ReloadScene();
+				Timer::Instance()->SetPaused(false);
+
+				m_Scene.Render(true);
+				m_BatchRenderer->Render();
+			}
 
 			{
 				//PROFILE_SCOPE("ECS")

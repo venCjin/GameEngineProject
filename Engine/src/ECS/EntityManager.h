@@ -264,9 +264,7 @@ bool EntityManager::HasComponent(Entity::ID id) const
     if (family >= m_ComponentPools.size())
         return false;
 
-    PoolAllocator* pool = m_ComponentPools[family];
-
-    if (!pool || !m_EntityComponentMask[id.GetID()][family])
+    if (!m_EntityComponentMask[id.GetID()][family])
         return false;
 
     return true;

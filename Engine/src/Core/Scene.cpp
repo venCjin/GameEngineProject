@@ -59,7 +59,8 @@
 
 namespace sixengine {
 
-	Scene::Scene(unsigned int width, unsigned int height) : m_UIRoot(nullptr), m_SceneRoot(nullptr)
+	Scene::Scene(unsigned int width, unsigned int height) 
+		: m_UIRoot(nullptr), m_SceneRoot(nullptr), m_Width(width), m_Height(height)
 	{
 		m_ModelManager = new ModelManager();
 		m_ShaderManager = new ShaderManager();
@@ -68,6 +69,11 @@ namespace sixengine {
 		BatchRenderer::Initialize(m_ModelManager, m_TextureArray);
 		m_BatchRenderer = BatchRenderer::Instance();
 
+		InitScene();
+	}
+
+	void Scene::InitScene()
+	{
 		m_SceneRoot = new GameObject(*Application::Get().GetEntityManager());
 		m_SceneRoot->AddComponent<Transform>(m_SceneRoot);
 
@@ -77,7 +83,7 @@ namespace sixengine {
 		GameObject* go = new GameObject(*Application::Get().GetEntityManager());
 		go->AddComponent<Transform>(go);
 		go->AddComponent<Camera>(go);
-		go->GetComponent<Camera>()->SetPerspective((float)width / (float)height);
+		go->GetComponent<Camera>()->SetPerspective((float)m_Width / (float)m_Height);
 		go->AddComponent<FlyingCamera>();
 
 		Camera::ActiveCamera = go->GetComponent<Camera>().Get();

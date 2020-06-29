@@ -60,15 +60,18 @@ void EntityManager::Destroy(Entity::ID id)
             pool->Destroy(index);
     }*/
 
-    m_EntityToDestroy.push_back(index);
+    m_EntityComponentMask[index].reset();
+    m_UnusedEntities.push_back(index);
+
+    //m_EntityToDestroy.push_back(index);
 }
 
 void EntityManager::DeferredDestroy()
 {
     for (auto i : m_EntityToDestroy)
     {
-        //m_EntityComponentMask[i].reset();
-        //m_UnusedEntities.push_back(i);
+        m_EntityComponentMask[i].reset();
+        m_UnusedEntities.push_back(i);
     }
 
     m_EntityToDestroy.clear();

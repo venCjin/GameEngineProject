@@ -89,16 +89,13 @@ public:
 		: m_EntityManager(entityManager), m_EventManager(eventManager) {}
 
 	template <typename T>
-	void AddSystem();
-
-	template <typename T, typename ... Args>
-	void AddSystem(Args&& ... args);
+	T* AddSystem();
 
 	void UpdateAll(float dt);
 };
 
 template <typename T>
-void SystemManager::AddSystem()
+T* SystemManager::AddSystem()
 {
 	auto it = std::find_if(m_Systems.begin(), m_Systems.end(),
 		[](BaseSystem* val) {
@@ -108,33 +105,13 @@ void SystemManager::AddSystem()
 	if (it != m_Systems.end())
 	{
 		LOG_CORE_WARN("System already added");
-		return;
+		return nullptr;
 	}
 	else
 	{
 		T* system = new T();
 		m_Systems.push_back(system);
 		system->OnStart(m_EventManager);
-	}
-}
-
-template<typename T, typename ...Args>
-inline void SystemManager::AddSystem(Args&& ...args)
-{
-	auto it = std::find_if(m_Systems.begin(), m_Systems.end(),
-		[](BaseSystem* val) {
-			return (dynamic_cast<T*>(val));
-		});
-
-	if (it != m_Systems.end())
-	{
-		LOG_CORE_WARN("System already added");
-		return;
-	}
-	else
-	{
-		T* system = new T(std::forward<Args>(args) ...);
-		m_Systems.push_back(system);
-		system->OnStart(m_EventManager);
+		return system;
 	}
 }
