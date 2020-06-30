@@ -261,7 +261,7 @@ namespace sixengine {
 			Texture* particleTexture = new Texture("res/textures/particles/star.png");
 			
 			// WORKING SCOLOPENDRA
-			m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo.dae");
+			m_Scene.m_ModelManager->AddModel("res/models/scolopendra/scolo_NEW.dae");
 
 			GameObject* player = new GameObject(m_EntityManager);
 			player->AddComponent<Transform>(player);
@@ -278,14 +278,14 @@ namespace sixengine {
 
 			GameObject* scolopendra = new GameObject(m_EntityManager);
 			scolopendra->AddComponent<Transform>(scolopendra);
-			scolopendra->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolo"));
+			scolopendra->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("scolo_NEW"));
 			scolopendra->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("GreenAnim"));
 			scolopendra->AddComponent<Animation>();
 			scolopendra->AddComponent<ScolopendraComponent>(scolopendra, player);
 			m_Scene.m_SceneRoot->AddChild(scolopendra);
 
-			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_idle.dae", "idle", false, 0.5f);
-			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_attack.dae", "attack", true, 0.0f);
+			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_NEW_idle.dae", "idle", false, 0.5f);
+			scolopendra->GetComponent<Animation>().Get()->LoadAnimation("res/models/scolopendra/scolo_NEW_idle.dae", "attack", true, 0.0f);
 			player->GetComponent<SimplePlayer>().Get()->scolopendraMaterial = scolopendra->GetComponent<Material>().Get();
 			player->GetComponent<SimplePlayer>().Get()->scolopendraAnimation = scolopendra->GetComponent<Animation>().Get();
 			//m_Scene.m_ModelManager->GetModel("scolo")->LoadAnimation("res/models/scolopendra/scolo_anim.dae", "idle");

@@ -26,9 +26,8 @@ namespace sixengine {
 			transformedPos = glm::vec3(transformedPos.x, transformedPos.z, -transformedPos.y);
 
 			m_ScolopendraComponent->m_Bones.begin()->second.m_Bone.SetLocalPosition(transformedPos);
-			//m_ScolopendraComponent->m_Bones[0].m_Bone.SetLocalPosition(transformedPos);
 
-			UpdateModelBones();			
+			UpdateModelBones();
 		}
 
 		void UpdateModelBones()

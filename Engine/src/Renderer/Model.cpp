@@ -2,6 +2,7 @@
 #include "Model.h"
 #include <glad/glad.h> 
 #include "stb_image.h"
+#include <Gameplay/Components/Transform.h>
 
 namespace sixengine {
 
@@ -93,7 +94,7 @@ namespace sixengine {
 		// Initialize the meshes in the scene one by one
 		for (uint i = 0; i < m_Entries.size(); i++) {
 			const aiMesh* mesh = scene->mMeshes[i];
-			InitMesh(i, mesh/*, vertices, indices*/);
+			InitMesh(i, mesh);
 		}
 		
 		LoadGlobalPositions(m_Scene->mRootNode, glm::mat4(1.0f));
@@ -347,11 +348,23 @@ namespace sixengine {
 
 		glm::mat4 globalTransformation = parentTransform * nodeTransformation;
 
+
 		if (m_BoneMapping.find(nodeName) != m_BoneMapping.end()) 
 		{
 			uint boneIndex = m_BoneMapping[nodeName];
 
 			if (m_BoneInfo[boneIndex].FreeBone)
+			{
+				glm::vec3 pos(m_BoneInfo[boneIndex].GlobalTransformation2[3]);
+				globalTransformation = glm::translate(globalTransformation, -pos);
+
+				globalTransformation = parentTransform;// m_BoneInfo[boneIndex].GlobalTransformation * globalTransformation;
+			}
+			
+			transforms[boneIndex] = m_GlobalInverseTransform * globalTransformation * m_BoneInfo[boneIndex].BoneOffset;
+			m_BoneInfo[boneIndex].FinalTransformation = transforms[boneIndex];
+
+		/*	if (m_BoneInfo[boneIndex].FreeBone)
 			{
 				transforms[boneIndex] = m_GlobalInverseTransform * m_BoneInfo[boneIndex].GlobalTransformation * m_BoneInfo[boneIndex].BoneOffset;
 				globalTransformation = m_BoneInfo[boneIndex].GlobalTransformation;
@@ -361,7 +374,7 @@ namespace sixengine {
 			{
 				transforms[boneIndex] = m_GlobalInverseTransform * globalTransformation * m_BoneInfo[boneIndex].BoneOffset;
 				m_BoneInfo[boneIndex].FinalTransformation = transforms[boneIndex];
-			}
+			}*/
 		}
 
 		for (uint i = 0; i < node->mNumChildren; i++) {
@@ -380,6 +393,7 @@ namespace sixengine {
 		{
 			uint boneIndex = m_BoneMapping[nodeName];
 			m_BoneInfo[boneIndex].GlobalTransformation = globalTransformation;
+			m_BoneInfo[boneIndex].GlobalTransformation2 = globalTransformation;
 		}
 
 		for (uint i = 0; i < node->mNumChildren; i++) 
@@ -422,7 +436,7 @@ namespace sixengine {
 
 			for (uint i = 0; i < m_NumBones; i++)
 			{
-				transforms[i] = blendLayer1[i] *blendProgress + blendLayer2[i] * (1.0f - blendProgress);
+				transforms[i] = blendLayer1[i] * blendProgress + blendLayer2[i] * (1.0f - blendProgress);
 				m_BoneInfo[i].FinalTransformation = transforms[i];
 			}
 		}
