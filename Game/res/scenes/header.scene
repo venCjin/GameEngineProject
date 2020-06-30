@@ -7,7 +7,15 @@
 -AddSystem CollisionSystem
 -AddSystem SimplePlayerSystem
 
-
+-AddMaterial WaterMaterial Water 2 res/textures/water/dudv2.png res/textures/water/normal2.png
+-AddMaterial FontMaterial Font 0
+-AddMaterial AgentMaterial AnimationPBR 3 res/models/Enemies/BlackAgent/textures/agent_diffuse.png res/models/Enemies/BlackAgent/textures/agent_normal.png res/models/Enemies/BlackAgent/textures/agent_specular.png
+-AddMaterial PistolMaterial PBR 3 res/models/Enemies/Gun/PM-40_albedo.png res/models/Enemies/Gun/PM-40_normal.png res/models/Enemies/Gun/PM-40_metallic.png 
+-AddMaterial BulletMaterial PBR 2 res/models/Enemies/Bullet/al.png res/models/Enemies/Bullet/no.png
+-AddMaterial Red PBR 1 res/textures/test/Red.jpg
+-AddMaterial Green PBR 1 res/textures/test/Red.jpg
+-AddMaterial GreenAnim AnimationPBR 1 res/textures/test/Red.jpg
+-AddMaterial TransparentMaterial Transparent 0
 
 -AddMaterial GroundPBR PBR 3 res/models/Environment/Ground/Textures/Ground_Albedo.png res/models/Environment/Ground/Textures/Ground_Normal.png res/models/Environment/Ground/Textures/Ground_Metallic.png 
 -AddMaterial RocksPBR PBR 3 res/models/Environment/Rocks/Textures/Rocks_Albedo.png res/models/Environment/Rocks/Textures/Rocks_Normal.png res/models/Environment/Rocks/Textures/Rocks_Metallic.png 
@@ -44,13 +52,3 @@
 -AddMaterial Barricade PBR 3 res/models/Barricade/Barricadealbedo.png res/models/Barricade/Barricadenormal.png res/models/Barricade/Barricadespecular.png 
 -AddMaterial Rope PBR 1 res/models/rope/rope.png
 -AddMaterial Wire PBR 1 res/models/Wires/wire_texture.png 
-
--AddMaterial WaterMaterial Water 2 res/textures/water/dudv2.png res/textures/water/normal2.png
--AddMaterial FontMaterial Font 0
--AddMaterial AgentMaterial AnimationPBR 3 res/models/Enemies/BlackAgent/textures/agent_diffuse.png res/models/Enemies/BlackAgent/textures/agent_normal.png res/models/Enemies/BlackAgent/textures/agent_specular.png
--AddMaterial PistolMaterial PBR 3 res/models/Enemies/Gun/PM-40_albedo.png res/models/Enemies/Gun/PM-40_normal.png res/models/Enemies/Gun/PM-40_metallic.png 
--AddMaterial BulletMaterial PBR 2 res/models/Enemies/Bullet/al.png res/models/Enemies/Bullet/no.png
--AddMaterial Red PBR 1 res/textures/test/Red.jpg
--AddMaterial Green PBR 1 res/textures/test/Red.jpg
--AddMaterial GreenAnim AnimationPBR 1 res/textures/test/Red.jpg
--AddMaterial TransparentMaterial Transparent 0

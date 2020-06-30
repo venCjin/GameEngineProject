@@ -450,7 +450,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalScale(1.0, 6.0f, 12.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<StaticBody>();
-			obj->AddComponent<BoxCollider>(glm::vec3(1, 6, 10), true);
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 6, 12), true);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			obj->AddComponent<Gate>();
 			obj->GetComponent<Gate>()->AddGenerator(gen1);
@@ -529,7 +529,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalScale(1.0, 6.0f, 12.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<StaticBody>();
-			obj->AddComponent<BoxCollider>(glm::vec3(1, 6, 10), true);
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 6, 12), true);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			obj->AddComponent<Gate>();
 			obj->GetComponent<Gate>()->AddGenerator(gen2);
