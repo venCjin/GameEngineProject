@@ -124,8 +124,9 @@ namespace sixengine {
 			
 			GameObject* pistol = new GameObject(m_EntityManager);
 			pistol->AddComponent<Transform>(pistol);
-			pistol->GetComponent<Transform>()->SetParent(new Transform());
-			pistol->GetComponent<Transform>()->Translate(glm::vec3(-80.3f, 139.1f, 1.8f));
+			//pistol->GetComponent<Transform>()->SetParent(new Transform());
+			pistol->GetComponent<Transform>()->SetParent(obj->GetComponent<Transform>().Get());
+			//pistol->GetComponent<Transform>()->Translate(glm::vec3(-80.3f, 139.1f, 1.8f));
 			pistol->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/Gun/pm-40-2.obj"));
 			pistol->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("PistolMaterial"));
 
