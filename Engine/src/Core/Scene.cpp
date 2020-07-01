@@ -448,6 +448,8 @@ namespace sixengine {
 			
 			LOAD(SphereCollider);
 
+			LOAD(UndergroundObject);
+
 			if (s == "+Child")
 			{
 				GameObject* g = ReadGameObject(file, en);

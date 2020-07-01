@@ -50,5 +50,6 @@
 -AddMaterial ConcreteFence PBR 2 res/models/Concrete/Fence/Fencealbedo.png res/models/Concrete/Fence/Fencenormal.png 
 -AddMaterial Chainlink PBR 3 res/models/Chainlink/Chainlinkalbedo.png res/models/Chainlink/Chainlinknormal.png res/models/Chainlink/Chainlinkspecular.png 
 -AddMaterial Barricade PBR 3 res/models/Barricade/Barricadealbedo.png res/models/Barricade/Barricadenormal.png res/models/Barricade/Barricadespecular.png 
--AddMaterial Rope PBR 1 res/models/rope/rope.png
+-AddMaterial Rope PBR 1 res/models/rope/rope.png 
 -AddMaterial Wire PBR 1 res/models/Wires/wire_texture.png 
+-AddMaterial UndergroundMaterial Underground 0 

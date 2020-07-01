@@ -31,6 +31,7 @@
 #include "Gameplay/Components/Generator.h"
 #include "Gameplay/Components/Gate.h"
 #include <Gameplay/Components/Billboard.h>
+#include <Gameplay/Components/UndergroundObject.h>
 #include <Gameplay/Systems/BillboardSystem.h>
 #include <Gameplay/Systems/AnimationSystem.h>
 #include <Gameplay/Systems/ParticleSystem.h>
@@ -42,6 +43,7 @@
 #include <Renderer/Techniques/AnimationPBR.h>
 #include <Renderer/Techniques/UI.h>
 #include <Renderer/Techniques/Transparent.h>
+#include <Renderer/Techniques/Underground.h>
 
 #include <AI/EnemiesManager.h>
 #include <AI/StateMachineSystem.h>
@@ -121,7 +123,7 @@ namespace sixengine {
 			m_Scene.m_SceneRoot->AddChild(obj);
 
 			// pistol
-			
+			/*
 			GameObject* pistol = new GameObject(m_EntityManager);
 			pistol->AddComponent<Transform>(pistol);
 			//pistol->GetComponent<Transform>()->SetParent(new Transform());
@@ -135,6 +137,7 @@ namespace sixengine {
 			//pistol->GetComponent<Pistol>()->m_OwnerTransform = obj->GetComponent<Transform>().Get();
 			//pistol->GetComponent<Pistol>()->m_BoneInfo = obj->GetComponent<Mesh>()->GetModel()->GetBoneInfo(index);
 			m_Scene.m_SceneRoot->AddChild(pistol);
+			*/
 			
 			/*
 			GameObject* p = new GameObject(m_EntityManager);
@@ -197,6 +200,7 @@ namespace sixengine {
 			m_Scene.m_ShaderManager->AddShader("res/shaders/PBR.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/AnimationPBR.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Transparent.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/Underground.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Water.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Questionmark.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Font.glsl");
@@ -204,6 +208,7 @@ namespace sixengine {
 			m_BatchRenderer->AddTechnique(new StaticPBR(m_Scene.m_ShaderManager->Get("PBR")));
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_Scene.m_ShaderManager->Get("AnimationPBR")));
 			m_BatchRenderer->AddTechnique(new TransparentTechnique(m_Scene.m_ShaderManager->Get("Transparent")));
+			m_BatchRenderer->AddTechnique(new UndergroundTechnique(m_Scene.m_ShaderManager->Get("Underground")));
 			m_BatchRenderer->AddTechnique(new QuestionmarkTechnique(m_Scene.m_ShaderManager->Get("Questionmark")));
 			Water* water = new Water(m_Scene.m_ShaderManager->Get("Water"));
 			m_BatchRenderer->SetWater(water);
@@ -214,7 +219,7 @@ namespace sixengine {
 			ui->AddFont(font);
 			m_BatchRenderer->AddTechnique(ui);
 
-			m_Scene.LoadScene("res/scenes/exported5.scene");
+			m_Scene.LoadScene("res/scenes/exported6.scene");
 
 			m_SystemManager.AddSystem<GateSystem>();
 			m_SystemManager.AddSystem<ProjectileSystem>();
@@ -342,7 +347,7 @@ namespace sixengine {
 			m_Scene.m_UIRoot->~GameObject();
 			m_Scene.InitScene();
 
-			m_Scene.LoadScene("res/scenes/exported5.scene");
+			m_Scene.LoadScene("res/scenes/exported6.scene");
 		}
 
 		void LoadScene()
@@ -404,7 +409,6 @@ namespace sixengine {
 			player->GetComponent<SimplePlayer>().Get()->scolopendraAnimation = scolopendra->GetComponent<Animation>().Get();
 
 
-			//Texture* particleTexture = new Texture("res/textures/particles/star.png");
 			//COLLECTABLE
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
@@ -646,6 +650,11 @@ namespace sixengine {
 
 			Camera::ActiveCamera = mixingCam->GetComponent<Camera>().Get();
 			// CAMERAS SETUP END
+
+			for (auto uo : Application::Get().GetEntityManager()->EntitiesWithComponents<UndergroundObject>())
+			{
+				uo.Component<Mesh>()->m_Visible = false;
+			}
 		}
 
 		virtual void OnUpdate(float dt) override

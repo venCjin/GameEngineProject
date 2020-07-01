@@ -19,6 +19,7 @@
 #include <Core/AudioManager.h>
 #include <AI/Enemy.h>
 #include <Gameplay/Components/Generator.h>
+#include <Gameplay/Components/UndergroundObject.h>
 
 namespace sixengine {
 	
@@ -184,6 +185,11 @@ namespace sixengine {
 					{
 						pistol.Component<Mesh>()->m_Visible = true;
 					}
+
+					for (auto uo : Application::Get().GetEntityManager()->EntitiesWithComponents<UndergroundObject>())
+					{
+						uo.Component<Mesh>()->m_Visible = false;
+					}
 				}
 				else
 				{
@@ -204,6 +210,11 @@ namespace sixengine {
 					for (auto pistol : Application::Get().GetEntityManager()->EntitiesWithComponents<Pistol>())
 					{
 						pistol.Component<Mesh>()->m_Visible = false;
+					}
+
+					for (auto uo : Application::Get().GetEntityManager()->EntitiesWithComponents<UndergroundObject>())
+					{
+						uo.Component<Mesh>()->m_Visible = true;
 					}
 				}
 			}
