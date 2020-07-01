@@ -43,7 +43,7 @@ namespace sixengine {
 					m_Model->m_BoneInfo[i].FreeBone = true;
 					if (m_Bones.find(i) == m_Bones.end())
 					{
-						m_Bones[i] = Bone(m_Model->m_BoneInfo[i].GlobalTransformation, m_Model->m_BoneInfo[i].Name);
+						m_Bones[i] = Bone(m_Model->m_BoneInfo[i].InitGlobalTransformation, m_Model->m_BoneInfo[i].Name);
 						if (i > 0)
 							m_Bones[i].Init(&m_Bones[i - 1].m_Bone);
 					}					

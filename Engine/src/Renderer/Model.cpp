@@ -380,6 +380,7 @@ namespace sixengine {
 		{
 			uint boneIndex = m_BoneMapping[nodeName];
 			m_BoneInfo[boneIndex].GlobalTransformation = globalTransformation;
+			m_BoneInfo[boneIndex].InitGlobalTransformation = globalTransformation;
 		}
 
 		for (uint i = 0; i < node->mNumChildren; i++) 
