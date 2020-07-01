@@ -7,7 +7,15 @@
 -AddSystem CollisionSystem
 -AddSystem SimplePlayerSystem
 
-
+-AddMaterial WaterMaterial Water 2 res/textures/water/dudv2.png res/textures/water/normal2.png
+-AddMaterial FontMaterial Font 0
+-AddMaterial AgentMaterial AnimationPBR 3 res/models/Enemies/BlackAgent/textures/agent_diffuse.png res/models/Enemies/BlackAgent/textures/agent_normal.png res/models/Enemies/BlackAgent/textures/agent_specular.png
+-AddMaterial PistolMaterial PBR 3 res/models/Enemies/Gun/PM-40_albedo.png res/models/Enemies/Gun/PM-40_normal.png res/models/Enemies/Gun/PM-40_metallic.png 
+-AddMaterial BulletMaterial PBR 2 res/models/Enemies/Bullet/al.png res/models/Enemies/Bullet/no.png
+-AddMaterial Red PBR 1 res/textures/test/Red.jpg
+-AddMaterial Green PBR 1 res/textures/test/Red.jpg
+-AddMaterial GreenAnim AnimationPBR 1 res/textures/test/Red.jpg
+-AddMaterial TransparentMaterial Transparent 0
 
 -AddMaterial GroundPBR PBR 3 res/models/Environment/Ground/Textures/Ground_Albedo.png res/models/Environment/Ground/Textures/Ground_Normal.png res/models/Environment/Ground/Textures/Ground_Metallic.png 
 -AddMaterial RocksPBR PBR 3 res/models/Environment/Rocks/Textures/Rocks_Albedo.png res/models/Environment/Rocks/Textures/Rocks_Normal.png res/models/Environment/Rocks/Textures/Rocks_Metallic.png 
@@ -43,17 +51,6 @@
 -AddMaterial Chainlink PBR 3 res/models/Chainlink/Chainlinkalbedo.png res/models/Chainlink/Chainlinknormal.png res/models/Chainlink/Chainlinkspecular.png 
 -AddMaterial Barricade PBR 3 res/models/Barricade/Barricadealbedo.png res/models/Barricade/Barricadenormal.png res/models/Barricade/Barricadespecular.png 
 -AddMaterial Wire PBR 1 res/models/Wires/wire_texture.png 
-
--AddMaterial WaterMaterial Water 2 res/textures/water/dudv2.png res/textures/water/normal2.png
--AddMaterial FontMaterial Font 0
--AddMaterial AgentMaterial AnimationPBR 3 res/models/Enemies/BlackAgent/textures/agent_diffuse.png res/models/Enemies/BlackAgent/textures/agent_normal.png res/models/Enemies/BlackAgent/textures/agent_specular.png
--AddMaterial PistolMaterial PBR 3 res/models/Enemies/Gun/PM-40_albedo.png res/models/Enemies/Gun/PM-40_normal.png res/models/Enemies/Gun/PM-40_metallic.png 
--AddMaterial BulletMaterial PBR 2 res/models/Enemies/Bullet/al.png res/models/Enemies/Bullet/no.png
--AddMaterial Red PBR 1 res/textures/test/Red.jpg
--AddMaterial Green PBR 1 res/textures/test/Red.jpg
--AddMaterial GreenAnim AnimationPBR 1 res/textures/test/Red.jpg
--AddMaterial TransparentMaterial Transparent 0
-
 
 +SceneGameObject
 -Transform
@@ -101,10 +98,10 @@
 -Transform
 21.07435 0.54 -15.65
 270 0 0
-3 3 3
+2 2 2
 -Model res/models/Props/AmmoBox/AmmoBox.obj
 -Material AmmoBoxPBR
--BoxCollider 0.7220423 1.048454 1.701348 0
+-BoxCollider 0.4813615 0.6989691 1.134232 0
 -Gizmo 0 255 0 Cube 0.2406807 0.3494846 0.567116
 +end
 
@@ -154,7 +151,7 @@
 
 +SceneGameObject
 -Transform
-50.74 0.89 5.36
+50.58 0.89 6.2
 259.2 0 0
 0.9999999 2.307692 0.9999999
 -Model res/models/Props/Barrier/Barrier.obj
@@ -165,7 +162,7 @@
 
 +SceneGameObject
 -Transform
-51.45 0.89 1.68
+51.29 0.89 2.52
 259.2 0 0
 0.9999999 2.307692 0.9999999
 -Model res/models/Props/Barrier/Barrier.obj
@@ -231,7 +228,7 @@
 
 +SceneGameObject
 -Transform
-4.20573 0.6 20.33
+4.21 0.6 20.33
 0 0 0
 3 6 2
 -Model res/models/Props/Barrier/Barrier.obj
@@ -242,7 +239,7 @@
 
 +SceneGameObject
 -Transform
-15.18 0.6 20.33
+14.9 0.6 20.33
 0 0 0
 3 6 2
 -Model res/models/Props/Barrier/Barrier.obj
@@ -253,7 +250,7 @@
 
 +SceneGameObject
 -Transform
-26.09 0.6 20.33
+25.52 0.6 20.33
 0 0 0
 3 6 2
 -Model res/models/Props/Barrier/Barrier.obj
@@ -264,23 +261,23 @@
 
 +SceneGameObject
 -Transform
-37.19 0.6 20.33
+35.7 0.6 20.33
 0 0 0
-3 6 2
+2.81178 6 2
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 10.70609 4.975171 1.266888 0
+-BoxCollider 10.03439 4.975171 1.266888 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334439
 +end
 
 +SceneGameObject
 -Transform
-41.09 0.6 14.04
-284.5935 0 0
-3 6 2
+40.21 0.6 14.8
+274.0026 0 0
+3.0699 6 2
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 10.70609 4.975171 1.266888 0
+-BoxCollider 10.95554 4.975171 1.266888 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334439
 +end
 
@@ -297,7 +294,7 @@
 
 +SceneGameObject
 -Transform
-15.18 0.6 -17.3
+14.84 0.6 -17.3
 0 0 0
 3 6 2
 -Model res/models/Props/Barrier/Barrier.obj
@@ -308,7 +305,7 @@
 
 +SceneGameObject
 -Transform
-26.09 0.6 -17.3
+25.48 0.6 -17.3
 0 0 0
 3 6 2
 -Model res/models/Props/Barrier/Barrier.obj
@@ -319,13 +316,13 @@
 
 +SceneGameObject
 -Transform
-34.98 0.5999769 -14.93
-335.3188 0 0
-4.2027 6 2
+35.78 0.5999769 -14.71
+332.7729 0 0
+3.187706 6 2
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 14.99816 4.975171 1.266888 0
--Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334439
+-BoxCollider 11.37596 4.975171 1.266888 0
+-Gizmo 0 255 0 Cube 3.568697 0.8291951 0.6334439
 +end
 
 +SceneGameObject
@@ -341,7 +338,7 @@
 
 +SceneGameObject
 -Transform
-40.51 0.5999769 -9.19
+40.51 0.5999769 -8.67
 270 0 0
 2.008032 6 2
 -Model res/models/Props/Barrier/Barrier.obj
@@ -352,7 +349,7 @@
 
 +SceneGameObject
 -Transform
-39.84 0.5999769 6.16
+39.84 0.5999769 6.3
 270 0 0
 1.721477 6 2
 -Model res/models/Props/Barrier/Barrier.obj
@@ -363,8 +360,8 @@
 
 +SceneGameObject
 -Transform
-55.68 0.6 9.63
-349.6 0 0
+55.85 0.6 9.61
+353.1498 0 0
 3 6 2
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
@@ -385,19 +382,19 @@
 
 +SceneGameObject
 -Transform
-75.23 0.6 17.86
+75.55 0.6 18.22
 326.27 0 0
-3 6 2
+3.5601 6 2
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 10.70609 4.975171 1.266888 0
+-BoxCollider 12.70492 4.975171 1.266888 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334439
 +end
 
 +SceneGameObject
 -Transform
-85.05 0.5999769 24.42
-326.27 0 0
+85.14 0.5999769 23.45
+336.7579 0 0
 3.2202 6 2
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
@@ -407,18 +404,18 @@
 
 +SceneGameObject
 -Transform
-46.02 0.6 -10.1
+45.98 0.6 -10.27
 340.3 0 0
-3 6 2
+3.1926 6 2
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 10.70609 4.975171 1.266888 0
+-BoxCollider 11.39342 4.975171 1.266888 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334439
 +end
 
 +SceneGameObject
 -Transform
-56.27 0.6 -6.41
+56.25 0.6 -6.42
 339 0 0
 3 6 2
 -Model res/models/Props/Barrier/Barrier.obj
@@ -429,30 +426,30 @@
 
 +SceneGameObject
 -Transform
-66.44 0.6 -2.51
+66.41 0.6 -2.52
 339 0 0
-3 6 2
+3.1257 6 2
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 10.70609 4.975171 1.266888 0
+-BoxCollider 11.15467 4.975171 1.266888 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334439
 +end
 
 +SceneGameObject
 -Transform
-76.24 0.6 2.35
-326.5 0 0
-3 6 2
+76.18 0.6 2.45
+327.0382 0 0
+3.1482 6 2
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 10.70609 4.975171 1.266888 0
+-BoxCollider 11.23497 4.975171 1.266888 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334439
 +end
 
 +SceneGameObject
 -Transform
-85.14 0.5999769 9.42
-318 0 0
+85.08 0.5999769 9.23
+318.3561 0 0
 3.2178 6 2
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
@@ -462,12 +459,12 @@
 
 +SceneGameObject
 -Transform
-89.86 0.7753845 6.74
+89.9 0.7753845 6.08
 266.7 0 0
-4.314035 6 3
+4.104804 6 3
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 15.39548 4.975171 1.900332 0
+-BoxCollider 14.6488 4.975171 1.900332 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334438
 +end
 
@@ -484,12 +481,12 @@
 
 +SceneGameObject
 -Transform
-91.07 0.67 -21.8
+90.89 0.67 -19.72
 265.2 0 0
-4 6 3
+2.63918 6 3
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 14.27479 4.975171 1.900332 0
+-BoxCollider 9.418432 4.975171 1.900332 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334438
 +end
 
@@ -506,18 +503,18 @@
 
 +SceneGameObject
 -Transform
-90.2 0.88 47
+90.22 0.9 46.72
 270 0 0
-4 6 3
+4.194 6 3
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 14.27479 4.975171 1.900332 0
+-BoxCollider 14.96711 4.975171 1.900332 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334438
 +end
 
 +SceneGameObject
 -Transform
-90.39 0.88 58.92
+90.44 0.88 60.42
 271.9749 0 0
 4 6 3
 -Model res/models/Props/Barrier/Barrier.obj
@@ -528,7 +525,7 @@
 
 +SceneGameObject
 -Transform
-126.53 0.88 68.2
+126.67 0.88 68.2
 0 0 0
 4 6 3
 -Model res/models/Props/Barrier/Barrier.obj
@@ -561,29 +558,29 @@
 
 +SceneGameObject
 -Transform
-170.6 0.88 68.2
+166.61 0.88 68.2
 0 0 0
-4 6 3
+2.252531 6 3
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 14.27479 4.975171 1.900332 0
+-BoxCollider 8.038599 4.975171 1.900332 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334439
 +end
 
 +SceneGameObject
 -Transform
-170.5 0.88 62.6
+170.5 0.88 62.07
 270 0 0
-4 6 3
+3.61044 6 3
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 14.27479 4.975171 1.900332 0
+-BoxCollider 12.88456 4.975171 1.900332 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334438
 +end
 
 +SceneGameObject
 -Transform
-170.5 0.88 47.667
+170.5 0.88 47.78
 270 0 0
 4.621601 6 3
 -Model res/models/Props/Barrier/Barrier.obj
@@ -605,12 +602,12 @@
 
 +SceneGameObject
 -Transform
-170.5 0.88 7.5
+170.5 0.88 7.48
 270 0 0
-4 6 3
+4.2464 6 3
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 14.27479 4.975171 1.900332 0
+-BoxCollider 15.15411 4.975171 1.900332 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334438
 +end
 
@@ -627,23 +624,23 @@
 
 +SceneGameObject
 -Transform
-170.5 0.88 -21.6
+170.5 0.88 -20.04
 270 0 0
-4 6 3
+3.304899 6 3
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 14.27479 4.975171 1.900332 0
+-BoxCollider 11.79418 4.975171 1.900332 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334438
 +end
 
 +SceneGameObject
 -Transform
-168.7 0.88 -25.9
+166.54 0.88 -25.9
 0 0 0
-3.34616 6 3
+2.424995 6 3
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 11.94143 4.975171 1.900332 0
+-BoxCollider 8.654073 4.975171 1.900332 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334439
 +end
 
@@ -693,7 +690,7 @@
 
 +SceneGameObject
 -Transform
-98.76 0.8099999 -24.99
+98.33 0.8099999 -25.04
 5.659997 0 0
 4 6 3
 -Model res/models/Props/Barrier/Barrier.obj
@@ -704,7 +701,7 @@
 
 +SceneGameObject
 -Transform
-111.45 0.88 67.99
+111.67 0.88 67.84
 357.4462 0 0
 4.61 6.001 3
 -Model res/models/Props/Barrier/Barrier.obj
@@ -715,18 +712,18 @@
 
 +SceneGameObject
 -Transform
-96.76602 0.88 67.26051
+96.97 0.88 67.36
 359.1468 0 0
-4 6 3
+3.6576 6 3
 -Model res/models/Props/Barrier/Barrier.obj
 -Material BarrierPBR
--BoxCollider 14.27479 4.975171 1.900332 0
+-BoxCollider 13.05286 4.975171 1.900332 0
 -Gizmo 0 255 0 Cube 3.568696 0.8291951 0.6334438
 +end
 
 +SceneGameObject
 -Transform
--0.9 0.5722846 -12.476
+-0.9 0.5722846 -10.69
 270 0 0
 3.767401 6 2
 -Model res/models/Props/Barrier/Barrier.obj
@@ -737,7 +734,7 @@
 
 +SceneGameObject
 -Transform
--0.9 0.5722846 12.504
+-0.9 0.5722846 13.46
 270 0 0
 3.852301 6 2
 -Model res/models/Props/Barrier/Barrier.obj
@@ -968,7 +965,7 @@
 
 +SceneGameObject
 -Transform
-91.24 0.5192308 15.62
+90.59 0.5192308 13.86
 274.5 0 0
 0.9999999 1 0.9999999
 -Model res/models/Props/Tires/TireWall.obj
@@ -979,7 +976,7 @@
 
 +SceneGameObject
 -Transform
-91.223 0.5192308 18.74
+90.573 0.5192308 16.98
 270 0 0
 1 1 1
 -Model res/models/Props/Tires/TireWall.obj
@@ -990,7 +987,7 @@
 
 +SceneGameObject
 -Transform
-91.302 0.83 17.16
+90.652 0.83 15.4
 0 0 0
 1 1 1
 -Model res/models/Props/Tires/TireSingle.obj
@@ -1001,7 +998,7 @@
 
 +SceneGameObject
 -Transform
-91.19 1.551 17.365
+90.62 1.551 14.54
 270 0 0
 1 1 1
 -Model res/models/Props/Tires/TireWall.obj
@@ -1012,7 +1009,7 @@
 
 +SceneGameObject
 -Transform
-91.19 1.551 23.66
+90.61 1.551 20.6
 270 0 0
 1 1 1
 -Model res/models/Props/Tires/TireWall.obj
@@ -1023,7 +1020,7 @@
 
 +SceneGameObject
 -Transform
-91.302 0.79 23.375
+90.652 0.79 21.615
 0 0 0
 1 1 1
 -Model res/models/Props/Tires/TireSingle.obj
@@ -1034,7 +1031,7 @@
 
 +SceneGameObject
 -Transform
-90.864 0.555 25.3
+90.214 0.555 23.54
 254.4 0 180
 1 1 1
 -Model res/models/Props/Tires/TireWall.obj
@@ -1045,7 +1042,7 @@
 
 +SceneGameObject
 -Transform
-91.223 0.5192308 21.765
+90.573 0.5192308 20.005
 270 0 0
 1 1 1
 -Model res/models/Props/Tires/TireWall.obj
@@ -1056,7 +1053,7 @@
 
 +SceneGameObject
 -Transform
-91.302 0.793 20.285
+90.652 0.793 18.525
 0 0 0
 1 1 1
 -Model res/models/Props/Tires/TireSingle.obj
@@ -1067,7 +1064,7 @@
 
 +SceneGameObject
 -Transform
-91.19 1.551 20.57
+90.62 1.551 17.58
 270 0 0
 1 1 1
 -Model res/models/Props/Tires/TireWall.obj
@@ -1089,7 +1086,7 @@
 
 +SceneGameObject
 -Transform
-240.063 0.163847 34.689
+236.35 1.9 34.689
 0 0 0
 3.305432 2 2.636541
 -BoxCollider 10.48698 4.493848 0.9428279 0
@@ -1122,18 +1119,7 @@
 
 +SceneGameObject
 -Transform
-171.524 0.77 14.82
-0 0 0
-1 1.538462 1
--Model res/models/Concrete/Fence/FenceBase.obj
--Material ConcreteFence
--BoxCollider 1.209409 1.446362 1.213408 0
--Gizmo 0 255 0 Cube 1.209409 0.9401356 1.213408
-+end
-
-+SceneGameObject
--Transform
-233.117 0.7600002 22.619
+232.18 0.7600002 22.619
 0 0 0
 1 1 1
 -BoxCollider 1.05724 1.023347 1.055383 0
@@ -1144,7 +1130,7 @@
 
 +SceneGameObject
 -Transform
-234.203 0.7600002 22.619
+233.266 0.7600002 22.619
 0 0 0
 1 1 1
 -BoxCollider 1.05724 1.023347 1.055383 0
@@ -1155,7 +1141,7 @@
 
 +SceneGameObject
 -Transform
-235.307 0.7600002 22.619
+234.37 0.7600002 22.619
 0 0 0
 1 1 1
 -BoxCollider 1.05724 1.023347 1.055383 0
@@ -1166,7 +1152,7 @@
 
 +SceneGameObject
 -Transform
-236.427 0.7600002 22.619
+235.49 0.7600002 22.619
 0 0 0
 1 1 1
 -BoxCollider 1.05724 1.023347 1.055383 0
@@ -1177,7 +1163,7 @@
 
 +SceneGameObject
 -Transform
-247.973 0.1638451 34.689
+244.26 1.899998 34.689
 0 0 0
 2.636541 2 2.636541
 -BoxCollider 8.364825 4.493848 0.9428279 0
@@ -1188,21 +1174,10 @@
 
 +SceneGameObject
 -Transform
-256.153 0.1638451 34.689
+252.44 1.899998 34.689
 0 0 0
 2.636541 2 2.636541
 -BoxCollider 8.364825 4.493848 0.9428279 0
--Gizmo 0 255 0 Cube 3.172651 2.246924 0.3576003
--Model res/models/Concrete/Wall/Wall.obj
--Material Wall
-+end
-
-+SceneGameObject
--Transform
-240.103 0.1030769 21.719
-0 0 0
-2.978569 2 2.636541
--BoxCollider 9.449961 4.493848 0.9428279 0
 -Gizmo 0 255 0 Cube 3.172651 2.246924 0.3576003
 -Model res/models/Concrete/Wall/Wall.obj
 -Material Wall
@@ -1221,18 +1196,7 @@
 
 +SceneGameObject
 -Transform
-247.993 0.1638451 21.719
-0 0 0
-2.636541 2 2.636541
--BoxCollider 8.364825 4.493848 0.9428279 0
--Gizmo 0 255 0 Cube 3.172651 2.246924 0.3576003
--Model res/models/Concrete/Wall/Wall.obj
--Material Wall
-+end
-
-+SceneGameObject
--Transform
-256.223 0.1638451 21.719
+244.28 1.899998 21.719
 0 0 0
 2.636541 2 2.636541
 -BoxCollider 8.364825 4.493848 0.9428279 0
@@ -1250,17 +1214,6 @@
 -BoxCollider 2.616779 3.757837 0.556294 0
 -Gizmo 0 255 0 Cube 2.616779 2.442594 0.556294
 -Material Chainlink
-+end
-
-+SceneGameObject
--Transform
-262.441 2.148462 36.333
-0 0 0
-1 1.538462 1
--BoxCollider 2.641084 3.79274 0.5614609 0
--Gizmo 0 255 0 Cube 2.641084 2.465281 0.5614609
--Material Chainlink
--Model res/models/Chainlink/chainlink_fence.obj
 +end
 
 +SceneGameObject
@@ -1364,17 +1317,6 @@
 
 +SceneGameObject
 -Transform
-257.403 2.148462 20.709
-42.65565 0 0
-1 1.538462 1
--BoxCollider 2.641084 3.79274 0.5614609 0
--Gizmo 0 255 0 Cube 2.641084 2.465281 0.5614609
--Material Chainlink
--Model res/models/Chainlink/chainlink_fence.obj
-+end
-
-+SceneGameObject
--Transform
 262.287 2.148462 19.803
 0 0 0
 1 1.538462 1
@@ -1386,17 +1328,6 @@
 
 +SceneGameObject
 -Transform
-270.603 2.194614 31.889
-80.96253 0 0
-0.9999999 1.538462 0.9999999
--Model res/models/Chainlink/chainlink_fence2.obj
--BoxCollider 2.616779 3.757837 0.556294 0
--Gizmo 0 255 0 Cube 2.616779 2.442594 0.5562941
--Material Chainlink
-+end
-
-+SceneGameObject
--Transform
 269.008 2.194614 22.433
 302.0291 0 0
 1 1.538462 1
@@ -1404,17 +1335,6 @@
 -BoxCollider 2.616779 3.757837 0.556294 0
 -Gizmo 0 255 0 Cube 2.616779 2.442594 0.556294
 -Material Chainlink
-+end
-
-+SceneGameObject
--Transform
-267.049 2.148462 21.27
-0 0 0
-1 1.538462 1
--BoxCollider 2.641084 3.79274 0.5614609 0
--Gizmo 0 255 0 Cube 2.641084 2.465281 0.5614609
--Material Chainlink
--Model res/models/Chainlink/chainlink_fence.obj
 +end
 
 +SceneGameObject
@@ -1441,13 +1361,13 @@
 
 +SceneGameObject
 -Transform
-265.874 0.7880001 36.34
+262.441 2.148462 36.333
 0 0 0
-1 1 1
--Model res/models/Props/WoodenCrate/WoodenCrate.obj
--Material WoodenCratePBR
--BoxCollider 1 1 1 0
--Gizmo 0 255 0 Cube 1 1 1
+1 1.538462 1
+-BoxCollider 2.641084 3.79274 0.5614609 0
+-Gizmo 0 255 0 Cube 2.641084 2.465281 0.5614609
+-Material Chainlink
+-Model res/models/Chainlink/chainlink_fence.obj
 +end
 
 +SceneGameObject
@@ -1479,6 +1399,17 @@
 1 1.538462 1
 -Model res/models/Environment/Vegetation/BigBush.obj
 -Material BigBushPBR
++end
+
++SceneGameObject
+-Transform
+257.403 2.148462 20.709
+42.65565 0 0
+1 1.538462 1
+-BoxCollider 2.641084 3.79274 0.5614609 0
+-Gizmo 0 255 0 Cube 2.641084 2.465281 0.5614609
+-Material Chainlink
+-Model res/models/Chainlink/chainlink_fence.obj
 +end
 
 +SceneGameObject
@@ -1524,6 +1455,17 @@
 1 1.538462 1
 -Model res/models/Environment/Vegetation/BigBush.obj
 -Material BigBushPBR
++end
+
++SceneGameObject
+-Transform
+236.39 1.83923 21.719
+0 0 0
+2.978569 2 2.636541
+-BoxCollider 9.449962 4.493848 0.9428279 0
+-Gizmo 0 255 0 Cube 3.172651 2.246924 0.3576003
+-Model res/models/Concrete/Wall/Wall.obj
+-Material Wall
 +end
 
 +SceneGameObject
@@ -1605,6 +1547,17 @@
 1 1.538462 1
 -Model res/models/Environment/Vegetation/BigBush.obj
 -Material BigBushPBR
++end
+
++SceneGameObject
+-Transform
+252.51 1.899998 21.719
+0 0 0
+2.636541 2 2.636541
+-BoxCollider 8.364825 4.493848 0.9428279 0
+-Gizmo 0 255 0 Cube 3.172651 2.246924 0.3576003
+-Model res/models/Concrete/Wall/Wall.obj
+-Material Wall
 +end
 
 +SceneGameObject
@@ -1753,6 +1706,17 @@
 
 +SceneGameObject
 -Transform
+267.049 2.148462 21.27
+0 0 0
+1 1.538462 1
+-BoxCollider 2.641084 3.79274 0.5614609 0
+-Gizmo 0 255 0 Cube 2.641084 2.465281 0.5614609
+-Material Chainlink
+-Model res/models/Chainlink/chainlink_fence.obj
++end
+
++SceneGameObject
+-Transform
 277.273 0.9946156 30.929
 0 0 0
 1 1.538462 1
@@ -1767,6 +1731,17 @@
 1 1.538462 1
 -Model res/models/Environment/Vegetation/BigBush.obj
 -Material BigBushPBR
++end
+
++SceneGameObject
+-Transform
+265.874 0.7880001 36.34
+0 0 0
+1 1 1
+-Model res/models/Props/WoodenCrate/WoodenCrate.obj
+-Material WoodenCratePBR
+-BoxCollider 1 1 1 0
+-Gizmo 0 255 0 Cube 1 1 1
 +end
 
 +SceneGameObject
@@ -1866,6 +1841,17 @@
 1 1.538462 1
 -Model res/models/Environment/Vegetation/BigBush.obj
 -Material BigBushPBR
++end
+
++SceneGameObject
+-Transform
+270.603 2.194614 31.889
+80.96253 0 0
+0.9999999 1.538462 0.9999999
+-Model res/models/Chainlink/chainlink_fence2.obj
+-BoxCollider 2.616779 3.757837 0.556294 0
+-Gizmo 0 255 0 Cube 2.616779 2.442594 0.5562941
+-Material Chainlink
 +end
 
 +SceneGameObject
@@ -2059,17 +2045,6 @@
 
 +SceneGameObject
 -Transform
-273.399 0.5838451 28.344
-44.86998 1.707547E-06 199.97
-4.526179 6.284375 4.3414
--Model res/models/Props/Grenade/Grenade.obj
--Material GrenadePBR
--BoxCollider 0.3804294 0.8986105 0.3689477 0
--Gizmo 0 255 0 Cube 0.08405088 0.1429912 0.08498358
-+end
-
-+SceneGameObject
--Transform
 264 0.8 35.56
 0 0 0
 1 1 1
@@ -2081,16 +2056,7 @@
 
 +SceneGameObject
 -Transform
-273.582 0.3684616 28.038
-44.86998 1.707547E-06 199.97
-4.526179 6.284375 4.3414
--Model res/models/Props/Grenade/Grenade.obj
--Material GrenadePBR
-+end
-
-+SceneGameObject
--Transform
-273.713 1.748461 24.869
+272.77 1.748461 22.04
 0 0 0
 1 1.538462 1
 -Model res/models/Environment/Vegetation/PalmTree2.obj
@@ -2101,7 +2067,7 @@
 
 +SceneGameObject
 -Transform
-273.053 4.100388 31.849
+273.19 4.100388 33.97
 0 0 0
 1 1.538462 1
 -Model res/models/Environment/Vegetation/PalmTree.obj
@@ -2156,6 +2122,17 @@
 
 +SceneGameObject
 -Transform
+273.399 0.5838451 28.344
+44.86998 1.707547E-06 199.97
+4.526179 6.284375 4.3414
+-Model res/models/Props/Grenade/Grenade.obj
+-Material GrenadePBR
+-BoxCollider 0.3804294 0.8986105 0.3689477 0
+-Gizmo 0 255 0 Cube 0.08405088 0.1429912 0.08498358
++end
+
++SceneGameObject
+-Transform
 263.916 0.9792309 23.218
 0 0 0
 1 1.538462 1
@@ -2167,13 +2144,22 @@
 
 +SceneGameObject
 -Transform
-170.73 0.7769229 26.23
+170.12 0.7769229 26.78
 0 0 0
 1 1.538462 1
 -Model res/models/Concrete/Fence/FenceBase.obj
 -Material ConcreteFence
 -BoxCollider 1.209409 1.446362 1.213408 0
 -Gizmo 0 255 0 Cube 1.209409 0.9401356 1.213408
++end
+
++SceneGameObject
+-Transform
+273.582 0.3684616 28.038
+44.86998 1.707547E-06 199.97
+4.526179 6.284375 4.3414
+-Model res/models/Props/Grenade/Grenade.obj
+-Material GrenadePBR
 +end
 
 +SceneGameObject
@@ -2222,29 +2208,18 @@
 
 +SceneGameObject
 -Transform
-170.73 0.7769229 27.08
-0 0 0
-1 1.538462 1
--Model res/models/Concrete/Fence/FenceBase.obj
--Material ConcreteFence
--BoxCollider 1.209409 1.446362 1.213408 0
--Gizmo 0 255 0 Cube 1.209409 0.9401356 1.213408
+265.57 1.784 36.311
+51.01896 8.708546 357.2357
+1 1 1
+-Model res/models/Props/WoodenCrate/WoodenCrate.obj
+-Material WoodenCrate2PBR
+-BoxCollider 1 1 1 0
+-Gizmo 0 255 0 Cube 1 1 1
 +end
 
 +SceneGameObject
 -Transform
-171.76 0.7769229 14.03
-0 0 0
-1 1.538462 1
--Model res/models/Concrete/Fence/FenceBase.obj
--Material ConcreteFence
--BoxCollider 1.209409 1.446362 1.213408 0
--Gizmo 0 255 0 Cube 1.209409 0.9401356 1.213408
-+end
-
-+SceneGameObject
--Transform
-171.76 0.77 14.9
+170.15 0.77 14.31
 0 0 0
 1 1.538462 1
 -Model res/models/Concrete/Fence/FenceBase.obj
@@ -2266,28 +2241,6 @@
 
 +SceneGameObject
 -Transform
-265.57 1.784 36.311
-51.01896 8.708546 357.2357
-1 1 1
--Model res/models/Props/WoodenCrate/WoodenCrate.obj
--Material WoodenCrate2PBR
--BoxCollider 1 1 1 0
--Gizmo 0 255 0 Cube 1 1 1
-+end
-
-+SceneGameObject
--Transform
-264.593 1.59 35.959
-69.64756 80.45274 88.07957
-1 1 1
--Model res/models/Props/Barrel/BarrelDamaged.obj
--Material BlueBarrelPBR
--BoxCollider 0.8651017 1.181178 0.7818137 0
--Gizmo 0 255 0 Cube 0.8651017 1.181178 0.7818136
-+end
-
-+SceneGameObject
--Transform
 19.539 0.085 3.0988
 0 0 0
 1 1 1
@@ -2302,6 +2255,17 @@
 3.063916 1 1
 -Model res/models/Wires/StraightWire.obj
 -Material Wire
++end
+
++SceneGameObject
+-Transform
+264.593 1.59 35.959
+69.64756 80.45274 88.07957
+1 1 1
+-Model res/models/Props/Barrel/BarrelDamaged.obj
+-Material BlueBarrelPBR
+-BoxCollider 0.8651017 1.181178 0.7818137 0
+-Gizmo 0 255 0 Cube 0.8651017 1.181178 0.7818136
 +end
 
 +SceneGameObject
@@ -2333,9 +2297,18 @@
 
 +SceneGameObject
 -Transform
-135.99 0.085 -3.3692
-270 0 0
-5 1 1
+165.52 0.085 14.301
+0 0 0
+1.806392 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
++end
+
++SceneGameObject
+-Transform
+154.68 0.085 14.631
+0 0 0
+5.256065 1 1
 -Model res/models/Wires/StraightWire.obj
 -Material Wire
 +end
@@ -2346,15 +2319,6 @@
 0 0 0
 1 1 1
 -Model res/models/Wires/TurnWire.obj
--Material Wire
-+end
-
-+SceneGameObject
--Transform
-155.1 0.085 14.631
-0 0 0
-5.371907 1 1
--Model res/models/Wires/StraightWire.obj
 -Material Wire
 +end
 
@@ -2378,9 +2342,18 @@
 
 +SceneGameObject
 -Transform
-165.52 0.085 14.301
+146.6 0.085 26.63
 0 0 0
-1.806392 1 1
+7.80008 1 1
+-Model res/models/Wires/StraightWire.obj
+-Material Wire
++end
+
++SceneGameObject
+-Transform
+135.99 0.085 -3.3692
+270 0 0
+5 1 1
 -Model res/models/Wires/StraightWire.obj
 -Material Wire
 +end
@@ -2399,15 +2372,6 @@
 153.06 0.085 -25.272
 0 0 0
 0.3472922 1 1
--Model res/models/Wires/StraightWire.obj
--Material Wire
-+end
-
-+SceneGameObject
--Transform
-147.2 0.085 26.63
-0 0 0
-8 1 1
 -Model res/models/Wires/StraightWire.obj
 -Material Wire
 +end
@@ -2450,6 +2414,17 @@
 
 +SceneGameObject
 -Transform
+90.26 1.551 23.57
+259.116 0 0
+1 1 1
+-Model res/models/Props/Tires/TireWall.obj
+-Material TiresPBR
+-BoxCollider 3.015849 1.02758 1.022499 0
+-Gizmo 0 255 0 Cube 3.015849 1.02758 1.022499
++end
+
++SceneGameObject
+-Transform
 121.14 0.085 27.571
 270 0 0
 1 1 1
@@ -2477,6 +2452,17 @@
 
 +SceneGameObject
 -Transform
+265.516 0.129 38.482
+348.8482 88.67515 320.3338
+1 1.538462 1
+-BoxCollider 2.641084 3.79274 0.5614609 0
+-Gizmo 0 255 0 Cube 2.641084 2.465281 0.5614609
+-Material Chainlink
+-Model res/models/Chainlink/chainlink_fence.obj
++end
+
++SceneGameObject
+-Transform
 112.908 0.085 62.249
 270 0 0
 1 1 1
@@ -2491,5 +2477,773 @@
 1 1 1
 -Model res/models/Wires/TurnWire.obj
 -Material Wire
++end
+
++SceneGameObject
+-Transform
+204.6806 2.196304 9.751488
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+187.5406 2.196304 34.85149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+214.1206 2.196304 16.37149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+205.4606 2.196304 52.96149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+201.7906 2.196304 6.571487
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+179.0106 2.196304 1.091488
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+205.4606 2.196304 34.81149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+214.1206 2.196304 2.451488
+270 0 0
+8.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 8 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999999 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+214.1206 2.196304 52.44149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+182.1806 2.196304 -1.82851
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+199.6006 2.196304 35.26149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+195.3006 2.196304 12.62149
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+188.2506 2.196304 -1.82851
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+230.9706 2.599998 44.41149
+270 0 0
+23.3 4.2114 1
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 23.3 4.2114 1 0
+-Gizmo 0 255 0 Cube 0.9999999 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+195.7106 2.196304 6.571487
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+227.2206 2.196304 0.8714886
+0 0 0
+8 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 8 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+190.8106 2.196304 49.69149
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+192.5106 2.196304 46.16149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+222.6706 2.196304 47.38149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+179.0106 2.196304 17.97149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+183.2606 2.196304 31.57149
+0 0 0
+8 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 8 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+204.6806 2.196304 15.77149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+197.0706 2.196304 -6.208511
+270 0 0
+8.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 8 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999999 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+179.0106 2.196304 23.99149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+201.02 2.599998 -11.22851
+0 0 0
+60.5 4.2114 1
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 60.5 4.2114 1 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+204.6806 2.196304 21.85149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+222.6706 2.196304 35.52149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+201.3406 2.196304 12.62149
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+178.9106 2.196304 52.32149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+202.5706 2.196304 31.63149
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+222.6706 2.196304 41.56149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+196.7806 2.196304 49.69149
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+214.1206 2.196304 46.41149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+188.2506 2.196304 -1.82851
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+223.1006 2.196304 4.461487
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+201.3406 2.196304 24.64149
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+179.0106 2.196304 30.07149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+214.1206 2.196304 22.55149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+218.3806 2.196304 38.76149
+0 0 0
+8 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 8 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+205.4606 2.196304 46.91149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+194.3806 2.196304 -1.82851
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+186.7606 2.196304 15.81149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+214.1206 2.196304 28.65149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+179.0106 2.196304 7.031488
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+192.5106 2.196304 15.77149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+186.7606 2.196304 21.89149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+223.1006 2.196304 -1.528515
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+196.4906 2.196304 31.63149
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+189.6406 2.196304 6.571487
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+205.4606 2.196304 40.83149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+223.1006 2.196304 10.44149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+222.6706 2.196304 53.33149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+195.3006 2.196304 43.01149
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+202.1206 2.196304 49.70149
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+179.0106 2.196304 36.18149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+200.98 2.599998 56.51149
+0 0 0
+60.5 4.2114 1
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 60.5 4.2114 1 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+214.1206 2.196304 34.64149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+194.3806 2.196304 -1.82851
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+230.9706 2.599998 5.671488
+270 0 0
+32.79001 4.2114 1
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 32.79001 4.2114 1 0
+-Gizmo 0 255 0 Cube 0.9999999 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+186.7606 2.196304 9.791489
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+190.4206 2.196304 31.63149
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+222.6706 2.196304 29.31149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+207.7206 2.196304 -6.208511
+270 0 0
+8.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 8 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999999 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+179.0106 2.196304 42.29149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+190.0306 2.196304 24.63149
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+204.8906 2.196304 -1.798512
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+214.1206 2.196304 40.46149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+187.5406 2.196304 46.95149
+270 0 0
+6.000001 4 0.5000001
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 0.9999998 1 0.9999999
++end
+
++SceneGameObject
+-Transform
+210.8906 2.196304 -1.798512
+0 0 0
+6 4 0.5
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
+-BoxCollider 6 4 0.5 0
+-Gizmo 0 255 0 Cube 1 1 1
++end
+
++SceneGameObject
+-Transform
+200.98 -0.25 22.64
+0 0 0
+60 1 67
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFloor
 +end
 

@@ -124,8 +124,9 @@ namespace sixengine {
 			
 			GameObject* pistol = new GameObject(m_EntityManager);
 			pistol->AddComponent<Transform>(pistol);
-			pistol->GetComponent<Transform>()->SetParent(new Transform());
-			pistol->GetComponent<Transform>()->Translate(glm::vec3(-80.3f, 139.1f, 1.8f));
+			//pistol->GetComponent<Transform>()->SetParent(new Transform());
+			pistol->GetComponent<Transform>()->SetParent(obj->GetComponent<Transform>().Get());
+			//pistol->GetComponent<Transform>()->Translate(glm::vec3(-80.3f, 139.1f, 1.8f));
 			pistol->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/Gun/pm-40-2.obj"));
 			pistol->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("PistolMaterial"));
 
@@ -452,7 +453,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalScale(1.0, 6.0f, 12.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<StaticBody>();
-			obj->AddComponent<BoxCollider>(glm::vec3(1, 6, 10), true);
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 6, 12), true);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			obj->AddComponent<Gate>();
 			obj->GetComponent<Gate>()->AddGenerator(gen1);
@@ -531,7 +532,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetLocalScale(1.0, 6.0f, 12.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
 			obj->AddComponent<StaticBody>();
-			obj->AddComponent<BoxCollider>(glm::vec3(1, 6, 10), true);
+			obj->AddComponent<BoxCollider>(glm::vec3(1, 6, 12), true);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			obj->AddComponent<Gate>();
 			obj->GetComponent<Gate>()->AddGenerator(gen2);
