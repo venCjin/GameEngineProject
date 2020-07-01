@@ -11,6 +11,8 @@ namespace sixengine {
 		unsigned int m_ID;
 
 
+		void Bind(unsigned int slot = 0);
+
 	private:
 		unsigned int m_Width, m_Height;
 

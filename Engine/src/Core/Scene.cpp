@@ -154,7 +154,9 @@ namespace sixengine {
 				else if (s == "UI")
 				{
 					ss >> s;
-					UI* ui = new UI(m_ShaderManager->AddShader(s));
+					std::string s2 = s;
+					ss >> s;
+					UI* ui = new UI(m_ShaderManager->AddShader(s2), m_ShaderManager->AddShader(s));
 					while (ss)
 					{
 						ss >> s;

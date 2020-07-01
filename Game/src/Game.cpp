@@ -204,6 +204,7 @@ namespace sixengine {
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Water.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Questionmark.glsl");
 			m_Scene.m_ShaderManager->AddShader("res/shaders/Font.glsl");
+			m_Scene.m_ShaderManager->AddShader("res/shaders/Image.glsl");
 
 			m_BatchRenderer->AddTechnique(new StaticPBR(m_Scene.m_ShaderManager->Get("PBR")));
 			m_BatchRenderer->AddTechnique(new AnimationPBR(m_Scene.m_ShaderManager->Get("AnimationPBR")));
@@ -215,7 +216,7 @@ namespace sixengine {
 			m_BatchRenderer->AddTechnique(water);
 
 			Font* font = new Font("res/fonts/DroidSans.ttf");
-			UI* ui = new UI(m_Scene.m_ShaderManager->Get("Font"));
+			UI* ui = new UI(m_Scene.m_ShaderManager->Get("Font"), m_Scene.m_ShaderManager->Get("Image"));
 			ui->AddFont(font);
 			m_BatchRenderer->AddTechnique(ui);
 
@@ -381,7 +382,7 @@ namespace sixengine {
 
 			GameObject* player = new GameObject(m_EntityManager); 
 			player->AddComponent<Transform>(player);
-			player->GetComponent<Transform>()->SetWorldPosition(-35.0f, 0.1f, 0.0f);
+			player->GetComponent<Transform>()->SetWorldPosition(-35.0f, 0.33f, 0.0f);
 			player->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			player->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));

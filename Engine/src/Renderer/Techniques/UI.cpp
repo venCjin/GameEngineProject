@@ -7,8 +7,8 @@
 
 namespace sixengine {
 
-	UI::UI(Shader* shader)
-		: Technique(shader)
+	UI::UI(Shader* shader, Shader* imageShader)
+		: Technique(shader), m_ImageShader(imageShader)
 	{
 	}
 
@@ -56,7 +56,38 @@ namespace sixengine {
 		}
 
 		m_Shader->Bind();
+		m_Font->Bind(0);
 		m_Shader->SetVec3("color", textR->color);
+
+		glBindVertexArray(m_VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex2D), vertices.data());
+
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+		glBindVertexArray(0);
+	}
+
+	void UI::RenderImage(Image* image, glm::vec2 position)
+	{
+		std::vector<Vertex2D> vertices;
+
+		glm::vec2 size = image->size;
+		float xLeft = position.x - size.x / 2.0f;
+		float xRight = position.x + size.x / 2.0f;
+		float yDown = position.y - size.y / 2.0f;
+		float yUp = position.y + size.y / 2.0f;
+
+		vertices.push_back({ { xRight,	 yUp }, { 1.0f, 1.0f } }); //prawy gorny
+		vertices.push_back({ {  xLeft,	 yUp }, { 0.0f, 1.0f } }); //lewy gorny
+		vertices.push_back({ {  xLeft, yDown }, { 0.0f, 0.0f } }); //lewy dolny
+
+		vertices.push_back({ { xRight,	 yUp }, { 1.0f, 1.0f } }); //prawy gorny
+		vertices.push_back({ {  xLeft, yDown }, { 0.0f, 0.0f } }); //lewy dolny
+		vertices.push_back({ { xRight, yDown }, { 1.0f, 0.0f } }); //prawy dolny
+
+		m_ImageShader->Bind();
+		image->texture->Bind(0);
 
 		glBindVertexArray(m_VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -86,9 +117,13 @@ namespace sixengine {
 		glBindVertexArray(0);
 
 		m_Shader->Bind();
-		m_Font->Bind(0);
 		m_Shader->SetInt("fontTexture", 0);
 		m_Shader->SetMat4("projection", glm::ortho(0.f, (float)Application::Get().GetWindow().GetWidth(), 0.f, (float)Application::Get().GetWindow().GetHeight(), 0.01f, 1000.0f));
+	
+		m_ImageShader->Bind();
+		m_ImageShader->SetInt("fontTexture", 0);
+		m_ImageShader->SetMat4("projection", glm::ortho(0.f, (float)Application::Get().GetWindow().GetWidth(), 0.f, (float)Application::Get().GetWindow().GetHeight(), 0.01f, 1000.0f));
+
 	}
 
 	void UI::StartFrame(std::vector<RendererCommand*>& commandList, std::vector<DrawElementsCommand> drawCommands, std::vector<glm::mat4>& models, std::vector<glm::vec4> layers)
@@ -103,7 +138,13 @@ namespace sixengine {
 	{
 		for (auto i : commandList)
 		{
-			//if (i->gameObject->HasComponent<Image>())
+			if (i->gameObject->HasComponent<Image>())
+			{
+				auto image = i->gameObject->GetComponent<Image>();
+				auto t = i->gameObject->GetComponent<Transform>();
+
+				RenderImage(image.Get(), t->getWorldPosition());
+			}
 
 			if (i->gameObject->HasComponent<Text>())
 			{

@@ -3,6 +3,7 @@
 
 #include <Gameplay/Components/Transform.h>
 #include <Gameplay/Components/Mesh.h>
+#include <Gameplay/Components/Image.h>
 #include <Renderer/Material.h>
 #include <Core/Timer.h>
 
@@ -155,7 +156,8 @@ namespace sixengine {
 		if (!gameObject->HasComponent<Mesh>() && 
 			!gameObject->HasComponent<Material>())
 			render = false;
-		else if (gameObject->HasComponent<Text>())
+		else if (gameObject->HasComponent<Text>() || 
+			gameObject->HasComponent<Image>())
 			render = true;
 
 		if (render)
