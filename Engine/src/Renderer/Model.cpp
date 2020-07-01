@@ -93,15 +93,15 @@ namespace sixengine {
 		// Initialize the meshes in the scene one by one
 		for (uint i = 0; i < m_Entries.size(); i++) {
 			const aiMesh* mesh = scene->mMeshes[i];
-			InitMesh(i, mesh/*, vertices, indices*/);
+			InitMesh(i, mesh);
 		}
 		
-		LoadGlobalPositions(m_Scene->mRootNode, glm::mat4(1.0f));
+		LoadGlobalTransforms(m_Scene->mRootNode, glm::mat4(1.0f));
 
 		return true;
 	}
 
-	void Model::InitMesh(uint meshIndex, const aiMesh* mesh/*, std::vector<Vertex>& vertices, std::vector<uint>& indices*/)
+	void Model::InitMesh(uint meshIndex, const aiMesh* mesh)
 	{
 		// Populate the vertex attribute vectors
 		for (uint i = 0; i < mesh->mNumVertices; i++) {
@@ -361,7 +361,7 @@ namespace sixengine {
 			{
 				transforms[boneIndex] = m_GlobalInverseTransform * globalTransformation * m_BoneInfo[boneIndex].BoneOffset;
 				m_BoneInfo[boneIndex].FinalTransformation = transforms[boneIndex];
-			}
+			}		
 		}
 
 		for (uint i = 0; i < node->mNumChildren; i++) {
@@ -369,7 +369,7 @@ namespace sixengine {
 		}
 	}	
 
-	void Model::LoadGlobalPositions(const aiNode* node, const glm::mat4& parentTransform)
+	void Model::LoadGlobalTransforms(const aiNode* node, const glm::mat4& parentTransform)
 	{
 		std::string nodeName(node->mName.data);
 
@@ -383,7 +383,7 @@ namespace sixengine {
 		}
 
 		for (uint i = 0; i < node->mNumChildren; i++) 
-			LoadGlobalPositions(node->mChildren[i], globalTransformation);
+			LoadGlobalTransforms(node->mChildren[i], globalTransformation);
 	}
 
 
@@ -415,14 +415,14 @@ namespace sixengine {
 				for (uint i = 0; i < m_NumBones; i++)
 					blendLayer2[i] = transforms[i];
 
-				blendProgress = ((currentAnimation->timer / currentAnimation->blendLength) > 1.0f) ? 1.0f : (currentAnimation->timer / 1.0f);
+				blendProgress = ((currentAnimation->timer / currentAnimation->blendLength) > 1.0f) ? 1.0f : (currentAnimation->timer / currentAnimation->blendLength);
 			}
 			else
 				blendProgress = 1.0f;
 
 			for (uint i = 0; i < m_NumBones; i++)
 			{
-				transforms[i] = blendLayer1[i] *blendProgress + blendLayer2[i] * (1.0f - blendProgress);
+				transforms[i] = blendLayer1[i] * blendProgress + blendLayer2[i] * (1.0f - blendProgress);
 				m_BoneInfo[i].FinalTransformation = transforms[i];
 			}
 		}

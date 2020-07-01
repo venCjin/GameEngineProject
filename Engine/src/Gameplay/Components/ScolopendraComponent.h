@@ -43,32 +43,28 @@ namespace sixengine {
 					m_Model->m_BoneInfo[i].FreeBone = true;
 					if (m_Bones.find(i) == m_Bones.end())
 					{
-						m_Bones[i] = Bone(m_Model->m_BoneInfo[i].GlobalTransformation);
+						m_Bones[i] = Bone(m_Model->m_BoneInfo[i].GlobalTransformation, m_Model->m_BoneInfo[i].Name);
 						if (i > 0)
 							m_Bones[i].Init(&m_Bones[i - 1].m_Bone);
-					}
-
-					//m_Bones.push_back(Bone(m_Model->m_BoneInfo[i].GlobalTransformation));
-					
+					}					
 				}
-			}
-
-			LOG_WARN("m_Model->m_BoneInfo.size(): {0}, m_Bones.size(): {1}", m_Model->m_BoneInfo.size(), m_Bones.size());
-
-			
+			}			
 		}
 
 		void ScolopendraComponent::UpdateBones()
 		{
+			std::map<int, Bone>::iterator it = m_Bones.begin();
+			std::map<int, Bone>::iterator previousIterator = m_Bones.begin();
+			it->second.UpdateBone(glm::vec3(0.f));
+			++it;
 
-			for (int i = 0; i < m_Bones.size(); i++)
+			while (it != m_Bones.end())
 			{
-				if (i > 0)
-					m_Bones[i].UpdateBone(m_Bones[i - 1].m_Bone.GetLocalPosition());
-				else
-					m_Bones[i].UpdateBone(glm::vec3(0.f));
-
+				it->second.UpdateBone(previousIterator->second.m_Bone.GetLocalPosition());
+				++it;
+				++previousIterator;
 			}
+			
 		}
 
 		/*virtual void Load(std::iostream& stream) {}

@@ -20,13 +20,10 @@ namespace sixengine {
 		
 		void Update(EventManager & eventManager, float dt) override
 		{
-			
-
 			glm::vec3 transformedPos = m_ScolopendraComponent->m_PlayerTransform->GetWorldPosition();
 			transformedPos = glm::vec3(transformedPos.x, transformedPos.z, -transformedPos.y);
 
 			m_ScolopendraComponent->m_Bones.begin()->second.m_Bone.SetLocalPosition(transformedPos);
-			//m_ScolopendraComponent->m_Bones[0].m_Bone.SetLocalPosition(transformedPos);
 
 			UpdateModelBones();			
 		}
@@ -36,13 +33,13 @@ namespace sixengine {
 			m_ScolopendraComponent->UpdateBones();
 			std::map<int, Bone>::iterator it = m_ScolopendraComponent->m_Bones.begin();
 			it->second.m_Bone.SetLocalOrientation((++it)->second.m_Bone.GetLocalOrientation());
-
-			//m_ScolopendraComponent->m_Bones[0].m_Bone.SetLocalOrientation(m_ScolopendraComponent->m_Bones[1].m_Bone.GetLocalOrientation());
-
+			
 			for (int i = 0; i < m_ScolopendraComponent->m_Model->m_BoneInfo.size(); ++i)
 			{
 				if (m_ScolopendraComponent->m_Bones.find(i) != m_ScolopendraComponent->m_Bones.end())
+				{
 					m_ScolopendraComponent->m_Model->m_BoneInfo[i].GlobalTransformation = m_ScolopendraComponent->m_Bones[i].m_Bone.GetLocalMatrix();
+				}
 			}
 		}
 	};

@@ -51,6 +51,7 @@ namespace sixengine {
 		float duration = 0.0f;
 		std::string name;
 		float blendLength = 0.0f;
+		float timeScale = 1.0f;
 	};
 
 
@@ -90,7 +91,7 @@ namespace sixengine {
 			m_AnimationsMapping[m_CurrentAnimationName]->timer = 0.0f;
 		}
 
-		bool LoadAnimation(const std::string & filename, std::string name, bool singleCycle = false, float blendLength = 0.5f)
+		bool LoadAnimation(const std::string & filename, std::string name, bool singleCycle = false, float blendLength = 0.5f, float timeScale = 1.0f)
 		{
 			AnimationEntry* ae = new AnimationEntry(filename, name);
 
@@ -99,6 +100,7 @@ namespace sixengine {
 				m_AnimationsMapping[name] = ae;
 				m_AnimationsMapping[name]->singleCycle = singleCycle;
 				m_AnimationsMapping[name]->blendLength = blendLength;
+				m_AnimationsMapping[name]->timeScale = timeScale;
 			}
 			else
 				std::cout << "Already exists" << std::endl;

@@ -10,9 +10,10 @@ namespace sixengine {
 		m_Bone = Transform();
 	}
 
-	Bone::Bone(glm::mat4 bone)
+	Bone::Bone(glm::mat4 bone, std::string name)
 	{
 		m_Bone = Transform(bone);
+		m_Name = name;
 	}
 
 

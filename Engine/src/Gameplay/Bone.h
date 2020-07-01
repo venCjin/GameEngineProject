@@ -12,9 +12,10 @@ namespace sixengine {
 
 	public:
 		Bone();
-		Bone(glm::mat4 bone);
+		Bone(glm::mat4 bone, std::string name);
 		~Bone();
 
+		std::string m_Name;
 		void Init(Transform* parent);
 
 		Transform m_Bone;

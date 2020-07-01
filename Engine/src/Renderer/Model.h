@@ -70,7 +70,7 @@ namespace sixengine {
 		std::vector<BoneInfo> m_BoneInfo;
 		bool m_FreeBones = false;
 		glm::mat4 m_GlobalInverseTransform;
-		void LoadGlobalPositions(const aiNode* node, const glm::mat4& parentTransform);
+		void LoadGlobalTransforms(const aiNode* node, const glm::mat4& parentTransform);
 		bool m_GlobalPositionsLoaded = false;
 		const aiScene* m_Scene;
 

@@ -137,6 +137,19 @@ namespace sixengine {
 			if (glm::dot(_db->m_Velocity, _db->m_Velocity) > 0.001f) 
 			{
 				m_Transform->LookAt((m_Transform->GetWorldPosition() - _db->m_Velocity));
+				// check if undergorund or not
+				if (m_SimplePlayer->m_OnSurface)
+					m_SimplePlayer->scolopendraAnimation->ChangeAnimation(std::string("walk"));
+				else
+					m_SimplePlayer->scolopendraAnimation->ChangeAnimation(std::string("walk_ug"));
+
+			}
+			else
+			{
+				if (m_SimplePlayer->m_OnSurface)
+					m_SimplePlayer->scolopendraAnimation->ChangeAnimation(std::string("idle"));
+				else
+					m_SimplePlayer->scolopendraAnimation->ChangeAnimation(std::string("idle_ug"));
 			}
 			//LOG_CORE_INFO("Speed {0}", speed);
 			//LOG_CORE_INFO("CAmera position {0} {1} {2}", Camera::ActiveCamera->m_Transform->GetWorldPosition().x, Camera::ActiveCamera->m_Transform->GetWorldPosition().y, Camera::ActiveCamera->m_Transform->GetWorldPosition().z);
