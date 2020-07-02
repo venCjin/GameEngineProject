@@ -20,6 +20,7 @@
 #include <AI/Enemy.h>
 #include <Gameplay/Components/Generator.h>
 #include <Gameplay/Components/UndergroundObject.h>
+#include <Gameplay/Components/ScolopendraComponent.h>
 
 namespace sixengine {
 	
@@ -168,54 +169,74 @@ namespace sixengine {
 				if (m_SimplePlayer->m_OnSurface)
 				{
 					speed /= speedMultiplicator;
-					//m_Material->SetShader(MaterialManager::getInstance()->Get("Green")->GetShader());
 					m_SimplePlayer->scolopendraMaterial->SetShader(MaterialManager::getInstance()->Get("GreenAnim")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, -playerHeight, 0.0f));
 					m_SimplePlayer->MixingCamera->SetTargetCamera(m_SimplePlayer->OnSurfaceCamera);
 
 					BatchRenderer::Instance()->SetBlur(false);
 
-					for (auto enemy : Application::Get().GetEntityManager()->EntitiesWithComponents<Enemy, ParticleEmitter, Mesh>())
+					for (auto obj : Application::Get().GetEntityManager()->EntitiesWithComponents<Mesh>())
 					{
-						enemy.Component<Mesh>()->m_Visible = true;
-						enemy.Component<ParticleEmitter>()->Stop();
-					}
+						obj.Component<Mesh>()->m_Visible = true;
 
-					for (auto pistol : Application::Get().GetEntityManager()->EntitiesWithComponents<Pistol>())
-					{
-						pistol.Component<Mesh>()->m_Visible = true;
+						if (obj.HasComponent<ParticleEmitter>())
+						{
+							if (obj.HasComponent<Enemy>())
+							{
+								obj.Component<ParticleEmitter>()->Stop();
+							}
+							else
+							{
+								// turn on stars particle, cause bug with enemies particles
+								//obj.Component<ParticleEmitter>()->Start();
+							}
+						}
+						else if (obj.HasComponent<UndergroundObject>())
+						{
+							obj.Component<Mesh>()->m_Visible = false;
+						}
 					}
-
-					for (auto uo : Application::Get().GetEntityManager()->EntitiesWithComponents<UndergroundObject>())
-					{
-						uo.Component<Mesh>()->m_Visible = false;
-					}
+					
 				}
 				else
 				{
 					speed *= speedMultiplicator;
-					//m_Material->SetShader(MaterialManager::getInstance()->Get("TransparentMaterial")->GetShader());
 					m_SimplePlayer->scolopendraMaterial->SetShader(MaterialManager::getInstance()->Get("TransparentMaterial")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, +playerHeight, 0.0f));
 					m_SimplePlayer->MixingCamera->SetTargetCamera(m_SimplePlayer->UnderSurfaceCamera);
 					
 					BatchRenderer::Instance()->SetBlur(true);
-
-					for (auto enemy : Application::Get().GetEntityManager()->EntitiesWithComponents<Enemy, ParticleEmitter>())
+					
+					for (auto obj : Application::Get().GetEntityManager()->EntitiesWithComponents<Mesh>())
 					{
-						enemy.Component<Mesh>()->m_Visible = false;
-						enemy.Component<ParticleEmitter>()->Start();
+						obj.Component<Mesh>()->m_Visible = false;
+
+						if (obj.Component<Mesh>()->GetModel()->GetName().compare("Ground.obj")==0)
+						{
+							obj.Component<Mesh>()->m_Visible = true;
+						}
+						else if (obj.HasComponent<ParticleEmitter>())
+						{
+							if (obj.HasComponent<Enemy>())
+							{
+								obj.Component<ParticleEmitter>()->Start();
+							}
+							else
+							{
+								// turn off stars particle, cause bug with enemies particles
+								//obj.Component<ParticleEmitter>()->Stop();
+							}
+						}
+						else if (obj.HasComponent<UndergroundObject>())
+						{
+							obj.Component<Mesh>()->m_Visible = true;
+						}
+						else if (obj.HasComponent<ScolopendraComponent>())
+						{
+							obj.Component<Mesh>()->m_Visible = true;
+						}
 					}
 
-					for (auto pistol : Application::Get().GetEntityManager()->EntitiesWithComponents<Pistol>())
-					{
-						pistol.Component<Mesh>()->m_Visible = false;
-					}
-
-					for (auto uo : Application::Get().GetEntityManager()->EntitiesWithComponents<UndergroundObject>())
-					{
-						uo.Component<Mesh>()->m_Visible = true;
-					}
 				}
 			}
 

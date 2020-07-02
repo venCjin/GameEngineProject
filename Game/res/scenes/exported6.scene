@@ -53,6 +53,8 @@
 -AddMaterial Rope PBR 1 res/models/rope/rope.png 
 -AddMaterial Wire PBR 1 res/models/Wires/wire_texture.png 
 -AddMaterial UndergroundMaterial Underground 0 
+-AddMaterial WallLab PBR 2 res/models/Walls/WallsAlbedo.png res/models/Walls/WallsNormal.png 
+-AddMaterial MedBox PBR 3 res/models/MedBox/MedBoxAlbedo.png res/models/MedBox/MedBoxNormal.png res/models/MedBox/MedBoxMetallic.png 
 
 +SceneGameObject
 -Transform
@@ -3311,7 +3313,7 @@
 
 +SceneGameObject
 -Transform
-81.2 -1.06 6.5
+81.05 -1.06 6.38
 322.8 0 0
 22.43754 2.896 1
 -Model res/models/Primitives/cube.obj
@@ -3335,12 +3337,12 @@
 
 +SceneGameObject
 -Transform
-50.25 -1.06 9.83
-357 0 0
-22.68 2.896 1
+50.65 -1.06 9.65
+354.8316 0 0
+21.32045 2.896 1
 -Model res/models/Primitives/cube.obj
 -Material UndergroundMaterial
--BoxCollider 22.68 2.896 1 0
+-BoxCollider 21.32045 2.896 1 0
 -Gizmo 0 255 0 Cube 1 1 1
 -UndergroundObject
 +end
@@ -3511,5 +3513,17 @@
 -BoxCollider 59.82156 2.896 68.12646 0
 -Gizmo 0 255 0 Cube 1 1 1
 -UndergroundObject
++end
+
++SceneGameObject
+-Transform
+17.33 0.71 -13.66
+0 0 0
+1 1 1
+-Model res/models/MedBox/MedBox.obj
+-Material MedBox
+-BoxCollider 0.488268 0.09192066 0.9997027 0
+-Gizmo 0 255 0 Cube 0.488268 0.09192066 0.9997027
+-Collectable
 +end
 
