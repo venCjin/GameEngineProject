@@ -303,6 +303,10 @@ namespace sixengine {
 				"BulletMaterial");
 			//PROJECTILE
 
+			//KOPIEC
+			m_Scene.m_ModelManager->AddModel("res/models/Environment/Ground/Kopiec.obj");
+			//KOPIEC
+
 			//BAR
 			Shader* bar = m_Scene.m_ShaderManager->AddShader("res/shaders/Questionmark.glsl");
 			m_Scene.m_TextureArray->AddTexture("res/textures/ui/question_sign2.png");
@@ -577,7 +581,18 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 680.0f, 0.0f);
 			obj->AddComponent<AirText>();
 			obj->GetComponent<AirText>()->player = player->GetComponent<SimplePlayer>().Get();
+			obj->GetComponent<AirText>()->ID = 0;
 			obj->AddComponent<Text>("Health: ", glm::vec3(0.8f, 0.4f, 0.4f), 0.5f);
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
+			m_Scene.m_UIRoot->AddChild(obj);
+
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 650.0f, 0.0f);
+			obj->AddComponent<AirText>();
+			obj->GetComponent<AirText>()->player = player->GetComponent<SimplePlayer>().Get();
+			obj->GetComponent<AirText>()->ID = 1;
+			obj->AddComponent<Text>("Air: ", glm::vec3(0.8f, 0.4f, 0.4f), 0.5f);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
 			m_Scene.m_UIRoot->AddChild(obj);
 

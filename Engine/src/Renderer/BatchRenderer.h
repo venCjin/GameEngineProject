@@ -14,6 +14,7 @@
 
 #include <Gameplay/GameObject.h>
 #include <Gameplay/Components/ParticleEmitter.h>
+#include <Gameplay/Components/SimplePlayer.h>
 
 #include <ECS/ComponentManager.h>
 
@@ -133,6 +134,7 @@ namespace sixengine {
 		glm::vec4 m_FrustumPlanes[6];
 
 		Light* m_DirectionalLight;
+		GameObject* m_Player;
 
 		RenderTarget m_Default;
 		RenderTarget m_PostProcess;

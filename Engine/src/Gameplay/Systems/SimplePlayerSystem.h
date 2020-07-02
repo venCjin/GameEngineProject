@@ -14,6 +14,8 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 #include <Core/CameraSystem/Camera.h>
+#include <Core/Application.h>
+#include <Core/Scene.h>
 #include <Physics/Systems/CollisionSystem.h>
 #include <Physics/Components/DynamicBody.h>
 #include <Core/AudioManager.h>
@@ -34,7 +36,7 @@ namespace sixengine {
 		float speedMultiplicator = 2.0f;
 		float playerHeight = 1.0f;
 		//float air = 100.0f;
-		float airLosingRate = 5.0f;
+		float airLosingRate = 16.0f;
 
 		// Going Underground
 		/*float speed = 2.0f;
@@ -97,8 +99,6 @@ namespace sixengine {
 		void Update(EventManager & eventManager, float dt) override
 		{
 			//LOG_INFO(m_SimplePlayer->collider->IsStatic());
-
-
 
 			//AUDIO
 			//Updating audio listener 
@@ -206,11 +206,13 @@ namespace sixengine {
 				m_SimplePlayer->m_OnSurface = !m_SimplePlayer->m_OnSurface;
 				if (m_SimplePlayer->m_OnSurface)
 				{
+
 					speed /= speedMultiplicator;
 					m_SimplePlayer->scolopendraMaterial->SetShader(MaterialManager::getInstance()->Get("GreenAnim")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, -playerHeight, 0.0f));
 					m_SimplePlayer->MixingCamera->SetTargetCamera(m_SimplePlayer->OnSurfaceCamera);
 
+					SpawnHole();
 					BatchRenderer::Instance()->SetBlur(false);
 
 					/*for (auto obj : Application::Get().GetEntityManager()->EntitiesWithComponents<Mesh>())
@@ -246,11 +248,12 @@ namespace sixengine {
 				}
 				else
 				{
+					SpawnHole();
 					speed *= speedMultiplicator;
 					m_SimplePlayer->scolopendraMaterial->SetShader(MaterialManager::getInstance()->Get("TransparentMaterial")->GetShader());
 					m_Transform->SetWorldPosition(m_Transform->GetWorldPosition() - glm::vec3(0.0f, +playerHeight, 0.0f));
 					m_SimplePlayer->MixingCamera->SetTargetCamera(m_SimplePlayer->UnderSurfaceCamera);
-					
+
 					BatchRenderer::Instance()->SetBlur(true);
 					
 					/*for (auto obj : Application::Get().GetEntityManager()->EntitiesWithComponents<Mesh>())
@@ -296,13 +299,13 @@ namespace sixengine {
 
 			if (m_SimplePlayer->m_OnSurface)
 			{
-				m_SimplePlayer->air += Timer::Instance()->DeltaTime()*airLosingRate;
+				m_SimplePlayer->m_Air += Timer::Instance()->DeltaTime() * airLosingRate;
 			}
 			else
 			{
-				m_SimplePlayer->air -= Timer::Instance()->DeltaTime()*airLosingRate;
+				m_SimplePlayer->m_Air -= Timer::Instance()->DeltaTime() * airLosingRate;
 			}
-			m_SimplePlayer->air = glm::clamp<float>(m_SimplePlayer->air, 0.0f, 100.0f);
+			m_SimplePlayer->m_Air = glm::clamp<float>(m_SimplePlayer->m_Air, 0.0f, 100.0f);
 
 			/*auto originalPos = m_Transform->GetWorldPosition();
 
@@ -322,6 +325,19 @@ namespace sixengine {
 		float EaseInCubic(float x)
 		{
 			return x < 0.5f ? 4.0f * x * x * x : 1.0f - pow(-2.0f * x + 2.0f, 3.0f) / 2.0f;
+		}
+
+		void SpawnHole()
+		{
+			GameObject* obj = new GameObject(*Application::Get().GetEntityManager());
+			obj->AddComponent<Transform>(obj);
+			glm::vec3 pos = m_Transform->GetWorldPosition();
+			obj->GetComponent<Transform>()->SetWorldPosition(glm::vec3(pos.x, pos.y - 0.13f, pos.z));
+			obj->GetComponent<Transform>()->SetLocalScale(1.0f, 1.0f, 1.0f);
+			obj->AddComponent<Material>(*Application::Get().GetScene()->m_MaterialManager->Get("GroundPBR"));
+			obj->AddComponent<Mesh>(Application::Get().GetScene()->m_ModelManager->GetModel("Kopiec"));
+
+			Application::Get().GetScene()->m_SceneRoot->AddChild(obj);
 		}
 	};
 }
