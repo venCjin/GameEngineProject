@@ -48,7 +48,7 @@ namespace sixengine {
 		float m_MaxDirectionAngle = 30.0f;
 		Texture* m_Texture;
 		
-		bool m_CameraAlignment;
+		bool m_CameraAlignment = true;
 
 		ParticleObject m_Particles[MAX_PARTICLE_COUNT];
 
