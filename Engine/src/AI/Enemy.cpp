@@ -245,20 +245,22 @@ float sixengine::Enemy::GetDetectionLevel()
 
 void sixengine::Enemy::ReceiveDamage(float damage)
 {
-	if (m_Health > 0)
+	if (!m_GameObject->HasComponent<DeathState>())
+	{
+		m_GameObject->AddComponent<DeathState>(m_GameObject);
+		m_GameObject->GetComponent<StateMachine>()->ChangeState(m_GameObject->GetComponent<DeathState>().Get());
+		m_GameObject->GetComponent<StateMachine>()->m_States.clear();
+	}
+
+	/*if (m_Health > 0)
 	{
 		m_Health -= damage;
 		m_GameObject->GetComponent<Animation>()->ChangeAnimation("hit");
 	}
 	else
 	{
-		if (!m_GameObject->HasComponent<DeathState>())
-		{
-			m_GameObject->AddComponent<DeathState>(m_GameObject);
-			m_GameObject->GetComponent<StateMachine>()->ChangeState(m_GameObject->GetComponent<DeathState>().Get());
-			m_GameObject->GetComponent<StateMachine>()->m_States.clear();
-		}
-	}
+
+	}*/
 }
 
 void sixengine::Enemy::RotateTowardsVelocity()

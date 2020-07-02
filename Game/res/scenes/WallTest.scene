@@ -11205,6 +11205,7 @@
 -BoxCollider 8.529647 2.5177 9.927588 0
 -Gizmo 0 255 0 Cube 1 1 1
 -UndergroundObject
+-ConcreteFloor
 +end
 
 +SceneGameObject
@@ -11217,6 +11218,7 @@
 -BoxCollider 8.529647 2.5177 9.927588 0
 -Gizmo 0 255 0 Cube 1 1 1
 -UndergroundObject
+-ConcreteFloor
 +end
 
 +SceneGameObject
@@ -11229,6 +11231,7 @@
 -BoxCollider 8.529647 2.5177 9.927588 0
 -Gizmo 0 255 0 Cube 1 1 1
 -UndergroundObject
+-ConcreteFloor
 +end
 
 +SceneGameObject
@@ -11241,5 +11244,46 @@
 -BoxCollider 8.529647 2.5177 9.927588 0
 -Gizmo 0 255 0 Cube 1 1 1
 -UndergroundObject
+-ConcreteFloor
++end
+
++SceneGameObject
+-Transform
+95.83 0.1 -6.47
+5.089996 0 0
+8.529647 0.1 9.927587
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFence
+-ConcreteFloor
++end
+
++SceneGameObject
+-Transform
+95.93 0.23 52.79
+5.089996 0 0
+8.529647 0.1 9.927587
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFence
+-ConcreteFloor
++end
+
++SceneGameObject
+-Transform
+153.88 0.25 53.04
+5.089996 0 0
+8.529647 0.1 9.927587
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFence
+-ConcreteFloor
++end
+
++SceneGameObject
+-Transform
+140.99 0.05 -8.78
+5.089996 0 0
+8.529647 0.1 9.927587
+-Model res/models/Primitives/cube.obj
+-Material ConcreteFence
+-ConcreteFloor
 +end
 
