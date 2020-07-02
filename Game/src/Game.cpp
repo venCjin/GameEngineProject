@@ -61,6 +61,7 @@
 #include <Gameplay/Components/BackgroundSound.h>
 #include <Gameplay/Components/BackgroundSoundSystem.h>
 #include <Physics\Components\SphereCollider.h>
+#include <Gameplay/Systems/DestroyableWallSystem.h>
 
 
 namespace sixengine {
@@ -218,9 +219,10 @@ namespace sixengine {
 			ui->AddFont(font);
 			m_BatchRenderer->AddTechnique(ui);
 
-			m_Scene.LoadScene("res/scenes/exported8.scene");
+			m_Scene.LoadScene("res/scenes/WallTest.scene");
 
 			m_SystemManager.AddSystem<GateSystem>();
+			m_SystemManager.AddSystem<DestroyableWallSystem>();
 			m_SystemManager.AddSystem<ProjectileSystem>();
 			m_SystemManager.AddSystem<OrbitalCameraSystem>();
 			m_SystemManager.AddSystem<MixingCameraSystem>();
@@ -374,7 +376,7 @@ namespace sixengine {
 
 			GameObject* player = new GameObject(m_EntityManager); 
 			player->AddComponent<Transform>(player);
-			player->GetComponent<Transform>()->SetWorldPosition(-35.0f, 0.33f, 0.0f);
+			player->GetComponent<Transform>()->SetWorldPosition(-0, 0.33f, 0.0f);
 			player->GetComponent<Transform>()->SetLocalScale(0.001f, 0.001f, 0.001f);
 			player->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/primitives/cylinder.obj"));
 			player->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("Green"));
@@ -627,6 +629,7 @@ namespace sixengine {
 			MakeEnemy(glm::vec3(169.78, 0, -6), glm::vec3(88.29998, 0, 0));
 			MakeEnemy(glm::vec3(216.45, 0, -2.68), glm::vec3(319, 0, 0));
 
+
 			//ENEMIES
 
 			// CAMERAS SETUP
@@ -784,16 +787,16 @@ namespace sixengine {
 			}
 #ifdef DEBUG
 			{
-				//PROFILE_SCOPE("DRAW GIZMOS")
-				m_Scene.DrawGizmos();
+				////PROFILE_SCOPE("DRAW GIZMOS")
+				//m_Scene.DrawGizmos();
 
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				glDisable(GL_CULL_FACE);
-				glLineWidth(1.0f);
-				attack->Draw(attack->model);
-				glPolygonMode(GL_FRONT, GL_FILL);
-				glEnable(GL_CULL_FACE);
-				glCullFace(GL_BACK);
+				//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				//glDisable(GL_CULL_FACE);
+				//glLineWidth(1.0f);
+				//attack->Draw(attack->model);
+				//glPolygonMode(GL_FRONT, GL_FILL);
+				//glEnable(GL_CULL_FACE);
+				//glCullFace(GL_BACK);
 			}
 #endif // DEBUG
 		}

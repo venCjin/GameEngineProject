@@ -14,6 +14,7 @@
 #include "Gameplay/Components/PointLight.h"
 #include "Gameplay/Components/SpotLight.h"
 #include "Gameplay/Components/Eggs.h"
+#include "Gameplay/Components/ConcreteFloor.h"
 
 #include "Gameplay/Systems/AirTextSystem.h"
 #include "Gameplay/Systems/AnimationSystem.h"
@@ -462,6 +463,8 @@ namespace sixengine {
 			LOAD(UndergroundObject);
 
 			LOAD(Eggs);
+
+			LOAD(ConcreteFloor);
 
 			if (s == "+Child")
 			{

@@ -46,9 +46,9 @@ namespace sixengine {
 			stream >> orientation.x >> orientation.y >> orientation.z;
 			stream >> scale.x >> scale.y >> scale.z;
 
-			SetLocalPosition(pos);
-			SetLocalOrientation(orientation);
 			SetLocalScale(scale);
+			SetLocalOrientation(orientation);
+			SetLocalPosition(pos);
 		}
 
 		virtual void Save(std::iostream& stream) override
@@ -73,6 +73,11 @@ namespace sixengine {
 		Transform* GetParent()
 		{
 			return m_Parent;
+		}
+
+		std::vector<Transform*> GetChildren()
+		{
+			return m_Children;
 		}
 
 		// Returns the world space position of the Transform.

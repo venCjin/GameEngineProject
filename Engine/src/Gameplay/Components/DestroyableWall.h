@@ -4,6 +4,7 @@
 #include "Gameplay/Components/Mesh.h"
 #include "Gameplay/GameObject.h"
 #include "Gameplay/Components/LoopedSound.h"
+#include <random>
 
 
 namespace sixengine
@@ -22,7 +23,27 @@ namespace sixengine
 
 		void Destroy()
 		{
-			m_GameObject->GetComponent<Transform>()->Translate(0.0f, -100.0f, 0.0f);
+			m_GameObject->RemoveComponent<BoxCollider>();
+			m_Destroyed = true;
+
+			for (auto child : m_GameObject->GetComponent<Transform>()->GetChildren())
+			{
+				std::random_device dev;
+				std::mt19937 rng(dev());
+				std::uniform_real_distribution<> dist(0.0f, 1.5f);
+
+				auto offset = child->GetWorldPosition() - Application::Get().GetEntityManager()->EntitiesWithComponents<SimplePlayer>()[0].Component<Transform>()->GetWorldPosition();
+				offset.y = 0.0f;
+
+				auto r = dist(rng);
+				LOG_INFO(r);
+
+				child->Translate(glm::normalize(offset) * (float)r);
+
+				std::uniform_real_distribution<> rotation(0.0f, 90.0f);
+
+				child->Rotate(rotation(rng), rotation(rng), rotation(rng));
+			}
 		}
 
 		virtual void Load(std::iostream& stream) override {}

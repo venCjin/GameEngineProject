@@ -22,6 +22,7 @@
 #include <Gameplay/Components/UndergroundObject.h>
 #include <Gameplay/Components/ScolopendraComponent.h>
 #include <Gameplay/Components/DestroyableWall.h>
+#include <Gameplay/Components/ConcreteFloor.h>
 
 namespace sixengine {
 	
@@ -68,6 +69,26 @@ namespace sixengine {
 		}
 
 	public:
+		bool CanChangeMode()
+		{
+			auto pos = m_SimplePlayer->transform->GetWorldPosition();
+
+			pos.y = 0.0f;
+			
+			for (auto hit : CollisionSystem::CheckSphereAll(pos, 1.0f))
+			{
+				if (Entity::Valid(hit.GetID()))
+				{
+					if (hit.HasComponent<ConcreteFloor>())
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
 		void OnStart(EventManager & eventManager) override
 		{
 			eventManager.AddListener<OnCollision>(&SimplePlayerSystem::OnCollisionHandle, this);
@@ -172,13 +193,15 @@ namespace sixengine {
 			//LOG_CORE_INFO("CAmera position {0} {1} {2}", Camera::ActiveCamera->m_Transform->GetWorldPosition().x, Camera::ActiveCamera->m_Transform->GetWorldPosition().y, Camera::ActiveCamera->m_Transform->GetWorldPosition().z);
 			//LOG_CORE_INFO("CAmera direction {0} {1} {2}", cameraDir.x, cameraDir.y, cameraDir.z);
 			//LOG_CORE_INFO("Dot {0}", glm::dot(_db->m_Velocity, _db->m_Velocity));
-			if (Input::IsKeyPressed(KeyCode::SPACE))
+			if (Input::IsKeyPressed(KeyCode::SPACE) && CanChangeMode())
 			{
 				/*if (!movingVertically)
 				{
 
 					movingVertically = true;
 				}*/
+				
+				
 
 				m_SimplePlayer->m_OnSurface = !m_SimplePlayer->m_OnSurface;
 				if (m_SimplePlayer->m_OnSurface)
