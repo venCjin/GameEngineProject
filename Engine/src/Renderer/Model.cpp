@@ -56,6 +56,7 @@ namespace sixengine {
 			
 			m_Directory = filename.substr(0, filename.find_last_of('/'));
 			m_Name = filename.substr(filename.find_last_of('/')+1);
+			LOG_INFO("Model loaded: {0}", m_Name);
 			ret = InitFromScene(m_Scene, filename);
 		}
 		else {

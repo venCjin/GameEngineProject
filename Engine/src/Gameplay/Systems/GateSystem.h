@@ -28,11 +28,11 @@ namespace sixengine {
 
 				if (m_Gate->openingDuration > 0.0f)
 				{
-					if (openingSound == nullptr) 
+					/*if (openingSound == nullptr) 
 					{
 						openingSound = INIT_TRACK_3D("gate", m_Transform->GetWorldPosition());
 						openingSound->setIsPaused(false);
-					}
+					}*/
 					entity.Component<Transform>()->Translate(m_Gate->openingSpeed * dt);
 					m_Gate->openingDuration -= dt;
 				}

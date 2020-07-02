@@ -96,7 +96,11 @@ namespace sixengine {
 
 	void GameObject::ImGuiWriteSceneTreeNode()
 	{
-		if (ImGui::TreeNode((void*)(intptr_t)m_Entity.GetID().GetID(), "Child %d", m_Entity.GetID().GetID()))
+		std::string s;
+		if (HasComponent<Mesh>()) s = GetComponent<Mesh>()->GetModel()->GetName();
+		else s = "Child " + m_Entity.GetID().GetID();
+
+		if (ImGui::TreeNode((void*)(intptr_t)m_Entity.GetID().GetID(), "%s", s.c_str()))
 		{
 			ImGui::Text("Transform");
 			

@@ -182,7 +182,7 @@ namespace sixengine {
 
 					BatchRenderer::Instance()->SetBlur(false);
 
-					for (auto obj : Application::Get().GetEntityManager()->EntitiesWithComponents<Mesh>())
+					/*for (auto obj : Application::Get().GetEntityManager()->EntitiesWithComponents<Mesh>())
 					{
 						obj.Component<Mesh>()->m_Visible = true;
 
@@ -202,8 +202,16 @@ namespace sixengine {
 						{
 							obj.Component<Mesh>()->m_Visible = false;
 						}
+					}*/
+					for (auto obj : Application::Get().GetEntityManager()->EntitiesWithComponents<Mesh, ParticleEmitter, Enemy>())
+					{
+						obj.Component<Mesh>()->m_Visible = true;
+						obj.Component<ParticleEmitter>()->Stop();
 					}
-					
+					for (auto obj : Application::Get().GetEntityManager()->EntitiesWithComponents<Mesh, UndergroundObject>())
+					{
+						obj.Component<Mesh>()->m_Visible = false;
+					}
 				}
 				else
 				{
@@ -214,7 +222,7 @@ namespace sixengine {
 					
 					BatchRenderer::Instance()->SetBlur(true);
 					
-					for (auto obj : Application::Get().GetEntityManager()->EntitiesWithComponents<Mesh>())
+					/*for (auto obj : Application::Get().GetEntityManager()->EntitiesWithComponents<Mesh>())
 					{
 						obj.Component<Mesh>()->m_Visible = false;
 
@@ -242,8 +250,16 @@ namespace sixengine {
 						{
 							obj.Component<Mesh>()->m_Visible = true;
 						}
+					}*/
+					for (auto obj : Application::Get().GetEntityManager()->EntitiesWithComponents<Mesh, ParticleEmitter, Enemy>())
+					{
+						obj.Component<Mesh>()->m_Visible = false;
+						obj.Component<ParticleEmitter>()->Start();
 					}
-
+					for (auto obj : Application::Get().GetEntityManager()->EntitiesWithComponents<Mesh, UndergroundObject>())
+					{
+						obj.Component<Mesh>()->m_Visible = true;
+					}
 				}
 			}
 
