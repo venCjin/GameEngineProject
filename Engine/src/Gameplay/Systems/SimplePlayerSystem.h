@@ -21,6 +21,7 @@
 #include <Gameplay/Components/Generator.h>
 #include <Gameplay/Components/UndergroundObject.h>
 #include <Gameplay/Components/ScolopendraComponent.h>
+#include <Gameplay/Components/DestroyableWall.h>
 
 namespace sixengine {
 	
@@ -105,6 +106,8 @@ namespace sixengine {
 				{
 					if (Entity::Valid(hit.GetID()))
 					{
+						LOG_INFO(hit.HasComponent<DestroyableWall>());
+
 						if (hit.HasComponent<Enemy>())
 						{
 							//LOG_INFO("MAM CIE CHUJU!");
@@ -113,6 +116,10 @@ namespace sixengine {
 						else if (hit.HasComponent<Generator>())
 						{
 							hit.Component<Generator>()->DestroyGenerator();
+						}
+						else if (hit.HasComponent<DestroyableWall>())
+						{
+							hit.Component<DestroyableWall>()->Destroy();
 						}
 					}
 				}

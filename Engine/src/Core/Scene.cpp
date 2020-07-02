@@ -47,6 +47,8 @@
 #include "AI/NavMesh/NavAgent.h"
 #include "AI/NavMesh/NavAgentSystem.h"
 
+#include "Gameplay/Components/DestroyableWall.h"
+
 #define LOAD(COMPONENT)								\
 {													\
 	if (s == "-"#COMPONENT)							\
@@ -435,6 +437,12 @@ namespace sixengine {
 			else if (s == "-Water")
 			{
 				m_BatchRenderer->m_Water->SetGameObject(go);
+				continue;
+			}
+
+			else if (s == "-DestroyableWall")
+			{
+				go->AddComponent<DestroyableWall>(go);
 				continue;
 			}
 
