@@ -125,6 +125,14 @@ namespace sixengine {
 				}
 			}
 
+			//hackerman
+			if (Input::IsKeyActive(KeyCode::H))
+			{
+				m_SimplePlayer->m_Health = 100.0f;
+			}
+
+			//koniec hackerman
+
 			if (Input::IsKeyActive(KeyCode::S)) 
 			{ 
 				_db->m_Velocity += cameraDir * speed; 
