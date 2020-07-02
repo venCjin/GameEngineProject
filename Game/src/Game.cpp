@@ -76,7 +76,6 @@ namespace sixengine {
 		GameObject* orbitalCamB;
 		GameObject* mixingCam;
 		GameObject* flying;
-		//GameObject* m_Player;
 		GameObject* m_Billboard;
 
 		Texture* starParticleTexture;
@@ -170,7 +169,6 @@ namespace sixengine {
 			//question mark
 			m_Billboard = new GameObject(m_EntityManager);
 			m_Billboard->AddComponent<Transform>(m_Billboard);
-			//m_Billboard->GetComponent<Transform>()->SetParent(child->GetComponent<Transform>().Get());
 			m_Billboard->GetComponent<Transform>()->SetLocalScale(glm::vec3(0.7f, 0.7f, 0.7f));
 			m_Billboard->GetComponent<Transform>()->SetLocalPosition(glm::vec3(0, 8, 0));
 			m_Billboard->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("billboard"));
@@ -220,7 +218,7 @@ namespace sixengine {
 			ui->AddFont(font);
 			m_BatchRenderer->AddTechnique(ui);
 
-			m_Scene.LoadScene("res/scenes/exported6.scene");
+			m_Scene.LoadScene("res/scenes/exported7.scene");
 
 			m_SystemManager.AddSystem<GateSystem>();
 			m_SystemManager.AddSystem<ProjectileSystem>();
@@ -263,12 +261,6 @@ namespace sixengine {
 			starParticleTexture = new Texture("res/textures/particles/star.png");
 			rippleParticleTexture = new Texture("res/textures/particles/ripple.png");
 
-//<<<<<<< HEAD
-			//m_Scene.LoadScene("res/scenes/exported5.scene");
-//=======
-//>>>>>>> 31cd89ea8514475f1699153dd50538a9dee5ded1
-			//ADD_TRACK("res/sounds/solider base/military-helicopter.wav", "ophelia");
-			//INIT_TRACK("ophelia");
 
 			ADD_TRACK("res/sounds/electricity-generator-loop.mp3", "generator");
 			ADD_TRACK("res/sounds/footstep-gravel.mp3", "footstep");
@@ -279,8 +271,6 @@ namespace sixengine {
 			ADD_TRACK("res/sounds/scolopendrawalk.mp3", "scolopendrawalk");
 			ADD_TRACK("res/sounds/generator_explosion.mp3", "explosion");
 
-			//INIT_TRACK_3D("generator", glm::vec3(0.0f));
-			//INIT_TRACK_3D_LOOPED("generator", glm::vec3(30.0f, 0, 0));
 
 			// HACKS
 			//////SHITT!!!11
@@ -348,7 +338,7 @@ namespace sixengine {
 			m_Scene.m_UIRoot->~GameObject();
 			m_Scene.InitScene();
 
-			m_Scene.LoadScene("res/scenes/exported6.scene");
+			m_Scene.LoadScene("res/scenes/exported7.scene");
 		}
 
 		void LoadScene()
@@ -356,6 +346,7 @@ namespace sixengine {
 			GameObject* obj;
 
 			// WATER
+			/*
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(160.91f, 0.89f, 50.77f);
@@ -363,6 +354,7 @@ namespace sixengine {
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WaterMaterial"));
 			m_BatchRenderer->m_Water->SetGameObject(obj);
 			m_Scene.m_SceneRoot->AddChild(obj);
+			*/
 			// WATER
 
 			obj = new GameObject(m_EntityManager);
@@ -410,33 +402,9 @@ namespace sixengine {
 			player->GetComponent<SimplePlayer>().Get()->scolopendraAnimation = scolopendra->GetComponent<Animation>().Get();
 
 
-			//COLLECTABLE
-			obj = new GameObject(m_EntityManager);
-			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 0.5f, 5.0f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
-			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
-			obj->AddComponent<Collectable>();
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCratePBR"));
-
-			m_Scene.m_SceneRoot->AddChild(obj);
-			//COLLECTABLE
-
-			//COLLECTABLE2
-			obj = new GameObject(m_EntityManager);
-			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(10.0, 0.5f, 9.0f);
-			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
-			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), 0);
-			obj->AddComponent<Collectable>();
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
-			m_Scene.m_SceneRoot->AddChild(obj);
-			//COLLECTABLE2
-
-
 			m_Scene.m_ModelManager->AddModel("res/models/Props/Generator/Generator.obj");
 			//Generator 1
-			obj = new GameObject(m_EntityManager);
+			/*obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(19.14324, .74f, 1.672457);
 			obj->GetComponent<Transform>()->SetLocalScale(1.5f, 1.5f, 1.5f);
@@ -544,20 +512,19 @@ namespace sixengine {
 			obj->GetComponent<Gate>()->AddGenerator(gen3);
 			obj->GetComponent<Gate>()->AddGenerator(gen4);
 			obj->GetComponent<Gate>()->AddGenerator(gen5);
-			m_Scene.m_SceneRoot->AddChild(obj);
+			m_Scene.m_SceneRoot->AddChild(obj);*/
 
 			//Eggs
-			obj = new GameObject(m_EntityManager);
+			/*obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(213.0, -0.10f, 20.0f);
 
 			obj->GetComponent<Transform>()->SetLocalScale(1.0, 1.0f, 1.0f);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("WoodenCrate"));
-			obj->AddComponent<StaticBody>();
 			obj->AddComponent<BoxCollider>(glm::vec3(1, 1, 1), true);
 			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("WoodenCrate2PBR"));
 			obj->AddComponent<Eggs>();
-			m_Scene.m_SceneRoot->AddChild(obj);
+			m_Scene.m_SceneRoot->AddChild(obj);*/
 
 			//UI
 			obj = new GameObject(m_EntityManager);
@@ -586,12 +553,6 @@ namespace sixengine {
 			obj->AddComponent<Transform>(obj);
 			m_Scene.m_SceneRoot->AddChild(obj);
 
-			/*MakeEnemy(glm::vec3(17.30613f, 0.0f, 1.866652f), glm::vec3(220.029f, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-0.9738712, 0.0f, 7.736652f), glm::vec3(229.8f, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-7.743871f, 0.0f, 7.686653), glm::vec3(180, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-3.423871, 0.0f, -9.783347), glm::vec3(90, 0.0f, 0.0f));
-			MakeEnemy(glm::vec3(-9.323872, 0.0f, -9.783347), glm::vec3(-90, 0.0f, 0.0f));*/
-
 			MakeEnemy(glm::vec3(16.06, 0.0f, -4.96), glm::vec3(303.9931, 0, 0));
 			MakeEnemy(glm::vec3(22.89, 0.0f, 6.85), glm::vec3(243.2002, 0, 0));
 			MakeEnemy(glm::vec3(59.59, 0.0f, 5.97), glm::vec3(128.7469, 0, 0));
@@ -613,7 +574,6 @@ namespace sixengine {
 			// CAMERAS SETUP
 			flying = Camera::ActiveCamera->m_GameObject; //flying camera domy�lnie stworzona w konstruktorze Scene
 
-			//obj = m_Scene.GetFirstGameObjectWithComponent<SimplePlayer>();
 			obj = player;//m_Scene.GetGameObjectsWithComponent<SimplePlayer>()[0];
 
 			staticLoopedSound3DSystem->m_Player = m_Scene.GetGameObjectsWithComponent<SimplePlayer>()[0];
@@ -662,24 +622,7 @@ namespace sixengine {
 		{
 			//AUDIO
 			AudioManager::getInstance()->ClearSoundsArray();
-			//std::vector<irrklang::ISound*> s = AudioManager::getInstance()->sounds;
-			/*for (auto sound : s)
-			{
-				LOG_CORE_ERROR("Sound: {0}", sound->getIsPaused());
-			}*/
-			//AUDIO
-			// BAR
-			/*m_BarFill += .01f;
-			m_BarFill = glm::clamp(m_BarFill, 0.0f, 1.0f);
-			if (m_BarFill == 1.0f) m_BarFill = .00001f;
-			MaterialManager::getInstance()->Get("Bar")->GetShader()->Bind();
-			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetFloat("barFill", m_BarFill);
-			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("barOrientation", glm::vec3(1.0f, 0.0f, 0.0f));
-			MaterialManager::getInstance()->Get("Bar")->GetShader()->SetVec3("color", glm::vec3(1.0f, 0.0f, 0.0f));
-			MaterialManager::getInstance()->Get("Bar")->GetShader()->Unbind();
-			m_Billboard->GetComponent<Transform>()->SetLocalPosition(m_BarFill*10.0f, 2, 1.0f);*/
-			//LOG_CORE_INFO("{0} {1} {2} {3}", m_Billboard->GetComponent<Transform>()->GetLocalScale().x, m_Billboard->GetComponent<Transform>()->GetLocalScale().y, m_Billboard->GetComponent<Transform>()->GetLocalScale().z, m_BarFill);
-			// BAR
+			
 
 			if (Input::IsKeyPressed(KeyCode::ESCAPE))
 			{

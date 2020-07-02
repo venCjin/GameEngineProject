@@ -13,6 +13,7 @@
 #include "Gameplay/Components/DirectionalLight.h"
 #include "Gameplay/Components/PointLight.h"
 #include "Gameplay/Components/SpotLight.h"
+#include "Gameplay/Components/Eggs.h"
 
 #include "Gameplay/Systems/AirTextSystem.h"
 #include "Gameplay/Systems/AnimationSystem.h"
@@ -451,6 +452,8 @@ namespace sixengine {
 			LOAD(SphereCollider);
 
 			LOAD(UndergroundObject);
+
+			LOAD(Eggs);
 
 			if (s == "+Child")
 			{

@@ -53,8 +53,8 @@ namespace sixengine {
 				//collisionEvent.collision.other.RemoveComponent<BoxCollider>();
 				//collisionEvent.collision.other.RemoveComponent<Mesh>();
 				collisionEvent.collision.other.Component<Transform>()->Translate(glm::vec3(0.0f, -100.0f, 0.0f));
-
-				//do something
+				collisionEvent.m_Entity.Component<SimplePlayer>()->m_Health += collisionEvent.collision.other.Component<Collectable>()->hp;
+				if (collisionEvent.m_Entity.Component<SimplePlayer>()->m_Health > 100.0f) collisionEvent.m_Entity.Component<SimplePlayer>()->m_Health = 100.0f;
 			}
 			else if (collisionEvent.m_Entity.HasComponent<SimplePlayer>() &&
 				collisionEvent.collision.other.HasComponent<Projectile>())
