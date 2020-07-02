@@ -418,10 +418,10 @@ namespace sixengine {
 		m_BlurShader->SetFloat("time", Timer::Instance()->ElapsedTime());
 		m_BlurShader->SetBool("shakeEnabled", m_Shake);
 		m_BlurShader->SetBool("blurEnabled", m_Blur);
-		//float Falloff = 100.0f - m_Player->GetComponent<SimplePlayer>()->m_Air;
-		//Falloff /= 10;
-		//m_BlurShader->SetFloat("Falloff", Falloff <= 4.0f ? 0.4f : log2f(Falloff) - 1.6f);
-		m_BlurShader->SetFloat("Falloff", 0.0f);
+		float Falloff = 100.0f - m_Player->GetComponent<SimplePlayer>()->m_Air;
+		Falloff /= 10;
+		m_BlurShader->SetFloat("Falloff", Falloff <= 4.0f ? 0.4f : log2f(Falloff) - 1.6f);
+		//m_BlurShader->SetFloat("Falloff", 0.0f);
 
 		glActiveTexture(GL_TEXTURE2);
 		m_Default.BindTexture();

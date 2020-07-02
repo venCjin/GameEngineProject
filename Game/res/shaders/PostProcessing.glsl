@@ -58,7 +58,6 @@ void main()
         float rf2_1 = rf * rf + 1.0;
         float e = 1.0 / (rf2_1 * rf2_1);
 
-        //FragColor = vec4(FragColor.rgb * e, 1.0);
         FragColor = vec4(FragColor.rgb * e, 1.0);
     }
     else
