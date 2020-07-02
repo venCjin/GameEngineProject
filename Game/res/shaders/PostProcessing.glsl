@@ -35,6 +35,9 @@ uniform vec2 offsets[9];
 uniform float blur_kernel[9];
 uniform bool blurEnabled;
 
+uniform vec3 resolution;
+uniform float Falloff;
+
 void main()
 {
     FragColor = vec4(0.0);
@@ -49,7 +52,14 @@ void main()
         for (int i = 0; i < 9; i++)
             FragColor += vec4(sampleD[i] * blur_kernel[i], 0.0f);
 
-        FragColor.a = 1.0f;
+        vec2 uv = gl_FragCoord.xy / resolution.xy;
+        vec2 coord = (uv - 0.5) * (resolution.x / resolution.y) * 2.0;
+        float rf = sqrt(dot(coord, coord)) * Falloff;
+        float rf2_1 = rf * rf + 1.0;
+        float e = 1.0 / (rf2_1 * rf2_1);
+
+        //FragColor = vec4(FragColor.rgb * e, 1.0);
+        FragColor = vec4(FragColor.rgb * e, 1.0);
     }
     else
     {

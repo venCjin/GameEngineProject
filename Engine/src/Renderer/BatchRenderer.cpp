@@ -418,6 +418,10 @@ namespace sixengine {
 		m_BlurShader->SetFloat("time", Timer::Instance()->ElapsedTime());
 		m_BlurShader->SetBool("shakeEnabled", m_Shake);
 		m_BlurShader->SetBool("blurEnabled", m_Blur);
+		//float Falloff = 100.0f - m_Player->GetComponent<SimplePlayer>()->m_Air;
+		//Falloff /= 10;
+		//m_BlurShader->SetFloat("Falloff", Falloff <= 4.0f ? 0.4f : log2f(Falloff) - 1.6f);
+		m_BlurShader->SetFloat("Falloff", 0.0f);
 
 		glActiveTexture(GL_TEXTURE2);
 		m_Default.BindTexture();
@@ -590,6 +594,7 @@ namespace sixengine {
 	void BatchRenderer::SetLight(Light* light)
 	{
 		m_DirectionalLight = light;
+		m_Player = light->m_Center;
 	}
 
 	void BatchRenderer::AddTechnique(Technique* technique)
@@ -663,6 +668,8 @@ namespace sixengine {
 				1.0f / 16.0f, 2.0f / 16.0f, 1.0f / 16.0f
 			};
 			glUniform1fv(glGetUniformLocation(m_BlurShader->GetID(), "blur_kernel"), 9, blur_kernel);
+
+			m_BlurShader->SetVec3("resolution", glm::vec3(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight(), 0.0f));
 
 			m_BlurShader->Unbind();
 		}

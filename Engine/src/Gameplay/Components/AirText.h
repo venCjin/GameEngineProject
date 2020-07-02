@@ -8,5 +8,6 @@ namespace sixengine
 	{
 	public:
 		SimplePlayer* player;
+		unsigned int ID;
 	};
 }

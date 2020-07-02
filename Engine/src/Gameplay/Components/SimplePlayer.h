@@ -31,7 +31,7 @@ namespace sixengine {
 		GameObject* gameObject;
 		Transform* transform;
 		BoxCollider* collider;
-		float air = 100;
+		float m_Air = 100;
 		float m_Health = 100;
 		bool m_OnSurface = true;
 
