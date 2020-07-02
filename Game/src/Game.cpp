@@ -218,7 +218,7 @@ namespace sixengine {
 			ui->AddFont(font);
 			m_BatchRenderer->AddTechnique(ui);
 
-			m_Scene.LoadScene("res/scenes/exported7.scene");
+			m_Scene.LoadScene("res/scenes/exported8.scene");
 
 			m_SystemManager.AddSystem<GateSystem>();
 			m_SystemManager.AddSystem<ProjectileSystem>();
@@ -338,7 +338,7 @@ namespace sixengine {
 			m_Scene.m_UIRoot->~GameObject();
 			m_Scene.InitScene();
 
-			m_Scene.LoadScene("res/scenes/exported7.scene");
+			m_Scene.LoadScene("res/scenes/exported8.scene");
 		}
 
 		void LoadScene()
@@ -596,22 +596,37 @@ namespace sixengine {
 			obj->AddComponent<Transform>(obj);
 			m_Scene.m_SceneRoot->AddChild(obj);
 
-			MakeEnemy(glm::vec3(16.06, 0.0f, -4.96), glm::vec3(303.9931, 0, 0));
-			MakeEnemy(glm::vec3(22.89, 0.0f, 6.85), glm::vec3(243.2002, 0, 0));
-			MakeEnemy(glm::vec3(59.59, 0.0f, 5.97), glm::vec3(128.7469, 0, 0));
-			MakeEnemy(glm::vec3(64.78, 0.0f, 0.09), glm::vec3(340.3404, 0, 0));
-			MakeEnemy(glm::vec3(147.03, 0.0f, -22.93), glm::vec3(5.779317, 0, 0));
-			MakeEnemy(glm::vec3(147.3, 0.0f, -17.6), glm::vec3(175.3088, 0, 0));
-			MakeEnemy(glm::vec3(165.65, 0.0f, 12.49), glm::vec3(291.341, 0, 0));
-			MakeEnemy(glm::vec3(165.65, 0.0f, 29.3), glm::vec3(239.1137, 0, 0));
-			MakeEnemy(glm::vec3(163.77, 0.0f, 56.02), glm::vec3(209.1315, 0, 0));
-			MakeEnemy(glm::vec3(130.1, 0.0f, 48.75), glm::vec3(318.0522, 0, 0));
-			MakeEnemy(glm::vec3(102, 0.0f, 56.2), glm::vec3(216.9023, 0, 0));
-			MakeEnemy(glm::vec3(99.57, 0.0f, 12.22), glm::vec3(253.604, 0, 0));
-			MakeEnemy(glm::vec3(100.06, 0.0f, 20.11), glm::vec3(64.77235, 0, 0));
-			MakeEnemy(glm::vec3(111.53, 0.0f, -11.15), glm::vec3(176.9345, 0, 0));
-			MakeEnemy(glm::vec3(101.06, 0.0f, -19.86), glm::vec3(52.59827, 0, 0));
-			MakeEnemy(glm::vec3(113.97, 0.0f, -24.53), glm::vec3(0, 0, 0));
+			MakeEnemy(glm::vec3(171.3, 0, 42.1), glm::vec3(92, 0, 0));
+			MakeEnemy(glm::vec3(217.43, 0, 14.96), glm::vec3(319, 0, 0));
+			MakeEnemy(glm::vec3(141.65, 0, 45.87), glm::vec3(123.5219, 0, 0));
+			MakeEnemy(glm::vec3(192.25, 0, 34.97), glm::vec3(3.599998, 0, 0));
+			MakeEnemy(glm::vec3(125.8, 0, -9.97), glm::vec3(0.200007, 0, 0));
+			MakeEnemy(glm::vec3(115.12, 0, 54.55), glm::vec3(180.6, 0, 0));
+			MakeEnemy(glm::vec3(68.1, 0, 1.2), glm::vec3(336.49, 0, 0));
+			MakeEnemy(glm::vec3(180.2, 0, 0.7), glm::vec3(92, 0, 0));
+			MakeEnemy(glm::vec3(180.53, 0, 33.36), glm::vec3(92, 0, 0));
+			MakeEnemy(glm::vec3(76.86, 0, 13.51), glm::vec3(163.6, 0, 0));
+			MakeEnemy(glm::vec3(208.5, 0, 49.8), glm::vec3(177.29, 0, 0));
+			MakeEnemy(glm::vec3(29.7, 0, 1.4), glm::vec3(94.43999, 0, 0));
+			MakeEnemy(glm::vec3(32.75, 0, -7.78), glm::vec3(8.599998, 0, 0));
+			MakeEnemy(glm::vec3(102.82, 0, 39.47), glm::vec3(180.6, 0, 0));
+			MakeEnemy(glm::vec3(202.2, 0, -6.01), glm::vec3(103.8, 0, 0));
+			MakeEnemy(glm::vec3(124.6, 0, 49.26), glm::vec3(222.4, 0, 0));
+			MakeEnemy(glm::vec3(120.19, 0, 35.02), glm::vec3(152.9, 0, 0));
+			MakeEnemy(glm::vec3(188.79, 0, 7.27), glm::vec3(261.2, 0, 0));
+			MakeEnemy(glm::vec3(216.88, 0, 36.42), glm::vec3(275, 0, 0));
+			MakeEnemy(glm::vec3(101.03, 0, -9.15), glm::vec3(38.09999, 0, 0));
+			MakeEnemy(glm::vec3(191.12, 0, 16.95), glm::vec3(3.599998, 0, 0));
+			MakeEnemy(glm::vec3(119.2, 0, 0.7), glm::vec3(338.9, 0, 0));
+			MakeEnemy(glm::vec3(155.93, 0, -2.13), glm::vec3(330.6, 0, 0));
+			MakeEnemy(glm::vec3(144.75, 0, 14.58), glm::vec3(338.9, 0, 0));
+			MakeEnemy(glm::vec3(103.74, 0, 54.67), glm::vec3(180.6, 0, 0));
+			MakeEnemy(glm::vec3(98.54, 0, 3.82), glm::vec3(38.09999, 0, 0));
+			MakeEnemy(glm::vec3(145.89, 0, -10.09), glm::vec3(330.6, 0, 0));
+			MakeEnemy(glm::vec3(172.35, 0, 25.77), glm::vec3(92, 0, 0));
+			MakeEnemy(glm::vec3(169.78, 0, -6), glm::vec3(88.29998, 0, 0));
+			MakeEnemy(glm::vec3(216.45, 0, -2.68), glm::vec3(319, 0, 0));
+
 			//ENEMIES
 
 			// CAMERAS SETUP
