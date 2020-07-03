@@ -578,6 +578,14 @@ namespace sixengine {
 			//UI
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
+			obj->GetComponent<Transform>()->SetWorldPosition(640.0, 360.0f, 0.0f);
+			Texture* t = new Texture("res/textures/ui/keys.png");
+			obj->AddComponent<Image>(t, glm::vec2{1000.0f, 562.0f});
+			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
+			m_Scene.m_UIRoot->AddChild(obj);
+
+			obj = new GameObject(m_EntityManager);
+			obj->AddComponent<Transform>(obj);
 			obj->GetComponent<Transform>()->SetWorldPosition(5.0, 680.0f, 0.0f);
 			obj->AddComponent<AirText>();
 			obj->GetComponent<AirText>()->player = player->GetComponent<SimplePlayer>().Get();

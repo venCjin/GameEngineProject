@@ -16,12 +16,12 @@ namespace sixengine
 			std::stringstream ss;
 			if (m_AirText->ID == 0)
 			{
-				ss << "Health: " << m_AirText->player->m_Health;
+				ss << "Health: " << int(m_AirText->player->m_Health);
 				m_Text->text = ss.str();
 			}
 			else if (m_AirText->ID == 1)
 			{
-				ss << "Air: " << m_AirText->player->m_Air;
+				ss << "Air: " << int(m_AirText->player->m_Air);
 				m_Text->text = ss.str();
 			}
 		}
