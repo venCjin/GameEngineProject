@@ -581,8 +581,9 @@ namespace sixengine {
 			StartSceneObject = new GameObject(m_EntityManager);
 			StartSceneObject->AddComponent<Transform>(obj);
 			StartSceneObject->GetComponent<Transform>()->SetWorldPosition(640.0, 360.0f, 0.0f);
-			Texture* t = new Texture("res/textures/ui/keys.png");
-			StartSceneObject->AddComponent<Image>(t, glm::vec2{1000.0f, 562.0f});
+			Texture* t = new Texture("res/textures/ui/keys2.png");
+			//StartSceneObject->AddComponent<Image>(t, glm::vec2{1000.0f, 562.0f});
+			StartSceneObject->AddComponent<Image>(t, glm::vec2{1280.0f, 720.0f});
 			StartSceneObject->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
 			m_Scene.m_UIRoot->AddChild(StartSceneObject);
 
@@ -768,7 +769,7 @@ namespace sixengine {
 				m_BatchRenderer->Render();
 			}
 
-			if (Input::IsKeyPressed(KeyCode::ENTER))
+			if (Input::IsKeyPressed(KeyCode::H))
 			{
 				if (!StartScene)
 				{
