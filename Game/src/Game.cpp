@@ -72,6 +72,8 @@ namespace sixengine {
 		Scene m_Scene;
 		BatchRenderer* m_BatchRenderer;
 
+		bool StartScene = false;
+		GameObject* StartSceneObject;
 
 		GameObject* orbitalCamA;
 		GameObject* orbitalCamB;
@@ -576,13 +578,13 @@ namespace sixengine {
 			m_Scene.m_SceneRoot->AddChild(obj);
 
 			//UI
-			obj = new GameObject(m_EntityManager);
-			obj->AddComponent<Transform>(obj);
-			obj->GetComponent<Transform>()->SetWorldPosition(640.0, 360.0f, 0.0f);
+			StartSceneObject = new GameObject(m_EntityManager);
+			StartSceneObject->AddComponent<Transform>(obj);
+			StartSceneObject->GetComponent<Transform>()->SetWorldPosition(640.0, 360.0f, 0.0f);
 			Texture* t = new Texture("res/textures/ui/keys.png");
-			obj->AddComponent<Image>(t, glm::vec2{1000.0f, 562.0f});
-			obj->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
-			m_Scene.m_UIRoot->AddChild(obj);
+			StartSceneObject->AddComponent<Image>(t, glm::vec2{1000.0f, 562.0f});
+			StartSceneObject->AddComponent<Material>(*m_Scene.m_MaterialManager->Get("FontMaterial"));
+			m_Scene.m_UIRoot->AddChild(StartSceneObject);
 
 			obj = new GameObject(m_EntityManager);
 			obj->AddComponent<Transform>(obj);
@@ -706,7 +708,6 @@ namespace sixengine {
 		{
 			//AUDIO
 			AudioManager::getInstance()->ClearSoundsArray();
-			
 
 			if (Input::IsKeyPressed(KeyCode::ESCAPE))
 			{
@@ -765,6 +766,20 @@ namespace sixengine {
 
 				m_Scene.Render(true);
 				m_BatchRenderer->Render();
+			}
+
+			if (Input::IsKeyPressed(KeyCode::ENTER))
+			{
+				if (!StartScene)
+				{
+					StartSceneObject->GetComponent<Transform>()->SetWorldPosition(-1640.0, 360.0f, 0.0f);
+				}
+				else
+				{
+					StartSceneObject->GetComponent<Transform>()->SetWorldPosition(640.0, 360.0f, 0.0f);
+				}
+
+				StartScene = !StartScene;
 			}
 
 			{
