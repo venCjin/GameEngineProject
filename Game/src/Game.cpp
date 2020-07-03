@@ -219,7 +219,7 @@ namespace sixengine {
 			ui->AddFont(font);
 			m_BatchRenderer->AddTechnique(ui);
 
-			m_Scene.LoadScene("res/scenes/WallTest.scene");
+			m_Scene.LoadScene("res/scenes/exported9.scene");
 
 			m_SystemManager.AddSystem<GateSystem>();
 			m_SystemManager.AddSystem<DestroyableWallSystem>();
@@ -344,7 +344,7 @@ namespace sixengine {
 			m_Scene.m_UIRoot->~GameObject();
 			m_Scene.InitScene();
 
-			m_Scene.LoadScene("res/scenes/exported8.scene");
+			m_Scene.LoadScene("res/scenes/exported9.scene");
 		}
 
 		void LoadScene()

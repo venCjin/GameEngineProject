@@ -64,9 +64,10 @@ namespace sixengine {
 				collisionEvent.collision.other.HasComponent<Projectile>())
 			{
 				collisionEvent.collision.other.Component<Transform>()->Translate(glm::vec3(0.0f, -100.0f, 0.0f));
-				glm::vec3 pos = collisionEvent.m_Entity.Component<Transform>()->GetWorldPosition();
-				collisionEvent.m_Entity.Component<Transform>()->SetWorldPosition(glm::vec3(pos.x, 0.1f, pos.z));
+				//glm::vec3 pos = collisionEvent.m_Entity.Component<Transform>()->GetWorldPosition();
+				//collisionEvent.m_Entity.Component<Transform>()->SetWorldPosition(glm::vec3(pos.x, 0.1f, pos.z));
 				collisionEvent.m_Entity.Component<SimplePlayer>()->m_Health -= 10.0f;
+				//Application::Get().GetScene()->m_BatchRenderer->SetShake(true);
 			}
 		}
 
