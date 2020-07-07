@@ -99,7 +99,7 @@ namespace sixengine {
 			obj->GetComponent<Transform>()->SetWorldPosition(pos);
 			obj->GetComponent<Transform>()->SetLocalScale(0.011f, 0.011f, 0.011f);
 			obj->GetComponent<Transform>()->SetLocalOrientation(rotation);
-			obj->AddComponent<BoxCollider>(glm::vec3(1.0f, 0.5f, 1.0f));
+			obj->AddComponent<SphereCollider>(0.75f, 0);
 			obj->AddComponent<Mesh>(m_Scene.m_ModelManager->AddModel("res/models/Enemies/BlackAgent/agent.dae"));
 			obj->AddComponent<LoopedSound3D>("footstep", pos, 5.0f);
 			obj->AddComponent<Animation>();
@@ -173,7 +173,7 @@ namespace sixengine {
 			m_Billboard = new GameObject(m_EntityManager);
 			m_Billboard->AddComponent<Transform>(m_Billboard);
 			m_Billboard->GetComponent<Transform>()->SetLocalScale(glm::vec3(0.7f, 0.7f, 0.7f));
-			m_Billboard->GetComponent<Transform>()->SetLocalPosition(glm::vec3(0, 8, 0));
+			m_Billboard->GetComponent<Transform>()->SetLocalPosition(glm::vec3(0, 20, 0));
 			m_Billboard->AddComponent<Mesh>(m_Scene.m_ModelManager->GetModel("billboard"));
 			m_Billboard->AddComponent<Material>(*MaterialManager::getInstance()->Get("Bar"));
 			m_Billboard->AddComponent<Questionmark>();
@@ -221,7 +221,7 @@ namespace sixengine {
 			ui->AddFont(font);
 			m_BatchRenderer->AddTechnique(ui);
 
-			m_Scene.LoadScene("res/scenes/exported9.scene");
+			m_Scene.LoadScene("res/scenes/WallTest.scene");
 
 			m_SystemManager.AddSystem<GateSystem>();
 			m_SystemManager.AddSystem<DestroyableWallSystem>();
@@ -346,7 +346,7 @@ namespace sixengine {
 			m_Scene.m_UIRoot->~GameObject();
 			m_Scene.InitScene();
 
-			m_Scene.LoadScene("res/scenes/exported9.scene");
+			m_Scene.LoadScene("res/scenes/WallTest.scene");
 		}
 
 		void LoadScene()

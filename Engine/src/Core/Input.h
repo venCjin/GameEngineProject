@@ -14,7 +14,7 @@
 namespace sixengine {
 
 	enum Axis {
-		KEYBOARD_HORIZONTAL,
+		KEYBOARD_HORIZONTAL, 
 		KEYBOARD_VERTICAL,
 	};
 

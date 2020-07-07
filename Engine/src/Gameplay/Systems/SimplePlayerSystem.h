@@ -31,9 +31,9 @@ namespace sixengine {
 	SYSTEM(SimplePlayerSystem, Transform, SimplePlayer, Material)
 	{
 		//bool m_OnSurface = true;
-		float speed = .625f;
+		float speed = .525f;
 		//float maxSpeed = 2.0f;
-		float speedMultiplicator = 2.0f;
+		float speedMultiplicator = 1.4f;
 		float playerHeight = 1.0f;
 		//float air = 100.0f;
 		float airLosingRate = 16.0f;
@@ -124,15 +124,14 @@ namespace sixengine {
 				model = glm::translate(model, m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward());
 				Application::attack->model = model;
 
-				for (auto hit : CollisionSystem::CheckSphereAll(m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward(), 1.0f))
+				glm::vec3 center = m_SimplePlayer->transform->GetWorldPosition() - m_SimplePlayer->transform->GetForward();
+				center.y = 0.0f;
+				for (auto hit : CollisionSystem::CheckSphereAll(center, 1.25f))
 				{
 					if (Entity::Valid(hit.GetID()))
 					{
-						LOG_INFO(hit.HasComponent<DestroyableWall>());
-
 						if (hit.HasComponent<Enemy>())
 						{
-							//LOG_INFO("MAM CIE CHUJU!");
 							hit.Component<Enemy>()->ReceiveDamage(50.0f);
 						}
 						else if (hit.HasComponent<Generator>())

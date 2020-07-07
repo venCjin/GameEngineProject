@@ -37,25 +37,26 @@ bool sixengine::AttackState::IsStateReady(StateMachine* stateMachine)
 	}
 
 	return (
+		m_Enemy->HasDetectedPlayer()
+		||
 		(
 			m_GameObject->GetComponent<StateMachine>()->IsCurrentlyInState(typeid(SearchState*))
 			&& m_Enemy->CanSeeUndergroundMovement()
 			)
-		||
-		(m_Manager->HasAnybodyDetectedPlayer() && (distanceToPlayer < 10.0f))
 		);
 }
 
 void sixengine::AttackState::OnStateEnter(StateMachine* stateMachine, State* previousState)
 {
-	_lastShootTime = Timer::Instance()->ElapsedTime();
+	_lastShootTime = Timer::Instance()->ElapsedTime() - 0.5f * m_Parameters.shootCooldown;
 }
 
 void sixengine::AttackState::OnStateUpdate(StateMachine* stateMachine)
 {
+	m_Enemy->HasDetectedPlayer();
 	//LOG_INFO("AttackState reporting on duty");
 
-	if (m_Manager->HasAnybodyDetectedPlayer())
+	if (m_Enemy->HasDetectedPlayer())
 	{
 		float distanceToDestination = glm::length(m_GameObject->GetComponent<Transform>()->GetWorldPosition() - m_Manager->GetCharacterPosition());
 
@@ -120,8 +121,13 @@ void sixengine::AttackState::OnStateUpdate(StateMachine* stateMachine)
 
 bool sixengine::AttackState::IsStateFinished()
 {
-	return (m_Manager->HasAnybodyDetectedPlayer() == false 
-		&& m_Enemy->CanSeeUndergroundMovement() == false 
+	{
+		LOG_INFO(m_Enemy->HasDetectedPlayer() == false);
+		LOG_INFO(m_Enemy->CanSeeUndergroundMovement() == false);
+		LOG_INFO(m_NavAgent->GetRemainingDistance() < 1.5f || m_NavAgent->m_ProcedeMoving == false);
+	}
+
+	return (m_Enemy->HasDetectedPlayer() == false && m_Enemy->CanSeeUndergroundMovement() == false 
 		&& (m_NavAgent->GetRemainingDistance() < 1.5f || m_NavAgent->m_ProcedeMoving == false));
 }
 

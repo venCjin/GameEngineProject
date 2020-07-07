@@ -73,8 +73,24 @@ bool sixengine::Enemy::CanSeePlayer()
 	if (glm::dot(forward, forward) > 0) { forward = glm::normalize(forward); }
 	if (glm::dot(v, v) > 0) { v = glm::normalize(v); }
 
-	if (CollisionSystem::RaycastAll(m_Transform->GetWorldPosition(), player.Component<Transform>()->GetWorldPosition() - m_Transform->GetWorldPosition()).size() > 2)
+	auto hits = CollisionSystem::RaycastAll(m_Transform->GetWorldPosition(), player.Component<Transform>()->GetWorldPosition() - m_Transform->GetWorldPosition());
+	
+	
+	if (hits.size() > 3)
 	{
+		return false;
+	}
+	
+	if (hits.size() == 3)
+	{
+		for (auto hit : hits)
+		{
+			if (hit.HasComponent<Projectile>())
+			{
+				return (glm::dot(forward, v) > glm::cos(glm::radians(45.0f)));
+			}
+		}
+
 		return false;
 	}
 
@@ -135,13 +151,15 @@ bool sixengine::Enemy::CanSeeUndergroundMovement()
 	}
 
 	// Jesli nic nie stoi na preskodie
-	if (CollisionSystem::RaycastAll(m_Transform->GetWorldPosition(), GetPlayer().Component<Transform>()->GetWorldPosition() - m_Transform->GetWorldPosition()).size() <= 2)
+	auto hits = CollisionSystem::RaycastAll(m_Transform->GetWorldPosition(), GetPlayer().Component<Transform>()->GetWorldPosition() - m_Transform->GetWorldPosition());
+	if (hits.size() <= 2)
 	{
 		m_LastKnowUndergroundPosition = m_GameObject->GetComponent<Transform>()->GetWorldPosition();
 		m_LastUndergroundMovementSeenTime = Timer::Instance()->ElapsedTime();
 	
 		return true;
 	}
+	LOG_INFO(hits.size());
 
 	if (m_LastUndergroundMovementSeenTime + 0.5f > Timer::Instance()->ElapsedTime())
 	{
@@ -166,7 +184,7 @@ bool sixengine::Enemy::HasDetectedPlayer()
 					m_DetectionLevel = 1.0f;
 				}
 
-				float speed = 0.3f;
+				float speed = 3.0f - 3.0f * std::clamp(distance / 15.0f, 0.0f, 1.0f);
 
 				m_DetectionLevel += speed * Timer::Instance()->DeltaTime();
 			}
@@ -178,7 +196,7 @@ bool sixengine::Enemy::HasDetectedPlayer()
 		}
 		else if (m_GameObject->GetComponent<StateMachine>()->IsCurrentlyInState(typeid(SearchState*)))
 		{
-			m_DetectionLevel = 1.0f;
+			m_DetectionLevel = 0.5f;
 		}
 		else if (m_GameObject->GetComponent<StateMachine>()->IsCurrentlyInState(typeid(AttackState*)))
 		{
@@ -250,6 +268,10 @@ void sixengine::Enemy::ReceiveDamage(float damage)
 		m_GameObject->AddComponent<DeathState>(m_GameObject);
 		m_GameObject->GetComponent<StateMachine>()->ChangeState(m_GameObject->GetComponent<DeathState>().Get());
 		m_GameObject->GetComponent<StateMachine>()->m_States.clear();
+		m_GameObject->GetComponent<DynamicBody>()->m_Velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+		m_GameObject->RemoveComponent<SphereCollider>();
+
+		m_DetectionLevel = 0.0f;
 	}
 
 	/*if (m_Health > 0)

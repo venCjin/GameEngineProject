@@ -2,6 +2,8 @@
 #include "EnemiesManager.h"
 
 #include "Enemy.h"
+#include "AI/StateMachine.h"
+#include "AI/States/AttackState.h"
 
 sixengine::EnemiesManager::EnemiesManager()
 {
@@ -10,9 +12,18 @@ sixengine::EnemiesManager::EnemiesManager()
 
 bool sixengine::EnemiesManager::HasAnybodyDetectedPlayer()
 {
-	for(auto enemy : Application::Get().GetEntityManager()->EntitiesWithComponents<Enemy>())
+	//for(auto enemy : Application::Get().GetEntityManager()->EntitiesWithComponents<Enemy>())
+	//{
+	//	if (enemy.Component<Enemy>()->HasDetectedPlayer())
+	//	{
+	//		m_LastKnownChatacterPosition = player.Component<Transform>()->GetWorldPosition();
+	//		return true;
+	//	}
+	//}
+
+	for (auto enemy : Application::Get().GetEntityManager()->EntitiesWithComponents<Enemy>())
 	{
-		if (enemy.Component<Enemy>()->HasDetectedPlayer())
+		if (enemy.Component<StateMachine>()->IsCurrentlyInState(typeid(AttackState*)))
 		{
 			m_LastKnownChatacterPosition = player.Component<Transform>()->GetWorldPosition();
 			return true;

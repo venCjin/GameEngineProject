@@ -18,7 +18,7 @@ bool sixengine::SearchState::IsStateReady(StateMachine* stateMachine)
 
 	//LOG_INFO(m_Manager->HasAnybodyDetectedPlayer());
 
-	return (m_GameObject->GetComponent<StateMachine>()->IsCurrentlyInState(typeid(AttackState*)) && m_Manager->HasAnybodyDetectedPlayer() == false);
+	return (m_GameObject->GetComponent<StateMachine>()->IsCurrentlyInState(typeid(AttackState*)) && m_Enemy->HasDetectedPlayer() == false);
 
 }
 

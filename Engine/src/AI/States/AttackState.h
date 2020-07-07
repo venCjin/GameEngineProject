@@ -16,8 +16,8 @@ namespace sixengine
 		public:
 			int maxDamage = 40;
 			float maxShotRange = 15.0f;
-			float minShotRange = 5.0f;
-			float shootCooldown = 1.2f;
+			float minShotRange = 6.0f;
+			float shootCooldown = 0.8f;
 			float maxAngle = 7.5f;
 		};
 

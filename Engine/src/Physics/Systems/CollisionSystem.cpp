@@ -61,6 +61,8 @@ void sixengine::CollisionSystem::BoxWithBox(Entity entityA, Entity entityB)
 		totalOffset.y = (top < bottom) ? (-top) : (bottom);
 		totalOffset.z = (front < back) ? (-front) : (back);
 
+		totalOffset.y = 0.0f;
+
 		float min = std::min(std::min(abs(totalOffset.x), abs(totalOffset.y)), abs(totalOffset.z));
 
 		if (abs(totalOffset.x) > min) { totalOffset.x = 0.0f; }
@@ -141,6 +143,7 @@ void sixengine::CollisionSystem::SphereWithSphere(Entity entityA, Entity entityB
 
 		glm::vec3 totalOffset = glm::normalize(posA - posB);
 		totalOffset *= (circleA->m_radius + circleB->m_radius - glm::length(posA - posB));
+		totalOffset.y = 0.0f;
 
 		Collision collisionA = Collision();
 
@@ -207,6 +210,8 @@ void sixengine::CollisionSystem::BoxWithCircle(Entity entityBox, Entity entityCi
 			totalOffset.y = (top < bottom) ? (-top) : (bottom);
 			totalOffset.z = (front < back) ? (-front) : (back);
 
+			totalOffset.y = 0.0f;
+
 			if (abs(totalOffset.x) == 0.0f) { totalOffset.x = FLT_MAX; }
 			if (abs(totalOffset.y) == 0.0f) { totalOffset.y = FLT_MAX; }
 			if (abs(totalOffset.z) == 0.0f) { totalOffset.z = FLT_MAX; }
@@ -221,6 +226,7 @@ void sixengine::CollisionSystem::BoxWithCircle(Entity entityBox, Entity entityCi
 		{
 			totalOffset = glm::normalize(spherePosition - closestPoint);
 			totalOffset *= (sphereCollider->m_radius - glm::length(spherePosition - closestPoint));
+			totalOffset.y = 0.0f;
 		}
 
 
@@ -561,9 +567,6 @@ std::vector<Entity> sixengine::CollisionSystem::CheckSphereAll(glm::vec3 center,
 
 			if (glm::length(center - otherPos) < radius + other->m_radius)
 			{
-				float portionA = 0.5f;
-				float portionB = 0.5f;
-
 				result.push_back(spheres[i]);
 			}
 		}
