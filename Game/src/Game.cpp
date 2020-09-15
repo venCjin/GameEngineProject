@@ -12,6 +12,8 @@
 #include <Core/CameraSystem/FlyingCameraSystem.h>
 #include <Core/CameraSystem/OrbitalCameraSystem.h>
 #include <Core/CameraSystem/MixingCameraSystem.h>
+
+#include <Tools/imfilebrowser.h>
 // hacks end
 
 #include <Core/AudioManager.h>
@@ -63,12 +65,20 @@
 #include <Physics\Components\SphereCollider.h>
 #include <Gameplay/Systems/DestroyableWallSystem.h>
 
+#include <Tools/Reporting.h>
 
 namespace sixengine {
 
 	class Game : public Application
 	{
 	private:
+
+		ImGui::FileBrowser m_FileBrowser;
+		char m_CurrentIssue[1024];
+		Reporting* m_Reporting;
+		bool m_ReportingSuccess = false;
+		bool m_ReportingTried = false;
+
 		Scene m_Scene;
 		BatchRenderer* m_BatchRenderer;
 
@@ -330,6 +340,8 @@ namespace sixengine {
 			m_BatchRenderer->Configure();
 			m_Scene.Render(true);
 			m_BatchRenderer->Render();
+
+			m_FileBrowser.SetTitle("Chose your beta.key");
 		}
 
 		void ReloadScene()
@@ -760,7 +772,7 @@ namespace sixengine {
 			}
 
 
-			if (Input::IsKeyPressed(KeyCode::R))
+			if (Input::IsKeyPressed(KeyCode::R) && false)
 			{
 				ReloadScene();
 				Timer::Instance()->SetPaused(false);
@@ -792,6 +804,77 @@ namespace sixengine {
 			// IMGUI
 			{
 				//PROFILE_SCOPE("ImGui Scene Graph");
+
+				ImGui::Begin("Bug Reporting");
+				{
+					if (ImGui::Button("Select your key"))
+					{
+						m_FileBrowser.Open();
+					}
+
+					if (m_Reporting == nullptr)
+					{
+						ImGui::Text("Beta Key: Missing");
+					}
+					else
+					{
+						if (m_Reporting->IsInitialized())
+						{
+							ImGui::Text("Beta Key: Valid");
+
+							ImGui::Separator();
+
+							ImGui::Text("What's your issue?");
+
+							ImGui::PushItemWidth(-1);
+							ImGui::InputTextMultiline("", m_CurrentIssue, 1024);
+							ImGui::PopItemWidth();
+
+							if (ImGui::Button("Report issue"))
+							{
+								m_ReportingTried = true;
+
+								m_ReportingSuccess = m_Reporting->Report(m_CurrentIssue);
+
+								if (m_ReportingSuccess)
+								{
+									memset(m_CurrentIssue, 0, 1024);
+								}
+							}
+
+							if (m_ReportingTried)
+							{
+								if (m_ReportingSuccess == true)
+								{
+									ImGui::Text("Successfully reported issue! Thank you!");
+								}
+								else
+								{
+									ImGui::Text("Failed while reporting the issue! Please turn it off and on!");
+								}
+							}
+						}
+						else
+						{
+							ImGui::Text("Beta Key: Invalid");
+						}
+					}
+				}
+				ImGui::End();
+
+				m_FileBrowser.Display();
+
+				if (m_FileBrowser.HasSelected())
+				{
+					if (m_Reporting == nullptr)
+					{
+						m_Reporting = new Reporting();
+					}
+
+					m_Reporting->Initialize(m_FileBrowser.GetSelected().string());
+
+					m_FileBrowser.ClearSelected();
+				}
 
 				ImGui::Begin("Scene graph");
 				if (ImGui::TreeNode("Scene Game Objects"))

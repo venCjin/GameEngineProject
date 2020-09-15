@@ -31,6 +31,7 @@ IncludeDir["recast"] = "Engine/dependencies/recastnavigation/Recast/Include"
 IncludeDir["detour"] = "Engine/dependencies/recastnavigation/Detour/Include"
 IncludeDir["detour_tile_cache"] = "Engine/dependencies/recastnavigation/DetourTileCache/Include"
 IncludeDir["recast_detour_debug"] = "Engine/dependencies/recastnavigation/DebugUtils/Include"
+IncludeDir["chilkat"] = "Engine/dependencies/chilkat/include"
 
 group "Dependencies"
 	include "Engine/dependencies/Glad"
@@ -85,6 +86,7 @@ project "Engine"
 		"%{IncludeDir.detour}",
 		"%{IncludeDir.detour_tile_cache}",
 		"%{IncludeDir.recast_detour_debug}",
+		"%{IncludeDir.chilkat}",
 	}
 
 	links 
@@ -100,6 +102,7 @@ project "Engine"
 		"Engine/dependencies/assimp/lib/assimp-vc142-mt.lib",
 		"Engine/dependencies/irrKlang/lib/irrKlang.lib",
 		"Engine/dependencies/freetype2/lib/freetype.lib",
+		"Engine/dependencies/chilkat/libs/ChilkatRel_x64.lib",
 	}
 
 	filter "system:windows"
@@ -161,6 +164,7 @@ project "Game"
 		"%{IncludeDir.detour}",
 		"%{IncludeDir.detour_tile_cache}",
 		"%{IncludeDir.recast_detour_debug}",
+		"%{IncludeDir.chilkat}",
 	}
 
 	links
@@ -169,6 +173,10 @@ project "Game"
 		"Engine/dependencies/assimp/lib/assimp-vc142-mt.lib",
 		"Engine/dependencies/irrKlang/lib/irrKlang.lib",
 		"Engine/dependencies/freetype2/lib/freetype.lib",
+		"Engine/dependencies/chilkat/libs/ChilkatRel_x64.lib",
+		"crypt32.lib",
+		"ws2_32.lib", 
+		"dnsapi.lib",
 	}
 
 	postbuildcommands 

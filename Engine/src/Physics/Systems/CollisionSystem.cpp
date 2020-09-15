@@ -364,7 +364,7 @@ void sixengine::CollisionSystem::HandleCollision(Entity collider, Collision coll
 
 void sixengine::CollisionSystem::UpdateAll(EventManager& eventManager, float dt)
 {
-	PROFILE_SCOPE("Collision Update");
+	//PROFILE_SCOPE("Collision Update");
 
 	m_EventManager = &eventManager;
 
