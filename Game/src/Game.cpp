@@ -89,6 +89,7 @@ namespace sixengine {
 
 #ifdef DEBUG
 		std::array<glm::vec3, 10> tr;
+		bool drawGizmos = false;
 #endif //DEBUG
 
 	public:
@@ -221,7 +222,7 @@ namespace sixengine {
 			ui->AddFont(font);
 			m_BatchRenderer->AddTechnique(ui);
 
-			m_Scene.LoadScene("res/scenes/WallTest.scene");
+			m_Scene.LoadScene("res/scenes/exported9.scene");
 
 			m_SystemManager.AddSystem<GateSystem>();
 			m_SystemManager.AddSystem<DestroyableWallSystem>();
@@ -346,7 +347,7 @@ namespace sixengine {
 			m_Scene.m_UIRoot->~GameObject();
 			m_Scene.InitScene();
 
-			m_Scene.LoadScene("res/scenes/WallTest.scene");
+			m_Scene.LoadScene("res/scenes/exported9.scene");
 		}
 
 		void LoadScene()
@@ -792,6 +793,9 @@ namespace sixengine {
 			// IMGUI
 			{
 				//PROFILE_SCOPE("ImGui Scene Graph");
+				ImGui::Begin( "Gizmos" );
+				ImGui::Checkbox( "Draw gizmos", &drawGizmos );
+				ImGui::End();
 
 				ImGui::Begin("Scene graph");
 				if (ImGui::TreeNode("Scene Game Objects"))
@@ -825,17 +829,17 @@ namespace sixengine {
 				m_BatchRenderer->Render();
 			}
 #ifdef DEBUG
-			{
+			if (drawGizmos) {
 				////PROFILE_SCOPE("DRAW GIZMOS")
-				//m_Scene.DrawGizmos();
+				m_Scene.DrawGizmos();
 
-				//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				//glDisable(GL_CULL_FACE);
-				//glLineWidth(1.0f);
-				//attack->Draw(attack->model);
-				//glPolygonMode(GL_FRONT, GL_FILL);
-				//glEnable(GL_CULL_FACE);
-				//glCullFace(GL_BACK);
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				glDisable(GL_CULL_FACE);
+				glLineWidth(1.0f);
+				attack->Draw(attack->model);
+				glPolygonMode(GL_FRONT, GL_FILL);
+				glEnable(GL_CULL_FACE);
+				glCullFace(GL_BACK);
 			}
 #endif // DEBUG
 		}
